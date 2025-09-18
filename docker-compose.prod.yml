@@ -5,8 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
-    image: connectfy/client-prod
-    container_name: client-prod
+    image: connectfy/connectfy-client-prod
+    container_name: connectfy-client-prod
     ports:
       - "4800:4800"
     networks:

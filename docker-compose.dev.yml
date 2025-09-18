@@ -5,8 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: connectfy/client-dev
-    container_name: client-dev
+    image: connectfy/connectfy-client-dev
+    container_name: connectfy-client-dev
     ports:
       - "4800:4800"
     volumes:
