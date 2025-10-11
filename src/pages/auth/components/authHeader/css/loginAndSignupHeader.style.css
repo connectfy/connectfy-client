@@ -1,0 +1,73 @@
+.login-and-signup-buttons-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-and-signup-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.login-and-signup-buttons-main {
+  display: flex;
+  gap: 1rem;
+}
+
+.login-and-signup-btn {
+  padding: 0.6rem 1.8rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--primary-color);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 45px;
+}
+
+.login,
+.signup {
+  width: 200px;
+}
+
+.login-and-signup-btn:hover {
+  background-color: var(--hover-bg);
+  color: white;
+}
+
+.auth-btn-active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.google {
+  width: 410px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+@media (max-width: 490px) {
+  .login,
+  .signup {
+    width: 44vw;
+  }
+
+  .google {
+    width: 90vw;
+  }
+}
+
+/* @media (max-width: 300px) {
+  .login-and-signup-btn {
+    width: 42vw;
+  }
+
+  .google {
+    width: 90vw;
+  }
+} */

@@ -1,0 +1,25 @@
+#auth-page {
+  width: 60%;
+  margin: 0 auto;
+  padding-block: .5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 98vh;
+}
+
+.auth-controls {
+  width: min(410px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+@media (max-width: 880px) {
+  #auth-page {
+    width: 100vw;
+  }
+}

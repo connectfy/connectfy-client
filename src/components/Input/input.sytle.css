@@ -1,0 +1,126 @@
+.input_box {
+  position: relative;
+  width: 100%;
+  font-family: inherit;
+  display: block;
+}
+
+.input_box .MuiInputBase-input,
+.input_box input {
+  box-sizing: border-box;
+  width: 100%;
+  line-height: 1.2;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    transform 0.12s ease;
+}
+
+.input_box .MuiInputBase-input::placeholder,
+.input_box input::placeholder {
+  color: var(--border-color);
+  opacity: 1;
+}
+
+.input_box .MuiInputBase-input.small {
+  padding: 6px 14px;
+  font-size: 14px;
+  min-height: 36px;
+}
+.input_box .MuiInputBase-input.medium {
+  padding: 10px 16px;
+  font-size: 15px;
+  min-height: 48px;
+}
+.input_box .MuiInputBase-input.large {
+  padding: 12px 18px;
+  font-size: 16px;
+  min-height: 60px;
+}
+.input_box .MuiInputBase-input.xlarge {
+  padding: 14px 20px;
+  font-size: 17px;
+  min-height: 68px;
+}
+
+.input_root .MuiOutlinedInput-root {
+  border-radius: 10px;
+  background-clip: padding-box;
+  overflow: hidden;
+}
+.input_root .MuiOutlinedInput-notchedOutline {
+  border-radius: inherit;
+  border-color: var(--border-color);
+}
+
+.input_root .MuiInputLabel-root {
+  transition:
+    transform 0.18s ease,
+    color 0.18s ease;
+  padding: 0 6px;
+  display: inline-block;
+  transform-origin: left top;
+  color: var(--border-color);
+}
+
+.input_root.small .MuiInputLabel-root {
+  transform: translate(14px, 8px) scale(1);
+}
+.input_root.small .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translate(10px, -8px) scale(0.75);
+  color: var(--primary-color);
+}
+
+.input_root.medium .MuiInputLabel-root {
+  transform: translate(14px, 13px) scale(1);
+}
+.input_root.medium .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translate(10px, -8px) scale(0.75);
+  color: var(--primary-color);
+}
+
+.input_root.large .MuiInputLabel-root {
+  transform: translate(14px, 20px) scale(1);
+}
+.input_root.large .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translate(10px, -8px) scale(0.75);
+  color: var(--primary-color);
+}
+
+.input_root.xlarge .MuiInputLabel-root {
+  transform: translate(14px, 23px) scale(1);
+}
+.input_root.xlarge .MuiInputLabel-root.MuiInputLabel-shrink {
+  transform: translate(10px, -8px) scale(0.75);
+  color: var(--primary-color);
+}
+
+.input_root
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.08);
+  border: 1px solid var(--primary-color);
+}
+
+.input_root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--border-color);
+}
+
+.input_root.Mui-error .MuiInputLabel-root,
+.input_root .MuiInputLabel-root.Mui-error,
+.input_root .MuiInputLabel-root.Mui-focused.Mui-error {
+  color: var(--error-color) !important;
+}
+
+@media (max-width: 420px) {
+  .input_box .MuiInputBase-input.small {
+    padding: 6px 12px;
+  }
+  .input_box .MuiInputBase-input.medium {
+    padding: 8px 12px;
+  }
+  .input_root.small .MuiInputLabel-root {
+    transform: translate(12px, 9px) scale(1);
+  }
+}

@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { useRoutes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { LANGUAGE } from "./types/enum.types";
+import routes from "@routes/router";
+import { useRoutes } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@store/store";
+import { setAccessToken } from "@features/auth/authSlice";
+import "@styles/index.css";
+import "flag-icons/css/flag-icons.min.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch = useDispatch<AppDispatch>();
+  const { i18n } = useTranslation();
+  const content = useRoutes(routes);
+  const lang = localStorage.getItem("lang");
+
+  useEffect(() => {
+    const access_token = localStorage.getItem("access_token");
+
+    if (access_token) {
+      dispatch(setAccessToken(access_token));
+    }
+  }, [dispatch]);
+
+useEffect(() => {
+    const availableLangs = Object.values(LANGUAGE);
+
+    const validLang =
+      lang && availableLangs.includes(lang as LANGUAGE)
+        ? (lang as LANGUAGE)
+        : LANGUAGE.EN;
+
+    i18n.changeLanguage(validLang);
+    localStorage.setItem("lang", validLang);
+  }, [lang, i18n]);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {content}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        aria-label="notification"
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

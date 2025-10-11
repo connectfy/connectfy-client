@@ -1,0 +1,74 @@
+.typography-body1{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.15000000596046448px;
+}
+.typography-body2{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0.15000000596046448px;
+}
+.subtitle1{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: 0.15000000596046448px;
+}
+.subtitle2{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 21px;
+    letter-spacing: 0.10000000149011612px;
+}
+.caption{
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0.4000000059604645px;
+}
+.overline{
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 1px;
+}
+.typography-h1{
+    font-size: 96px;
+    font-weight: 500;
+    line-height: 112.03px;
+    letter-spacing: -1.5px;
+}
+.typography-h2 {
+    font-size: 60px;
+    font-weight: 500;
+    line-height: 72px;
+    letter-spacing: -0.5px;
+}
+
+.typography-h3{
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 56px;
+}
+
+.typography-h4{
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 40px;
+    letter-spacing: 0.25px;
+}
+
+.typography-h5{
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32.02px;
+}
+
+.typography-h6{
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0.15000000596046448px;
+}

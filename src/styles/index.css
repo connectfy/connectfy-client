@@ -1,0 +1,46 @@
+@import "variables.css";
+@import "typography.css";
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition:
+    background-color 0.1s,
+    color 0.1s;
+  font-family: Arial, sans-serif !important;
+  transition: background-color 0.3s ease-in-out;
+  scrollbar-width: 3px;
+  scrollbar-color: var(--primary-color) var(--bg-color);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  background-color: var(--secondary-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+@media (max-width: 885px) {
+  body {
+    scrollbar-width: none !important;
+  }
+
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html {
+    scrollbar-width: none !important;
+  }
+}

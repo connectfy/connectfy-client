@@ -1,0 +1,157 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: white;
+  color: var(--text-color);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.12s ease,
+    transform 0.06s ease;
+  position: relative;
+  padding: 10px 16px;
+  min-height: 40px;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+.btn.small {
+  padding: 6px 14px;
+  font-size: 14px;
+  min-height: 36px;
+}
+.btn.medium {
+  padding: 10px 16px;
+  font-size: 15px;
+  min-height: 48px;
+}
+.btn.large {
+  padding: 12px 18px;
+  font-size: 16px;
+  min-height: 56px;
+}
+.btn.xlarge {
+  padding: 14px 20px;
+  font-size: 17px;
+  min-height: 64px;
+}
+
+.btn.solid {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: transparent;
+}
+.btn.solid:hover {
+  filter: brightness(0.98);
+}
+.btn.outline {
+  background: transparent;
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+.btn.outline:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--text-color);
+  border-color: transparent;
+}
+.btn.ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.btn.fillWidth {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.btn_content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+.btn_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.btn_icon.start {
+  margin-right: 2px;
+}
+.btn_icon.end {
+  margin-left: 2px;
+}
+.btn_label {
+  white-space: nowrap;
+}
+
+.btn_loader {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+.btn.outline .btn_loader {
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-top-color: rgba(0, 0, 0, 0.4);
+}
+.btn.ghost .btn_loader {
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-top-color: rgba(0, 0, 0, 0.6);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn.disabled,
+.btn:disabled {
+  cursor: not-allowed;
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  border-color: var(--border-color);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.08);
+}
+
+.btn.animation {
+  transition: all 0.3s ease-in-out;
+}
+.btn.animation:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 420px) {
+  .btn.small {
+    padding: 6px 12px;
+  }
+  .btn.medium {
+    padding: 8px 12px;
+  }
+}

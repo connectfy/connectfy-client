@@ -1,0 +1,26 @@
+.phone-number-form {
+  width: 100%;
+  display: flex;
+  gap: 0.7rem;
+}
+
+.country-code {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 1px solid var(--border-color);
+  justify-content: center;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.country-code:hover {
+  border-color: var(--primary-color);
+}
+
+.phone-number {
+  width: 70%;
+}
