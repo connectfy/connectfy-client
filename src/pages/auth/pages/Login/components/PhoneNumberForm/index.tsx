@@ -1,4 +1,4 @@
-import Input from "@/components/Input/Input";
+import PhoneNumber from "@/components/Form/PhoneNumberForm";
 import "./index.style.css";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ const PhoneNumberForm = () => {
   return (
     <div className="phoneNumber-login-form">
       <div className="phoneNumber-login-form-inputs">
-        <Input inputSize="medium" label={t("common.phoneNumber")} />
+        <PhoneNumber/>
         <PasswordInput inputSize="medium" label={t("common.password")} />
       </div>
       <div className="phoneNumber-login-form-submit">

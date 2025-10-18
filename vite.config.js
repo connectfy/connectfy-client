@@ -65,6 +65,7 @@ export default defineConfig({
         replacement: path.resolve(__dirname, "src/components"),
       },
       { find: "@assets", replacement: path.resolve(__dirname, "src/assets") },
+      { find: "@helpers", replacement: path.resolve(__dirname, "src/helpers") },
     ],
   },
 });

@@ -6,14 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSignupForm } from "@/features/auth/authSlice";
 
 const GenderForm = () => {
-    const { t } = useTranslation();
-    const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const { signupForm } = useSelector(
     (state: RootState) => state[Resource.auth]
   );
 
-  const changeSignupForm = (value: GENDER) => dispatch(setSignupForm({ gender: value }))
+  const changeSignupForm = (value: GENDER) =>
+    dispatch(setSignupForm({ gender: value }));
 
   return (
     <div className="gender-group">

@@ -1,12 +1,12 @@
-import "./css/loginHeader.style.css";
+import "./index.style.css";
 import { type FC } from "react";
 import { Badge, Phone, Email, Face } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@store/store";
 import { setLoginMode } from "@features/auth/authSlice";
-import { Resource } from "../../../../types/enum.types";
-import type { LoginModeType } from "../../../../types/auth/auth.type";
+import { Resource } from "../../../../../../types/enum.types";
+import type { LoginModeType } from "../../../../../../types/auth/auth.type";
 import { useTranslation } from "react-i18next";
 
 const LoginHeader: FC = () => {

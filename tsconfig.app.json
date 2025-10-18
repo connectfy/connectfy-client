@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.json",
+  // "extends": "./tsconfig.json",
   "compilerOptions": {
     "typeRoots": ["node_modules/@types"],
     "types": ["node"],
@@ -36,7 +36,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"],
       "@store/*": ["src/store/*"],
-      // "@types/*": ["src/types/*"],
+      "@helpers/*": ["src/helpers/*"],
       "@utils/*": ["src/utils/*"],
       "@context/*": ["src/context/*"],
       "@routes/*": ["src/routes/*"],

@@ -5,7 +5,7 @@
   --bg-color: #ffffff;
   --hover-bg: #27ae60;
   --toggle-bg: #cccccc;
-  --border-color: rgba(0, 0, 0, 0.5);
+  --border-color: rgba(0, 0, 0, 0.7);
   --skeleton-color: #c1c1c1;
   --text-disabled: rgba(46, 64, 81, 0.38);
   --error-color: #d32f2f;
@@ -28,7 +28,7 @@
   --text-color: #f0f0f0;
   --bg-color: #202225;
   --toggle-bg: #4a4a4a;
-  --border-color: rgba(255, 255, 255, 0.5);
+  --border-color: rgba(255, 255, 255, 0.6);
   --skeleton-color: #4a4a4a;
   --disabled-bg: rgba(255, 255, 255, 0.06);
   --disabled-text: rgba(255, 255, 255, 0.38);

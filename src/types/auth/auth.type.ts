@@ -1,3 +1,9 @@
+import type {
+  FORGOT_PASSWORD_IDENTIFIER_TYPE,
+  GENDER,
+  IDENTIFIER_TYPE,
+} from "../enum.types";
+
 export type AuthFormType =
   | "login"
   | "signup"
@@ -11,11 +17,7 @@ export type LoginModeType =
   | "phoneNumber"
   | "faceDescriptor";
 
-import type {
-  FORGOT_PASSWORD_IDENTIFIER_TYPE,
-  GENDER,
-  IDENTIFIER_TYPE,
-} from "../enum.types";
+export type ForgotPasswordModeType = "email" | "phoneNumber";
 
 export type LoginFormType = {
   identifierType: IDENTIFIER_TYPE | null;
@@ -69,3 +71,21 @@ export type Country = {
   code: string;
   numberLength: number;
 };
+
+export interface ILoginResponse {
+  access_token: string;
+}
+
+export interface ISignupResponse {
+  statusCode: number;
+}
+
+export interface ISignupVerifyResponse {
+  _id: string;
+  access_token: string;
+}
+
+export interface IForgotPasswordResponse {
+  statusCode: number;
+  email?: string;
+}

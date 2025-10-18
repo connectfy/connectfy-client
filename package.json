@@ -20,7 +20,7 @@
     "@mui/material": "^7.3.4",
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
-    "connectfy-i18n": "^0.0.6",
+    "connectfy-i18n": "^0.0.8",
     "dayjs": "^1.11.18",
     "flag-icons": "^7.5.0",
     "formik": "^2.4.6",

@@ -1,15 +1,18 @@
 import "./index.style.css";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
-import PhoneNumberForm from "./components/PhoneNumberForm";
+import PhoneNumberForm from "@components/Form/PhoneNumberForm";
 import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { Link } from "react-router-dom";
 import Button from "@/components/Button/Button";
 import { useDispatch } from "react-redux";
 import { setAuthForm } from "@/features/auth/authSlice";
+import DatePicker from "@/components/DatePicker";
+import { useState } from "react";
 
 const Signup = () => {
+  const [birthday, setBirthday] = useState<string>("");
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -25,6 +28,15 @@ const Signup = () => {
       </div>
       <div className="signup-form-block">
         <PhoneNumberForm />
+      </div>
+      <div className="signup-form-block">
+        <DatePicker
+          value={birthday}
+          onChange={(date) => setBirthday(date)}
+          inputSize="small"
+          hasError={false}
+          placeholder={t('common.birthday')}
+        />
       </div>
       <div className="signup-form-block">
         <GenderForm />
