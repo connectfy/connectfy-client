@@ -1,9 +1,9 @@
 import { lazy } from "react";
-import Loader from "@components/Loader/Loader";
+import Loader from "@/components/Loader/Loader";
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Auth = Loader(lazy(() => import("@pages/auth/index")));
+const Auth = Loader(lazy(() => import("@/pages/auth/index")));
 
 const routes = [
   {

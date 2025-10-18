@@ -1,7 +1,7 @@
 import "./index.style.css";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
-import PhoneNumberForm from "@components/Form/PhoneNumberForm";
+import PhoneNumberForm from "@/components/Form/PhoneNumberForm";
 import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { Link } from "react-router-dom";

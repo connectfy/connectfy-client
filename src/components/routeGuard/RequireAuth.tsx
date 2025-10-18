@@ -1,9 +1,9 @@
 import { type ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { Resource } from "../../types/enum.types";
-import { type RootState } from "@store/store";
+import { type RootState } from "@/store/store";
 import { Navigate, useLocation } from "react-router-dom";
-import { ROUTER } from "@constants/routet";
+import { ROUTER } from "@/constants/routet";
 
 type AuthType = {
   children: ReactNode;

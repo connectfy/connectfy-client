@@ -1,4 +1,4 @@
-import MainIcon from "@assets/icons/MainIcon";
+import MainIcon from "@/assets/icons/MainIcon";
 import "./css/mainHeader.style.css";
 
 const AuthHeader = () => {

@@ -1,7 +1,7 @@
 import { useCallback, type FC } from "react";
 import AuthHeader from "./components/authHeader/AuthHeader";
 import { useSelector } from "react-redux";
-import type { RootState } from "@store/store";
+import type { RootState } from "@/store/store";
 import { Resource } from "../../types/enum.types";
 import LoginAndSignupHeader from "./components/authHeader/LoginAndSignupHeader";
 import "./index.style.css";

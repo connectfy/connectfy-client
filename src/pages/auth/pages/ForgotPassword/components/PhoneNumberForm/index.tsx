@@ -1,6 +1,6 @@
 import "./index.style.css";
 import Button from "@/components/Button/Button";
-import PhoneNumber from "@components/Form/PhoneNumberForm";
+import PhoneNumber from "@/components/Form/PhoneNumberForm";
 import { useTranslation } from "react-i18next";
 
 const PhoneNumberForm = () => {

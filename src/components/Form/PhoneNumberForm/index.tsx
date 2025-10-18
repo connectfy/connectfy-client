@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Input from "@/components/Input/Input";
 import { Tooltip } from "@mui/material";
 import useBoolean from "@/hooks/useBoolean";
-import CountryCodeModal from "@components/Modal/CountryCodeModal";
+import CountryCodeModal from "@/components/Modal/CountryCodeModal";
 
 const PhoneNumberForm = () => {
   const { t } = useTranslation();

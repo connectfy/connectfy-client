@@ -2,7 +2,7 @@ import { Resource } from "../types/enum.types";
 import { configureStore } from "@reduxjs/toolkit";
 
 // Auth
-import authReducer from "@features/auth/authSlice";
+import authReducer from "@/features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {

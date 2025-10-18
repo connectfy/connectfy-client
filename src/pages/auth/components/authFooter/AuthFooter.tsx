@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import { Tooltip } from "@mui/material";
 import { LightMode, DarkMode } from "@mui/icons-material";
 
-import { useTheme } from "@hooks/useTheme";
-import LanguageModal from "@components/Modal/LanguageModal/LanguageModel";
+import { useTheme } from "@/context/ThemeContext";
+import LanguageModal from "@/components/Modal/LanguageModal/LanguageModel";
 import "./authFooter.style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { type RootState } from "@store/store";
-import { setAuthForm } from "@features/auth/authSlice";
+import { type RootState } from "@/store/store";
+import { setAuthForm } from "@/features/auth/authSlice";
 import { LANGUAGE } from "@/types/enum.types";
 import useBoolean from "@/hooks/useBoolean";
 

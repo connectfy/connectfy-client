@@ -1,11 +1,11 @@
 import "./css/loginAndSignupHeader.style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { type RootState } from "@store/store";
+import { type RootState } from "@/store/store";
 import { useTranslation } from "react-i18next";
-import GoogleIcon from "@assets/icons/GoogleIcon";
-import { setAuthForm } from "@features/auth/authSlice";
-import { Resource } from "../../../../types/enum.types";
-import { type AuthFormType } from "../../../../types/auth/auth.type";
+import GoogleIcon from "@/assets/icons/GoogleIcon";
+import { setAuthForm } from "@/features/auth/authSlice";
+import { Resource } from "@/types/enum.types";
+import { type AuthFormType } from "@/types/auth/auth.type";
 
 const LoginAndSignupHeader = () => {
   const { t } = useTranslation();

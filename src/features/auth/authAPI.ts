@@ -8,7 +8,7 @@ import type {
   SignupFormType,
   VerifySignupFormType,
 } from "@/types/auth/auth.type";
-import axios from "@helpers/instance";
+import axios from "@/helpers/instance";
 
 export const loginApi = (data: LoginFormType) =>
   axios.post<ILoginResponse>("/auth/login", data);

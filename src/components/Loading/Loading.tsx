@@ -1,4 +1,4 @@
-import MainIcon from "@assets/icons/MainIcon";
+import MainIcon from "@/assets/icons/MainIcon";
 import "./loading.style.css";
 
 export default function MainSpinner() {

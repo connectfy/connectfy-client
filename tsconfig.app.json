@@ -1,8 +1,6 @@
 {
-  // "extends": "./tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["node_modules/@types"],
-    "types": ["node"],
+    "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
@@ -10,38 +8,27 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
 
+    "types": ["vite/client"],
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": false,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@constants/*": ["src/constants/*"],
-      "@features/*": ["src/features/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@pages/*": ["src/pages/*"],
-      "@store/*": ["src/store/*"],
-      "@helpers/*": ["src/helpers/*"],
-      "@utils/*": ["src/utils/*"],
-      "@context/*": ["src/context/*"],
-      "@routes/*": ["src/routes/*"],
-      "@styles/*": ["src/styles/*"]
-    }
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"]
 }

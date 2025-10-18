@@ -3,12 +3,12 @@ import { ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { LANGUAGE } from "./types/enum.types";
-import routes from "@routes/router";
+import routes from "@/routes/router";
 import { useRoutes } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@store/store";
-import { setAccessToken } from "@features/auth/authSlice";
-import "@styles/index.css";
+import type { AppDispatch } from "@/store/store";
+import { setAccessToken } from "@/features/auth/authSlice";
+import "@/styles/index.css";
 import "flag-icons/css/flag-icons.min.css";
 
 function App() {
