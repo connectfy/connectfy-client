@@ -6,19 +6,18 @@ import { LightMode, DarkMode } from "@mui/icons-material";
 import { useTheme } from "@/context/ThemeContext";
 import LanguageModal from "@/components/Modal/LanguageModal/LanguageModel";
 import "./authFooter.style.css";
-import { useDispatch, useSelector } from "react-redux";
-import { type RootState } from "@/store/store";
 import { setAuthForm } from "@/features/auth/authSlice";
 import { LANGUAGE } from "@/types/enum.types";
 import useBoolean from "@/hooks/useBoolean";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 
 const AuthFooter = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { theme, toggleTheme } = useTheme();
 
-  const { authForm } = useSelector((state: RootState) => state.auth);
+  const { authForm } = useAppSelector((state) => state.auth);
 
   const langModal = useBoolean();
 

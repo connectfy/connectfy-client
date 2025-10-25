@@ -1,18 +1,22 @@
 import "./css/loginAndSignupHeader.style.css";
-import { useDispatch, useSelector } from "react-redux";
-import { type RootState } from "@/store/store";
 import { useTranslation } from "react-i18next";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
 import { setAuthForm } from "@/features/auth/authSlice";
 import { Resource } from "@/types/enum.types";
-import { type AuthFormType } from "@/types/auth/auth.type";
+import { AuthFormType } from "@/types/auth/auth.type";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 
 const LoginAndSignupHeader = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { authForm } = useSelector((state: RootState) => state[Resource.auth]);
-  const changeAuthForm = (mode: AuthFormType) => dispatch(setAuthForm(mode));
+  const { authForm, LOADING_LOGIN, LOADING_SIGNUP } = useAppSelector(
+    (state) => state[Resource.auth]
+  );
+  const changeAuthForm = (mode: AuthFormType) => {
+    if (LOADING_LOGIN || LOADING_SIGNUP) return;
+    dispatch(setAuthForm(mode));
+  };
 
   return (
     <section className="login-and-signup-buttons-body">

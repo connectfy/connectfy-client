@@ -1,32 +1,95 @@
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import { KeyboardBackspace } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { setAuthForm } from "@/features/auth/authSlice";
+import {
+  forgotPassword,
+  setAuthForm,
+  setForgotPasswordMode,
+  setLoginMode,
+} from "@/features/auth/authSlice";
 import ForgotPasswordHeader from "./components/ForgotPasswordHeader";
-import type { RootState } from "@/store/store";
 import { Resource } from "@/types/enum.types";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import EmailForm from "./components/EmailForm";
 import PhoneNumberForm from "./components/PhoneNumberForm";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { ForgotPasswordModeType } from "@/types/auth/auth.type";
+import { useFormik } from "formik";
+import { forgotPasswordInitialState } from "../../constants/intialState";
+import { validateForgotPassword } from "../../constants/validation";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { checkEmptyString } from "@/utils/checkValues";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { forgotPasswordMode } = useSelector(
-    (state: RootState) => state[Resource.auth]
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  const { forgotPasswordMode, LOADING_FORGOT_PASSWORD } = useAppSelector(
+    (state) => state[Resource.auth]
   );
+
+  const localForgotPasswordMode =
+    localStorage.getItem("forgotPasswordMode") || "email";
+
+  const formik = useFormik({
+    initialValues: forgotPasswordInitialState,
+    validateOnBlur: false,
+    validateOnChange: false,
+    enableReinitialize: true,
+    validate: (values) => validateForgotPassword(values, t),
+    onSubmit: async (values, { resetForm }) => {
+      const actionResult = await dispatch(forgotPassword(values));
+      const res = unwrapResult(actionResult);
+      if (res) {
+        toast.success(t("user_messages.forgot_password_successfull"));
+        dispatch(setAuthForm("login"));
+        dispatch(setLoginMode("username"));
+        resetForm();
+      }
+    },
+  });
 
   const renderForm = useCallback(() => {
     switch (forgotPasswordMode) {
       case "phoneNumber":
-        return <PhoneNumberForm />;
+        return <PhoneNumberForm formik={formik} isDisabled={isDisabled} />;
 
       default:
-        return <EmailForm />;
+        return <EmailForm formik={formik} isDisabled={isDisabled} />;
     }
-  }, [forgotPasswordMode]);
+  }, [forgotPasswordMode, formik]);
+
+  useEffect(() => {
+    const forgotPasswordModes: ForgotPasswordModeType[] = [
+      "email",
+      "phoneNumber",
+    ];
+
+    if (
+      !forgotPasswordModes.includes(
+        localForgotPasswordMode as ForgotPasswordModeType
+      )
+    ) {
+      dispatch(setForgotPasswordMode("email"));
+      localStorage.setItem("forgotPasswordMode", "email");
+    } else
+      dispatch(
+        setForgotPasswordMode(localForgotPasswordMode as ForgotPasswordModeType)
+      );
+  }, [localForgotPasswordMode]);
+
+  useEffect(() => {
+    if (
+      !formik.values.identifier ||
+      !checkEmptyString(formik.values.identifier) ||
+      LOADING_FORGOT_PASSWORD
+    )
+      setIsDisabled(true);
+    else setIsDisabled(false);
+  }, [formik.values]);
 
   return (
     <section className="forgot-password">
@@ -42,19 +105,19 @@ const ForgotPassword = () => {
         </p>
       </div>
 
-      <ForgotPasswordHeader />
+      <ForgotPasswordHeader formik={formik} />
 
       {renderForm()}
 
       <div className="forgot-password-buttons">
         <div
           className="forgot-password-button"
-          onClick={() => dispatch(setAuthForm("login"))}
+          onClick={() => {
+            if (LOADING_FORGOT_PASSWORD) return;
+            dispatch(setAuthForm("login"));
+          }}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) =>
-            e.key === "Enter" ? dispatch(setAuthForm("login")) : null
-          }
         >
           <KeyboardBackspace
             fontSize="small"

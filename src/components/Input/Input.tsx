@@ -4,7 +4,7 @@ import {
   type TextFieldProps,
   TextField,
 } from "@mui/material";
-import type { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import "./input.sytle.css";
 
 type Props = TextFieldProps & {
@@ -74,6 +74,7 @@ export default function Input({
         boxShadow: hasError
           ? "0 0 0 4px rgba(211,47,47,0.08)"
           : "0 0 0 4px rgba(72,187,120,0.08)",
+        transition: "all .3s ease-in-out"
       },
       "&.Mui-error .MuiOutlinedInput-notchedOutline": {
         borderColor: "var(--error-color)",

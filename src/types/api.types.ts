@@ -11,3 +11,5 @@ export interface FailedRequest {
   resolve: (token: string) => void;
   reject: (error: any) => void;
 }
+
+export type ApiErrorType = string | string[] | null | undefined;

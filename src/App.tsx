@@ -1,18 +1,16 @@
-// import { useRoutes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { LANGUAGE } from "./types/enum.types";
 import routes from "@/routes/router";
 import { useRoutes } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/store/store";
 import { setAccessToken } from "@/features/auth/authSlice";
 import "@/styles/index.css";
 import "flag-icons/css/flag-icons.min.css";
+import { useAppDispatch } from "./hooks/useStore";
 
 function App() {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { i18n } = useTranslation();
   const content = useRoutes(routes);
   const lang = localStorage.getItem("lang");

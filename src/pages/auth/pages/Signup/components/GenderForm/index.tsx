@@ -1,20 +1,24 @@
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
-import { type RootState } from "@/store/store";
-import { GENDER, Resource } from "@/types/enum.types";
-import { useDispatch, useSelector } from "react-redux";
-import { setSignupForm } from "@/features/auth/authSlice";
+import { GENDER } from "@/types/enum.types";
+import { FormikProps } from "formik";
+import { ISignupForm } from "@/types/auth/auth.type";
+import { FC, useCallback } from "react";
 
-const GenderForm = () => {
+interface Props {
+  formik: FormikProps<ISignupForm>;
+}
+
+const GenderForm: FC<Props> = ({ formik }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
-  const { signupForm } = useSelector(
-    (state: RootState) => state[Resource.auth]
+  const changeGender = useCallback(
+    (value: GENDER) => {
+      if (formik.values.gender === value) formik.setFieldValue("gender", null);
+      else formik.setFieldValue("gender", value);
+    },
+    [formik]
   );
-
-  const changeSignupForm = (value: GENDER) =>
-    dispatch(setSignupForm({ gender: value }));
 
   return (
     <div className="gender-group">
@@ -24,8 +28,9 @@ const GenderForm = () => {
         id="male"
         name="gender"
         value={GENDER.MALE}
-        onChange={(e) => changeSignupForm(e.target.value as GENDER)}
-        checked={signupForm.gender === GENDER.MALE}
+        checked={formik.values.gender === GENDER.MALE}
+        onClick={() => changeGender(GENDER.MALE)}
+        onChange={() => {}}
       />
       <label htmlFor="male">{t("enum.male")}</label>
 
@@ -35,8 +40,9 @@ const GenderForm = () => {
         id="female"
         name="gender"
         value={GENDER.FEMALE}
-        onChange={(e) => changeSignupForm(e.target.value as GENDER)}
-        checked={signupForm.gender === GENDER.FEMALE}
+        checked={formik.values.gender === GENDER.FEMALE}
+        onClick={() => changeGender(GENDER.FEMALE)}
+        onChange={() => {}}
       />
       <label htmlFor="female">{t("enum.female")}</label>
 
@@ -46,8 +52,9 @@ const GenderForm = () => {
         id="other"
         name="gender"
         value={GENDER.OTHER}
-        onChange={(e) => changeSignupForm(e.target.value as GENDER)}
-        checked={signupForm.gender === GENDER.OTHER}
+        checked={formik.values.gender === GENDER.OTHER}
+        onClick={() => changeGender(GENDER.OTHER)}
+        onChange={() => {}}
       />
       <label htmlFor="other">{t("enum.other")}</label>
     </div>

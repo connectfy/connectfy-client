@@ -30,7 +30,7 @@
   margin: 8px 0 0;
   font-size: 0.95rem;
   line-height: 1.45;
-  color: rgba(255, 255, 255, 0.72); /* yumşaq, oxunaqlı kontrast */
+  color: var(--text-color); /* yumşaq, oxunaqlı kontrast */
   max-width: 100%;
 }
 

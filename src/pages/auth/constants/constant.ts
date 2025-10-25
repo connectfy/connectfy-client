@@ -1,4 +1,4 @@
-import type { Country } from "@/types/auth/auth.type";
+import { Country } from "@/types/auth/auth.type";
 
 export const COUNTRIES: Country[] = [
   {
@@ -6,7 +6,7 @@ export const COUNTRIES: Country[] = [
     name: "azerbaijan",
     flag: "fi fi-az",
     code: "+994",
-    numberLength: 7,
+    numberLength: 9,
   },
   {
     key: "tr",
@@ -16,62 +16,20 @@ export const COUNTRIES: Country[] = [
     numberLength: 10,
   },
   { key: "ru", name: "russia", flag: "fi fi-ru", code: "+7", numberLength: 10 },
-  {
-    key: "us",
-    name: "usa",
-    flag: "fi fi-us",
-    code: "+1",
-    numberLength: 10,
-  },
-  {
-    key: "gb",
-    name: "uk",
-    flag: "fi fi-gb",
-    code: "+44",
-    numberLength: 10,
-  },
+  { key: "us", name: "usa", flag: "fi fi-us", code: "+1", numberLength: 10 },
+  { key: "gb", name: "uk", flag: "fi fi-gb", code: "+44", numberLength: 10 },
   {
     key: "de",
     name: "germany",
     flag: "fi fi-de",
     code: "+49",
-    numberLength: 11,
-  },
-  {
-    key: "fr",
-    name: "france",
-    flag: "fi fi-fr",
-    code: "+33",
-    numberLength: 9,
-  },
-  {
-    key: "es",
-    name: "spain",
-    flag: "fi fi-es",
-    code: "+34",
-    numberLength: 9,
-  },
-  {
-    key: "it",
-    name: "italy",
-    flag: "fi fi-it",
-    code: "+39",
     numberLength: 10,
   },
-  {
-    key: "cn",
-    name: "china",
-    flag: "fi fi-cn",
-    code: "+86",
-    numberLength: 11,
-  },
-  {
-    key: "jp",
-    name: "japan",
-    flag: "fi fi-jp",
-    code: "+81",
-    numberLength: 10,
-  },
+  { key: "fr", name: "france", flag: "fi fi-fr", code: "+33", numberLength: 9 },
+  { key: "es", name: "spain", flag: "fi fi-es", code: "+34", numberLength: 9 },
+  { key: "it", name: "italy", flag: "fi fi-it", code: "+39", numberLength: 10 },
+  { key: "cn", name: "china", flag: "fi fi-cn", code: "+86", numberLength: 11 },
+  { key: "jp", name: "japan", flag: "fi fi-jp", code: "+81", numberLength: 10 },
   {
     key: "kr",
     name: "south_korea",
@@ -93,27 +51,9 @@ export const COUNTRIES: Country[] = [
     code: "+995",
     numberLength: 9,
   },
-  {
-    key: "ir",
-    name: "iran",
-    flag: "fi fi-ir",
-    code: "+98",
-    numberLength: 10,
-  },
-  {
-    key: "in",
-    name: "india",
-    flag: "fi fi-in",
-    code: "+91",
-    numberLength: 10,
-  },
-  {
-    key: "ca",
-    name: "canada",
-    flag: "fi fi-ca",
-    code: "+1",
-    numberLength: 10,
-  },
+  { key: "ir", name: "iran", flag: "fi fi-ir", code: "+98", numberLength: 10 },
+  { key: "in", name: "india", flag: "fi fi-in", code: "+91", numberLength: 10 },
+  { key: "ca", name: "canada", flag: "fi fi-ca", code: "+1", numberLength: 10 },
   {
     key: "kz",
     name: "kazakhstan",
@@ -128,11 +68,5 @@ export const COUNTRIES: Country[] = [
     code: "+998",
     numberLength: 9,
   },
-  {
-    key: "ae",
-    name: "uae",
-    flag: "fi fi-ae",
-    code: "+971",
-    numberLength: 9,
-  },
+  { key: "ae", name: "uae", flag: "fi fi-ae", code: "+971", numberLength: 9 },
 ];

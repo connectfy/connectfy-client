@@ -2,22 +2,53 @@ import "./index.style.css";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Email, Phone } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "@/store/store";
-import { Resource } from "@/types/enum.types";
-import type { ForgotPasswordModeType } from "@/types/auth/auth.type";
+import { FORGOT_PASSWORD_IDENTIFIER_TYPE, Resource } from "@/types/enum.types";
+import {
+  ForgotPasswordModeType,
+  IForgotPasswordForm,
+} from "@/types/auth/auth.type";
 import { setForgotPasswordMode } from "@/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { FormikProps } from "formik";
+import { FC } from "react";
 
-const ForgotPasswordHeader = () => {
+interface Props {
+  formik: FormikProps<IForgotPasswordForm>;
+}
+
+const ForgotPasswordHeader: FC<Props> = ({ formik }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { forgotPasswordMode } = useSelector(
-    (state: RootState) => state[Resource.auth]
+  const { forgotPasswordMode, LOADING_FORGOT_PASSWORD } = useAppSelector(
+    (state) => state[Resource.auth]
   );
 
-  const changeMode = (mode: ForgotPasswordModeType) =>
+  const changeMode = (mode: ForgotPasswordModeType) => {
+    if (LOADING_FORGOT_PASSWORD) return;
+
+    formik.setFieldValue("identifier", null);
+
+    formik.setFieldTouched("identifierType", false, false);
+    formik.setFieldTouched("identifier", false, false);
+
+    switch (mode) {
+      case "phoneNumber":
+        formik.setFieldValue(
+          "identifierType",
+          FORGOT_PASSWORD_IDENTIFIER_TYPE.PHONE_NUMBER
+        );
+        break;
+      default:
+        formik.setFieldValue(
+          "identifierType",
+          FORGOT_PASSWORD_IDENTIFIER_TYPE.EMAIL
+        );
+        break;
+    }
+
     dispatch(setForgotPasswordMode(mode));
+  };
 
   return (
     <section id="forgot-password-header">

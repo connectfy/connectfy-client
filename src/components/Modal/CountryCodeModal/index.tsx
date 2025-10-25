@@ -3,7 +3,7 @@ import { Modal, Box, IconButton, Slide } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./index.style.css";
 import { COUNTRIES } from "@/pages/auth/constants/constant";
-import type { Country } from "@/types/auth/auth.type";
+import { Country } from "@/types/auth/auth.type";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
 

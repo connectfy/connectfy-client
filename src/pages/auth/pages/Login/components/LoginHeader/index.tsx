@@ -2,19 +2,52 @@ import "./index.style.css";
 import { type FC } from "react";
 import { Badge, Phone, Email, Face } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "@/store/store";
 import { setLoginMode } from "@/features/auth/authSlice";
-import { Resource } from "../../../../../../types/enum.types";
-import type { LoginModeType } from "../../../../../../types/auth/auth.type";
+import { IDENTIFIER_TYPE, Resource } from "@/types/enum.types";
+import { ILoginForm, LoginModeType } from "@/types/auth/auth.type";
 import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { FormikProps } from "formik";
 
-const LoginHeader: FC = () => {
+interface Props {
+  formik: FormikProps<ILoginForm>;
+}
+
+const LoginHeader: FC<Props> = ({ formik }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { loginMode } = useSelector((state: RootState) => state[Resource.auth]);
+  const dispatch = useAppDispatch();
+  const { loginMode, LOADING_LOGIN } = useAppSelector(
+    (state) => state[Resource.auth]
+  );
 
-  const changeLoginMode = (mode: LoginModeType) => dispatch(setLoginMode(mode));
+  const changeLoginMode = (mode: LoginModeType) => {
+    if (LOADING_LOGIN) return;
+
+    // formik.setFieldValue("identifierType", mode);
+    formik.setFieldValue("identifier", null);
+    formik.setFieldValue("password", null);
+
+    formik.setFieldTouched("identifierType", false, false);
+    formik.setFieldTouched("identifier", false, false);
+    formik.setFieldTouched("password", false, false);
+
+    switch (mode) {
+      case "username":
+        formik.setFieldValue("identifierType", IDENTIFIER_TYPE.USERNAME);
+        break;
+      case "email":
+        formik.setFieldValue("identifierType", IDENTIFIER_TYPE.EMAIL);
+        break;
+      case "phoneNumber":
+        formik.setFieldValue("identifierType", IDENTIFIER_TYPE.PHONE_NUMBER);
+        break;
+      case "faceDescriptor":
+        formik.setFieldValue("identifierType", IDENTIFIER_TYPE.FACE_DESCRIPTOR);
+        break;
+    }
+
+    dispatch(setLoginMode(mode));
+  };
 
   return (
     <section id="login-header">

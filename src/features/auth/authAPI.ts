@@ -1,23 +1,31 @@
-import type {
-  ForgotPasswordFormType,
+import {
+  IForgotPasswordForm,
   IForgotPasswordResponse,
   ILoginResponse,
   ISignupResponse,
   ISignupVerifyResponse,
-  LoginFormType,
-  SignupFormType,
-  VerifySignupFormType,
+  ILoginForm,
+  ISignupForm,
+  ISignupVerifyForm,
+  IResetPasswordForm,
+  IResetPasswordResponse,
+  ILogoutResponse,
 } from "@/types/auth/auth.type";
 import axios from "@/helpers/instance";
 
-export const loginApi = (data: LoginFormType) =>
+export const loginApi = (data: ILoginForm) =>
   axios.post<ILoginResponse>("/auth/login", data);
 
-export const signupApi = (data: SignupFormType) =>
+export const signupApi = (data: Omit<ISignupForm, "confirm">) =>
   axios.post<ISignupResponse>("/auth/signup", data);
 
-export const signupVerifyApi = (data: VerifySignupFormType) =>
+export const signupVerifyApi = (data: ISignupVerifyForm) =>
   axios.post<ISignupVerifyResponse>("/auth/signup/verify", data);
 
-export const forgotPasswordApi = (data: ForgotPasswordFormType) =>
-  axios.post<IForgotPasswordResponse>("/api/forgot-password", data);
+export const forgotPasswordApi = (data: IForgotPasswordForm) =>
+  axios.post<IForgotPasswordResponse>("/auth/forgot-password", data);
+
+export const resetPasswordApi = (data: IResetPasswordForm) =>
+  axios.post<IResetPasswordResponse>("/auth/reset-password", data);
+
+export const logoutApi = () => axios.post<ILogoutResponse>("/auth/logout");

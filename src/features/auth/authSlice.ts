@@ -1,55 +1,57 @@
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Resource } from "@/types/enum.types";
 import {
-  type PayloadAction,
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
-import { Resource } from "../../types/enum.types";
-import type {
   AuthFormType,
-  ForgotPasswordFormType,
+  LoginModeType,
   ForgotPasswordModeType,
+  IForgotPasswordForm,
   ILoginResponse,
   ISignupResponse,
-  LoginFormType,
-  LoginModeType,
-  ResetPasswordFormType,
-  SignupFormType,
-  VerifySignupFormType,
-} from "../../types/auth/auth.type";
-import { loginApi, signupApi } from "./authAPI";
+  ILoginForm,
+  IResetPasswordForm,
+  ISignupForm,
+  IForgotPasswordResponse,
+  ISignupVerifyResponse,
+  ISignupVerifyForm,
+  IResetPasswordResponse,
+  ILogoutResponse,
+} from "@/types/auth/auth.type";
+import {
+  forgotPasswordApi,
+  loginApi,
+  logoutApi,
+  resetPasswordApi,
+  signupApi,
+  signupVerifyApi,
+} from "./authAPI";
 import { t } from "i18next";
+import { ApiErrorType } from "@/types/api.types";
 
 export interface AuthState {
   access_token: string | null;
   error: string | null;
 
   authForm: AuthFormType;
-
   loginMode: LoginModeType;
-  loginForm: LoginFormType;
-  signupForm: SignupFormType;
-
-  verifySignupForm: VerifySignupFormType;
-
+  signupForm: ISignupForm | null;
   forgotPasswordMode: ForgotPasswordModeType;
-  forgotPasswordForm: ForgotPasswordFormType;
-
-  resetPasswordForm: ResetPasswordFormType;
 
   LOADING_LOGIN: boolean;
   LOADING_SIGNUP: boolean;
-  LOADING_FORGOT_PASSWORD: boolean;
   LOADING_SIGNUP_VERIFY: boolean;
+  LOADING_RESET_PASSWORD: boolean;
+  LOADING_FORGOT_PASSWORD: boolean;
 
-  ERROR_LOGIN: string | null;
-  ERROR_SIGNUP: string | null;
-  ERROR_FORGOT_PASSWORD: string | null;
-  ERROR_SIGNUP_VERIFY: string | null;
+  ERROR_LOGIN: ApiErrorType;
+  ERROR_SIGNUP: ApiErrorType;
+  ERROR_SIGNUP_VERIFY: ApiErrorType;
+  ERROR_RESET_PASSWORD: ApiErrorType;
+  ERROR_FORGOT_PASSWORD: ApiErrorType;
 }
 
-export const login = createAsyncThunk<ILoginResponse, LoginFormType>(
+export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
   "/auth/login",
-  async (data: LoginFormType, { rejectWithValue }) => {
+  async (data: ILoginForm, { rejectWithValue }) => {
     try {
       const res = await loginApi(data);
       return res.data;
@@ -61,15 +63,83 @@ export const login = createAsyncThunk<ILoginResponse, LoginFormType>(
   }
 );
 
-export const signup = createAsyncThunk<ISignupResponse, SignupFormType>(
+export const signup = createAsyncThunk<ISignupResponse, Omit<ISignupForm, "confirm">>(
   "/auth/signup",
-  async (data: SignupFormType, { rejectWithValue }) => {
+  async (data: Omit<ISignupForm, "confirm">, { rejectWithValue }) => {
     try {
       const res = await signupApi(data);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.falied_to_login")
+        error.response?.data?.message || t("error_message.falied_to_signup")
+      );
+    }
+  }
+);
+
+export const signupVerify = createAsyncThunk<
+  ISignupVerifyResponse,
+  ISignupVerifyForm
+>(
+  "/auth/signup/verify",
+  async (values: ISignupVerifyForm, { rejectWithValue }) => {
+    try {
+      const res = await signupVerifyApi(values);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          t("error_message.falied_to_verify_signup")
+      );
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk<
+  IForgotPasswordResponse,
+  IForgotPasswordForm
+>(
+  "/api/forgot-password",
+  async (data: IForgotPasswordForm, { rejectWithValue }) => {
+    try {
+      const res = await forgotPasswordApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          t("error_message.falied_to_forgot_password_request")
+      );
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk<
+  IResetPasswordResponse,
+  IResetPasswordForm
+>(
+  "/auth/reset-password",
+  async (data: IResetPasswordForm, { rejectWithValue }) => {
+    try {
+      const res = await resetPasswordApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          t("error_message.falied_to_reset_password")
+      );
+    }
+  }
+);
+
+export const logout = createAsyncThunk<ILogoutResponse>(
+  "/auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await logoutApi();
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || t("error_message.falied_to_logout")
       );
     }
   }
@@ -80,54 +150,20 @@ const initialState: AuthState = {
   error: null,
 
   authForm: "login",
-
   loginMode: "username",
-  loginForm: {
-    identifierType: null,
-    identifier: null,
-    password: null,
-  },
-
-  signupForm: {
-    firstName: null,
-    lastName: null,
-    username: null,
-    email: null,
-    gender: null,
-    birthdayDate: null,
-    phoneNumber: {
-      countryCode: null,
-      number: null,
-      fullPhoneNumber: null,
-    },
-    password: null,
-    confirm: null,
-  },
-
-  verifySignupForm: {
-    code: null,
-  },
-
+  signupForm: null,
   forgotPasswordMode: "email",
-  forgotPasswordForm: {
-    identifier: null,
-    identifierType: null,
-  },
-
-  resetPasswordForm: {
-    password: null,
-    resetToken: null,
-    confirmPassword: null,
-  },
 
   LOADING_LOGIN: false,
   LOADING_SIGNUP: false,
   LOADING_SIGNUP_VERIFY: false,
+  LOADING_RESET_PASSWORD: false,
   LOADING_FORGOT_PASSWORD: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
   ERROR_SIGNUP_VERIFY: null,
+  ERROR_RESET_PASSWORD: null,
   ERROR_FORGOT_PASSWORD: null,
 };
 
@@ -135,7 +171,7 @@ const authSlice = createSlice({
   name: Resource.auth,
   initialState,
   reducers: {
-    logout(state) {
+    setlogout(state) {
       state.access_token = null;
       localStorage.removeItem("access_token");
     },
@@ -145,46 +181,42 @@ const authSlice = createSlice({
     },
     setAuthForm: (state, action: PayloadAction<AuthFormType>) => {
       state.authForm = action.payload;
+      localStorage.setItem("authPage", action.payload);
     },
     setLoginMode: (state, action: PayloadAction<LoginModeType>) => {
       state.loginMode = action.payload;
+      localStorage.setItem("loginMode", action.payload);
     },
-    setLoginForm: (state, action: PayloadAction<Partial<LoginFormType>>) => {
-      state.loginForm = { ...state.loginForm, ...action.payload };
-    },
-
-    setSignupForm: (state, action: PayloadAction<Partial<SignupFormType>>) => {
-      state.signupForm = { ...state.signupForm, ...action.payload };
-    },
-    setVerifySignupForm: (
-      state,
-      action: PayloadAction<VerifySignupFormType>
-    ) => {
-      state.verifySignupForm = action.payload;
+    setSignupForm: (state, action: PayloadAction<ISignupForm | null>) => {
+      state.signupForm = action.payload;
     },
     setForgotPasswordMode: (
       state,
       action: PayloadAction<ForgotPasswordModeType>
     ) => {
       state.forgotPasswordMode = action.payload;
+      localStorage.setItem("forgotPasswordMode", action.payload);
     },
-    setForgotPassword: (
-      state,
-      action: PayloadAction<Partial<ForgotPasswordFormType>>
-    ) => {
-      state.forgotPasswordForm = {
-        ...state.forgotPasswordForm,
-        ...action.payload,
-      };
-    },
-    setRefetPasswordForm: (
-      state,
-      action: PayloadAction<Partial<ForgotPasswordFormType>>
-    ) => {
-      state.forgotPasswordForm = {
-        ...state.forgotPasswordForm,
-        ...action.payload,
-      };
+    clearError: (state, action: PayloadAction<AuthFormType>) => {
+      switch (action.payload) {
+        case "login":
+          state.ERROR_LOGIN = null;
+          break;
+        case "signup":
+          state.ERROR_SIGNUP = null;
+          break;
+        case "verify":
+          state.ERROR_SIGNUP_VERIFY = null;
+          break;
+        case "resetPassword":
+          state.ERROR_RESET_PASSWORD = null;
+          break;
+        case "forgotPassword":
+          state.ERROR_FORGOT_PASSWORD = null;
+          break;
+        default:
+          break;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -200,7 +232,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.LOADING_LOGIN = false;
-        state.ERROR_LOGIN = action.payload as string;
+        state.ERROR_LOGIN = action.payload as string | string[];
       })
 
       // =================== SIGNUP
@@ -212,21 +244,55 @@ const authSlice = createSlice({
       })
       .addCase(signup.rejected, (state, action) => {
         state.LOADING_SIGNUP = false;
-        state.ERROR_SIGNUP = action.payload as string;
+        state.ERROR_SIGNUP = action.payload as string | string[];
       })
+
+      // =================== SIGNUP VERIFY
+      .addCase(signupVerify.fulfilled, (state, action) => {
+        state.LOADING_SIGNUP_VERIFY = false;
+        state.access_token = action.payload.access_token;
+      })
+      .addCase(signupVerify.pending, (state) => {
+        state.LOADING_SIGNUP_VERIFY = true;
+      })
+      .addCase(signupVerify.rejected, (state, action) => {
+        state.LOADING_SIGNUP_VERIFY = false;
+        state.ERROR_SIGNUP_VERIFY = action.payload as string | string[];
+      })
+
+      // =================== FORGOT PASSWORD
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.LOADING_FORGOT_PASSWORD = false;
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.LOADING_FORGOT_PASSWORD = true;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.LOADING_FORGOT_PASSWORD = false;
+        state.ERROR_FORGOT_PASSWORD = action.payload as string | string[];
+      })
+
+      // =================== RESET PASSWORD
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.LOADING_RESET_PASSWORD = false;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.LOADING_RESET_PASSWORD = true;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.LOADING_RESET_PASSWORD = false;
+        state.ERROR_RESET_PASSWORD = action.payload as string | string[];
+      });
   },
 });
 
 export const {
-  logout,
+  setlogout,
   setAccessToken,
   setAuthForm,
   setLoginMode,
-  setLoginForm,
   setSignupForm,
-  setVerifySignupForm,
   setForgotPasswordMode,
-  setForgotPassword,
-  setRefetPasswordForm,
+  clearError,
 } = authSlice.actions;
 export default authSlice.reducer;

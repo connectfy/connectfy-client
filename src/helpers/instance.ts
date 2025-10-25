@@ -2,6 +2,7 @@
 // import { logout, setAccessToken } from "@features/auth/authSlice";
 // import { store } from "@/store/store";
 // import { type FailedRequest } from "../types/api.types";
+import { LANGUAGE } from "@/types/enum.types";
 import axios from "axios";
 
 const instance = axios.create({
@@ -12,6 +13,46 @@ const instance = axios.create({
   // baseURL: "http://api-gateway-main-app:3000/api",
   withCredentials: true,
 });
+
+instance.interceptors.request.use(
+  (config) => {
+    const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+
+    if (config.data) {
+      if (typeof config.data === "object") {
+        config.data._lang = _lang;
+      }
+      // FormData olarsa
+      else if (config.data instanceof FormData) {
+        config.data.append("_lang", _lang);
+      }
+      else if (typeof config.data === "string") {
+        try {
+          const parsedData = JSON.parse(config.data);
+          parsedData._lang = _lang;
+          config.data = JSON.stringify(parsedData);
+        } catch (e) {
+          config.data += `&_lang=${_lang}`;
+        }
+      }
+    }
+    else {
+      if (config.method?.toLowerCase() === "get") {
+        config.params = {
+          ...config.params,
+          _lang: _lang,
+        };
+      } else {
+        config.data = { _lang };
+      }
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // instance.interceptors.request.use((config) => {
 //   const state = store.getState().auth;

@@ -1,6 +1,6 @@
 import React from "react";
-import type { PropsWithChildren } from "react";
-import type { ButtonHTMLAttributes } from "react";
+import { PropsWithChildren } from "react";
+import { ButtonHTMLAttributes } from "react";
 import "./button.style.css";
 import { CircularProgress } from "@mui/material";
 

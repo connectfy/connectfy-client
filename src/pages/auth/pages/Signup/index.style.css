@@ -2,7 +2,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 0.91rem;
   animation: fadeSlideIn 0.3s ease forwards;
   animation-delay: 0.3s;
   opacity: 0;
@@ -13,6 +13,52 @@
 .signup-form-block {
   display: flex;
   gap: 0.6rem;
+}
+
+.signup-form-block-password h6 {
+  position: relative;
+  padding-left: 20px;
+  margin: 0;
+  margin-bottom: .1rem;
+  color: var(--error-color, #d32f2f);
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  animation: slideDownFadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes slideDownFadeIn {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 50px;
+  }
+}
+
+.signup-form-block-password h6::before {
+  content: "!";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--error-color, #d32f2f);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 @keyframes fadeSlideIn {
