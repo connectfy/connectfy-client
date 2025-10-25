@@ -1,5 +1,5 @@
 import "./index.style.css";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { Resource } from "@/types/enum.types";
 import UsernameForm from "./components/UsernameForm";
 import EmailForm from "./components/EmailForm";
@@ -18,6 +18,7 @@ import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import { LoginModeType } from "@/types/auth/auth.type";
 import { useNavigate } from "react-router-dom";
+import { onPressEnter } from "@/utils/keyPressDown";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -52,16 +53,41 @@ const Login = () => {
     },
   });
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    onPressEnter(e, () => {
+      if (isDisabled) return;
+      formik.handleSubmit();
+    });
+  };
+
   const renderLoginForm = useCallback(() => {
     switch (loginMode) {
       case "username":
-        return <UsernameForm formik={formik} isDisabled={isDisabled} />;
+        return (
+          <UsernameForm
+            formik={formik}
+            isDisabled={isDisabled}
+            onKeyDown={onKeyDown}
+          />
+        );
 
       case "email":
-        return <EmailForm formik={formik} isDisabled={isDisabled} />;
+        return (
+          <EmailForm
+            formik={formik}
+            isDisabled={isDisabled}
+            onKeyDown={onKeyDown}
+          />
+        );
 
       case "phoneNumber":
-        return <PhoneNumberForm formik={formik} isDisabled={isDisabled} />;
+        return (
+          <PhoneNumberForm
+            formik={formik}
+            isDisabled={isDisabled}
+            onKeyDown={onKeyDown}
+          />
+        );
 
       case "faceDescriptor":
         return <FaceIdForm formik={formik} />;

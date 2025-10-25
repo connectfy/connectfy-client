@@ -20,6 +20,7 @@ import { validateForgotPassword } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { checkEmptyString } from "@/utils/checkValues";
+import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -52,13 +53,32 @@ const ForgotPassword = () => {
     },
   });
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    onPressEnter(e, () => {
+      if (isDisabled) return;
+      formik.handleSubmit();
+    });
+  };
+
   const renderForm = useCallback(() => {
     switch (forgotPasswordMode) {
       case "phoneNumber":
-        return <PhoneNumberForm formik={formik} isDisabled={isDisabled} />;
+        return (
+          <PhoneNumberForm
+            formik={formik}
+            isDisabled={isDisabled}
+            onKeyDown={onKeyDown}
+          />
+        );
 
       default:
-        return <EmailForm formik={formik} isDisabled={isDisabled} />;
+        return (
+          <EmailForm
+            formik={formik}
+            isDisabled={isDisabled}
+            onKeyDown={onKeyDown}
+          />
+        );
     }
   }, [forgotPasswordMode, formik]);
 
@@ -118,6 +138,12 @@ const ForgotPassword = () => {
           }}
           role="button"
           tabIndex={0}
+          onKeyDown={(e) =>
+            onPressEsc(e, () => {
+              if (LOADING_FORGOT_PASSWORD) return;
+              dispatch(setAuthForm("login"));
+            })
+          }
         >
           <KeyboardBackspace
             fontSize="small"

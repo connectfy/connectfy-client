@@ -12,9 +12,10 @@ import Spinner from "@/components/Spinner/Spinner";
 interface Props {
   formik: FormikProps<IForgotPasswordForm>;
   isDisabled: boolean;
+  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
-const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
+const EmailForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
   const { t } = useTranslation();
 
   const { LOADING_FORGOT_PASSWORD } = useAppSelector(
@@ -33,6 +34,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("identifier", e.target.value || null)
           }
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
+          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="forgot-password-email-form-submit">

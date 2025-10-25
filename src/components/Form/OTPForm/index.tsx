@@ -7,9 +7,16 @@ type OTPProps = {
   name: string;
   onComplete?: (code: string) => void;
   onChange: (value: string | null) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 };
 
-export default function OTPForm({ length, name, onComplete, onChange }: OTPProps) {
+export default function OTPForm({
+  length,
+  name,
+  onComplete,
+  onChange,
+  onKeyDown
+}: OTPProps) {
   const [values, setValues] = useState<string[]>(() => Array(length).fill(""));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const lastEmittedRef = useRef<string | null>(null);
@@ -50,7 +57,10 @@ export default function OTPForm({ length, name, onComplete, onChange }: OTPProps
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    idx: number
+  ) => {
     const key = e.key;
     if (key === "ArrowLeft") {
       e.preventDefault();
@@ -79,11 +89,14 @@ export default function OTPForm({ length, name, onComplete, onChange }: OTPProps
     } else if (key === "Enter") {
       e.preventDefault();
       const code = values.join("").trim();
-      if (code.length === length) onComplete?.(code);
+      if (code.length === length) onKeyDown(e);
     }
   };
 
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, idx: number) => {
+  const handlePaste = (
+    e: React.ClipboardEvent<HTMLInputElement>,
+    idx: number
+  ) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text").replace(/\D/g, "");
     if (!text) return;

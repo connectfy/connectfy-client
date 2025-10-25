@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./index.style.css";
 import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ interface CustomDatePickerProps {
   hasError?: boolean;
   inputSize?: "small" | "medium" | "large" | "xlarge";
   placeholder?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
 type ViewMode = "days" | "months" | "years";
@@ -19,6 +20,7 @@ export default function CustomDatePicker({
   hasError = false,
   inputSize = "medium",
   placeholder = "MM/DD/YYYY",
+  onKeyDown
 }: CustomDatePickerProps) {
   const { t } = useTranslation();
 
@@ -291,6 +293,7 @@ export default function CustomDatePicker({
           value={displayDate}
           placeholder={placeholder}
           className="date_display"
+          onKeyDown={(e) => onKeyDown ? onKeyDown(e) : undefined}
         />
         <div className="calendar_icon">
           <CalendarMonth />

@@ -14,9 +14,16 @@ interface Props {
   blur: boolean;
   onBlur: () => void;
   onChange: (value: IPhoneNumber | null) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
-const PhoneNumberForm: FC<Props> = ({ name, onBlur, blur, onChange }) => {
+const PhoneNumberForm: FC<Props> = ({
+  name,
+  onBlur,
+  blur,
+  onChange,
+  onKeyDown,
+}) => {
   const { t } = useTranslation();
 
   const [countryKey, setCountryKey] = useState<string>(COUNTRIES[0].key);
@@ -69,6 +76,7 @@ const PhoneNumberForm: FC<Props> = ({ name, onBlur, blur, onChange }) => {
               }}
               onBlur={onBlur}
               inputMode="numeric"
+              onKeyDown={(e) => onKeyDown ? onKeyDown(e) : undefined}
             />
           </div>
         </div>

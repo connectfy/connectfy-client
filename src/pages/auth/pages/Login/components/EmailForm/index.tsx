@@ -13,9 +13,10 @@ import Spinner from "@/components/Spinner/Spinner";
 interface Props {
   formik: FormikProps<ILoginForm>;
   isDisabled: boolean;
+  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
-const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
+const EmailForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
   const { t } = useTranslation();
   const { LOADING_LOGIN } = useAppSelector((state) => state[Resource.auth]);
 
@@ -31,6 +32,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("identifier", e.target.value || null)
           }
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
+          onKeyDown={(e) => onKeyDown(e)}
         />
         <PasswordInput
           inputSize="medium"
@@ -41,6 +43,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("password", e.target.value || "")
           }
           onBlur={() => formik.setFieldTouched("password", true, false)}
+          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="email-login-form-submit">

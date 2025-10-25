@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/Spinner/Spinner";
 import { useCallback } from "react";
 import { useToastError } from "@/hooks/useToastError";
+import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
@@ -46,6 +47,13 @@ const VerifyAccount = () => {
       }
     },
   });
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    onPressEnter(e, () => {
+      if (isDisabled) return;
+      formik.handleSubmit();
+    });
+  };
 
   const handleOtpChange = useCallback(
     (value: string | null) => {
@@ -83,7 +91,12 @@ const VerifyAccount = () => {
       </div>
 
       <div className="verify-account-form">
-        <OTPForm length={6} onChange={handleOtpChange} name="verifyCode" />
+        <OTPForm
+          length={6}
+          onChange={handleOtpChange}
+          name="verifyCode"
+          onKeyDown={(e) => onKeyDown(e)}
+        />
 
         <div className="verify-account-buttons">
           <Button
@@ -102,6 +115,12 @@ const VerifyAccount = () => {
               if (LOADING_SIGNUP_VERIFY) return;
               dispatch(setAuthForm("signup"));
             }}
+            onKeyDown={(e) =>
+              onPressEsc(e, () => {
+                if (LOADING_SIGNUP_VERIFY) return;
+                dispatch(setAuthForm("signup"));
+              })
+            }
           >
             <KeyboardBackspace
               fontSize="small"

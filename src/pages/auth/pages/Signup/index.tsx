@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import Spinner from "@/components/Spinner/Spinner";
+import { onPressEnter } from "@/utils/keyPressDown";
 
 const Signup = () => {
   const { t } = useTranslation();
@@ -56,6 +57,13 @@ const Signup = () => {
       }
     },
   });
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    onPressEnter(e, () => {
+      if (isDisabled) return;
+      formik.handleSubmit();
+    });
+  };
 
   useEffect(() => {
     if (signupForm) {
@@ -124,6 +132,7 @@ const Signup = () => {
           onChange={(e) =>
             formik.setFieldValue("firstName", e.target.value || null)
           }
+          onKeyDown={(e) => onKeyDown(e)}
         />
         <Input
           inputSize="medium"
@@ -134,6 +143,7 @@ const Signup = () => {
           onChange={(e) =>
             formik.setFieldValue("lastName", e.target.value || null)
           }
+          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="signup-form-block">
@@ -146,6 +156,7 @@ const Signup = () => {
           onChange={(e) =>
             formik.setFieldValue("username", e.target.value || null)
           }
+          onKeyDown={(e) => onKeyDown(e)}
         />
         <Input
           inputSize="medium"
@@ -156,6 +167,7 @@ const Signup = () => {
           onChange={(e) =>
             formik.setFieldValue("email", e.target.value || null)
           }
+          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="signup-form-block">
@@ -168,6 +180,7 @@ const Signup = () => {
             formik.setFieldValue("phoneNumber", value)
           }
           blur={formik.touched.phoneNumber?.number ?? false}
+          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="signup-form-block">
@@ -177,6 +190,7 @@ const Signup = () => {
           inputSize="small"
           hasError={false}
           placeholder={t("common.birthday")}
+          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="signup-form-block">
@@ -195,18 +209,16 @@ const Signup = () => {
           }
           onGenerate={(value?: string) => {
             navigator.clipboard.writeText(value as string);
-            toast.info(
-              t("user_messages.password_generated_message"),
-              {
-                position: "bottom-center",
-                autoClose: 10000,
-                ariaLabel: "notification",
-              }
-            );
+            toast.info(t("user_messages.password_generated_message"), {
+              position: "bottom-center",
+              autoClose: 10000,
+              ariaLabel: "notification",
+            });
 
             formik.setFieldValue("password", value);
             formik.setFieldValue("confirm", value);
           }}
+          onKeyDown={(e) => onKeyDown(e)}
         />
         {formik.errors.password && formik.touched.password && (
           <h6>{formik.errors.password}</h6>
@@ -220,6 +232,7 @@ const Signup = () => {
           onChange={(e) =>
             formik.setFieldValue("confirm", e.target.value || null)
           }
+          onKeyDown={(e) => onKeyDown(e)}
         />
         {formik.errors.confirm && formik.touched.confirm && (
           <h6>{formik.errors.confirm}</h6>
