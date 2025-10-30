@@ -1,5 +1,6 @@
 import {
   IForgotPasswordForm,
+  IGoogleSignupForm,
   ILoginForm,
   IResetPasswordForm,
   ISignupForm,
@@ -73,12 +74,12 @@ export const validateSignup = (
   if (!username || !checkEmptyString(username))
     errors.username = t("error_messages.username_is_required");
   else if (!usernameRegex.test(username))
-    errors.username = t("error_messages.username_invalid");
+    errors.username = t("error_messages.invalid_username");
 
   if (!email || !checkEmptyString(email))
     errors.email = t("error_messages.email_name_is_required");
   else if (!email.includes("@"))
-    errors.email = t("error_messages.email_is_invalid");
+    errors.email = t("error_messages.invalid_email");
 
   if (!gender || !Object.values(GENDER).includes(gender))
     errors.gender = t("error_messages.gender_is_required");
@@ -169,6 +170,50 @@ export const validateResetPassword = (
 
   if (confirmPassword !== password)
     errors.confirm = t("error_messages.password_mismatch");
+
+  return errors;
+};
+
+export const valdiateGoogleSignup = (
+  values: IGoogleSignupForm,
+  t: TFunction
+): Record<string, any> => {
+  const { username, gender, birthdayDate, phoneNumber } =
+    values;
+  const errors: Record<string, any> = {};
+
+  const { countryCode, number, fullPhoneNumber } = phoneNumber;
+
+  const usernameRegex = /^[A-Za-z0-9._-]+$/;
+
+  if (!username || !checkEmptyString(username))
+    errors.username = t("error_messages.username_is_required");
+  else if (!usernameRegex.test(username))
+    errors.username = t("error_messages.invalid_username");
+
+  if (!gender || !Object.values(GENDER).includes(gender))
+    errors.gender = t("error_messages.gender_is_required");
+
+  if (!birthdayDate)
+    errors.birthdayDate = t("error_messages.birthday_is_required");
+
+  if (
+    !countryCode ||
+    !number ||
+    !fullPhoneNumber ||
+    !checkEmptyString(countryCode) ||
+    !checkEmptyString(number) ||
+    !checkEmptyString(fullPhoneNumber) ||
+    fullPhoneNumber !== countryCode + number
+  )
+    errors.phoneNumber = t("error_messages.phone_number_is_required");
+
+  const currentCountry = COUNTRIES.find((c) => c.code === countryCode);
+
+  if (currentCountry && number?.length !== currentCountry.numberLength)
+    errors.phoneNumber = t("error_messages.phone_number_length", {
+      length: currentCountry.numberLength,
+    });
 
   return errors;
 };

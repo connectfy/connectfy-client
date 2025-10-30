@@ -91,3 +91,15 @@ export interface IResetPasswordForm {
   confirmPassword: string | null;
   resetToken: string | null;
 }
+
+export interface IGoogleLoginForm {
+  idToken: string | null;
+}
+
+export interface IGoogleSignupForm {
+  idToken: string | null;
+  username: string | null;
+  phoneNumber: IPhoneNumber;
+  gender: GENDER | null;
+  birthdayDate: Date | null;
+}

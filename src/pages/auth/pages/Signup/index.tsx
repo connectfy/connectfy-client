@@ -123,52 +123,72 @@ const Signup = () => {
   return (
     <div className="signup-form">
       <div className="signup-form-block">
-        <Input
-          inputSize="medium"
-          label={t("common.first_name")}
-          name="firstName"
-          value={formik.values.firstName || ""}
-          onBlur={() => formik.setFieldTouched("firstName", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("firstName", e.target.value || null)
-          }
-          onKeyDown={(e) => onKeyDown(e)}
-        />
-        <Input
-          inputSize="medium"
-          label={t("common.last_name")}
-          name="lastName"
-          value={formik.values.lastName || ""}
-          onBlur={() => formik.setFieldTouched("lastName", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("lastName", e.target.value || null)
-          }
-          onKeyDown={(e) => onKeyDown(e)}
-        />
+        <div>
+          <Input
+            inputSize="medium"
+            label={t("common.first_name")}
+            name="firstName"
+            value={formik.values.firstName || ""}
+            onBlur={() => formik.setFieldTouched("firstName", true, false)}
+            onChange={(e) =>
+              formik.setFieldValue("firstName", e.target.value || null)
+            }
+            onKeyDown={(e) => onKeyDown(e)}
+          />
+          {formik.errors.firstName && formik.touched.firstName && (
+            <h6>{formik.errors.firstName}</h6>
+          )}
+        </div>
+        <div>
+          <Input
+            inputSize="medium"
+            label={t("common.last_name")}
+            name="lastName"
+            value={formik.values.lastName || ""}
+            onBlur={() => formik.setFieldTouched("lastName", true, false)}
+            onChange={(e) =>
+              formik.setFieldValue("lastName", e.target.value || null)
+            }
+            onKeyDown={(e) => onKeyDown(e)}
+          />
+          {formik.errors.lastName && formik.touched.lastName && (
+            <h6>{formik.errors.lastName}</h6>
+          )}
+        </div>
       </div>
       <div className="signup-form-block">
-        <Input
-          inputSize="medium"
-          label={t("common.username")}
-          name="username"
-          value={formik.values.username || ""}
-          onBlur={() => formik.setFieldTouched("username", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("username", e.target.value || null)
-          }
-          onKeyDown={(e) => onKeyDown(e)}
-        />
-        <Input
-          inputSize="medium"
-          label={t("common.email")}
-          name="email"
-          value={formik.values.email || ""}
-          onBlur={() => formik.setFieldTouched("email", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("email", e.target.value || null)
-          }
-          onKeyDown={(e) => onKeyDown(e)}
-        />
+        <div>
+          <Input
+            inputSize="medium"
+            label={t("common.username")}
+            name="username"
+            value={formik.values.username || ""}
+            onBlur={() => formik.setFieldTouched("username", true, false)}
+            onChange={(e) =>
+              formik.setFieldValue("username", e.target.value || null)
+            }
+            onKeyDown={(e) => onKeyDown(e)}
+          />
+          {formik.errors.username && formik.touched.username && (
+            <h6>{formik.errors.username}</h6>
+          )}
+        </div>
+        <div>
+          <Input
+            inputSize="medium"
+            label={t("common.email")}
+            name="email"
+            value={formik.values.email || ""}
+            onBlur={() => formik.setFieldTouched("email", true, false)}
+            onChange={(e) =>
+              formik.setFieldValue("email", e.target.value || null)
+            }
+            onKeyDown={(e) => onKeyDown(e)}
+          />
+          {formik.errors.email && formik.touched.email && (
+            <h6>{formik.errors.email}</h6>
+          )}
+        </div>
       </div>
       <div className="signup-form-block">
         <PhoneNumberForm
@@ -180,21 +200,30 @@ const Signup = () => {
             formik.setFieldValue("phoneNumber", value)
           }
           blur={formik.touched.phoneNumber?.number ?? false}
+          value={formik.values.phoneNumber}
           onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="signup-form-block">
-        <DatePicker
-          value={formik.values.birthdayDate?.toString() || ""}
-          onChange={(date) => formik.setFieldValue("birthdayDate", date)}
-          inputSize="small"
-          hasError={false}
-          placeholder={t("common.birthday")}
-          onKeyDown={(e) => onKeyDown(e)}
-        />
+        <div style={{ width: "100%" }}>
+          <DatePicker
+            value={formik.values.birthdayDate?.toString() || ""}
+            onChange={(date) => formik.setFieldValue("birthdayDate", date)}
+            inputSize="small"
+            hasError={false}
+            placeholder={t("common.birthday")}
+            onKeyDown={(e) => onKeyDown(e)}
+          />
+          {formik.errors.birthdayDate && formik.touched.birthdayDate && (
+            <h6>{formik.errors.birthdayDate}</h6>
+          )}
+        </div>
       </div>
       <div className="signup-form-block">
-        <GenderForm formik={formik} />
+        <div style={{ width: "100%" }}>
+          <GenderForm formik={formik} formId="signup" />
+          {formik.errors.gender && <h6>{formik.errors.gender}</h6>}
+        </div>
       </div>
       <div className="signup-form-block-password">
         <PasswordInput

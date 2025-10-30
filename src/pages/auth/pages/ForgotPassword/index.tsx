@@ -2,6 +2,7 @@ import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import { KeyboardBackspace } from "@mui/icons-material";
 import {
+  clearError,
   forgotPassword,
   setAuthForm,
   setForgotPasswordMode,
@@ -21,6 +22,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { checkEmptyString } from "@/utils/checkValues";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
+import { useToastError } from "@/hooks/useToastError";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -28,9 +30,8 @@ const ForgotPassword = () => {
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-  const { forgotPasswordMode, LOADING_FORGOT_PASSWORD } = useAppSelector(
-    (state) => state[Resource.auth]
-  );
+  const { forgotPasswordMode, LOADING_FORGOT_PASSWORD, ERROR_FORGOT_PASSWORD } =
+    useAppSelector((state) => state[Resource.auth]);
 
   const localForgotPasswordMode =
     localStorage.getItem("forgotPasswordMode") || "email";
@@ -54,10 +55,17 @@ const ForgotPassword = () => {
   });
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    onPressEnter(e, () => {
-      if (isDisabled) return;
-      formik.handleSubmit();
-    });
+    switch (e.key) {
+      case "Enter":
+        onPressEnter(e, () => {
+          if (isDisabled) return;
+          formik.handleSubmit();
+        });
+        break;
+
+      case "Escape":
+        onPressEsc(e, () => dispatch(setAuthForm("login")));
+    }
   };
 
   const renderForm = useCallback(() => {
@@ -81,6 +89,11 @@ const ForgotPassword = () => {
         );
     }
   }, [forgotPasswordMode, formik]);
+
+  useToastError({
+    error: ERROR_FORGOT_PASSWORD,
+    clearErrorAction: () => clearError("forgotPassword"),
+  });
 
   useEffect(() => {
     const forgotPasswordModes: ForgotPasswordModeType[] = [

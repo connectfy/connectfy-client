@@ -2,14 +2,15 @@ import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import { GENDER } from "@/types/enum.types";
 import { FormikProps } from "formik";
-import { ISignupForm } from "@/types/auth/auth.type";
+import { IGoogleSignupForm, ISignupForm } from "@/types/auth/auth.type";
 import { FC, useCallback } from "react";
 
 interface Props {
-  formik: FormikProps<ISignupForm>;
+  formik: FormikProps<ISignupForm> | FormikProps<IGoogleSignupForm>;
+  formId?: string;
 }
 
-const GenderForm: FC<Props> = ({ formik }) => {
+const GenderForm: FC<Props> = ({ formik, formId = "default" }) => {
   const { t } = useTranslation();
 
   const changeGender = useCallback(
@@ -25,38 +26,38 @@ const GenderForm: FC<Props> = ({ formik }) => {
       <input
         autoComplete="off"
         type="radio"
-        id="male"
-        name="gender"
+        id={`male-${formId}`}
+        name={`gender-${formId}`}
         value={GENDER.MALE}
         checked={formik.values.gender === GENDER.MALE}
         onClick={() => changeGender(GENDER.MALE)}
         onChange={() => {}}
       />
-      <label htmlFor="male">{t("enum.male")}</label>
+      <label htmlFor={`male-${formId}`}>{t("enum.male")}</label>
 
       <input
         autoComplete="off"
         type="radio"
-        id="female"
-        name="gender"
+        id={`female-${formId}`}
+        name={`gender-${formId}`}
         value={GENDER.FEMALE}
         checked={formik.values.gender === GENDER.FEMALE}
         onClick={() => changeGender(GENDER.FEMALE)}
         onChange={() => {}}
       />
-      <label htmlFor="female">{t("enum.female")}</label>
+      <label htmlFor={`female-${formId}`}>{t("enum.female")}</label>
 
       <input
         autoComplete="off"
         type="radio"
-        id="other"
-        name="gender"
+        id={`other-${formId}`}
+        name={`gender-${formId}`}
         value={GENDER.OTHER}
         checked={formik.values.gender === GENDER.OTHER}
         onClick={() => changeGender(GENDER.OTHER)}
         onChange={() => {}}
       />
-      <label htmlFor="other">{t("enum.other")}</label>
+      <label htmlFor={`other-${formId}`}>{t("enum.other")}</label>
     </div>
   );
 };

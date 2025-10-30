@@ -43,12 +43,55 @@
   color: white;
 }
 
-.google {
+.google-login-wrapper {
+  position: relative;
   width: 410px;
+  height: 45px;
+  cursor: pointer;
+}
+
+.google-custom-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0.6rem 1.8rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--primary-color);
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.google-login-wrapper:hover .google-custom-button {
+  background-color: var(--hover-bg);
+  color: white;
+}
+
+.google-real-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1%;
+  height: 1%;
+  opacity: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.google-real-button > div,
+.google-real-button iframe {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @media (max-width: 490px) {
@@ -57,17 +100,7 @@
     width: 44vw;
   }
 
-  .google {
+  .google-login-wrapper {
     width: 90vw;
   }
 }
-
-/* @media (max-width: 300px) {
-  .login-and-signup-btn {
-    width: 42vw;
-  }
-
-  .google {
-    width: 90vw;
-  }
-} */

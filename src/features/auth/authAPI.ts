@@ -10,6 +10,8 @@ import {
   IResetPasswordForm,
   IResetPasswordResponse,
   ILogoutResponse,
+  IGoogleLoginForm,
+  IGoogleSignupForm,
 } from "@/types/auth/auth.type";
 import axios from "@/helpers/instance";
 
@@ -29,3 +31,9 @@ export const resetPasswordApi = (data: IResetPasswordForm) =>
   axios.post<IResetPasswordResponse>("/auth/reset-password", data);
 
 export const logoutApi = () => axios.post<ILogoutResponse>("/auth/logout");
+
+export const googleLoginApi = (data: IGoogleLoginForm) =>
+  axios.post<ILoginResponse>("/auth/google/login", data);
+
+export const googleSignupApi = (data: IGoogleSignupForm) =>
+  axios.post<ISignupVerifyResponse>("/auth/google/signup", data);

@@ -4,7 +4,7 @@ import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
 interface CustomDatePickerProps {
-  value: string;
+  value?: string;
   onChange: (date: string) => void;
   hasError?: boolean;
   inputSize?: "small" | "medium" | "large" | "xlarge";
@@ -20,7 +20,7 @@ export default function CustomDatePicker({
   hasError = false,
   inputSize = "medium",
   placeholder = "MM/DD/YYYY",
-  onKeyDown
+  onKeyDown,
 }: CustomDatePickerProps) {
   const { t } = useTranslation();
 
@@ -36,21 +36,6 @@ export default function CustomDatePicker({
   const minDate = new Date(1960, 0, 1);
   const maxDate = new Date();
   const currentYear = new Date().getFullYear();
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        calendarRef.current &&
-        !calendarRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-        setViewMode("days");
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const formatDate = (date: Date | null): string => {
     if (!date) return "";
@@ -281,6 +266,27 @@ export default function CustomDatePicker({
     return nextMonth > maxDate;
   };
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setViewMode("days");
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (value) {
+      setSelectedDate(new Date(value))
+    }
+  }, [value])
+
   return (
     <div
       className={`custom_date_picker ${inputSize} ${hasError ? "error" : ""}`}
@@ -293,7 +299,7 @@ export default function CustomDatePicker({
           value={displayDate}
           placeholder={placeholder}
           className="date_display"
-          onKeyDown={(e) => onKeyDown ? onKeyDown(e) : undefined}
+          onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : undefined)}
         />
         <div className="calendar_icon">
           <CalendarMonth />
@@ -307,6 +313,7 @@ export default function CustomDatePicker({
               className={`nav_button ${isPrevDisabled() ? "disabled" : ""}`}
               onClick={() => !isPrevDisabled() && navigateMonth("prev")}
               disabled={isPrevDisabled()}
+              type="button"
             >
               ‹
             </button>
@@ -317,6 +324,7 @@ export default function CustomDatePicker({
               className={`nav_button ${isNextDisabled() ? "disabled" : ""}`}
               onClick={() => !isNextDisabled() && navigateMonth("next")}
               disabled={isNextDisabled()}
+              type="button"
             >
               ›
             </button>
@@ -399,12 +407,17 @@ export default function CustomDatePicker({
           )}
 
           <div className="calendar_footer">
-            <button className="footer_button" onClick={handleClear}>
+            <button
+              className="footer_button"
+              onClick={handleClear}
+              type="button"
+            >
               {t("common.clear")}
             </button>
             <button
               className="footer_button today_button"
               onClick={handleToday}
+              type="button"
             >
               {t("common.today")}
             </button>

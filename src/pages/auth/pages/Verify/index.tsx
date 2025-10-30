@@ -37,7 +37,7 @@ const VerifyAccount = () => {
     onSubmit: async (values, { resetForm }) => {
       const actionResult = await dispatch(signupVerify(values));
       if (signupVerify.fulfilled.match(actionResult)) {
-        toast.success("user_messages.verify_successfull");
+        toast.success(t("user_messages.verify_successfull"));
         navigate("/");
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");
@@ -49,10 +49,17 @@ const VerifyAccount = () => {
   });
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    onPressEnter(e, () => {
-      if (isDisabled) return;
-      formik.handleSubmit();
-    });
+    switch (e.key) {
+      case "Enter":
+        onPressEnter(e, () => {
+          if (isDisabled) return;
+          formik.handleSubmit();
+        });
+        break;
+
+      case "Escape":
+        onPressEsc(e, () => dispatch(setAuthForm("signup")));
+    }
   };
 
   const handleOtpChange = useCallback(

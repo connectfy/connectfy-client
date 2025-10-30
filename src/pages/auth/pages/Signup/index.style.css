@@ -13,9 +13,10 @@
 .signup-form-block {
   display: flex;
   gap: 0.6rem;
+  max-height: 75px;
 }
 
-.signup-form-block-password h6 {
+.signup-form h6 {
   position: relative;
   padding-left: 20px;
   margin: 0;
@@ -42,7 +43,7 @@
   }
 }
 
-.signup-form-block-password h6::before {
+.signup-form h6::before {
   content: "!";
   position: absolute;
   left: 0;

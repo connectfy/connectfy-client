@@ -10,7 +10,7 @@ import { IPhoneNumber } from "@/types/auth/auth.type";
 
 interface Props {
   name: string;
-  // value: string;
+  value?: IPhoneNumber | null;
   blur: boolean;
   onBlur: () => void;
   onChange: (value: IPhoneNumber | null) => void;
@@ -19,6 +19,7 @@ interface Props {
 
 const PhoneNumberForm: FC<Props> = ({
   name,
+  value,
   onBlur,
   blur,
   onChange,
@@ -53,6 +54,19 @@ const PhoneNumberForm: FC<Props> = ({
     else setHasLengthError(false);
   }, [fieldValue]);
 
+  useEffect(() => {
+    if (value) {
+      const { countryCode, number } = value;
+
+      const country = COUNTRIES.find((c) => c.code === countryCode);
+
+      if (country) {
+        setCountryKey(country.key);
+        setFieldValue(number);
+      }
+    }
+  }, [value]);
+
   return (
     <Fragment>
       <div id="phone-number-form">
@@ -76,7 +90,7 @@ const PhoneNumberForm: FC<Props> = ({
               }}
               onBlur={onBlur}
               inputMode="numeric"
-              onKeyDown={(e) => onKeyDown ? onKeyDown(e) : undefined}
+              onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : undefined)}
             />
           </div>
         </div>

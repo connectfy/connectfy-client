@@ -1,6 +1,8 @@
+import { useAppDispatch } from "@/hooks/useStore";
 import "./index.style.css";
 import { Box } from "@mui/material";
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
+import { setAuthForm } from "@/features/auth/authSlice";
 
 type OTPProps = {
   length: number;
@@ -17,6 +19,7 @@ export default function OTPForm({
   onChange,
   onKeyDown
 }: OTPProps) {
+  const dispatch = useAppDispatch();
   const [values, setValues] = useState<string[]>(() => Array(length).fill(""));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const lastEmittedRef = useRef<string | null>(null);
@@ -90,6 +93,9 @@ export default function OTPForm({
       e.preventDefault();
       const code = values.join("").trim();
       if (code.length === length) onKeyDown(e);
+    } else if (key === "Escape") {
+      e.preventDefault();
+      dispatch(setAuthForm("signup"))
     }
   };
 
@@ -135,6 +141,7 @@ export default function OTPForm({
               inputMode="numeric"
               maxLength={1}
               name={name}
+              autoComplete="off"
             />
             {i !== length - 1 && <div className="otp-sep">-</div>}
           </Fragment>

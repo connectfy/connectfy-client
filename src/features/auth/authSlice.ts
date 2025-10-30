@@ -15,9 +15,13 @@ import {
   ISignupVerifyForm,
   IResetPasswordResponse,
   ILogoutResponse,
+  IGoogleLoginForm,
+  IGoogleSignupForm,
 } from "@/types/auth/auth.type";
 import {
   forgotPasswordApi,
+  googleLoginApi,
+  googleSignupApi,
   loginApi,
   logoutApi,
   resetPasswordApi,
@@ -41,12 +45,16 @@ export interface AuthState {
   LOADING_SIGNUP_VERIFY: boolean;
   LOADING_RESET_PASSWORD: boolean;
   LOADING_FORGOT_PASSWORD: boolean;
+  LOADING_GOOGLE_LOGIN: boolean;
+  LOADING_GOOGLE_SIGNUP: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
   ERROR_SIGNUP_VERIFY: ApiErrorType;
   ERROR_RESET_PASSWORD: ApiErrorType;
   ERROR_FORGOT_PASSWORD: ApiErrorType;
+  ERROR_GOOGLE_LOGIN: ApiErrorType;
+  ERROR_GOOGLE_SIGNUP: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -57,13 +65,16 @@ export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.falied_to_login")
+        error.response?.data?.message || t("error_message.failed_to_login")
       );
     }
   }
 );
 
-export const signup = createAsyncThunk<ISignupResponse, Omit<ISignupForm, "confirm">>(
+export const signup = createAsyncThunk<
+  ISignupResponse,
+  Omit<ISignupForm, "confirm">
+>(
   "/auth/signup",
   async (data: Omit<ISignupForm, "confirm">, { rejectWithValue }) => {
     try {
@@ -71,7 +82,7 @@ export const signup = createAsyncThunk<ISignupResponse, Omit<ISignupForm, "confi
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.falied_to_signup")
+        error.response?.data?.message || t("error_message.failed_to_signup")
       );
     }
   }
@@ -89,7 +100,7 @@ export const signupVerify = createAsyncThunk<
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message ||
-          t("error_message.falied_to_verify_signup")
+          t("error_message.failed_to_verify_signup")
       );
     }
   }
@@ -107,7 +118,7 @@ export const forgotPassword = createAsyncThunk<
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message ||
-          t("error_message.falied_to_forgot_password_request")
+          t("error_message.failed_to_forgot_password_request")
       );
     }
   }
@@ -125,7 +136,7 @@ export const resetPassword = createAsyncThunk<
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message ||
-          t("error_message.falied_to_reset_password")
+          t("error_message.failed_to_reset_password")
       );
     }
   }
@@ -139,7 +150,38 @@ export const logout = createAsyncThunk<ILogoutResponse>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.falied_to_logout")
+        error.response?.data?.message || t("error_message.failed_to_logout")
+      );
+    }
+  }
+);
+
+export const googleLogin = createAsyncThunk<ILoginResponse, IGoogleLoginForm>(
+  "/auth/google/login",
+  async (data: IGoogleLoginForm, { rejectWithValue }) => {
+    try {
+      const res = await googleLoginApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || t("error_message.failed_to_login")
+      );
+    }
+  }
+);
+
+export const googleSignup = createAsyncThunk<
+  ISignupVerifyResponse,
+  IGoogleSignupForm
+>(
+  "/auth/google/signup",
+  async (data: IGoogleSignupForm, { rejectWithValue }) => {
+    try {
+      const res = await googleSignupApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || t("error_message.failed_to_signup")
       );
     }
   }
@@ -159,12 +201,16 @@ const initialState: AuthState = {
   LOADING_SIGNUP_VERIFY: false,
   LOADING_RESET_PASSWORD: false,
   LOADING_FORGOT_PASSWORD: false,
+  LOADING_GOOGLE_LOGIN: false,
+  LOADING_GOOGLE_SIGNUP: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
   ERROR_SIGNUP_VERIFY: null,
   ERROR_RESET_PASSWORD: null,
   ERROR_FORGOT_PASSWORD: null,
+  ERROR_GOOGLE_LOGIN: null,
+  ERROR_GOOGLE_SIGNUP: null,
 };
 
 const authSlice = createSlice({
@@ -201,9 +247,11 @@ const authSlice = createSlice({
       switch (action.payload) {
         case "login":
           state.ERROR_LOGIN = null;
+          state.ERROR_GOOGLE_LOGIN = null;
           break;
         case "signup":
           state.ERROR_SIGNUP = null;
+          state.ERROR_GOOGLE_SIGNUP = null;
           break;
         case "verify":
           state.ERROR_SIGNUP_VERIFY = null;
@@ -282,6 +330,34 @@ const authSlice = createSlice({
       .addCase(resetPassword.rejected, (state, action) => {
         state.LOADING_RESET_PASSWORD = false;
         state.ERROR_RESET_PASSWORD = action.payload as string | string[];
+      })
+
+      // =================== GOOGLE LOGIN
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.LOADING_GOOGLE_LOGIN = false;
+        state.access_token = action.payload.access_token;
+        localStorage.setItem("access_token", action.payload.access_token);
+      })
+      .addCase(googleLogin.pending, (state) => {
+        state.LOADING_GOOGLE_LOGIN = true;
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.LOADING_GOOGLE_LOGIN = false;
+        state.ERROR_GOOGLE_LOGIN = action.payload as string | string[];
+      })
+
+      // =================== GOOGLE SIGNUP
+      .addCase(googleSignup.fulfilled, (state, action) => {
+        state.LOADING_GOOGLE_SIGNUP = false;
+        state.access_token = action.payload.access_token;
+        localStorage.setItem("access_token", action.payload.access_token);
+      })
+      .addCase(googleSignup.pending, (state) => {
+        state.LOADING_GOOGLE_SIGNUP = true;
+      })
+      .addCase(googleSignup.rejected, (state, action) => {
+        state.LOADING_GOOGLE_SIGNUP = false;
+        state.ERROR_GOOGLE_SIGNUP = action.payload as string | string[];
       });
   },
 });

@@ -1,5 +1,6 @@
 import {
   IForgotPasswordForm,
+  IGoogleSignupForm,
   ILoginForm,
   IResetPasswordForm,
   ISignupForm,
@@ -46,4 +47,16 @@ export const resetPasswordInitialState: IResetPasswordForm = {
   password: null,
   confirmPassword: null,
   resetToken: null,
+};
+
+export const googleSignupInitialState: IGoogleSignupForm = {
+  idToken: null,
+  username: null,
+  phoneNumber: {
+    countryCode: COUNTRIES[0].code,
+    number: null,
+    fullPhoneNumber: null,
+  },
+  gender: null,
+  birthdayDate: null,
 };
