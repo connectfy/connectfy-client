@@ -43,7 +43,7 @@ const Login = () => {
       const actionResult = await dispatch(login(values));
       const res = unwrapResult(actionResult);
       if (res) {
-        toast.success(t("user_messages.login_successfull"));
+        toast.success(t("user_messages.login_successful"));
         navigate("/");
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");

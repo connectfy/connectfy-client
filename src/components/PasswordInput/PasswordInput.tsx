@@ -104,18 +104,21 @@ export default function PasswordInput({
 
   const mergedSx = Array.isArray(sx) ? [...sx, customSx] : [sx ?? {}, customSx];
 
-  function generatePassword(len = 12) {
+  async function generatePassword(len = 12) {
     const chars =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
     let res = "";
     for (let i = 0; i < len; i++) {
       res += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+
+    await navigator.clipboard.writeText(res);
+
     return res;
   }
 
-  function handleGenerate() {
-    const generated = generatePassword();
+  async function handleGenerate() {
+    const generated = await generatePassword();
     if (onGenerate) {
       onGenerate(generated);
       return;

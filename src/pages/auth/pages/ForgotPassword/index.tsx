@@ -46,7 +46,7 @@ const ForgotPassword = () => {
       const actionResult = await dispatch(forgotPassword(values));
       const res = unwrapResult(actionResult);
       if (res) {
-        toast.success(t("user_messages.forgot_password_successfull"));
+        toast.success(t("user_messages.forgot_password_successful"));
         dispatch(setAuthForm("login"));
         dispatch(setLoginMode("username"));
         resetForm();

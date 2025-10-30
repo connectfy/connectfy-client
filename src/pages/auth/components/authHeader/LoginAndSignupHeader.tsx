@@ -44,7 +44,7 @@ const LoginAndSignupHeader = () => {
         const actionResult = await dispatch(googleLogin({ idToken }));
         const res = unwrapResult(actionResult);
         if (res) {
-          toast.success(t("user_messages.login_successfull"));
+          toast.success(t("user_messages.login_successful"));
           navigate("/");
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");

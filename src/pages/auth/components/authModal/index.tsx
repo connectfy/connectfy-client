@@ -67,7 +67,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
       const actionResult = await dispatch(googleSignup(values));
       const res = unwrapResult(actionResult);
       if (res) {
-        toast.success(t("user_messages.signup_successfull"));
+        toast.success(t("user_messages.signup_successful"));
         navigate("/");
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");

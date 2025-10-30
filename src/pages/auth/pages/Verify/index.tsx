@@ -37,7 +37,7 @@ const VerifyAccount = () => {
     onSubmit: async (values, { resetForm }) => {
       const actionResult = await dispatch(signupVerify(values));
       if (signupVerify.fulfilled.match(actionResult)) {
-        toast.success(t("user_messages.verify_successfull"));
+        toast.success(t("user_messages.verify_successful"));
         navigate("/");
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");
