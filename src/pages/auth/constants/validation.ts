@@ -13,7 +13,7 @@ import {
 } from "@/types/enum.types";
 import { checkEmptyString } from "@/utils/checkValues";
 import { TFunction } from "i18next";
-import { COUNTRIES } from "./constant";
+// import { COUNTRIES } from "./constant";
 
 export const validateLogin = (
   values: ILoginForm,
@@ -53,13 +53,13 @@ export const validateSignup = (
     email,
     gender,
     birthdayDate,
-    phoneNumber,
+    // phoneNumber,
     password,
     confirm,
   } = values;
   const errors: Record<string, any> = {};
 
-  const { countryCode, number, fullPhoneNumber } = phoneNumber;
+  // const { countryCode, number, fullPhoneNumber } = phoneNumber;
 
   const usernameRegex = /^[A-Za-z0-9._-]+$/;
   const passwordComplexityRegex =
@@ -87,23 +87,23 @@ export const validateSignup = (
   if (!birthdayDate)
     errors.birthdayDate = t("error_messages.birthday_is_required");
 
-  if (
-    !countryCode ||
-    !number ||
-    !fullPhoneNumber ||
-    !checkEmptyString(countryCode) ||
-    !checkEmptyString(number) ||
-    !checkEmptyString(fullPhoneNumber) ||
-    fullPhoneNumber !== countryCode + number
-  )
-    errors.phoneNumber = t("error_messages.phone_number_is_required");
+  // if (
+  //   !countryCode ||
+  //   !number ||
+  //   !fullPhoneNumber ||
+  //   !checkEmptyString(countryCode) ||
+  //   !checkEmptyString(number) ||
+  //   !checkEmptyString(fullPhoneNumber) ||
+  //   fullPhoneNumber !== countryCode + number
+  // )
+  //   errors.phoneNumber = t("error_messages.phone_number_is_required");
 
-  const currentCountry = COUNTRIES.find((c) => c.code === countryCode);
+  // const currentCountry = COUNTRIES.find((c) => c.code === countryCode);
 
-  if (currentCountry && number?.length !== currentCountry.numberLength)
-    errors.phoneNumber = t("error_messages.phone_number_length", {
-      length: currentCountry.numberLength,
-    });
+  // if (currentCountry && number?.length !== currentCountry.numberLength)
+  //   errors.phoneNumber = t("error_messages.phone_number_length", {
+  //     length: currentCountry.numberLength,
+  //   });
 
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
@@ -178,11 +178,11 @@ export const valdiateGoogleSignup = (
   values: IGoogleSignupForm,
   t: TFunction
 ): Record<string, any> => {
-  const { username, gender, birthdayDate, phoneNumber } =
+  const { username, gender, birthdayDate } =
     values;
   const errors: Record<string, any> = {};
 
-  const { countryCode, number, fullPhoneNumber } = phoneNumber;
+  // const { countryCode, number, fullPhoneNumber } = phoneNumber;
 
   const usernameRegex = /^[A-Za-z0-9._-]+$/;
 
@@ -197,23 +197,23 @@ export const valdiateGoogleSignup = (
   if (!birthdayDate)
     errors.birthdayDate = t("error_messages.birthday_is_required");
 
-  if (
-    !countryCode ||
-    !number ||
-    !fullPhoneNumber ||
-    !checkEmptyString(countryCode) ||
-    !checkEmptyString(number) ||
-    !checkEmptyString(fullPhoneNumber) ||
-    fullPhoneNumber !== countryCode + number
-  )
-    errors.phoneNumber = t("error_messages.phone_number_is_required");
+  // if (
+  //   !countryCode ||
+  //   !number ||
+  //   !fullPhoneNumber ||
+  //   !checkEmptyString(countryCode) ||
+  //   !checkEmptyString(number) ||
+  //   !checkEmptyString(fullPhoneNumber) ||
+  //   fullPhoneNumber !== countryCode + number
+  // )
+  //   errors.phoneNumber = t("error_messages.phone_number_is_required");
 
-  const currentCountry = COUNTRIES.find((c) => c.code === countryCode);
+  // const currentCountry = COUNTRIES.find((c) => c.code === countryCode);
 
-  if (currentCountry && number?.length !== currentCountry.numberLength)
-    errors.phoneNumber = t("error_messages.phone_number_length", {
-      length: currentCountry.numberLength,
-    });
+  // if (currentCountry && number?.length !== currentCountry.numberLength)
+  //   errors.phoneNumber = t("error_messages.phone_number_length", {
+  //     length: currentCountry.numberLength,
+  //   });
 
   return errors;
 };

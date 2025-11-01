@@ -8,7 +8,6 @@ import { googleSignupInitialState } from "../../constants/intialState";
 import { valdiateGoogleSignup } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { IPhoneNumber } from "@/types/auth/auth.type";
 import { Resource } from "@/types/enum.types";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
@@ -30,7 +29,6 @@ import {
 
 // Custom Components
 import Input from "@/components/Input/Input";
-import PhoneNumberForm from "@/components/Form/PhoneNumberForm";
 import GenderForm from "../../pages/Signup/components/GenderForm";
 import DatePicker from "@/components/DatePicker";
 import Button from "@/components/Button/Button";
@@ -68,7 +66,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
       const res = unwrapResult(actionResult);
       if (res) {
         toast.success(t("user_messages.signup_successful"));
-        navigate("/");
+        navigate("/messenger");
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");
         localStorage.removeItem("forgotPasswordMode");
@@ -107,22 +105,16 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
   }, [idToken]);
 
   useEffect(() => {
-    const { username, gender, birthdayDate, phoneNumber } = formik.values;
+    const { username, gender, birthdayDate } = formik.values;
 
     const hasEmptyUsername = !username || !checkEmptyString(username);
     const hasEmptyGender = !gender;
     const hasEmptyDate = !birthdayDate;
-    const hasEmptyPhone =
-      !phoneNumber ||
-      !phoneNumber.countryCode ||
-      !phoneNumber.number ||
-      !phoneNumber.fullPhoneNumber;
 
     const shouldDisable =
       hasEmptyUsername ||
       hasEmptyGender ||
       hasEmptyDate ||
-      hasEmptyPhone ||
       LOADING_GOOGLE_SIGNUP;
 
     setIsDisabled(shouldDisable);
@@ -216,7 +208,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
           {/* Username Field */}
           <Box>
             <Input
-              inputSize="medium"
+              inputSize="large"
               label={t("common.username")}
               name="username"
               value={formik.values.username || ""}
@@ -248,26 +240,12 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
             )}
           </Box>
 
-          <Box>
-            <PhoneNumberForm
-              name="phoneNumber"
-              onBlur={() =>
-                formik.setFieldTouched("phoneNumber.number", true, false)
-              }
-              onChange={(value: IPhoneNumber | null) =>
-                formik.setFieldValue("phoneNumber", value)
-              }
-              blur={formik.touched.phoneNumber?.number ?? false}
-              onKeyDown={(e) => onKeyDown(e)}
-            />
-          </Box>
-
           {/* Birthday Date Field */}
           <Box>
             <DatePicker
               value={formik.values.birthdayDate?.toString() || ""}
               onChange={(date) => formik.setFieldValue("birthdayDate", date)}
-              inputSize="small"
+              inputSize="medium"
               hasError={false}
               placeholder={t("common.birthday")}
               onKeyDown={(e) => onKeyDown(e)}

@@ -45,7 +45,7 @@ const LoginAndSignupHeader = () => {
         const res = unwrapResult(actionResult);
         if (res) {
           toast.success(t("user_messages.login_successful"));
-          navigate("/");
+          navigate("/messenger");
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");
           localStorage.removeItem("forgotPasswordMode");

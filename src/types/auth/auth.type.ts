@@ -74,7 +74,7 @@ export interface ISignupForm {
   password: string | null;
   confirm: string | null;
   birthdayDate: Date | null;
-  phoneNumber: IPhoneNumber;
+  // phoneNumber: IPhoneNumber;
 }
 
 export interface ISignupVerifyForm {
@@ -99,7 +99,7 @@ export interface IGoogleLoginForm {
 export interface IGoogleSignupForm {
   idToken: string | null;
   username: string | null;
-  phoneNumber: IPhoneNumber;
+  // phoneNumber: IPhoneNumber;
   gender: GENDER | null;
   birthdayDate: Date | null;
 }

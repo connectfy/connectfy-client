@@ -1,7 +1,6 @@
 import "./index.style.css";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
-import PhoneNumberForm from "@/components/Form/PhoneNumberForm";
 import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { Link } from "react-router-dom";
@@ -19,7 +18,6 @@ import { signupInitialState } from "../../constants/intialState";
 import { validateSignup } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { IPhoneNumber } from "@/types/auth/auth.type";
 import { Resource } from "@/types/enum.types";
 import { useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
@@ -86,7 +84,6 @@ const Signup = () => {
       password,
       confirm,
       birthdayDate,
-      phoneNumber,
     } = formik.values;
 
     const stringFields = [
@@ -103,17 +100,11 @@ const Signup = () => {
 
     const hasEmptyGender = !gender;
     const hasEmptyDate = !birthdayDate;
-    const hasEmptyPhone =
-      !phoneNumber ||
-      !phoneNumber.countryCode ||
-      !phoneNumber.number ||
-      !phoneNumber.fullPhoneNumber;
 
     const shouldDisable =
       hasEmptyStringField ||
       hasEmptyGender ||
       hasEmptyDate ||
-      hasEmptyPhone ||
       LOADING_SIGNUP ||
       !checked;
 
@@ -190,7 +181,7 @@ const Signup = () => {
           )}
         </div>
       </div>
-      <div className="signup-form-block">
+      {/* <div className="signup-form-block">
         <PhoneNumberForm
           name="phoneNumber"
           onBlur={() =>
@@ -203,7 +194,7 @@ const Signup = () => {
           value={formik.values.phoneNumber}
           onKeyDown={(e) => onKeyDown(e)}
         />
-      </div>
+      </div> */}
       <div className="signup-form-block">
         <div style={{ width: "100%" }}>
           <DatePicker

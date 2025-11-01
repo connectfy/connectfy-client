@@ -77,7 +77,7 @@
 .custom_date_picker.medium .date_input {
   padding: 10px 16px;
   font-size: 15px;
-  min-height: 48px;
+  min-height: 40px;
 }
 
 .custom_date_picker.medium .date_display::placeholder {

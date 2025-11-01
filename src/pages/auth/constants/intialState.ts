@@ -10,7 +10,7 @@ import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   IDENTIFIER_TYPE,
 } from "@/types/enum.types";
-import { COUNTRIES } from "./constant";
+// import { COUNTRIES } from "./constant";
 
 export const loginInitialState: ILoginForm = {
   identifierType: IDENTIFIER_TYPE.USERNAME,
@@ -27,11 +27,11 @@ export const signupInitialState: ISignupForm = {
   password: null,
   confirm: null,
   birthdayDate: null,
-  phoneNumber: {
-    countryCode: COUNTRIES[0].code,
-    number: null,
-    fullPhoneNumber: null,
-  },
+  // phoneNumber: {
+  //   countryCode: COUNTRIES[0].code,
+  //   number: null,
+  //   fullPhoneNumber: null,
+  // },
 };
 
 export const verifySignupInitialState: ISignupVerifyForm = {
@@ -52,11 +52,11 @@ export const resetPasswordInitialState: IResetPasswordForm = {
 export const googleSignupInitialState: IGoogleSignupForm = {
   idToken: null,
   username: null,
-  phoneNumber: {
-    countryCode: COUNTRIES[0].code,
-    number: null,
-    fullPhoneNumber: null,
-  },
+  // phoneNumber: {
+  //   countryCode: COUNTRIES[0].code,
+  //   number: null,
+  //   fullPhoneNumber: null,
+  // },
   gender: null,
   birthdayDate: null,
 };

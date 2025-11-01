@@ -38,7 +38,7 @@ const VerifyAccount = () => {
       const actionResult = await dispatch(signupVerify(values));
       if (signupVerify.fulfilled.match(actionResult)) {
         toast.success(t("user_messages.verify_successful"));
-        navigate("/");
+        navigate("/messenger");
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");
         localStorage.removeItem("forgotPasswordMode");
