@@ -9,15 +9,13 @@ import { FC } from "react";
 import { useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";
 import Spinner from "@/components/Spinner/Spinner";
-import { onPressEnter } from "@/utils/keyPressDown";
 
 interface Props {
   formik: FormikProps<ILoginForm>;
   isDisabled: boolean;
-  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
-const UsernameForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
+const UsernameForm: FC<Props> = ({ formik, isDisabled }) => {
   const { t } = useTranslation();
   const { LOADING_LOGIN } = useAppSelector((state) => state[Resource.auth]);
 
@@ -33,7 +31,6 @@ const UsernameForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
             formik.setFieldValue("identifier", e.target.value || null)
           }
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
-          onKeyDown={(e) => onKeyDown(e)}
         />
         <PasswordInput
           inputSize="medium"
@@ -44,7 +41,6 @@ const UsernameForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
             formik.setFieldValue("password", e.target.value || null)
           }
           onBlur={() => formik.setFieldTouched("password", true, false)}
-          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="username-login-form-submit">
@@ -55,12 +51,6 @@ const UsernameForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
           disabled={isDisabled}
           onClick={() => formik.handleSubmit()}
           type="button"
-          onKeyDown={(e) =>
-            onPressEnter(e, () => {
-              if (isDisabled) return;
-              formik.handleSubmit();
-            })
-          }
         >
           {LOADING_LOGIN ? <Spinner /> : t("common.login")}
         </Button>

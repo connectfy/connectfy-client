@@ -103,3 +103,8 @@ export interface IGoogleSignupForm {
   gender: GENDER | null;
   birthdayDate: Date | null;
 }
+
+export interface IFaceIdForm {
+  username: string | null;
+  faceDescriptor: number[] | null;
+}

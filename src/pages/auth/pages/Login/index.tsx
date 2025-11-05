@@ -1,5 +1,5 @@
 import "./index.style.css";
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Resource } from "@/types/enum.types";
 import UsernameForm from "./components/UsernameForm";
 import EmailForm from "./components/EmailForm";
@@ -18,7 +18,7 @@ import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import { LoginModeType } from "@/types/auth/auth.type";
 import { useNavigate } from "react-router-dom";
-import { onPressEnter } from "@/utils/keyPressDown";
+import useBoolean from "@/hooks/useBoolean";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -29,9 +29,12 @@ const Login = () => {
     (state) => state[Resource.auth]
   );
 
-  const localLoginMode = localStorage.getItem("loginMode") || "username";
+  const localLoginMode =
+    (localStorage.getItem("loginMode") as LoginModeType) || "username";
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  const { open, onOpen, onClose } = useBoolean();
 
   const formik = useFormik({
     initialValues: loginInitialState,
@@ -40,59 +43,49 @@ const Login = () => {
     enableReinitialize: true,
     validate: (values) => validateLogin(values, t),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(login(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        toast.success(t("user_messages.login_successful"));
-        navigate("/messenger");
-        localStorage.removeItem("authPage");
-        localStorage.removeItem("loginMode");
-        localStorage.removeItem("forgotPasswordMode");
-        resetForm();
+      try {
+        const actionResult = await dispatch(login(values));
+        const res = unwrapResult(actionResult);
+        if (res) {
+          toast.success(t("user_messages.login_successful"));
+          navigate("/messenger");
+          localStorage.removeItem("authPage");
+          localStorage.removeItem("loginMode");
+          localStorage.removeItem("forgotPasswordMode");
+          resetForm();
+        }
+      } catch (err) {
+        toast.error((err as Error).message);
       }
     },
   });
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    onPressEnter(e, () => {
-      if (isDisabled) return;
-      formik.handleSubmit();
-    });
-  };
-
   const renderLoginForm = useCallback(() => {
     switch (loginMode) {
       case "username":
-        return (
-          <UsernameForm
-            formik={formik}
-            isDisabled={isDisabled}
-            onKeyDown={onKeyDown}
-          />
-        );
+        return <UsernameForm formik={formik} isDisabled={isDisabled} />;
 
       case "email":
-        return (
-          <EmailForm
-            formik={formik}
-            isDisabled={isDisabled}
-            onKeyDown={onKeyDown}
-          />
-        );
+        return <EmailForm formik={formik} isDisabled={isDisabled} />;
 
       case "phoneNumber":
+        return <PhoneNumberForm formik={formik} isDisabled={isDisabled} />;
+
+      case "faceDescriptor":
         return (
-          <PhoneNumberForm
+          <FaceIdForm
             formik={formik}
             isDisabled={isDisabled}
-            onKeyDown={onKeyDown}
+            open={open}
+            onOpen={onOpen}
+            onClose={onClose}
           />
         );
 
-      case "faceDescriptor":
-        return <FaceIdForm formik={formik} />;
+      default:
+        return null;
     }
-  }, [loginMode, formik]);
+  }, [loginMode, formik, isDisabled, open, onOpen, onClose]);
 
   useToastError({
     error: ERROR_LOGIN,
@@ -100,16 +93,28 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (
-      !formik.values.identifier ||
-      !formik.values.password ||
-      !checkEmptyString(formik.values.identifier) ||
-      !checkEmptyString(formik.values.password) ||
-      LOADING_LOGIN
-    )
+    const id = formik.values.identifier;
+    const pw = formik.values.password;
+
+    if (!id || LOADING_LOGIN || !checkEmptyString(id || "")) {
       setIsDisabled(true);
-    else setIsDisabled(false);
-  }, [formik.values]);
+      return;
+    }
+
+    if (loginMode === "faceDescriptor") {
+      if (!Array.isArray(pw)) {
+        setIsDisabled(true);
+        return;
+      }
+    } else {
+      if (!checkEmptyString((pw as string) || "")) {
+        setIsDisabled(true);
+        return;
+      }
+    }
+
+    setIsDisabled(false);
+  }, [formik.values, LOADING_LOGIN, loginMode]);
 
   useEffect(() => {
     const loginModes: LoginModeType[] = [
@@ -119,11 +124,44 @@ const Login = () => {
       "faceDescriptor",
     ];
 
-    if (!loginModes.includes(localLoginMode as LoginModeType)) {
+    const mode = localLoginMode as LoginModeType;
+
+    if (!loginModes.includes(mode)) {
       dispatch(setLoginMode("username"));
       localStorage.setItem("loginMode", "username");
-    } else dispatch(setLoginMode(loginMode as LoginModeType));
-  }, [localLoginMode]);
+    } else {
+      dispatch(setLoginMode(mode));
+    }
+  }, [localLoginMode, dispatch]);
+
+  useEffect(() => {
+    if (loginMode === "faceDescriptor") {
+      const handleFaceEnter = (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          onOpen();
+        }
+      };
+      document.addEventListener("keydown", handleFaceEnter);
+      return () => {
+        document.removeEventListener("keydown", handleFaceEnter);
+      };
+    }
+
+    if (isDisabled) return;
+
+    const handleSubmitEnter = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        formik.handleSubmit();
+      }
+    };
+
+    document.addEventListener("keydown", handleSubmitEnter);
+    return () => {
+      document.removeEventListener("keydown", handleSubmitEnter);
+    };
+  }, [isDisabled, loginMode, formik.handleSubmit, onOpen]);
 
   return (
     <Fragment>

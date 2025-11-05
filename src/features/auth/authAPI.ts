@@ -12,6 +12,7 @@ import {
   ILogoutResponse,
   IGoogleLoginForm,
   IGoogleSignupForm,
+  IFaceIdForm,
 } from "@/types/auth/auth.type";
 import axios from "@/helpers/instance";
 
@@ -37,3 +38,6 @@ export const googleLoginApi = (data: IGoogleLoginForm) =>
 
 export const googleSignupApi = (data: IGoogleSignupForm) =>
   axios.post<ISignupVerifyResponse>("/auth/google/signup", data);
+
+export const faceIdApi = (data: IFaceIdForm) =>
+  axios.post<ILoginResponse>("/auth/face-descriptor", data);

@@ -17,8 +17,10 @@ import {
   ILogoutResponse,
   IGoogleLoginForm,
   IGoogleSignupForm,
+  IFaceIdForm,
 } from "@/types/auth/auth.type";
 import {
+  faceIdApi,
   forgotPasswordApi,
   googleLoginApi,
   googleSignupApi,
@@ -47,6 +49,7 @@ export interface AuthState {
   LOADING_FORGOT_PASSWORD: boolean;
   LOADING_GOOGLE_LOGIN: boolean;
   LOADING_GOOGLE_SIGNUP: boolean;
+  LOADING_FACE_ID: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -55,6 +58,7 @@ export interface AuthState {
   ERROR_FORGOT_PASSWORD: ApiErrorType;
   ERROR_GOOGLE_LOGIN: ApiErrorType;
   ERROR_GOOGLE_SIGNUP: ApiErrorType;
+  ERROR_FACE_ID: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -187,6 +191,20 @@ export const googleSignup = createAsyncThunk<
   }
 );
 
+export const faceId = createAsyncThunk<ILoginResponse, IFaceIdForm>(
+  "/auth/face-descriptor",
+  async (data: IFaceIdForm, { rejectWithValue }) => {
+    try {
+      const res = await faceIdApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || t("error_message.failed_to_signup")
+      );
+    }
+  }
+);
+
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
   error: null,
@@ -203,6 +221,7 @@ const initialState: AuthState = {
   LOADING_FORGOT_PASSWORD: false,
   LOADING_GOOGLE_LOGIN: false,
   LOADING_GOOGLE_SIGNUP: false,
+  LOADING_FACE_ID: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -211,6 +230,7 @@ const initialState: AuthState = {
   ERROR_FORGOT_PASSWORD: null,
   ERROR_GOOGLE_LOGIN: null,
   ERROR_GOOGLE_SIGNUP: null,
+  ERROR_FACE_ID: null,
 };
 
 const authSlice = createSlice({
@@ -357,6 +377,19 @@ const authSlice = createSlice({
       })
       .addCase(googleSignup.rejected, (state, action) => {
         state.LOADING_GOOGLE_SIGNUP = false;
+        state.ERROR_GOOGLE_SIGNUP = action.payload as string | string[];
+      })
+
+      // =================== FACE DESCRIPTOR
+      .addCase(faceId.fulfilled, (state, action) => {
+        state.LOADING_FACE_ID = false;
+        void action;
+      })
+      .addCase(faceId.pending, (state) => {
+        state.LOADING_FACE_ID = true;
+      })
+      .addCase(faceId.rejected, (state, action) => {
+        state.LOADING_FACE_ID = false;
         state.ERROR_GOOGLE_SIGNUP = action.payload as string | string[];
       });
   },

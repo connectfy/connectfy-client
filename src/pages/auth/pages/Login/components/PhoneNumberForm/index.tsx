@@ -13,10 +13,9 @@ import Spinner from "@/components/Spinner/Spinner";
 interface Props {
   formik: FormikProps<ILoginForm>;
   isDisabled: boolean;
-  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }
 
-const PhoneNumberForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
+const PhoneNumberForm: FC<Props> = ({ formik, isDisabled }) => {
   const { t } = useTranslation();
   const { LOADING_LOGIN } = useAppSelector((state) => state[Resource.auth]);
 
@@ -30,7 +29,6 @@ const PhoneNumberForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
             formik.setFieldValue("identifier", value?.fullPhoneNumber || null)
           }
           blur={formik.touched.identifier ?? false}
-          onKeyDown={(e) => onKeyDown(e)}
         />
         <PasswordInput
           inputSize="medium"
@@ -41,7 +39,6 @@ const PhoneNumberForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
             formik.setFieldValue("password", e.target.value || null)
           }
           onBlur={() => formik.setFieldTouched("password", true, false)}
-          onKeyDown={(e) => onKeyDown(e)}
         />
       </div>
       <div className="phoneNumber-login-form-submit">
