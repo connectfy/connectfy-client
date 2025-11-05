@@ -78,15 +78,21 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
   }, [onClose, formik, mode, stopStream]);
 
   useEffect(() => {
-    faceapi.nets.tinyFaceDetector.loadFromUri("/models/tiny_face_detector").catch((e) => {
-      console.error("Failed to load tinyFaceDetector:", e);
-    });
-    faceapi.nets.faceLandmark68Net.loadFromUri("/models/face_landmark_68").catch((e) => {
-      console.error("Failed to load faceLandmark68Net:", e);
-    });
-    faceapi.nets.faceRecognitionNet.loadFromUri("/models/face_recognition").catch((e) => {
-      console.error("Failed to load faceRecognitionNet:", e);
-    });
+    faceapi.nets.tinyFaceDetector
+      .loadFromUri("/models/tiny_face_detector")
+      .catch((e) => {
+        console.error("Failed to load tinyFaceDetector:", e);
+      });
+    faceapi.nets.faceLandmark68Net
+      .loadFromUri("/models/face_landmark_68")
+      .catch((e) => {
+        console.error("Failed to load faceLandmark68Net:", e);
+      });
+    faceapi.nets.faceRecognitionNet
+      .loadFromUri("/models/face_recognition")
+      .catch((e) => {
+        console.error("Failed to load faceRecognitionNet:", e);
+      });
   }, []);
 
   useEffect(() => {
@@ -110,7 +116,8 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          videoRef.current.onloadedmetadata = () => videoRef.current?.play().catch(() => {});
+          videoRef.current.onloadedmetadata = () =>
+            videoRef.current?.play().catch(() => {});
         }
 
         if (intervalRef.current) {
@@ -169,11 +176,13 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
               }
             }
           } catch (err) {
-            toast.error((err as Error).message)
+            toast.error(t("error_messages.try_again"));
           }
         }, 500);
       } catch (error) {
-        toast.error((error as Error).message);
+        if ((error as Error).message === "Permission dismissed")
+          toast.error(t("error_messages.permission_dismissed"));
+        else toast.error((error as Error).message);
       } finally {
         setLoadingCamera(false);
       }
@@ -238,8 +247,16 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
         <button className="faceid-close" onClick={handleClose}>
           &times;
         </button>
-        <h2 className="faceid-title">{t(`faceId.${mode}.title`)}</h2>
-        <p className="faceid-text">{t(`faceId.${mode}.subtitle`)}</p>
+        <h2 className="faceid-title">
+          {mode === "login"
+            ? t(`common.login_with_faceId`)
+            : t(`common.add_face_id`)}
+        </h2>
+        <p className="faceid-text">
+          {t(`common.face_id_subtitle`, {
+            field: mode === "login" ? t("common.login") : t("common.register"),
+          })}
+        </p>
 
         <div className="faceid-preview">
           {loadingCamera && (
