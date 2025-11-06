@@ -6,7 +6,6 @@ import { Resource } from "@/types/enum.types";
 import { KeyboardBackspace } from "@mui/icons-material";
 import {
   clearError,
-  setAuthForm,
   setSignupForm,
   signupVerify,
 } from "@/features/auth/authSlice";
@@ -20,6 +19,9 @@ import Spinner from "@/components/Spinner/Spinner";
 import { useCallback } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
+import { ROUTER } from "@/constants/routet";
+import AuthHeader from "../../components/authHeader/AuthHeader";
+import AuthFooter from "../../components/authFooter/AuthFooter";
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
@@ -38,7 +40,7 @@ const VerifyAccount = () => {
       const actionResult = await dispatch(signupVerify(values));
       if (signupVerify.fulfilled.match(actionResult)) {
         toast.success(t("user_messages.verify_successful"));
-        navigate("/messenger");
+        navigate(ROUTER.MESSENGER.MAIN);
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");
         localStorage.removeItem("forgotPasswordMode");
@@ -58,7 +60,7 @@ const VerifyAccount = () => {
         break;
 
       case "Escape":
-        onPressEsc(e, () => dispatch(setAuthForm("signup")));
+        onPressEsc(e, () => navigate(ROUTER.AUTH.MAIN));
     }
   };
 
@@ -85,59 +87,67 @@ const VerifyAccount = () => {
   });
 
   return (
-    <div className="verify-account">
-      <div className="verify-account-message">
-        <h3>{t("common.verify_account_heading")}</h3>
-        <p>
-          {t("common.verify_account_message_part_1")}{" "}
-          <span className="highlight-email">
-            {signupForm?.email ?? "example@gmail.com"}
-          </span>
-          . {t("common.verify_account_message_part_2")}
-        </p>
-      </div>
+    <section id="auth-page">
+      <AuthHeader />
 
-      <div className="verify-account-form">
-        <OTPForm
-          length={6}
-          onChange={handleOtpChange}
-          name="verifyCode"
-          onKeyDown={(e) => onKeyDown(e)}
-        />
+      <div className="auth-controls">
+        <div className="verify-account">
+          <div className="verify-account-message">
+            <h3>{t("common.verify_account_heading")}</h3>
+            <p>
+              {t("common.verify_account_message_part_1")}{" "}
+              <span className="highlight-email">
+                {signupForm?.email ?? "example@gmail.com"}
+              </span>
+              . {t("common.verify_account_message_part_2")}
+            </p>
+          </div>
 
-        <div className="verify-account-buttons">
-          <Button
-            fillWidth
-            hasAnimation
-            onClick={() => formik.handleSubmit()}
-            disabled={isDisabled}
-            type="button"
-          >
-            {LOADING_SIGNUP_VERIFY ? <Spinner /> : t("common.verify")}
-          </Button>
-
-          <div
-            className="verify-account-button"
-            onClick={() => {
-              if (LOADING_SIGNUP_VERIFY) return;
-              dispatch(setAuthForm("signup"));
-            }}
-            onKeyDown={(e) =>
-              onPressEsc(e, () => {
-                if (LOADING_SIGNUP_VERIFY) return;
-                dispatch(setAuthForm("signup"));
-              })
-            }
-          >
-            <KeyboardBackspace
-              fontSize="small"
-              style={{ color: "var(--primary-color)" }}
+          <div className="verify-account-form">
+            <OTPForm
+              length={6}
+              onChange={handleOtpChange}
+              name="verifyCode"
+              onKeyDown={(e) => onKeyDown(e)}
             />
-            <div>{t("common.back")}</div>
+
+            <div className="verify-account-buttons">
+              <Button
+                fillWidth
+                hasAnimation
+                onClick={() => formik.handleSubmit()}
+                disabled={isDisabled}
+                type="button"
+              >
+                {LOADING_SIGNUP_VERIFY ? <Spinner /> : t("common.verify")}
+              </Button>
+
+              <div
+                className="verify-account-button"
+                onClick={() => {
+                  if (LOADING_SIGNUP_VERIFY) return;
+                  navigate(ROUTER.AUTH.MAIN);
+                }}
+                onKeyDown={(e) =>
+                  onPressEsc(e, () => {
+                    if (LOADING_SIGNUP_VERIFY) return;
+                    navigate(ROUTER.AUTH.MAIN);
+                  })
+                }
+              >
+                <KeyboardBackspace
+                  fontSize="small"
+                  style={{ color: "var(--primary-color)" }}
+                />
+                <div>{t("common.back")}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <AuthFooter />
+    </section>
   );
 };
 

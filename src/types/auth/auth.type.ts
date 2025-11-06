@@ -4,12 +4,7 @@ import {
   IDENTIFIER_TYPE,
 } from "../enum.types";
 
-export type AuthFormType =
-  | "login"
-  | "signup"
-  | "verify"
-  | "forgotPassword"
-  | "resetPassword";
+export type AuthFormType = "login" | "signup";
 
 export type LoginModeType =
   | "email"

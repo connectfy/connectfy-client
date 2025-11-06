@@ -29,12 +29,13 @@ import {
 
 // Custom Components
 import Input from "@/components/Input/Input";
-import GenderForm from "../../pages/Signup/components/GenderForm";
 import DatePicker from "@/components/DatePicker";
 import Button from "@/components/Button/Button";
 
 // Styles
 import "./index.style.css";
+import { ROUTER } from "@/constants/routet";
+import GenderForm from "../../pages/main/pages/Signup/components/GenderForm";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -66,7 +67,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
       const res = unwrapResult(actionResult);
       if (res) {
         toast.success(t("user_messages.signup_successful"));
-        navigate("/messenger");
+        navigate(ROUTER.MESSENGER.MAIN);
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");
         localStorage.removeItem("forgotPasswordMode");

@@ -1,13 +1,11 @@
 import "./index.style.css";
 import { useCallback, useEffect, type FC } from "react";
-import AuthHeader from "./components/authHeader/AuthHeader";
+import AuthHeader from "../../components/authHeader/AuthHeader";
 import { Resource } from "@/types/enum.types";
-import LoginAndSignupHeader from "./components/authHeader/LoginAndSignupHeader";
-import AuthFooter from "./components/authFooter/AuthFooter";
+import LoginAndSignupHeader from "./components/AuthHeader";
+import AuthFooter from "../../components/authFooter/AuthFooter";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import VerifyAccount from "./pages/Verify";
-import ForgotPassword from "./pages/ForgotPassword";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { AuthFormType } from "@/types/auth/auth.type";
 import { setAuthForm } from "@/features/auth/authSlice";
@@ -26,22 +24,13 @@ const AuthPage: FC = () => {
       case "signup":
         return <Signup />;
 
-      case "verify":
-        return <VerifyAccount />;
-
-      case "forgotPassword":
-        return <ForgotPassword />;
+      default:
+        break;
     }
   }, [authForm]);
 
   useEffect(() => {
-    const validAuthForms: AuthFormType[] = [
-      "login",
-      "signup",
-      "verify",
-      "forgotPassword",
-      "resetPassword",
-    ];
+    const validAuthForms: AuthFormType[] = ["login", "signup"];
 
     if (!validAuthForms.includes(authMode as AuthFormType)) {
       localStorage.setItem("authPage", "login");

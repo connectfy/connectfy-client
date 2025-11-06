@@ -10,10 +10,14 @@ import { setAuthForm } from "@/features/auth/authSlice";
 import { LANGUAGE } from "@/types/enum.types";
 import useBoolean from "@/hooks/useBoolean";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ROUTER } from "@/constants/routet";
 
 const AuthFooter = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation().pathname;
 
   const { theme, toggleTheme } = useTheme();
 
@@ -40,15 +44,15 @@ const AuthFooter = () => {
 
   return (
     <Fragment>
-      {authForm === "login" && (
+      {location === ROUTER.AUTH.MAIN && authForm === "login" && (
         <p
           className="auth-footer-other-link"
-          onClick={() => dispatch(setAuthForm("forgotPassword"))}
+          onClick={() => navigate(ROUTER.AUTH.FORGOT_PASSWORD)}
         >
           {t("common.forgot_password")}
         </p>
       )}
-      {(authForm === "signup" || authForm === "login") && (
+      {location === ROUTER.AUTH.MAIN && (
         <p className="auth-footer-other-links">
           {authForm === "login"
             ? t("common.do_not_have_account")

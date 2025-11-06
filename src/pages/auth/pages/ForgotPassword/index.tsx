@@ -4,7 +4,6 @@ import { KeyboardBackspace } from "@mui/icons-material";
 import {
   clearError,
   forgotPassword,
-  setAuthForm,
   setForgotPasswordMode,
   setLoginMode,
 } from "@/features/auth/authSlice";
@@ -23,10 +22,15 @@ import { toast } from "react-toastify";
 import { checkEmptyString } from "@/utils/checkValues";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 import { useToastError } from "@/hooks/useToastError";
+import { useNavigate } from "react-router-dom";
+import { ROUTER } from "@/constants/routet";
+import AuthHeader from "../../components/authHeader/AuthHeader";
+import AuthFooter from "../../components/authFooter/AuthFooter";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
@@ -47,7 +51,7 @@ const ForgotPassword = () => {
       const res = unwrapResult(actionResult);
       if (res) {
         toast.success(t("user_messages.forgot_password_successful"));
-        dispatch(setAuthForm("login"));
+        navigate(ROUTER.AUTH.MAIN);
         dispatch(setLoginMode("username"));
         resetForm();
       }
@@ -64,7 +68,7 @@ const ForgotPassword = () => {
         break;
 
       case "Escape":
-        onPressEsc(e, () => dispatch(setAuthForm("login")));
+        onPressEsc(e, () => navigate(ROUTER.AUTH.MAIN));
     }
   };
 
@@ -125,46 +129,54 @@ const ForgotPassword = () => {
   }, [formik.values]);
 
   return (
-    <section className="forgot-password">
-      <div className="forgot-password__intro">
-        <h4 className="forgot-password__title">
-          {t("common.forgot_password_title", "Forgot Password?")}
-        </h4>
-        <p className="forgot-password__subtitle">
-          {t(
-            "common.forgot_password_subtitle",
-            "Select an identifier to find your account. We'll send a secure password-reset link to the account's registered email address."
-          )}
-        </p>
-      </div>
+    <section id="auth-page">
+      <AuthHeader />
 
-      <ForgotPasswordHeader formik={formik} />
+      <div className="auth-controls">
+        <div className="forgot-password">
+          <div className="forgot-password__intro">
+            <h4 className="forgot-password__title">
+              {t("common.forgot_password_title", "Forgot Password?")}
+            </h4>
+            <p className="forgot-password__subtitle">
+              {t(
+                "common.forgot_password_subtitle",
+                "Select an identifier to find your account. We'll send a secure password-reset link to the account's registered email address."
+              )}
+            </p>
+          </div>
 
-      {renderForm()}
+          <ForgotPasswordHeader formik={formik} />
 
-      <div className="forgot-password-buttons">
-        <div
-          className="forgot-password-button"
-          onClick={() => {
-            if (LOADING_FORGOT_PASSWORD) return;
-            dispatch(setAuthForm("login"));
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) =>
-            onPressEsc(e, () => {
-              if (LOADING_FORGOT_PASSWORD) return;
-              dispatch(setAuthForm("login"));
-            })
-          }
-        >
-          <KeyboardBackspace
-            fontSize="small"
-            style={{ color: "var(--primary-color)" }}
-          />
-          <div>{t("common.back", "Back")}</div>
+          {renderForm()}
+
+          <div className="forgot-password-buttons">
+            <div
+              className="forgot-password-button"
+              onClick={() => {
+                if (LOADING_FORGOT_PASSWORD) return;
+                navigate(ROUTER.AUTH.MAIN);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) =>
+                onPressEsc(e, () => {
+                  if (LOADING_FORGOT_PASSWORD) return;
+                  navigate(ROUTER.AUTH.MAIN);
+                })
+              }
+            >
+              <KeyboardBackspace
+                fontSize="small"
+                style={{ color: "var(--primary-color)" }}
+              />
+              <div>{t("common.back", "Back")}</div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <AuthFooter />
     </section>
   );
 };

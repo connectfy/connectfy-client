@@ -263,7 +263,12 @@ const authSlice = createSlice({
       state.forgotPasswordMode = action.payload;
       localStorage.setItem("forgotPasswordMode", action.payload);
     },
-    clearError: (state, action: PayloadAction<AuthFormType>) => {
+    clearError: (
+      state,
+      action: PayloadAction<
+        "login" | "signup" | "verify" | "resetPassword" | "forgotPassword"
+      >
+    ) => {
       switch (action.payload) {
         case "login":
           state.ERROR_LOGIN = null;

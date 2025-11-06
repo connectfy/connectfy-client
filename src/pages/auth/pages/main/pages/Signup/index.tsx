@@ -3,19 +3,14 @@ import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
 import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "@/components/Button/Button";
-import {
-  clearError,
-  setAuthForm,
-  setSignupForm,
-  signup,
-} from "@/features/auth/authSlice";
+import { clearError, setSignupForm, signup } from "@/features/auth/authSlice";
 import DatePicker from "@/components/DatePicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
-import { signupInitialState } from "../../constants/intialState";
-import { validateSignup } from "../../constants/validation";
+import { signupInitialState } from "../../../../constants/intialState";
+import { validateSignup } from "../../../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { Resource } from "@/types/enum.types";
@@ -24,10 +19,12 @@ import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import Spinner from "@/components/Spinner/Spinner";
 import { onPressEnter } from "@/utils/keyPressDown";
+import { ROUTER } from "@/constants/routet";
 
 const Signup = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const { ERROR_SIGNUP, LOADING_SIGNUP, signupForm } = useAppSelector(
     (state) => state[Resource.auth]
@@ -50,7 +47,7 @@ const Signup = () => {
       if (res) {
         toast.success(t("user_messages.signup_successful"));
         dispatch(setSignupForm(values));
-        dispatch(setAuthForm("verify"));
+        navigate(ROUTER.AUTH.VERIFY_ACCOUNT);
         resetForm();
       }
     },

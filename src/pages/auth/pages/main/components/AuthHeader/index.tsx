@@ -1,4 +1,4 @@
-import "./css/loginAndSignupHeader.style.css";
+import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
 import { googleLogin, setAuthForm } from "@/features/auth/authSlice";
@@ -10,8 +10,9 @@ import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import useBoolean from "@/hooks/useBoolean";
-import SignupModal from "../authModal";
 import { useState } from "react";
+import { ROUTER } from "@/constants/routet";
+import SignupModal from "@/pages/auth/components/authModal";
 
 const LoginAndSignupHeader = () => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ const LoginAndSignupHeader = () => {
         const res = unwrapResult(actionResult);
         if (res) {
           toast.success(t("user_messages.login_successful"));
-          navigate("/messenger");
+          navigate(ROUTER.MESSENGER.MAIN);
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");
           localStorage.removeItem("forgotPasswordMode");
@@ -101,7 +102,11 @@ const LoginAndSignupHeader = () => {
         </div>
       </div>
 
-      <SignupModal isOpen={isModalOpen.open} onClose={isModalOpen.onClose} idToken={idToken} />
+      <SignupModal
+        isOpen={isModalOpen.open}
+        onClose={isModalOpen.onClose}
+        idToken={idToken}
+      />
     </section>
   );
 };

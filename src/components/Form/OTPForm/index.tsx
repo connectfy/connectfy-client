@@ -1,8 +1,8 @@
-import { useAppDispatch } from "@/hooks/useStore";
 import "./index.style.css";
 import { Box } from "@mui/material";
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
-import { setAuthForm } from "@/features/auth/authSlice";
+import { ROUTER } from "@/constants/routet";
+import { useNavigate } from "react-router-dom";
 
 type OTPProps = {
   length: number;
@@ -17,9 +17,9 @@ export default function OTPForm({
   name,
   onComplete,
   onChange,
-  onKeyDown
+  onKeyDown,
 }: OTPProps) {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [values, setValues] = useState<string[]>(() => Array(length).fill(""));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const lastEmittedRef = useRef<string | null>(null);
@@ -95,7 +95,7 @@ export default function OTPForm({
       if (code.length === length) onKeyDown(e);
     } else if (key === "Escape") {
       e.preventDefault();
-      dispatch(setAuthForm("signup"))
+      navigate(ROUTER.AUTH.MAIN);
     }
   };
 

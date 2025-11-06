@@ -13,7 +13,7 @@ export function RequireAuth({ children }: AuthType) {
   const location = useLocation();
 
   if (!access_token)
-    <Navigate to={ROUTER.AUTH} state={{ from: location }} replace />;
+    <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />;
 
   return children;
 }

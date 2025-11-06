@@ -7,8 +7,8 @@ import PhoneNumberForm from "./components/PhoneNumberForm";
 import FaceIdForm from "./components/FaceIdForm";
 import LoginHeader from "./components/LoginHeader";
 import { useFormik } from "formik";
-import { loginInitialState } from "../../constants/intialState";
-import { validateLogin } from "../../constants/validation";
+import { loginInitialState } from "../../../../constants/intialState";
+import { validateLogin } from "../../../../constants/validation";
 import { useTranslation } from "react-i18next";
 import { clearError, login, setLoginMode } from "@/features/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -19,6 +19,7 @@ import { checkEmptyString } from "@/utils/checkValues";
 import { LoginModeType } from "@/types/auth/auth.type";
 import { useNavigate } from "react-router-dom";
 import useBoolean from "@/hooks/useBoolean";
+import { ROUTER } from "@/constants/routet";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -48,7 +49,7 @@ const Login = () => {
         const res = unwrapResult(actionResult);
         if (res) {
           toast.success(t("user_messages.login_successful"));
-          navigate("/messenger");
+          navigate(ROUTER.MESSENGER.MAIN);
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");
           localStorage.removeItem("forgotPasswordMode");
