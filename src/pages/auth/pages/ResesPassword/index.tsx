@@ -7,7 +7,6 @@ import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { resetPasswordInitialState } from "../../constants/intialState";
 import { validateResetPassword } from "../../constants/validation";
-import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { Resource, TOKEN_TYPE } from "@/types/enum.types";
@@ -19,17 +18,15 @@ import {
   resetPassword,
 } from "@/features/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { snack } from "@/utils/snackManager";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const {
-    LOADING_RESET_PASSWORD,
-    ERROR_RESET_PASSWORD,
-    ERROR_IS_VALID_TOKEN,
-  } = useAppSelector((state) => state[Resource.auth]);
+  const { LOADING_RESET_PASSWORD, ERROR_RESET_PASSWORD, ERROR_IS_VALID_TOKEN } =
+    useAppSelector((state) => state[Resource.auth]);
 
   const [searchParams] = useSearchParams();
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
@@ -46,12 +43,12 @@ const ResetPassword = () => {
         const actionResult = await dispatch(resetPassword(values));
         const res = unwrapResult(actionResult);
         if (res) {
-          toast.success(t("user_messages.reset_password_successfull"));
+          snack.success(t("user_messages.reset_password_successfull"));
           navigate("/auth");
           resetForm();
         }
       } catch (error) {
-        toast.error((error as Error).message);
+        snack.error((error as Error).message);
       }
     },
   });
@@ -141,10 +138,12 @@ const ResetPassword = () => {
                 onBlur={() => formik.setFieldTouched("password", true, false)}
                 onGenerate={(value?: string) => {
                   navigator.clipboard.writeText(value as string);
-                  toast.info(t("user_messages.password_generated_message"), {
-                    position: "bottom-center",
-                    autoClose: 10000,
-                    ariaLabel: "notification",
+                  snack.info(t("user_messages.password_generated_message"), {
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "center",
+                    },
+                    autoHideDuration: 10000,
                   });
 
                   formik.setFieldValue("password", value);

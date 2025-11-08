@@ -12,7 +12,6 @@ import { useFormik } from "formik";
 import { signupInitialState } from "../../../../constants/intialState";
 import { validateSignup } from "../../../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 import { Resource } from "@/types/enum.types";
 import { useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
@@ -20,6 +19,7 @@ import { checkEmptyString } from "@/utils/checkValues";
 import Spinner from "@/components/Spinner/Spinner";
 import { onPressEnter } from "@/utils/keyPressDown";
 import { ROUTER } from "@/constants/routet";
+import { snack } from "@/utils/snackManager";
 
 const Signup = () => {
   const { t } = useTranslation();
@@ -45,7 +45,7 @@ const Signup = () => {
       const actionResult = await dispatch(signup(valuesWithoutConfirm));
       const res = unwrapResult(actionResult);
       if (res) {
-        // toast.success(t("user_messages.signup_successful"));
+        // snack.success(t("user_messages.signup_successful"));
         dispatch(setSignupForm(values));
         navigate(ROUTER.AUTH.VERIFY_ACCOUNT);
         resetForm();
@@ -232,10 +232,12 @@ const Signup = () => {
           }
           onGenerate={(value?: string) => {
             navigator.clipboard.writeText(value as string);
-            toast.info(t("user_messages.password_generated_message"), {
-              position: "bottom-center",
-              autoClose: 10000,
-              ariaLabel: "notification",
+            snack.info(t("user_messages.password_generated_message"), {
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "center",
+              },
+              autoHideDuration: 10000,
             });
 
             formik.setFieldValue("password", value);

@@ -13,13 +13,13 @@ import { useTranslation } from "react-i18next";
 import { clearError, login, setLoginMode } from "@/features/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { toast } from "react-toastify";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import { LoginModeType } from "@/types/auth/auth.type";
 import { useNavigate } from "react-router-dom";
 import useBoolean from "@/hooks/useBoolean";
 import { ROUTER } from "@/constants/routet";
+import { snack } from "@/utils/snackManager";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ const Login = () => {
         const actionResult = await dispatch(login(values));
         const res = unwrapResult(actionResult);
         if (res) {
-          toast.success(t("user_messages.login_successful"));
+          snack.success(t("user_messages.login_successful"));
           navigate(ROUTER.MESSENGER.MAIN);
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");
@@ -56,7 +56,7 @@ const Login = () => {
           resetForm();
         }
       } catch (err) {
-        toast.error((err as Error).message);
+        snack.error((err as Error).message);
       }
     },
   });

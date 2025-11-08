@@ -18,7 +18,6 @@ import { useFormik } from "formik";
 import { forgotPasswordInitialState } from "../../constants/intialState";
 import { validateForgotPassword } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 import { checkEmptyString } from "@/utils/checkValues";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 import { useToastError } from "@/hooks/useToastError";
@@ -26,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
 import AuthHeader from "../../components/authHeader/AuthHeader";
 import AuthFooter from "../../components/authFooter/AuthFooter";
+import { snack } from "@/utils/snackManager";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -50,7 +50,7 @@ const ForgotPassword = () => {
       const actionResult = await dispatch(forgotPassword(values));
       const res = unwrapResult(actionResult);
       if (res) {
-        toast.success(t("user_messages.forgot_password_successful"));
+        snack.success(t("user_messages.forgot_password_successful"));
         navigate(ROUTER.AUTH.MAIN);
         dispatch(setLoginMode("username"));
         resetForm();

@@ -2,7 +2,8 @@
 import { ApiErrorType } from "@/types/api.types";
 import { useAppDispatch } from "./useStore";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { snack } from "@/utils/snackManager";
+// import { toast } from "react-toastify";
 
 type UseToastErrorParams = {
   error: ApiErrorType;
@@ -24,10 +25,10 @@ export const useToastError = ({
     if (open && error) {
       if (Array.isArray(error)) {
         error.forEach((err) => {
-          toast.error(err);
+          snack.error(err);
         });
       } else {
-        toast.error(error);
+        snack.error(error);
       }
       dispatch(clearErrorAction());
     }

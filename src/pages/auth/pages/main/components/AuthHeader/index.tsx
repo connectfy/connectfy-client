@@ -6,13 +6,13 @@ import { Resource } from "@/types/enum.types";
 import { AuthFormType } from "@/types/auth/auth.type";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { GoogleLogin } from "@react-oauth/google";
-import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import useBoolean from "@/hooks/useBoolean";
 import { useState } from "react";
 import { ROUTER } from "@/constants/routet";
 import SignupModal from "@/pages/auth/components/authModal";
+import { snack } from "@/utils/snackManager";
 
 const LoginAndSignupHeader = () => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ const LoginAndSignupHeader = () => {
       const idToken = tokenResponse.credential;
 
       if (!idToken) {
-        toast.error(t("error_messages.google_login_failed"));
+        snack.error(t("error_messages.google_login_failed"));
         return;
       }
 
@@ -45,7 +45,7 @@ const LoginAndSignupHeader = () => {
         const actionResult = await dispatch(googleLogin({ idToken }));
         const res = unwrapResult(actionResult);
         if (res) {
-          toast.success(t("user_messages.login_successful"));
+          snack.success(t("user_messages.login_successful"));
           navigate(ROUTER.MESSENGER.MAIN);
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");
@@ -56,7 +56,7 @@ const LoginAndSignupHeader = () => {
         isModalOpen.onOpen();
       }
     } catch (error: any) {
-      toast.error(error);
+      snack.error(error);
     }
   };
 
@@ -93,7 +93,7 @@ const LoginAndSignupHeader = () => {
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() =>
-                toast.error(t("error_messages.google_login_failed"))
+                snack.error(t("error_messages.google_login_failed"))
               }
               useOneTap={false}
               width="410"

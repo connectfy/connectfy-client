@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
 import { validateVerifySignup } from "../../constants/validation";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "@/components/Spinner/Spinner";
 import { useCallback } from "react";
@@ -22,6 +21,7 @@ import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 import { ROUTER } from "@/constants/routet";
 import AuthHeader from "../../components/authHeader/AuthHeader";
 import AuthFooter from "../../components/authFooter/AuthFooter";
+import { snack } from "@/utils/snackManager";
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const VerifyAccount = () => {
     onSubmit: async (values, { resetForm }) => {
       const actionResult = await dispatch(signupVerify(values));
       if (signupVerify.fulfilled.match(actionResult)) {
-        toast.success(t("user_messages.verify_successful"));
+        snack.success(t("user_messages.verify_successful"));
         navigate(ROUTER.MESSENGER.MAIN);
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");

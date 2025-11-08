@@ -7,7 +7,6 @@ import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../constants/intialState";
 import { valdiateGoogleSignup } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 import { Resource } from "@/types/enum.types";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
@@ -36,6 +35,7 @@ import Button from "@/components/Button/Button";
 import "./index.style.css";
 import { ROUTER } from "@/constants/routet";
 import GenderForm from "../../pages/main/pages/Signup/components/GenderForm";
+import { snack } from "@/utils/snackManager";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -66,7 +66,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
       const actionResult = await dispatch(googleSignup(values));
       const res = unwrapResult(actionResult);
       if (res) {
-        toast.success(t("user_messages.signup_successful"));
+        snack.success(t("user_messages.signup_successful"));
         navigate(ROUTER.MESSENGER.MAIN);
         localStorage.removeItem("authPage");
         localStorage.removeItem("loginMode");

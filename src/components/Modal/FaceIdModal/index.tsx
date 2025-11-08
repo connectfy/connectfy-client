@@ -4,13 +4,13 @@ import { useTranslation } from "react-i18next";
 import * as faceapi from "face-api.js";
 // import { useDispatch } from "react-redux";
 import { CircularProgress } from "@mui/material";
-import { toast } from "react-toastify";
 import { useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";
 import Spinner from "@/components/Spinner/Spinner";
 import { FormikProps } from "formik";
 import { ILoginForm } from "@/types/auth/auth.type";
 import Button from "@/components/Button/Button";
+import { snack } from "@/utils/snackManager";
 
 type FaceIdModalProps = {
   isOpen: boolean;
@@ -71,7 +71,7 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
       setHasDescriptor(false);
       hasDescriptorRef.current = false;
     } catch (error) {
-      toast.error((error as Error).message);
+      snack.error((error as Error).message);
     } finally {
       onClose();
     }
@@ -176,13 +176,13 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
               }
             }
           } catch (err) {
-            toast.error(t("error_messages.try_again"));
+            snack.error(t("error_messages.try_again"));
           }
         }, 500);
       } catch (error) {
         if ((error as Error).message === "Permission dismissed")
-          toast.error(t("error_messages.permission_dismissed"));
-        else toast.error((error as Error).message);
+          snack.error(t("error_messages.permission_dismissed"));
+        else snack.error((error as Error).message);
       } finally {
         setLoadingCamera(false);
       }
