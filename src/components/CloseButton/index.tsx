@@ -1,5 +1,5 @@
 import { closeSnackbar } from "notistack";
-import { X } from "lucide-react";
+import CloseIcon from "@mui/icons-material/Close";
 
 const CloseButton = ({ snackbarKey }: { snackbarKey: any }) => (
   <button
@@ -19,8 +19,8 @@ const CloseButton = ({ snackbarKey }: { snackbarKey: any }) => (
     onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
     onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
   >
-    <X size={18} />
+    <CloseIcon style={{ fontSize: 18 }} />
   </button>
 );
 
-export default CloseButton
+export default CloseButton;
