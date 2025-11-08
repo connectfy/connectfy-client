@@ -110,7 +110,7 @@ export const validateSignup = (
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
   else if (password.length < 8 || !passwordComplexityRegex.test(password))
-    errors.password = t("common.password_rule");
+    errors.password = t("error_messages.password_rule");
 
   if (confirm !== password)
     errors.confirm = t("error_messages.password_mismatch");

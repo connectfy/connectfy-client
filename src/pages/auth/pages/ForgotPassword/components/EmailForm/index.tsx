@@ -35,6 +35,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
           }
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
           onKeyDown={(e) => onKeyDown(e)}
+          hasError={!!(formik.errors.identifier && formik.touched.identifier)}
         />
       </div>
       <div className="forgot-password-email-form-submit">

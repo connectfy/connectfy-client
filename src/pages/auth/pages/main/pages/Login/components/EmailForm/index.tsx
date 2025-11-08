@@ -31,6 +31,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("identifier", e.target.value || null)
           }
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
+          hasError={!!(formik.errors.identifier && formik.touched.identifier)}
         />
         <PasswordInput
           inputSize="medium"
@@ -41,6 +42,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("password", e.target.value || "")
           }
           onBlur={() => formik.setFieldTouched("password", true, false)}
+          hasError={!!(formik.errors.password && formik.touched.password)}
         />
       </div>
       <div className="email-login-form-submit">

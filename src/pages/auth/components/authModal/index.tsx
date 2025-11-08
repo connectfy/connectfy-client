@@ -218,6 +218,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
               }
               onBlur={() => formik.setFieldTouched("username", true, false)}
               onKeyDown={(e) => onKeyDown(e)}
+              hasError={!!(formik.errors.username && formik.touched.username)}
             />
             {formik.errors.username && formik.touched.username && (
               <Typography

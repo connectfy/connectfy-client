@@ -91,6 +91,7 @@ const PhoneNumberForm: FC<Props> = ({
               onBlur={onBlur}
               inputMode="numeric"
               onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : undefined)}
+              hasError={hasLengthError && blur}
             />
           </div>
         </div>

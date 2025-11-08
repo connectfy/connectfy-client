@@ -55,9 +55,9 @@ export default function PasswordInput({
   const labelSx: SxProps<Theme> = [
     (InputLabelProps as any)?.sx ?? {},
     {
-      color: hasError ? "var(--error-color)" : "var(--border-color)",
+      color: hasError ? "var(--error-color)" : "var(--border-color) !important",
       "&.Mui-focused": {
-        color: hasError ? "var(--error-color)" : "var(--primary-color)",
+        color: hasError ? "var(--error-color)" : "var(--primary-color) !important",
       },
       "&.Mui-error": {
         color: "var(--error-color)",

@@ -122,6 +122,7 @@ const Signup = () => {
               formik.setFieldValue("firstName", e.target.value || null)
             }
             onKeyDown={(e) => onKeyDown(e)}
+            hasError={!!(formik.errors.firstName && formik.touched.firstName)}
           />
           {formik.errors.firstName && formik.touched.firstName && (
             <h6>{formik.errors.firstName}</h6>
@@ -138,6 +139,7 @@ const Signup = () => {
               formik.setFieldValue("lastName", e.target.value || null)
             }
             onKeyDown={(e) => onKeyDown(e)}
+            hasError={!!(formik.errors.lastName && formik.touched.lastName)}
           />
           {formik.errors.lastName && formik.touched.lastName && (
             <h6>{formik.errors.lastName}</h6>
@@ -156,6 +158,7 @@ const Signup = () => {
               formik.setFieldValue("username", e.target.value || null)
             }
             onKeyDown={(e) => onKeyDown(e)}
+            hasError={!!(formik.errors.username && formik.touched.username)}
           />
           {formik.errors.username && formik.touched.username && (
             <h6>{formik.errors.username}</h6>
@@ -172,6 +175,7 @@ const Signup = () => {
               formik.setFieldValue("email", e.target.value || null)
             }
             onKeyDown={(e) => onKeyDown(e)}
+            hasError={!!(formik.errors.email && formik.touched.email)}
           />
           {formik.errors.email && formik.touched.email && (
             <h6>{formik.errors.email}</h6>
@@ -198,9 +202,11 @@ const Signup = () => {
             value={formik.values.birthdayDate?.toString() || ""}
             onChange={(date) => formik.setFieldValue("birthdayDate", date)}
             inputSize="small"
-            hasError={false}
             placeholder={t("common.birthday")}
             onKeyDown={(e) => onKeyDown(e)}
+            hasError={
+              !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
+            }
           />
           {formik.errors.birthdayDate && formik.touched.birthdayDate && (
             <h6>{formik.errors.birthdayDate}</h6>
@@ -236,6 +242,7 @@ const Signup = () => {
             formik.setFieldValue("confirm", value);
           }}
           onKeyDown={(e) => onKeyDown(e)}
+          hasError={!!(formik.errors.password && formik.touched.password)}
         />
         {formik.errors.password && formik.touched.password && (
           <h6>{formik.errors.password}</h6>
@@ -250,6 +257,7 @@ const Signup = () => {
             formik.setFieldValue("confirm", e.target.value || null)
           }
           onKeyDown={(e) => onKeyDown(e)}
+          hasError={!!(formik.errors.confirm && formik.touched.confirm)}
         />
         {formik.errors.confirm && formik.touched.confirm && (
           <h6>{formik.errors.confirm}</h6>

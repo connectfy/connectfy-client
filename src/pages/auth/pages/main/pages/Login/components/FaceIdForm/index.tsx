@@ -20,7 +20,13 @@ interface Props {
   // onToggle: () => void;
 }
 
-const FaceIdForm: FC<Props> = ({ formik, isDisabled, open, onOpen, onClose }) => {
+const FaceIdForm: FC<Props> = ({
+  formik,
+  isDisabled,
+  open,
+  onOpen,
+  onClose,
+}) => {
   const { t } = useTranslation();
 
   const { LOADING_LOGIN } = useAppSelector((state) => state[Resource.auth]);
@@ -38,6 +44,7 @@ const FaceIdForm: FC<Props> = ({ formik, isDisabled, open, onOpen, onClose }) =>
               formik.setFieldValue("identifier", e.target.value || null)
             }
             onBlur={() => formik.setFieldTouched("identifier", true, false)}
+            hasError={!!(formik.errors.identifier && formik.touched.identifier)}
           />
         </div>
         <div className="faceId-login-form-submit">
