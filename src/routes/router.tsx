@@ -11,6 +11,9 @@ const ForgotPassword = Loader(
 const VerifySignup = Loader(
   lazy(() => import("@/pages/auth/pages/Verify/index"))
 );
+const ResetPassword = Loader(
+  lazy(() => import("@/pages/auth/pages/ResesPassword/index"))
+);
 
 const routes = [
   {
@@ -24,6 +27,10 @@ const routes = [
   {
     path: ROUTER.AUTH.VERIFY_ACCOUNT,
     element: <VerifySignup />,
+  },
+  {
+    path: ROUTER.AUTH.RESET_PASSWORD,
+    element: <ResetPassword />,
   },
 ];
 

@@ -45,7 +45,7 @@ const Signup = () => {
       const actionResult = await dispatch(signup(valuesWithoutConfirm));
       const res = unwrapResult(actionResult);
       if (res) {
-        toast.success(t("user_messages.signup_successful"));
+        // toast.success(t("user_messages.signup_successful"));
         dispatch(setSignupForm(values));
         navigate(ROUTER.AUTH.VERIFY_ACCOUNT);
         resetForm();

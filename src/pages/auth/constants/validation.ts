@@ -15,6 +15,7 @@ import { checkEmptyString } from "@/utils/checkValues";
 import { TFunction } from "i18next";
 // import { COUNTRIES } from "./constant";
 
+// =======================> LOGIN
 export const validateLogin = (
   values: ILoginForm,
   t: TFunction
@@ -42,6 +43,7 @@ export const validateLogin = (
   return errors;
 };
 
+// =======================> SIGNUP
 export const validateSignup = (
   values: ISignupForm,
   t: TFunction
@@ -116,6 +118,7 @@ export const validateSignup = (
   return errors;
 };
 
+// =======================> VERIFY SIGNUP
 export const validateVerifySignup = (
   values: ISignupVerifyForm,
   t: TFunction
@@ -132,6 +135,7 @@ export const validateVerifySignup = (
   return errors;
 };
 
+// =======================> FORGOT PASSWORD
 export const validateForgotPassword = (
   values: IForgotPasswordForm,
   t: TFunction
@@ -153,6 +157,7 @@ export const validateForgotPassword = (
   return errors;
 };
 
+// =======================> RESET PASSWORD
 export const validateResetPassword = (
   values: IResetPasswordForm,
   t: TFunction
@@ -166,14 +171,15 @@ export const validateResetPassword = (
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
   else if (password.length < 8 || !passwordComplexityRegex.test(password))
-    errors.password = t("common.password_rule");
+    errors.password = t("error_messages.password_rule");
 
   if (confirmPassword !== password)
-    errors.confirm = t("error_messages.password_mismatch");
+    errors.confirmPassword = t("error_messages.password_mismatch");
 
   return errors;
 };
 
+// =======================> GOOGLE SIGNUP
 export const valdiateGoogleSignup = (
   values: IGoogleSignupForm,
   t: TFunction

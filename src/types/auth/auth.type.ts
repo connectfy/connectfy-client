@@ -2,6 +2,7 @@ import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   GENDER,
   IDENTIFIER_TYPE,
+  TOKEN_TYPE,
 } from "../enum.types";
 
 export type AuthFormType = "login" | "signup";
@@ -102,4 +103,9 @@ export interface IGoogleSignupForm {
 export interface IFaceIdForm {
   username: string | null;
   faceDescriptor: number[] | null;
+}
+
+export interface IIsValidToken {
+  token: string | null;
+  type: TOKEN_TYPE;
 }

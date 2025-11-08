@@ -18,12 +18,14 @@ import {
   IGoogleLoginForm,
   IGoogleSignupForm,
   IFaceIdForm,
+  IIsValidToken,
 } from "@/types/auth/auth.type";
 import {
   faceIdApi,
   forgotPasswordApi,
   googleLoginApi,
   googleSignupApi,
+  isValidTokenApi,
   loginApi,
   logoutApi,
   resetPasswordApi,
@@ -50,6 +52,7 @@ export interface AuthState {
   LOADING_GOOGLE_LOGIN: boolean;
   LOADING_GOOGLE_SIGNUP: boolean;
   LOADING_FACE_ID: boolean;
+  LOADING_IS_VALID_TOKEN: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -59,6 +62,7 @@ export interface AuthState {
   ERROR_GOOGLE_LOGIN: ApiErrorType;
   ERROR_GOOGLE_SIGNUP: ApiErrorType;
   ERROR_FACE_ID: ApiErrorType;
+  ERROR_IS_VALID_TOKEN: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -69,7 +73,7 @@ export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.failed_to_login")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -86,7 +90,7 @@ export const signup = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.failed_to_signup")
+        error.response?.data?.message || t("error_messages.failed_to_signup")
       );
     }
   }
@@ -104,7 +108,7 @@ export const signupVerify = createAsyncThunk<
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message ||
-          t("error_message.failed_to_verify_signup")
+          t("error_messages.failed_to_verify_signup")
       );
     }
   }
@@ -122,7 +126,7 @@ export const forgotPassword = createAsyncThunk<
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message ||
-          t("error_message.failed_to_forgot_password_request")
+          t("error_messages.failed_to_forgot_password_request")
       );
     }
   }
@@ -140,7 +144,7 @@ export const resetPassword = createAsyncThunk<
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message ||
-          t("error_message.failed_to_reset_password")
+          t("error_messages.failed_to_reset_password")
       );
     }
   }
@@ -154,7 +158,7 @@ export const logout = createAsyncThunk<ILogoutResponse>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.failed_to_logout")
+        error.response?.data?.message || t("error_messages.failed_to_logout")
       );
     }
   }
@@ -168,7 +172,7 @@ export const googleLogin = createAsyncThunk<ILoginResponse, IGoogleLoginForm>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.failed_to_login")
+        error.response?.data?.message || t("error_messages.failed_to_login")
       );
     }
   }
@@ -185,7 +189,7 @@ export const googleSignup = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.failed_to_signup")
+        error.response?.data?.message || t("error_messages.failed_to_signup")
       );
     }
   }
@@ -199,7 +203,22 @@ export const faceId = createAsyncThunk<ILoginResponse, IFaceIdForm>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_message.failed_to_signup")
+        error.response?.data?.message || t("error_messages.failed_to_signup")
+      );
+    }
+  }
+);
+
+export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
+  "/auth/is-valid-token",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await isValidTokenApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          t("error_messages.failed_to_veridy_token")
       );
     }
   }
@@ -222,6 +241,7 @@ const initialState: AuthState = {
   LOADING_GOOGLE_LOGIN: false,
   LOADING_GOOGLE_SIGNUP: false,
   LOADING_FACE_ID: false,
+  LOADING_IS_VALID_TOKEN: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -231,6 +251,7 @@ const initialState: AuthState = {
   ERROR_GOOGLE_LOGIN: null,
   ERROR_GOOGLE_SIGNUP: null,
   ERROR_FACE_ID: null,
+  ERROR_IS_VALID_TOKEN: null,
 };
 
 const authSlice = createSlice({
@@ -396,6 +417,18 @@ const authSlice = createSlice({
       .addCase(faceId.rejected, (state, action) => {
         state.LOADING_FACE_ID = false;
         state.ERROR_GOOGLE_SIGNUP = action.payload as string | string[];
+      })
+
+      // =================== IS VALID TOKEN
+      .addCase(isValidToken.fulfilled, (state) => {
+        state.LOADING_IS_VALID_TOKEN = false;
+      })
+      .addCase(isValidToken.pending, (state) => {
+        state.LOADING_IS_VALID_TOKEN = true;
+      })
+      .addCase(isValidToken.rejected, (state, action) => {
+        state.LOADING_FACE_ID = false;
+        state.ERROR_IS_VALID_TOKEN = action.payload as string | string[];
       });
   },
 });
