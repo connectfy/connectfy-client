@@ -1,4 +1,3 @@
-import { ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { LANGUAGE } from "./types/enum.types";
@@ -23,7 +22,7 @@ function App() {
     }
   }, [dispatch]);
 
-useEffect(() => {
+  useEffect(() => {
     const availableLangs = Object.values(LANGUAGE);
 
     const validLang =
@@ -35,16 +34,7 @@ useEffect(() => {
     localStorage.setItem("lang", validLang);
   }, [lang, i18n]);
 
-  return (
-    <>
-      {content}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        aria-label="notification"
-      />
-    </>
-  );
+  return <>{content}</>;
 }
 
 export default App;
