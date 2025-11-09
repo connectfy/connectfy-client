@@ -43,7 +43,3 @@
   color: #fff;
   border-color: var(--primary-color);
 }
-
-.auth-footer-action-btn span {
-  z-index: -1 !important;
-}
