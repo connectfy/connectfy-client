@@ -32,11 +32,18 @@
   border-radius: 999px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 .auth-footer-action-btn:hover {
   background-color: var(--primary-color);
   color: #fff;
   border-color: var(--primary-color);
+}
+
+.auth-footer-action-btn span {
+  z-index: -1 !important;
 }
