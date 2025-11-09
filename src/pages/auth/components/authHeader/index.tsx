@@ -1,5 +1,5 @@
 import MainIcon from "@/assets/icons/MainIcon";
-import "./css/mainHeader.style.css";
+import "./index.style.css";
 
 const AuthHeader = () => {
   return (

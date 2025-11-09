@@ -19,8 +19,8 @@ import { useCallback } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 import { ROUTER } from "@/constants/routet";
-import AuthHeader from "../../components/authHeader/AuthHeader";
-import AuthFooter from "../../components/authFooter/AuthFooter";
+import AuthHeader from "../../components/authHeader";
+import AuthFooter from "../../components/authFooter";
 import { snack } from "@/utils/snackManager";
 
 const VerifyAccount = () => {

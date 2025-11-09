@@ -1,9 +1,9 @@
 import "./index.style.css";
 import { useCallback, useEffect, type FC } from "react";
-import AuthHeader from "../../components/authHeader/AuthHeader";
+import AuthHeader from "../../components/authHeader";
 import { Resource } from "@/types/enum.types";
 import LoginAndSignupHeader from "./components/AuthHeader";
-import AuthFooter from "../../components/authFooter/AuthFooter";
+import AuthFooter from "../../components/authFooter";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";

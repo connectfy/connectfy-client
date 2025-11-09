@@ -3,7 +3,7 @@ import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
 import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button/Button";
 import { clearError, setSignupForm, signup } from "@/features/auth/authSlice";
 import DatePicker from "@/components/DatePicker";
@@ -265,9 +265,12 @@ const Signup = () => {
         />
         <label htmlFor="terms">
           {t("common.terms_prefix")}{" "}
-          <Link to={"/terms"} className="terms-link">
+          <span
+            onClick={() => navigate(ROUTER.TERMS_AND_CONDITIONS)}
+            className="terms-link"
+          >
             {t("common.terms_link")}
-          </Link>{" "}
+          </span>{" "}
           {t("common.terms_suffix")}
         </label>
       </div>

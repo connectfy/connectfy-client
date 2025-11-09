@@ -4,6 +4,7 @@ import { ROUTER } from "@/constants/routet";
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// ====================== AUTH
 const Auth = Loader(lazy(() => import("@/pages/auth/pages/main/index")));
 const ForgotPassword = Loader(
   lazy(() => import("@/pages/auth/pages/ForgotPassword/index"))
@@ -13,6 +14,11 @@ const VerifySignup = Loader(
 );
 const ResetPassword = Loader(
   lazy(() => import("@/pages/auth/pages/ResesPassword/index"))
+);
+
+// ====================== TERMS AND CONDITIONS
+const TermsAndConditions = Loader(
+  lazy(() => import("@/pages/termsAndConditions/index"))
 );
 
 const routes = [
@@ -31,6 +37,10 @@ const routes = [
   {
     path: ROUTER.AUTH.RESET_PASSWORD,
     element: <ResetPassword />,
+  },
+  {
+    path: ROUTER.TERMS_AND_CONDITIONS,
+    element: <TermsAndConditions />,
   },
 ];
 

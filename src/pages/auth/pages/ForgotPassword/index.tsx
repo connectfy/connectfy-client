@@ -26,8 +26,8 @@ import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 import { useToastError } from "@/hooks/useToastError";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
-import AuthHeader from "../../components/authHeader/AuthHeader";
-import AuthFooter from "../../components/authFooter/AuthFooter";
+import AuthHeader from "../../components/authHeader";
+import AuthFooter from "../../components/authFooter";
 import { snack } from "@/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
 

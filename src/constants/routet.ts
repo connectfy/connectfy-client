@@ -1,5 +1,6 @@
 export const ROUTER = {
   MAIN: "/",
+  TERMS_AND_CONDITIONS: "/terms-and-conditions",
   AUTH: {
     MAIN: "/auth",
     FORGOT_PASSWORD: "/auth/forgot-password",

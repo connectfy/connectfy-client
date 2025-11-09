@@ -1,11 +1,11 @@
+import "./index.style.css";
 import { Fragment, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "@mui/material";
 import { LightMode, DarkMode } from "@mui/icons-material";
 
 import { useTheme } from "@/context/ThemeContext";
-import LanguageModal from "@/components/Modal/LanguageModal/LanguageModel";
-import "./authFooter.style.css";
+import LanguageModal from "@/components/Modal/LanguageModal";
 import { setAuthForm } from "@/features/auth/authSlice";
 import { LANGUAGE } from "@/types/enum.types";
 import useBoolean from "@/hooks/useBoolean";

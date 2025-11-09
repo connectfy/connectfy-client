@@ -1,7 +1,7 @@
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
-import AuthFooter from "../../components/authFooter/AuthFooter";
-import AuthHeader from "../../components/authHeader/AuthHeader";
+import AuthFooter from "../../components/authFooter";
+import AuthHeader from "../../components/authHeader";
 import Button from "@/components/Button/Button";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
