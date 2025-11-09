@@ -1,5 +1,5 @@
 import "./index.style.css";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect } from "react";
 import { Resource } from "@/types/enum.types";
 import UsernameForm from "./components/UsernameForm";
 import EmailForm from "./components/EmailForm";
@@ -15,11 +15,12 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
-import { LoginModeType } from "@/types/auth/auth.type";
+import { ILoginForm, LoginModeType } from "@/types/auth/auth.type";
 import { useNavigate } from "react-router-dom";
 import useBoolean from "@/hooks/useBoolean";
 import { ROUTER } from "@/constants/routet";
 import { snack } from "@/utils/snackManager";
+import useFormDisabled from "@/hooks/useFormDisabled";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -32,8 +33,6 @@ const Login = () => {
 
   const localLoginMode =
     (localStorage.getItem("loginMode") as LoginModeType) || "username";
-
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
   const { open, onOpen, onClose } = useBoolean();
 
@@ -59,6 +58,20 @@ const Login = () => {
         snack.error((err as Error).message);
       }
     },
+  });
+
+  const isDisabled = useFormDisabled<ILoginForm>({
+    formik,
+    loading: LOADING_LOGIN,
+    validationRules: [
+      (values) => !!values.identifier && checkEmptyString(values.identifier),
+      (values) => {
+        if (loginMode === "faceDescriptor") {
+          return Array.isArray(values.password);
+        }
+        return checkEmptyString(values.password || "");
+      },
+    ],
   });
 
   const renderLoginForm = useCallback(() => {
@@ -92,30 +105,6 @@ const Login = () => {
     error: ERROR_LOGIN,
     clearErrorAction: () => clearError("login"),
   });
-
-  useEffect(() => {
-    const id = formik.values.identifier;
-    const pw = formik.values.password;
-
-    if (!id || LOADING_LOGIN || !checkEmptyString(id || "")) {
-      setIsDisabled(true);
-      return;
-    }
-
-    if (loginMode === "faceDescriptor") {
-      if (!Array.isArray(pw)) {
-        setIsDisabled(true);
-        return;
-      }
-    } else {
-      if (!checkEmptyString((pw as string) || "")) {
-        setIsDisabled(true);
-        return;
-      }
-    }
-
-    setIsDisabled(false);
-  }, [formik.values, LOADING_LOGIN, loginMode]);
 
   useEffect(() => {
     const loginModes: LoginModeType[] = [

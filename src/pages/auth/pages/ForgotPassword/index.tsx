@@ -9,11 +9,14 @@ import {
 } from "@/features/auth/authSlice";
 import ForgotPasswordHeader from "./components/ForgotPasswordHeader";
 import { Resource } from "@/types/enum.types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import EmailForm from "./components/EmailForm";
 import PhoneNumberForm from "./components/PhoneNumberForm";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { ForgotPasswordModeType } from "@/types/auth/auth.type";
+import {
+  ForgotPasswordModeType,
+  IForgotPasswordForm,
+} from "@/types/auth/auth.type";
 import { useFormik } from "formik";
 import { forgotPasswordInitialState } from "../../constants/intialState";
 import { validateForgotPassword } from "../../constants/validation";
@@ -26,13 +29,12 @@ import { ROUTER } from "@/constants/routet";
 import AuthHeader from "../../components/authHeader/AuthHeader";
 import AuthFooter from "../../components/authFooter/AuthFooter";
 import { snack } from "@/utils/snackManager";
+import useFormDisabled from "@/hooks/useFormDisabled";
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
   const { forgotPasswordMode, LOADING_FORGOT_PASSWORD, ERROR_FORGOT_PASSWORD } =
     useAppSelector((state) => state[Resource.auth]);
@@ -56,6 +58,14 @@ const ForgotPassword = () => {
         resetForm();
       }
     },
+  });
+
+  const isDisabled = useFormDisabled<IForgotPasswordForm>({
+    formik,
+    loading: LOADING_FORGOT_PASSWORD,
+    validationRules: [
+      (values) => !!values.identifier && checkEmptyString(values.identifier),
+    ],
   });
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
@@ -117,16 +127,6 @@ const ForgotPassword = () => {
         setForgotPasswordMode(localForgotPasswordMode as ForgotPasswordModeType)
       );
   }, [localForgotPasswordMode]);
-
-  useEffect(() => {
-    if (
-      !formik.values.identifier ||
-      !checkEmptyString(formik.values.identifier) ||
-      LOADING_FORGOT_PASSWORD
-    )
-      setIsDisabled(true);
-    else setIsDisabled(false);
-  }, [formik.values]);
 
   return (
     <section id="auth-page">

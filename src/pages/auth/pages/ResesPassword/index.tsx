@@ -7,7 +7,7 @@ import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { resetPasswordInitialState } from "../../constants/intialState";
 import { validateResetPassword } from "../../constants/validation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { Resource, TOKEN_TYPE } from "@/types/enum.types";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -19,6 +19,8 @@ import {
 } from "@/features/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
+import useFormDisabled from "@/hooks/useFormDisabled";
+import { IResetPasswordForm } from "@/types/auth/auth.type";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -29,7 +31,6 @@ const ResetPassword = () => {
     useAppSelector((state) => state[Resource.auth]);
 
   const [searchParams] = useSearchParams();
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const token = searchParams.get("token");
 
   const formik = useFormik({
@@ -58,17 +59,16 @@ const ResetPassword = () => {
     clearErrorAction: () => clearError("resetPassword"),
   });
 
-  useEffect(() => {
-    const pw = formik.values.password;
-    const cpw = formik.values.confirmPassword;
-    const resetToken = formik.values.resetToken;
-
-    if (!pw || !cpw || !resetToken || !token) return setIsDisabled(true);
-
-    if (LOADING_RESET_PASSWORD) return setIsDisabled(true);
-
-    setIsDisabled(false);
-  }, [formik, token, LOADING_RESET_PASSWORD]);
+  const isDisabled = useFormDisabled<IResetPasswordForm>({
+    formik,
+    loading: LOADING_RESET_PASSWORD,
+    validationRules: [
+      (values) => !!values.password,
+      (values) => !!values.confirmPassword,
+      (values) => !!values.resetToken,
+      !!token,
+    ],
+  });
 
   useEffect(() => {
     if (!token) {

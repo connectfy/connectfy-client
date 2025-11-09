@@ -17,9 +17,10 @@ import { useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import Spinner from "@/components/Spinner/Spinner";
-import { onPressEnter } from "@/utils/keyPressDown";
 import { ROUTER } from "@/constants/routet";
 import { snack } from "@/utils/snackManager";
+import useFormDisabled from "@/hooks/useFormDisabled";
+import { ISignupForm } from "@/types/auth/auth.type";
 
 const Signup = () => {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ const Signup = () => {
     (state) => state[Resource.auth]
   );
 
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  // const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [checked, setChecked] = useState<boolean>(false);
 
   const formik = useFormik({
@@ -53,18 +54,26 @@ const Signup = () => {
     },
   });
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    onPressEnter(e, () => {
-      if (isDisabled) return;
-      formik.handleSubmit();
-    });
-  };
-
-  useEffect(() => {
-    if (signupForm) {
-      formik.setValues({ ...signupForm }, true);
-    }
-  }, [signupForm]);
+  const isDisabled = useFormDisabled<ISignupForm>({
+    formik,
+    loading: LOADING_SIGNUP,
+    validationRules: [
+      (values) => {
+        const stringFields = [
+          values.firstName,
+          values.lastName,
+          values.username,
+          values.email,
+          values.password,
+          values.confirm,
+        ];
+        return !stringFields.some((v) => !v || !checkEmptyString(v));
+      },
+      (values) => !!values.gender,
+      (values) => !!values.birthdayDate,
+      checked,
+    ],
+  });
 
   useToastError({
     error: ERROR_SIGNUP,
@@ -72,41 +81,26 @@ const Signup = () => {
   });
 
   useEffect(() => {
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      gender,
-      password,
-      confirm,
-      birthdayDate,
-    } = formik.values;
+    if (signupForm) {
+      formik.setValues({ ...signupForm }, true);
+    }
+  }, [signupForm]);
 
-    const stringFields = [
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      confirm,
-    ];
-    const hasEmptyStringField = stringFields.some(
-      (v) => !v || !checkEmptyString(v)
-    );
+  useEffect(() => {
+    if (isDisabled) return;
 
-    const hasEmptyGender = !gender;
-    const hasEmptyDate = !birthdayDate;
+    const handleSubmitEnter = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        formik.handleSubmit();
+      }
+    };
 
-    const shouldDisable =
-      hasEmptyStringField ||
-      hasEmptyGender ||
-      hasEmptyDate ||
-      LOADING_SIGNUP ||
-      !checked;
-
-    setIsDisabled(shouldDisable);
-  }, [formik.values, checked]);
+    document.addEventListener("keydown", handleSubmitEnter);
+    return () => {
+      document.removeEventListener("keydown", handleSubmitEnter);
+    };
+  }, [isDisabled, formik.handleSubmit]);
 
   return (
     <div className="signup-form">
@@ -121,7 +115,6 @@ const Signup = () => {
             onChange={(e) =>
               formik.setFieldValue("firstName", e.target.value || null)
             }
-            onKeyDown={(e) => onKeyDown(e)}
             hasError={!!(formik.errors.firstName && formik.touched.firstName)}
           />
           {formik.errors.firstName && formik.touched.firstName && (
@@ -138,7 +131,6 @@ const Signup = () => {
             onChange={(e) =>
               formik.setFieldValue("lastName", e.target.value || null)
             }
-            onKeyDown={(e) => onKeyDown(e)}
             hasError={!!(formik.errors.lastName && formik.touched.lastName)}
           />
           {formik.errors.lastName && formik.touched.lastName && (
@@ -157,7 +149,6 @@ const Signup = () => {
             onChange={(e) =>
               formik.setFieldValue("username", e.target.value || null)
             }
-            onKeyDown={(e) => onKeyDown(e)}
             hasError={!!(formik.errors.username && formik.touched.username)}
           />
           {formik.errors.username && formik.touched.username && (
@@ -174,7 +165,6 @@ const Signup = () => {
             onChange={(e) =>
               formik.setFieldValue("email", e.target.value || null)
             }
-            onKeyDown={(e) => onKeyDown(e)}
             hasError={!!(formik.errors.email && formik.touched.email)}
           />
           {formik.errors.email && formik.touched.email && (
@@ -193,7 +183,6 @@ const Signup = () => {
           }
           blur={formik.touched.phoneNumber?.number ?? false}
           value={formik.values.phoneNumber}
-          onKeyDown={(e) => onKeyDown(e)}
         />
       </div> */}
       <div className="signup-form-block">
@@ -203,7 +192,6 @@ const Signup = () => {
             onChange={(date) => formik.setFieldValue("birthdayDate", date)}
             inputSize="small"
             placeholder={t("common.birthday")}
-            onKeyDown={(e) => onKeyDown(e)}
             hasError={
               !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
             }
@@ -243,7 +231,6 @@ const Signup = () => {
             formik.setFieldValue("password", value);
             formik.setFieldValue("confirm", value);
           }}
-          onKeyDown={(e) => onKeyDown(e)}
           hasError={!!(formik.errors.password && formik.touched.password)}
         />
         {formik.errors.password && formik.touched.password && (
@@ -258,7 +245,6 @@ const Signup = () => {
           onChange={(e) =>
             formik.setFieldValue("confirm", e.target.value || null)
           }
-          onKeyDown={(e) => onKeyDown(e)}
           hasError={!!(formik.errors.confirm && formik.touched.confirm)}
         />
         {formik.errors.confirm && formik.touched.confirm && (

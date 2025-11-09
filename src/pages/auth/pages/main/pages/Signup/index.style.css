@@ -13,7 +13,7 @@
 .signup-form-block {
   display: flex;
   gap: 0.6rem;
-  max-height: 75px;
+  max-height: 80px;
 }
 
 .signup-form h6 {
