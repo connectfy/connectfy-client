@@ -10,4 +10,22 @@ export const ROUTER = {
   MESSENGER: {
     MAIN: "/messenger",
   },
+  GROUPS: {
+    MAIN: "/groups",
+  },
+  CHANNELS: {
+    MAIN: "/channels",
+  },
+  USERS: {
+    MAIN: "/users",
+  },
+  NOTIFICATIONS: {
+    MAIN: "/notifications",
+  },
+  PROFILE: {
+    MAIN: "/profile",
+  },
+  SETTINGS: {
+    MAIN: "/settings",
+  },
 };

@@ -13,7 +13,19 @@ export function RequireAuth({ children }: AuthType) {
   const location = useLocation();
 
   if (!access_token)
-    <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />;
+    return (
+      <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
+    );
+
+  return children;
+}
+
+export function InsideProfile({ children }: AuthType) {
+  const { access_token } = useAppSelector((state) => state[Resource.auth]);
+  const location = useLocation();
+
+  if (access_token)
+    return <Navigate to={ROUTER.MESSENGER.MAIN} state={{ from: location }} replace />;
 
   return children;
 }
