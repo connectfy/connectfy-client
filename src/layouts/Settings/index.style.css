@@ -1,0 +1,92 @@
+#settings-layout {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.settings-layout.desktop {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 16px;
+}
+
+.settings-layout__sidebar {
+  flex: 0 0 30%;
+  max-width: 30%;
+  box-sizing: border-box;
+}
+
+.settings-layout__content {
+  flex: 1 1 70%;
+  max-width: 70%;
+  box-sizing: border-box;
+  padding: 12px;
+}
+
+.settings-layout.mobile {
+  width: 100%;
+  min-height: calc(100vh - 84px) !important;
+}
+
+.settings-layout.mobile.sidebar-only {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px;
+  overflow-x: hidden;
+}
+
+.settings-layout.mobile.content-only {
+  padding: 12px;
+}
+
+.settings-layout__sidebar-mobile {
+  width: 98%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+@media (max-width: 886px) {
+  .settings-layout.desktop {
+    display: none;
+  }
+
+  .settings-layout.mobile {
+    display: block;
+  }
+
+  .settings-layout__content {
+    max-width: 100%;
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-layout.mobile.sidebar-only,
+  .settings-layout.mobile.content-only {
+    padding: 8px;
+  }
+
+  .settings-layout__sidebar-mobile {
+    max-width: 100%;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 389px) {
+  .settings-layout.mobile.sidebar-only,
+  .settings-layout.mobile.content-only {
+    padding: 0;
+    padding-top: 8px;
+    margin: 0;
+  }
+
+  .settings-layout__sidebar-mobile {
+    max-width: 100%;
+    padding: 8px;
+    /* padding-right: 18px; */
+    margin: 0;
+  }
+}

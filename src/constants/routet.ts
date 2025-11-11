@@ -27,5 +27,8 @@ export const ROUTER = {
   },
   SETTINGS: {
     MAIN: "/settings",
+    GENERAL: "/settings/general",
+    PRIVACY: "/settings/privacy",
+    ACCOUNT: "/settings/account"
   },
 };

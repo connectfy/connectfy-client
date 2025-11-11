@@ -18,7 +18,7 @@ const DesktopSidebar = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeItem, setActiveItem] = useState<string>("messenger");
+  const [activeItem, setActiveItem] = useState<string | null>(null);
 
   const menuItems = [
     {
@@ -68,8 +68,16 @@ const DesktopSidebar = () => {
     const matched = menuItems.find((m) =>
       currentPath === m.path ? true : currentPath.startsWith(m.path)
     );
+
     if (matched) {
       setActiveItem(matched.key);
+    }
+
+    if (
+      currentPath === ROUTER.SETTINGS.MAIN ||
+      currentPath.startsWith(ROUTER.SETTINGS.MAIN)
+    ) {
+      setActiveItem("settings");
     }
   }, [location.pathname]);
 

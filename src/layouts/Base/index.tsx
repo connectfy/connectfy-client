@@ -1,4 +1,4 @@
-import "./layout.style.css";
+import "./index.style.css";
 import DesktopSidebar from "@/components/Sidebar/Desktop";
 import MobileSidebar from "@/components/Sidebar/Mobile";
 import { FC, ReactNode, useEffect, useState } from "react";
@@ -13,7 +13,7 @@ const BaseLayout: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+      setIsMobile(window.innerWidth < 886);
     };
 
     checkMobile();

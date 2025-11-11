@@ -5,9 +5,13 @@ import {
   InsideProfile,
   RequireAuth,
 } from "@/components/routeGuard/RequireAuth";
-import AuthLayout from "@/layouts/AuthLayout";
+import AuthLayout from "@/layouts/Auth";
 import { Navigate } from "react-router-dom";
-import BaseLayout from "@/layouts/BaseLayout";
+import BaseLayout from "@/layouts/Base";
+import SettingsLayout from "@/layouts/Settings";
+import Settings from "@/pages/settings/pages/main";
+import GeneralSettings from "@/pages/settings/pages/GeneralSettings";
+import PrivacySettings from "@/pages/settings/pages/PrivacySettings";
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -105,7 +109,12 @@ const routes = [
       },
       {
         path: ROUTER.SETTINGS.MAIN,
-        element: <Messenger />,
+        element: <SettingsLayout />,
+        children: [
+          { index: true, element: <Settings /> },
+          { path: ROUTER.SETTINGS.GENERAL, element: <GeneralSettings /> },
+          { path: ROUTER.SETTINGS.PRIVACY, element: <PrivacySettings /> },
+        ],
       },
       {
         path: "*",

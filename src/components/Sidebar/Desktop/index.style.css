@@ -92,7 +92,6 @@
   color: white;
 }
 
-/* dark mövzu üçün də eyni rəng qalacaq; əgər dark-da başqa rəng lazımdırsa override et: */
 [data-theme="dark"] .logo-container .logo-svg {
   color: white;
 }

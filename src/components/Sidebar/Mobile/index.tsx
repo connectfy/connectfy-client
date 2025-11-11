@@ -16,7 +16,7 @@ const MobileSidebar = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeItem, setActiveItem] = useState<string>("messenger");
+  const [activeItem, setActiveItem] = useState<string | null>(null);
 
   const menuItems = [
     {
