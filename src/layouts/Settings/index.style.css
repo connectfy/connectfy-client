@@ -48,6 +48,22 @@
   margin: 0 auto;
 }
 
+@media (min-width: 886px) and (max-width: 1000px) {
+  .settings-layout.desktop {
+    padding: 16px 5px;
+  }
+
+  .settings-layout__sidebar {
+    flex: 0 0 40%;
+    max-width: 40%;
+  }
+  .settings-layout__content {
+    flex: 1 1 60%;
+    max-width: 60%;
+    padding: 0;
+  }
+}
+
 @media (max-width: 886px) {
   .settings-layout.desktop {
     display: none;
