@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, Fragment, memo, useEffect, useState } from "react";
 import "./index.style.css";
 import { useLocation } from "react-router-dom";
 import { ChevronRight, LucideProps } from "lucide-react";
@@ -85,4 +85,4 @@ const UniqueSidebar: FC<Props> = ({ title, subjects }) => {
   );
 };
 
-export default UniqueSidebar;
+export default memo(UniqueSidebar);

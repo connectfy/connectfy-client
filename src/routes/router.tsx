@@ -1,41 +1,61 @@
 import { lazy } from "react";
-import Loader from "@/components/Loader/Loader";
-import { ROUTER } from "@/constants/routet";
 import {
   InsideProfile,
   RequireAuth,
 } from "@/components/routeGuard/RequireAuth";
-import AuthLayout from "@/layouts/Auth";
+import { ROUTER } from "@/constants/routet";
 import { Navigate } from "react-router-dom";
-import BaseLayout from "@/layouts/Base";
-import SettingsLayout from "@/layouts/Settings";
-import Settings from "@/pages/settings/pages/main";
-import GeneralSettings from "@/pages/settings/pages/GeneralSettings";
-import PrivacySettings from "@/pages/settings/pages/PrivacySettings";
+import Loader from "@/components/Loader/Loader";
+// import Loading from "@/components/Loading/Loading";
 
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+//   <Suspense
+//     fallback={
+//       <div style={{ padding: "20px", textAlign: "center" }}>
+//         <Loading />
+//       </div>
+//     }
+//   >
+//     {children}
+//   </Suspense>
+// );
 
-// ====================== AUTH
-const Auth = Loader(lazy(() => import("@/pages/auth/pages/main/index")));
-const ForgotPassword = Loader(
-  lazy(() => import("@/pages/auth/pages/ForgotPassword/index"))
-);
-const VerifySignup = Loader(
-  lazy(() => import("@/pages/auth/pages/Verify/index"))
-);
-const ResetPassword = Loader(
-  lazy(() => import("@/pages/auth/pages/ResesPassword/index"))
+// ======================= LAYOUT
+const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/index")));
+const BaseLayout = Loader(lazy(() => import("@/layouts/Base/index")));
+const SettingsLayout = lazy(() => import("@/layouts/Settings/index"));
+
+// ======================= AUTH
+const Auth = lazy(() => import("@/pages/auth/pages/Main/index"));
+const ForgotPassword = lazy(
+  () => import("@/pages/auth/pages/ForgotPassword/index")
 );
 
-// ====================== TERMS AND CONDITIONS
-const TermsAndConditions = Loader(
-  lazy(() => import("@/pages/termsAndConditions/index"))
+const VerifySignup = lazy(() => import("@/pages/auth/pages/Verify/index"));
+
+const ResetPassword = lazy(
+  () => import("@/pages/auth/pages/ResesPassword/index")
 );
 
-// ====================== MESSENGER
-const Messenger = Loader(lazy(() => import("@/pages/messenger/index")));
+// ======================= TERMS AND CONDITIONS
+const TermsAndConditions = lazy(
+  () => import("@/pages/termsAndConditions/index")
+);
+
+// ======================= MESSENGER
+const Messenger = lazy(() => import("@/pages/messenger/index"));
+
+// ======================= SETTINGS
+const Settings = lazy(() => import("@/pages/settings/Main/index"));
+const GeneralSettings = lazy(() => import("@/pages/settings/General/index"));
+const PrivacySettings = lazy(() => import("@/pages/settings/Privacy/index"));
+const AccountSettings = lazy(() => import("@/pages/settings/Account/index"));
+const BackgroundSettings = lazy(
+  () => import("@/pages/settings/Background/index")
+);
 
 const routes = [
+  // ======================= AUTH
   {
     path: "/",
     element: (
@@ -44,7 +64,6 @@ const routes = [
       </InsideProfile>
     ),
     children: [
-      // ====================== AUTH
       {
         path: ROUTER.AUTH.MAIN,
         element: <Auth />,
@@ -61,20 +80,14 @@ const routes = [
         path: ROUTER.AUTH.RESET_PASSWORD,
         element: <ResetPassword />,
       },
-      {
-        path: "*",
-        element: <Navigate to={ROUTER.AUTH.MAIN} replace />,
-      },
+      { path: "*", element: <Navigate to={ROUTER.AUTH.MAIN} replace /> },
     ],
   },
-
-  // ====================== TERMS AND CONDITIONS
+  // ======================= TERMS AND CONDITIONS
   {
     path: ROUTER.TERMS_AND_CONDITIONS,
     element: <TermsAndConditions />,
   },
-
-  // ====================== MESSENGER
   {
     path: "/",
     element: (
@@ -83,6 +96,7 @@ const routes = [
       </RequireAuth>
     ),
     children: [
+      // ======================= MESSENGER
       {
         path: ROUTER.MESSENGER.MAIN,
         element: <Messenger />,
@@ -107,19 +121,34 @@ const routes = [
         path: ROUTER.PROFILE.MAIN,
         element: <Messenger />,
       },
+      // ======================= SETTINGS
       {
         path: ROUTER.SETTINGS.MAIN,
         element: <SettingsLayout />,
         children: [
-          { index: true, element: <Settings /> },
-          { path: ROUTER.SETTINGS.GENERAL, element: <GeneralSettings /> },
-          { path: ROUTER.SETTINGS.PRIVACY, element: <PrivacySettings /> },
+          {
+            index: true,
+            element: <Settings />,
+          },
+          {
+            path: ROUTER.SETTINGS.GENERAL,
+            element: <GeneralSettings />,
+          },
+          {
+            path: ROUTER.SETTINGS.PRIVACY,
+            element: <PrivacySettings />,
+          },
+          {
+            path: ROUTER.SETTINGS.ACCOUNT,
+            element: <AccountSettings />,
+          },
+          {
+            path: ROUTER.SETTINGS.BACKGROUND,
+            element: <BackgroundSettings />,
+          },
         ],
       },
-      {
-        path: "*",
-        element: <Navigate to={ROUTER.MESSENGER.MAIN} replace />,
-      },
+      { path: "*", element: <Navigate to={ROUTER.MESSENGER.MAIN} replace /> },
     ],
   },
 ];

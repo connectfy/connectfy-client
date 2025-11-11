@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
 import {
   MessageCircle,
   Users,
@@ -115,4 +115,4 @@ const MobileSidebar = () => {
   );
 };
 
-export default MobileSidebar;
+export default memo(MobileSidebar);

@@ -1,7 +1,7 @@
 import "./index.style.css";
 import DesktopSidebar from "@/components/Sidebar/Desktop";
 import MobileSidebar from "@/components/Sidebar/Mobile";
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, memo, ReactNode, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 interface Props {
@@ -44,4 +44,4 @@ const BaseLayout: FC<Props> = ({ children }) => {
   );
 };
 
-export default BaseLayout;
+export default memo(BaseLayout);

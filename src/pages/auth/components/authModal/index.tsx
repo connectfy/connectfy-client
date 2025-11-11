@@ -34,7 +34,7 @@ import Button from "@/components/Button/Button";
 // Styles
 import "./index.style.css";
 import { ROUTER } from "@/constants/routet";
-import GenderForm from "../../pages/main/pages/Signup/components/GenderForm";
+import GenderForm from "../../pages/Main/pages/Signup/components/GenderForm";
 import { snack } from "@/utils/snackManager";
 
 interface SignupModalProps {

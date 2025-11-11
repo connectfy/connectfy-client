@@ -1,7 +1,7 @@
 import "./index.style.css";
 
 const GeneralSettings = () => {
-  return <div>SettingsPage</div>;
+  return <div>GeneralSettingsPage</div>;
 };
 
 export default GeneralSettings;

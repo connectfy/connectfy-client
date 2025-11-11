@@ -1,10 +1,10 @@
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, memo, ReactNode, useEffect, useState } from "react";
 import "./index.style.css";
 import { Outlet, useNavigate, useLocation, matchPath } from "react-router-dom";
 import UniqueSidebar from "@/components/Sidebar/UniqueSidebar";
 import { useTranslation } from "react-i18next";
 import { ROUTER } from "@/constants/routet";
-import { Settings, KeyRound } from "lucide-react";
+import { Settings, KeyRound, Paintbrush, UserCog } from "lucide-react";
 
 interface Props {
   children?: ReactNode;
@@ -30,6 +30,14 @@ const SettingsLayout: FC<Props> = ({ children }) => {
       onClick: () => navigate(ROUTER.SETTINGS.GENERAL),
     },
     {
+      name: t("common.account_settings"),
+      path: ROUTER.SETTINGS.ACCOUNT,
+      icon: UserCog,
+      key: "account",
+      badge: null,
+      onClick: () => navigate(ROUTER.SETTINGS.ACCOUNT),
+    },
+    {
       name: t("common.privacy_settings"),
       path: ROUTER.SETTINGS.PRIVACY,
       icon: KeyRound,
@@ -37,6 +45,14 @@ const SettingsLayout: FC<Props> = ({ children }) => {
       badge: null,
       onClick: () => navigate(ROUTER.SETTINGS.PRIVACY),
     },
+    {
+      name: t("common.change_background"),
+      path: ROUTER.SETTINGS.BACKGROUND,
+      icon: Paintbrush,
+      key: "background",
+      badge: null,
+      onClick: () => navigate(ROUTER.SETTINGS.BACKGROUND),
+    }
   ];
 
   const [isMobile, setIsMobile] = useState<boolean>(() =>
@@ -89,4 +105,4 @@ const SettingsLayout: FC<Props> = ({ children }) => {
   );
 };
 
-export default SettingsLayout;
+export default memo(SettingsLayout);

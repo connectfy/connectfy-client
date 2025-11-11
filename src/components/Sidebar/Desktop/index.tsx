@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, memo, useEffect, useState, useMemo } from "react";
 import {
   MessageCircle,
   Users,
@@ -15,53 +15,55 @@ import { useTranslation } from "react-i18next";
 
 const DesktopSidebar = () => {
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
-  const menuItems = [
-    {
-      key: "messenger",
-      icon: MessageCircle,
-      name: t("common.messenger"),
-      badge: null,
-      path: ROUTER.MESSENGER.MAIN,
-      onClick: () => navigate(ROUTER.MESSENGER.MAIN),
-    },
-    {
-      key: "groups",
-      icon: Users,
-      name: t("common.groups"),
-      badge: null,
-      path: ROUTER.GROUPS.MAIN,
-      onClick: () => navigate(ROUTER.GROUPS.MAIN),
-    },
-    {
-      key: "channels",
-      icon: Radio,
-      name: t("common.channels"),
-      badge: 3,
-      path: ROUTER.CHANNELS.MAIN,
-      onClick: () => navigate(ROUTER.CHANNELS.MAIN),
-    },
-    {
-      key: "users",
-      icon: UserCircle,
-      name: t("common.users"),
-      badge: null,
-      path: ROUTER.USERS.MAIN,
-      onClick: () => navigate(ROUTER.USERS.MAIN),
-    },
-    {
-      key: "notifications",
-      icon: Bell,
-      name: t("common.notifications"),
-      badge: 12,
-      path: ROUTER.NOTIFICATIONS.MAIN,
-      onClick: () => navigate(ROUTER.NOTIFICATIONS.MAIN),
-    },
-  ];
+  const menuItems = useMemo(
+    () => [
+      {
+        key: "messenger",
+        icon: MessageCircle,
+        name: t("common.messenger"),
+        badge: null,
+        path: ROUTER.MESSENGER.MAIN,
+        onClick: () => navigate(ROUTER.MESSENGER.MAIN),
+      },
+      {
+        key: "groups",
+        icon: Users,
+        name: t("common.groups"),
+        badge: null,
+        path: ROUTER.GROUPS.MAIN,
+        onClick: () => navigate(ROUTER.GROUPS.MAIN),
+      },
+      {
+        key: "channels",
+        icon: Radio,
+        name: t("common.channels"),
+        badge: 3,
+        path: ROUTER.CHANNELS.MAIN,
+        onClick: () => navigate(ROUTER.CHANNELS.MAIN),
+      },
+      {
+        key: "users",
+        icon: UserCircle,
+        name: t("common.users"),
+        badge: null,
+        path: ROUTER.USERS.MAIN,
+        onClick: () => navigate(ROUTER.USERS.MAIN),
+      },
+      {
+        key: "notifications",
+        icon: Bell,
+        name: t("common.notifications"),
+        badge: 12,
+        path: ROUTER.NOTIFICATIONS.MAIN,
+        onClick: () => navigate(ROUTER.NOTIFICATIONS.MAIN),
+      },
+    ],
+    [t, navigate]
+  );
 
   useEffect(() => {
     const currentPath = location.pathname || "/";
@@ -79,13 +81,12 @@ const DesktopSidebar = () => {
     ) {
       setActiveItem("settings");
     }
-  }, [location.pathname]);
+  }, [location.pathname, menuItems]);
 
   return (
     <Fragment>
       <section id="sidebar">
         <div className="sidebar">
-          {/* ✅ LOGO */}
           <div className="logo-section">
             <div className="logo-container">
               <svg
@@ -102,7 +103,6 @@ const DesktopSidebar = () => {
             </div>
           </div>
 
-          {/* ✅ MAIN MENU */}
           <div className="menu-section">
             {menuItems.map((item) => (
               <div
@@ -119,7 +119,6 @@ const DesktopSidebar = () => {
             ))}
           </div>
 
-          {/* ✅ SETTINGS */}
           <div className="settings-section">
             <div
               className={`menu-item ${activeItem === "settings" ? "active" : ""}`}
@@ -135,7 +134,6 @@ const DesktopSidebar = () => {
             </div>
           </div>
 
-          {/* ✅ PROFILE */}
           <div className="profile-section">
             <div
               className={`profile-item ${activeItem === "profile" ? "active" : ""}`}
@@ -156,4 +154,4 @@ const DesktopSidebar = () => {
   );
 };
 
-export default DesktopSidebar;
+export default memo(DesktopSidebar);

@@ -1,4 +1,4 @@
-import { FC, Fragment, ReactNode } from "react";
+import { FC, Fragment, memo, ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 
 interface Props {
@@ -9,4 +9,4 @@ const AuthLayout: FC<Props> = ({ children }) => {
   return <Fragment>{children || <Outlet />}</Fragment>;
 };
 
-export default AuthLayout;
+export default memo(AuthLayout);
