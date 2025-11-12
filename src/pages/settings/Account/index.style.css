@@ -1,0 +1,365 @@
+.account-settings {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* padding: 24px; */
+  box-sizing: border-box;
+}
+
+.account-settings-container {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.account-settings-header {
+  margin-bottom: 32px;
+  animation: account-fadeIn 0.5s ease;
+}
+
+@keyframes account-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-settings-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+[data-theme="dark"] .account-settings-header h1 {
+  color: #f8fafc;
+}
+
+.account-settings-header p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+[data-theme="dark"] .account-settings-header p {
+  color: #94a3b8;
+}
+
+/* Content column */
+.account-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Card */
+.account-settings-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .account-settings-card {
+  background: var(--card-bg, #1e293b);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Card header */
+.account-settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Icon box */
+.account-settings-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  flex-shrink: 0;
+}
+
+/* Title */
+.account-settings-card-title {
+  flex: 1;
+}
+
+.account-settings-card-title h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+[data-theme="dark"] .account-settings-card-title h3 {
+  color: #f8fafc;
+}
+
+.account-settings-card-title p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+[data-theme="dark"] .account-settings-card-title p {
+  color: #94a3b8;
+}
+
+/* Action button (row) */
+.account-action-button {
+  width: 100%;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+[data-theme="dark"] .account-action-button {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+.account-action-button:hover {
+  background: #f1f5f9;
+  border-color: #2ecc71;
+}
+
+[data-theme="dark"] .account-action-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.account-action-button span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-action-button .chevron {
+  color: #64748b;
+}
+
+/* Two-factor status box */
+.account-twofa-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  background: #f8fafc;
+}
+
+[data-theme="dark"] .account-twofa-status {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.account-twofa-status.enabled {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid #2ecc71;
+}
+
+.account-twofa-status.disabled {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+}
+
+/* twofa icon */
+.account-twofa-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-twofa-status.enabled .account-twofa-icon {
+  background: #2ecc71;
+  color: white;
+}
+
+.account-twofa-status.disabled .account-twofa-icon {
+  background: #ef4444;
+  color: white;
+}
+
+/* twofa text */
+.account-twofa-text {
+  flex: 1;
+}
+
+.account-twofa-text h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 2px 0;
+}
+
+[data-theme="dark"] .account-twofa-text h4 {
+  color: #f8fafc;
+}
+
+.account-twofa-text p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+[data-theme="dark"] .account-twofa-text p {
+  color: #94a3b8;
+}
+
+/* Info grid (created/last login etc) */
+.account-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.account-info-item {
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .account-info-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.account-info-item-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.account-info-item-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[data-theme="dark"] .account-info-item-value {
+  color: #f8fafc;
+}
+
+.account-info-item-icon {
+  color: #2ecc71;
+}
+
+/* Danger actions area */
+.account-danger-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.account-danger-button {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account-danger-button.deactivate {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+
+.account-danger-button.deactivate:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #f59e0b;
+  transform: translateX(4px);
+}
+
+.account-danger-button.delete {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.account-danger-button.delete:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  transform: translateX(4px);
+}
+
+.account-danger-button span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive rules */
+@media (max-width: 768px) {
+  .account-settings {
+    padding: 16px;
+  }
+
+  .account-settings-header h1 {
+    font-size: 24px;
+  }
+
+  .account-settings-card {
+    padding: 20px;
+  }
+
+  .account-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-settings-header h1 {
+    font-size: 22px;
+  }
+
+  .account-settings-card {
+    padding: 16px;
+  }
+}

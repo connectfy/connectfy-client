@@ -4,7 +4,7 @@ import { Outlet, useNavigate, useLocation, matchPath } from "react-router-dom";
 import UniqueSidebar from "@/components/Sidebar/UniqueSidebar";
 import { useTranslation } from "react-i18next";
 import { ROUTER } from "@/constants/routet";
-import { Settings, KeyRound, Paintbrush, UserCog } from "lucide-react";
+import { Settings, KeyRound, Paintbrush, UserCog, BellRing } from "lucide-react";
 
 interface Props {
   children?: ReactNode;
@@ -44,6 +44,14 @@ const SettingsLayout: FC<Props> = ({ children }) => {
       key: "privacy",
       badge: null,
       onClick: () => navigate(ROUTER.SETTINGS.PRIVACY),
+    },
+    {
+      name: t("common.notification_settings"),
+      path: ROUTER.SETTINGS.NOTİFİCATİON,
+      icon: BellRing,
+      key: "notification",
+      badge: null,
+      onClick: () => navigate(ROUTER.SETTINGS.NOTİFİCATİON),
     },
     {
       name: t("common.change_background"),

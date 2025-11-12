@@ -1,0 +1,234 @@
+.selection-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 999999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Selection Modal Container */
+.selection-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  z-index: 1000000;
+  width: 90%;
+  max-width: 480px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Selection Modal Header */
+.selection-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selection-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.selection-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: transparent;
+  color: var(--muted-color);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.selection-modal-close:hover {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.selection-modal-close:active {
+  transform: scale(0.95);
+}
+
+/* Selection Modal Content */
+.selection-modal-content {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.selection-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.selection-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.selection-modal-content::-webkit-scrollbar-thumb {
+  background: var(--muted-color);
+  border-radius: 4px;
+}
+
+.selection-modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color);
+}
+
+/* Selection Item */
+.selection-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background-color: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.selection-item:hover {
+  background-color: var(--secondary-color);
+}
+
+.selection-item:active {
+  transform: scale(0.98);
+}
+
+.selection-item.active {
+  background-color: var(--active-bg);
+  box-shadow: var(--active-shadow);
+}
+
+.selection-item.active:hover {
+  background-color: var(--active-bg);
+}
+
+/* Selection Item Icon */
+.selection-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.selection-item.active .selection-item-icon {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Selection Item Content */
+.selection-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.selection-item-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.selection-item-title {
+  font-size: 13px;
+  color: var(--muted-color);
+  line-height: 1.4;
+}
+
+/* Selection Item Check */
+.selection-item-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  flex-shrink: 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .selection-modal {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .selection-modal-header {
+    padding: 16px 20px;
+  }
+
+  .selection-modal-title {
+    font-size: 16px;
+  }
+
+  .selection-item {
+    padding: 10px 12px;
+  }
+
+  .selection-item-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .selection-item-name {
+    font-size: 14px;
+  }
+
+  .selection-item-title {
+    font-size: 12px;
+  }
+}

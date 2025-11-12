@@ -50,6 +50,9 @@ const Settings = lazy(() => import("@/pages/settings/Main/index"));
 const GeneralSettings = lazy(() => import("@/pages/settings/General/index"));
 const PrivacySettings = lazy(() => import("@/pages/settings/Privacy/index"));
 const AccountSettings = lazy(() => import("@/pages/settings/Account/index"));
+const NotificationSettings = lazy(
+  () => import("@/pages/settings/Notification/index")
+);
 const BackgroundSettings = lazy(
   () => import("@/pages/settings/Background/index")
 );
@@ -141,6 +144,10 @@ const routes = [
           {
             path: ROUTER.SETTINGS.ACCOUNT,
             element: <AccountSettings />,
+          },
+          {
+            path: ROUTER.SETTINGS.NOTİFİCATİON,
+            element: <NotificationSettings />,
           },
           {
             path: ROUTER.SETTINGS.BACKGROUND,

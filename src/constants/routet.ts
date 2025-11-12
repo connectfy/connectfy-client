@@ -31,5 +31,6 @@ export const ROUTER = {
     PRIVACY: "/settings/privacy",
     ACCOUNT: "/settings/account",
     BACKGROUND: "/settings/background",
+    NOTİFİCATİON: "/settings/notification"
   },
 };

@@ -1,4 +1,4 @@
-.privacy-settings {
+.notification-settings {
   width: 100%;
   height: 100%;
   display: flex;
@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-.privacy-settings-container {
+.notification-settings-container {
   flex: 1 1 auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -15,12 +15,12 @@
   box-sizing: border-box;
 }
 
-.privacy-settings-header {
+.notification-settings-header {
   margin-bottom: 32px;
-  animation: fadeIn 0.5s ease;
+  animation: notificationFadeIn 0.5s ease;
 }
 
-@keyframes fadeIn {
+@keyframes notificationFadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -31,41 +31,41 @@
   }
 }
 
-.privacy-settings-header h1 {
+.notification-settings-header h1 {
   font-size: 28px;
   font-weight: 800;
   color: #1e293b;
   margin: 0 0 8px 0;
 }
 
-[data-theme="dark"] .privacy-settings-header h1 {
+[data-theme="dark"] .notification-settings-header h1 {
   color: #f8fafc;
 }
 
-.privacy-settings-header p {
+.notification-settings-header p {
   font-size: 14px;
   color: #64748b;
   margin: 0;
 }
 
-[data-theme="dark"] .privacy-settings-header p {
+[data-theme="dark"] .notification-settings-header p {
   color: #94a3b8;
 }
 
-.privacy-settings-content {
+.notification-settings-content {
   display: flex;
   flex-direction: column;
   gap: 32px;
   padding-bottom: 20px;
 }
 
-.privacy-section {
+.notification-privacy-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.privacy-section-title {
+.notification-section-title {
   font-size: 12px;
   font-weight: 700;
   color: #64748b;
@@ -75,11 +75,11 @@
   padding-left: 4px;
 }
 
-[data-theme="dark"] .privacy-section-title {
+[data-theme="dark"] .notification-section-title {
   color: #94a3b8;
 }
 
-.privacy-setting-card {
+.notification-setting-card {
   background: white;
   border-radius: 16px;
   padding: 24px;
@@ -88,20 +88,19 @@
   transition: all 0.3s ease;
 }
 
-[data-theme="dark"] .privacy-setting-card {
+[data-theme="dark"] .notification-setting-card {
   background: var(--card-bg, #1e293b);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.privacy-setting-card-header {
+.notification-setting-card-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
 }
 
-.privacy-setting-icon {
+.notification-setting-icon {
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -113,100 +112,90 @@
   flex-shrink: 0;
 }
 
-.privacy-setting-card-title {
+.notification-setting-card-title {
   flex: 1;
 }
 
-.privacy-setting-card-title h3 {
+.notification-setting-card-title h3 {
   font-size: 16px;
   font-weight: 700;
   color: #1e293b;
   margin: 0 0 4px 0;
 }
 
-[data-theme="dark"] .privacy-setting-card-title h3 {
+[data-theme="dark"] .notification-setting-card-title h3 {
   color: #f8fafc;
 }
 
-.privacy-setting-card-title p {
+.notification-setting-card-title p {
   font-size: 13px;
   color: #64748b;
   margin: 0;
 }
 
-[data-theme="dark"] .privacy-setting-card-title p {
+[data-theme="dark"] .notification-setting-card-title p {
   color: #94a3b8;
 }
 
-.privacy-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+.notification-toggle-switch {
+  width: 52px;
+  height: 28px;
+  background: #cbd5e1;
+  border-radius: 14px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
 }
 
-[data-theme="dark"] .privacy-row {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.notification-toggle-switch.notification-active {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
 }
 
-.privacy-row-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e293b;
-  flex: 1;
+.notification-toggle-slider {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="dark"] .privacy-row-label {
-  color: #f8fafc;
-}
-
-.privacy-row-select {
-  min-width: 160px;
+.notification-toggle-switch.notification-active .notification-toggle-slider {
+  transform: translateX(24px);
 }
 
 @media (max-width: 886px) {
-  .privacy-settings-container {
+  .notification-settings-container {
     height: 100%;
   }
 
-  .privacy-settings {
+  .notification-settings {
     padding: 16px 8px;
   }
 
-  .privacy-settings-header h1 {
+  .notification-settings-header h1 {
     font-size: 24px;
   }
 
-  .privacy-setting-card {
+  .notification-setting-card {
     padding: 20px;
   }
 
-  .privacy-settings-content {
+  .notification-settings-content {
     height: calc(100% - 90px);
-  }
-
-  .privacy-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .privacy-row-select {
-    width: 100%;
-    min-width: unset;
   }
 }
 
 @media (max-width: 480px) {
-  .privacy-settings-header h1 {
+  .notification-settings-header h1 {
     font-size: 22px;
   }
 
-  .privacy-setting-card {
+  .notification-setting-card {
     padding: 16px;
   }
 }

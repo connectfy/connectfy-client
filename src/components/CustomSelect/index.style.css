@@ -1,0 +1,55 @@
+.custom-select {
+  padding: 14px 40px 14px 16px;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  outline: none;
+}
+
+[data-theme="dark"] .custom-select {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+.custom-select:hover {
+  background: #f1f5f9;
+  border-color: #2ecc71;
+}
+
+[data-theme="dark"] .custom-select:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-select:focus {
+  border-color: #2ecc71;
+  background: white;
+}
+
+[data-theme="dark"] .custom-select:focus {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.select-wrapper {
+  position: relative;
+  width: 100%;
+  min-width: 200px;
+}
+
+.select-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #64748b; /* və ya var(--muted) */
+}
+
+[data-theme="dark"] .select-icon {
+  color: #94a3b8;
+}
