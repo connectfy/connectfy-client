@@ -58,7 +58,7 @@
 }
 
 /* Responsive rules */
-@media (max-width: 768px) {
+@media (max-width: 886px) {
   .setting-card {
     padding: 20px;
   }

@@ -142,97 +142,6 @@
   color: #2ecc71;
 }
 
-.general-notification-modes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.general-notification-mode {
-  background: #f8fafc;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-[data-theme="dark"] .general-notification-mode {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.general-notification-mode:hover {
-  background: #f1f5f9;
-  border-color: #2ecc71;
-}
-
-[data-theme="dark"] .general-notification-mode:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.general-notification-mode.active {
-  background: rgba(46, 204, 113, 0.1);
-  border-color: #2ecc71;
-}
-
-.general-mode-radio {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #cbd5e1;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.general-notification-mode.active .general-mode-radio {
-  border-color: #2ecc71;
-}
-
-.general-mode-radio::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #2ecc71;
-  transition: transform 0.2s ease;
-}
-
-.general-notification-mode.active .general-mode-radio::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.general-mode-content {
-  flex: 1;
-}
-
-.general-mode-content h4 {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-}
-
-[data-theme="dark"] .general-mode-content h4 {
-  color: #f8fafc;
-}
-
-.general-mode-content p {
-  font-size: 12px;
-  color: #64748b;
-  margin: 0;
-}
-
-[data-theme="dark"] .general-mode-content p {
-  color: #94a3b8;
-}
-
 .general-reset-button {
   width: 100%;
   padding: 16px;
@@ -278,36 +187,7 @@
     grid-template-columns: 1fr;
   }
 
-  .general-setting-card {
-    padding: 20px;
-  }
-
   .general-settings-content {
     height: calc(100% - 90px);
-  }
-}
-
-@media (max-width: 640px) {
-  .general-save-btn span {
-    display: none;
-  }
-
-  .general-save-btn {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .general-setting-card {
-    padding: 16px;
-  }
-
-  .general-back-btn,
-  .general-save-btn {
-    width: 36px;
-    height: 36px;
   }
 }

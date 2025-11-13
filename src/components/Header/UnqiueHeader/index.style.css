@@ -141,6 +141,17 @@
   .unique-settings-header-top {
     gap: 12px;
   }
+
+  .general-save-btn span {
+    display: none;
+  }
+
+  .unique-header-save-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -153,8 +164,18 @@
   }
   .unique-header-save-btn {
     padding: 0;
-    width: 40px;
-    height: 40px;
     justify-content: center;
+  }
+
+  .unique-header-back-btn,
+  .unique-header-save-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .unique-header-back-btn svg,
+  .unique-header-save-btn svg {
+    width: 24px;
+    height: 24px;
   }
 }
