@@ -15,43 +15,6 @@
   box-sizing: border-box;
 }
 
-.privacy-settings-header {
-  margin-bottom: 32px;
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.privacy-settings-header h1 {
-  font-size: 28px;
-  font-weight: 800;
-  color: #1e293b;
-  margin: 0 0 8px 0;
-}
-
-[data-theme="dark"] .privacy-settings-header h1 {
-  color: #f8fafc;
-}
-
-.privacy-settings-header p {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0;
-}
-
-[data-theme="dark"] .privacy-settings-header p {
-  color: #94a3b8;
-}
-
 .privacy-settings-content {
   display: flex;
   flex-direction: column;
@@ -76,65 +39,6 @@
 }
 
 [data-theme="dark"] .privacy-section-title {
-  color: #94a3b8;
-}
-
-.privacy-setting-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .privacy-setting-card {
-  background: var(--card-bg, #1e293b);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.privacy-setting-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.privacy-setting-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-  color: white;
-  flex-shrink: 0;
-}
-
-.privacy-setting-card-title {
-  flex: 1;
-}
-
-.privacy-setting-card-title h3 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-}
-
-[data-theme="dark"] .privacy-setting-card-title h3 {
-  color: #f8fafc;
-}
-
-.privacy-setting-card-title p {
-  font-size: 13px;
-  color: #64748b;
-  margin: 0;
-}
-
-[data-theme="dark"] .privacy-setting-card-title p {
   color: #94a3b8;
 }
 
@@ -182,10 +86,6 @@
     font-size: 24px;
   }
 
-  .privacy-setting-card {
-    padding: 20px;
-  }
-
   .privacy-settings-content {
     height: calc(100% - 90px);
   }
@@ -204,9 +104,5 @@
 @media (max-width: 480px) {
   .privacy-settings-header h1 {
     font-size: 22px;
-  }
-
-  .privacy-setting-card {
-    padding: 16px;
   }
 }

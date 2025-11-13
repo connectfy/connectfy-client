@@ -110,6 +110,10 @@
 }
 
 .selection-item:hover {
+  background-color: #eeeeee;
+}
+
+[data-theme="dark"] .selection-item:hover {
   background-color: var(--secondary-color);
 }
 

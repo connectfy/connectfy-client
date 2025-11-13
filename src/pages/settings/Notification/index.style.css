@@ -79,94 +79,6 @@
   color: #94a3b8;
 }
 
-.notification-setting-card {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .notification-setting-card {
-  background: var(--card-bg, #1e293b);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.notification-setting-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.notification-setting-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-  color: white;
-  flex-shrink: 0;
-}
-
-.notification-setting-card-title {
-  flex: 1;
-}
-
-.notification-setting-card-title h3 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-}
-
-[data-theme="dark"] .notification-setting-card-title h3 {
-  color: #f8fafc;
-}
-
-.notification-setting-card-title p {
-  font-size: 13px;
-  color: #64748b;
-  margin: 0;
-}
-
-[data-theme="dark"] .notification-setting-card-title p {
-  color: #94a3b8;
-}
-
-.notification-toggle-switch {
-  width: 52px;
-  height: 28px;
-  background: #cbd5e1;
-  border-radius: 14px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  flex-shrink: 0;
-}
-
-.notification-toggle-switch.notification-active {
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-}
-
-.notification-toggle-slider {
-  width: 24px;
-  height: 24px;
-  background: white;
-  border-radius: 50%;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.notification-toggle-switch.notification-active .notification-toggle-slider {
-  transform: translateX(24px);
-}
 
 @media (max-width: 886px) {
   .notification-settings-container {
@@ -181,10 +93,6 @@
     font-size: 24px;
   }
 
-  .notification-setting-card {
-    padding: 20px;
-  }
-
   .notification-settings-content {
     height: calc(100% - 90px);
   }
@@ -193,9 +101,5 @@
 @media (max-width: 480px) {
   .notification-settings-header h1 {
     font-size: 22px;
-  }
-
-  .notification-setting-card {
-    padding: 16px;
   }
 }

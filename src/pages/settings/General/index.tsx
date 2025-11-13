@@ -18,9 +18,14 @@ import CustomSelect from "@/components/CustomSelect";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE } from "@/types/enum.types";
+import UniqueHeader from "@/components/Header/UnqiueHeader";
+import SettingCard from "@/components/Card/SettingsCard";
+import { useNavigate } from "react-router-dom";
+import { ROUTER } from "@/constants/routet";
 
 const GeneralSettings = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const { theme, toggleTheme } = useTheme();
 
@@ -81,8 +86,8 @@ const GeneralSettings = () => {
     selections: [
       {
         key: "messenger",
-        name: t("common.messages"),
-        title: t("common.messages"),
+        name: t("common.messenger"),
+        title: t("common.messenger"),
         icon: MessageCircle,
         onClick: () => setHomepageKey("messenger"),
       },
@@ -163,6 +168,8 @@ const GeneralSettings = () => {
     options.selections.find((s) => s.key === options.activeKey)?.name ||
     options.title;
 
+  const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN)
+
   useEffect(() => {
     setSelectedTheme(theme);
   }, [theme]);
@@ -171,189 +178,147 @@ const GeneralSettings = () => {
     <Fragment>
       <section className="general-settings">
         <div className="general-settings-container">
-          <div className="settings-header">
-            <h1>{t("common.general_settings")}</h1>
-            <p>{t("common.configure_app_settings")}</p>
-          </div>
+          <UniqueHeader
+            headerTitle={t("common.general_settings")}
+            headerSubtitle={t("common.configure_app_settings")}
+            onClickBack={onClickBack}
+            onClickSave={() => {}}
+            showChangesButton
+            isChangesDisasbled={false}
+          />
 
-          <div className="settings-content">
-            <div className="setting-card">
-              <div className="setting-card-header">
-                <div className="setting-icon">
-                  <Sun size={20} />
-                </div>
-                <div className="setting-card-title">
-                  <h3>{t("common.app_theme")}</h3>
-                  <p>{t("common.choose_light_dark_system")}</p>
-                </div>
-              </div>
-              <div className="theme-options">
-                <div
-                  className={`theme-option ${isActiveTheme("light") ? "active" : ""}`}
-                  onClick={() => changeAppTheme("light")}
-                >
-                  <div className="theme-option-icon">
-                    <Sun size={24} />
+          <div className="general-settings-content">
+            <SettingCard
+              header={{
+                icon: Sun,
+                title: t("common.app_theme"),
+                subtitle: t("common.choose_light_dark_system"),
+              }}
+              content={
+                <div className="general-theme-options">
+                  <div
+                    className={`general-theme-option ${isActiveTheme("light") ? "active" : ""}`}
+                    onClick={() => changeAppTheme("light")}
+                  >
+                    <div className="general-theme-option-icon">
+                      <Sun size={24} />
+                    </div>
+                    <span>{t("common.light")}</span>
                   </div>
-                  <span>{t("common.light")}</span>
-                </div>
-                <div
-                  className={`theme-option ${isActiveTheme("dark") ? "active" : ""}`}
-                  onClick={() => changeAppTheme("dark")}
-                >
-                  <div className="theme-option-icon">
-                    <Moon size={24} />
+                  <div
+                    className={`general-theme-option ${isActiveTheme("dark") ? "active" : ""}`}
+                    onClick={() => changeAppTheme("dark")}
+                  >
+                    <div className="general-theme-option-icon">
+                      <Moon size={24} />
+                    </div>
+                    <span>{t("common.dark")}</span>
                   </div>
-                  <span>{t("common.dark")}</span>
                 </div>
-              </div>
-            </div>
+              }
+            />
 
-            <div className="setting-card">
-              <div className="setting-card-header">
-                <div className="setting-icon">
-                  <Globe size={20} />
-                </div>
-                <div className="setting-card-title">
-                  <h3>{t("common.language")}</h3>
-                  <p>{t("common.select_app_language")}</p>
-                </div>
-              </div>
-
-              <CustomSelect
-                buttonTitle={getLabel(languageOptions)}
-                options={languageOptions}
-              />
-            </div>
-
-            <div className="setting-card">
-              <div className="setting-card-header">
-                <div className="setting-icon">
-                  <Home size={20} />
-                </div>
-                <div className="setting-card-title">
-                  <h3>{t("common.startup_page")}</h3>
-                  <p>{t("common.which_page_on_start")}</p>
-                </div>
-              </div>
-
-              <CustomSelect
-                buttonTitle={getLabel(homepageOptions)}
-                options={homepageOptions}
-              />
-            </div>
-
-            <div className="setting-card">
-              <div className="setting-card-header">
-                <div className="setting-icon">
-                  <Clock size={20} />
-                </div>
-                <div className="setting-card-title">
-                  <h3>{t("common.timezone_and_format")}</h3>
-                  <p>{t("common.select_time_display_format")}</p>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: "16px" }}>
+            <SettingCard
+              header={{
+                icon: Globe,
+                title: t("common.language"),
+                subtitle: t("common.language"),
+              }}
+              content={
                 <CustomSelect
-                  buttonTitle={getLabel(timezoneOptions)}
-                  options={timezoneOptions}
+                  buttonTitle={getLabel(languageOptions)}
+                  options={languageOptions}
                 />
-              </div>
+              }
+            />
 
-              <div style={{ marginBottom: "12px" }}>
-                <p
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    color: "#64748b",
-                    margin: "0 0 8px 0",
-                  }}
-                >
-                  {t("common.time_format")}
-                </p>
-                <div className="time-format-options">
-                  <div className="format-option active">
-                    {t("common.format_24_hour_example")}
-                  </div>
-                  <div className="format-option">
-                    {t("common.format_12_hour_example")}
-                  </div>
-                </div>
-              </div>
+            <SettingCard
+              header={{
+                icon: Home,
+                title: t("common.startup_page"),
+                subtitle: t("common.which_page_on_start"),
+              }}
+              content={
+                <CustomSelect
+                  buttonTitle={getLabel(homepageOptions)}
+                  options={homepageOptions}
+                />
+              }
+            />
 
-              <div>
-                <p
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    color: "#64748b",
-                    margin: "0 0 8px 0",
-                  }}
-                >
-                  {t("common.date_format")}
-                </p>
-                <div className="time-format-options">
-                  <div className="format-option active">
-                    {t("common.date_dd_mm_yyyy")}
+            <SettingCard
+              header={{
+                icon: Clock,
+                title: t("common.timezone_and_format"),
+                subtitle: t("common.select_time_display_format"),
+              }}
+              content={
+                <Fragment>
+                  <div style={{ marginBottom: "16px" }}>
+                    <CustomSelect
+                      buttonTitle={getLabel(timezoneOptions)}
+                      options={timezoneOptions}
+                    />
                   </div>
-                  <div className="format-option">
-                    {t("common.date_mm_dd_yyyy")}
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="setting-card">
-              <div className="setting-card-header">
-                <div className="setting-icon">
-                  <Bell size={20} />
-                </div>
-                <div className="setting-card-title">
-                  <h3>{t("common.notification_mode")}</h3>
-                  <p>{t("common.select_default_notification")}</p>
-                </div>
-              </div>
-              <div className="notification-modes">
-                <div className="notification-mode active">
-                  <div className="mode-radio"></div>
-                  <div className="mode-content">
-                    <h4>{t("common.sound_notifications")}</h4>
-                    <p>{t("common.all_notifications_with_sound")}</p>
+                  <div style={{ marginBottom: "12px" }}>
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        color: "#64748b",
+                        margin: "0 0 8px 0",
+                      }}
+                    >
+                      {t("common.time_format")}
+                    </p>
+                    <div className="general-time-format-options">
+                      <div className="general-format-option active">
+                        {t("common.format_24_hour_example")}
+                      </div>
+                      <div className="general-format-option">
+                        {t("common.format_12_hour_example")}
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="notification-mode">
-                  <div className="mode-radio"></div>
-                  <div className="mode-content">
-                    <h4>{t("common.silent_mode")}</h4>
-                    <p>{t("common.only_visual_no_sound")}</p>
-                  </div>
-                </div>
-                <div className="notification-mode">
-                  <div className="mode-radio"></div>
-                  <div className="mode-content">
-                    <h4>{t("common.do_not_disturb")}</h4>
-                    <p>{t("common.no_notifications")}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="setting-card">
-              <div className="setting-card-header">
-                <div className="setting-icon">
-                  <RefreshCw size={20} />
-                </div>
-                <div className="setting-card-title">
-                  <h3>{t("common.reset_to_defaults")}</h3>
-                  <p>{t("common.reset_all_general_settings")}</p>
-                </div>
-              </div>
-              <button className="reset-button">
-                <RefreshCw size={18} />
-                {t("common.reset_settings")}
-              </button>
-            </div>
+                  <div>
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        color: "#64748b",
+                        margin: "0 0 8px 0",
+                      }}
+                    >
+                      {t("common.date_format")}
+                    </p>
+                    <div className="general-time-format-options">
+                      <div className="general-format-option active">
+                        {t("common.date_dd_mm_yyyy")}
+                      </div>
+                      <div className="general-format-option">
+                        {t("common.date_mm_dd_yyyy")}
+                      </div>
+                    </div>
+                  </div>
+                </Fragment>
+              }
+            />
+
+            <SettingCard
+              header={{
+                icon: RefreshCw,
+                title: t("common.reset_to_defaults"),
+                subtitle: t("common.reset_all_general_settings"),
+              }}
+              content={
+                <button className="general-reset-button">
+                  <RefreshCw size={18} />
+                  {t("common.reset_settings")}
+                </button>
+              }
+            />
           </div>
         </div>
       </section>

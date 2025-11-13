@@ -8,11 +8,16 @@ import {
 } from "lucide-react";
 import { Fragment, useState } from "react";
 import "./index.style.css";
-import ToggleSlider from "@/components/ToggleSlider";
 import { useTranslation } from "react-i18next";
+import UniqueHeader from "@/components/Header/UnqiueHeader";
+import ToggleCard from "@/components/Card/ToggleCard";
+import { useNavigate } from "react-router-dom";
+import { ROUTER } from "@/constants/routet";
+import SettingCard from "@/components/Card/SettingsCard";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // Notification Sound Settings
   const [sentSound, setSentSound] = useState(true);
@@ -135,16 +140,61 @@ const NotificationSettings = () => {
     },
   ];
 
+  const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
+
   return (
     <Fragment>
       <section className="notification-settings">
         <div className="notification-settings-container">
-          <div className="notification-settings-header">
-            <h1>{t("common.notification_header")}</h1>
-            <p>{t("common.notification_subheader")}</p>
-          </div>
+          <UniqueHeader
+            headerTitle={t("common.notification_header")}
+            headerSubtitle={t("common.notification_subheader")}
+            onClickBack={onClickBack}
+            onClickSave={() => {}}
+            showChangesButton
+            isChangesDisasbled={false}
+          />
 
           <div className="notification-settings-content">
+            <div className="notification-privacy-section">
+              <h2 className="notification-section-title">
+                {t("common.general_notification_title")}
+              </h2>
+
+              <SettingCard
+                header={{
+                  icon: Bell,
+                  title: t("common.notification_mode"),
+                  subtitle: t("common.select_default_notification"),
+                }}
+                content={
+                  <div className="general-notification-modes">
+                    <div className="general-notification-mode active">
+                      <div className="general-mode-radio"></div>
+                      <div className="general-mode-content">
+                        <h4>{t("common.sound_notifications")}</h4>
+                        <p>{t("common.all_notifications_with_sound")}</p>
+                      </div>
+                    </div>
+                    <div className="general-notification-mode">
+                      <div className="general-mode-radio"></div>
+                      <div className="general-mode-content">
+                        <h4>{t("common.silent_mode")}</h4>
+                        <p>{t("common.only_visual_no_sound")}</p>
+                      </div>
+                    </div>
+                    <div className="general-notification-mode">
+                      <div className="general-mode-radio"></div>
+                      <div className="general-mode-content">
+                        <h4>{t("common.do_not_disturb")}</h4>
+                        <p>{t("common.no_notifications")}</p>
+                      </div>
+                    </div>
+                  </div>
+                }
+              />
+            </div>
+
             {/* NOTIFICATION SOUND SETTINGS */}
             <div className="notification-privacy-section">
               <h2 className="notification-section-title">
@@ -154,24 +204,18 @@ const NotificationSettings = () => {
               {NOTIFICATION_SOUNDS_CARDS.map((card, idx) => {
                 const Icon = card.icon;
                 return (
-                  <div
-                    className="notification-setting-card"
+                  <ToggleCard
                     key={`sound-${idx}`}
-                  >
-                    <div className="notification-setting-card-header">
-                      <div className="notification-setting-icon">
-                        <Icon size={20} />
-                      </div>
-                      <div className="notification-setting-card-title">
-                        <h3>{card.title}</h3>
-                        <p>{card.desc}</p>
-                      </div>
-                      <ToggleSlider
-                        checked={card.checked}
-                        onClick={card.onClick}
-                      />
-                    </div>
-                  </div>
+                    header={{
+                      icon: Icon,
+                      title: card.title,
+                      subtitle: card.desc,
+                    }}
+                    slider={{
+                      checked: card.checked,
+                      onClick: card.onClick,
+                    }}
+                  />
                 );
               })}
             </div>
@@ -185,24 +229,18 @@ const NotificationSettings = () => {
               {NOTIFICATION_BANNER_CARDS.map((card, idx) => {
                 const Icon = card.icon;
                 return (
-                  <div
-                    className="notification-setting-card"
+                  <ToggleCard
                     key={`banner-${idx}`}
-                  >
-                    <div className="notification-setting-card-header">
-                      <div className="notification-setting-icon">
-                        <Icon size={20} />
-                      </div>
-                      <div className="notification-setting-card-title">
-                        <h3>{card.title}</h3>
-                        <p>{card.desc}</p>
-                      </div>
-                      <ToggleSlider
-                        checked={card.checked}
-                        onClick={card.onClick}
-                      />
-                    </div>
-                  </div>
+                    header={{
+                      icon: Icon,
+                      title: card.title,
+                      subtitle: card.desc,
+                    }}
+                    slider={{
+                      checked: card.checked,
+                      onClick: card.onClick,
+                    }}
+                  />
                 );
               })}
             </div>
