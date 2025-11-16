@@ -9,8 +9,11 @@ import {
 import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   IDENTIFIER_TYPE,
+  THEME,
 } from "@/types/enum.types";
 // import { COUNTRIES } from "./constant";
+
+const theme = localStorage.getItem("app-theme") as THEME;
 
 export const loginInitialState: ILoginForm = {
   identifierType: IDENTIFIER_TYPE.USERNAME,
@@ -27,6 +30,7 @@ export const signupInitialState: ISignupForm = {
   password: null,
   confirm: null,
   birthdayDate: null,
+  theme,
   // phoneNumber: {
   //   countryCode: COUNTRIES[0].code,
   //   number: null,
@@ -59,4 +63,5 @@ export const googleSignupInitialState: IGoogleSignupForm = {
   // },
   gender: null,
   birthdayDate: null,
+  theme,
 };

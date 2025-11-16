@@ -1,18 +1,27 @@
+import { THEME } from "@/types/enum.types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
-
 interface ThemeContextType {
-  theme: Theme;
+  theme: THEME;
   toggleTheme: () => void;
 }
 
-export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined
+);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem("app-theme") as Theme) || "light"
-  );
+  const [theme, setTheme] = useState<THEME>(setThemeFunc());
+
+  function setThemeFunc() {
+    const theme = localStorage.getItem("app-theme");
+
+    if (!theme) return THEME.LIGHT;
+
+    if (!Object.values(["light", "dark"]).includes(theme)) return THEME.LIGHT;
+
+    return theme as THEME;
+  }
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -20,7 +29,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    setTheme((prev) => (prev === THEME.LIGHT ? THEME.DARK : THEME.LIGHT));
   };
 
   return (

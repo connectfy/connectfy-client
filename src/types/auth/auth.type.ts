@@ -2,6 +2,7 @@ import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   GENDER,
   IDENTIFIER_TYPE,
+  THEME,
   TOKEN_TYPE,
 } from "../enum.types";
 
@@ -70,6 +71,7 @@ export interface ISignupForm {
   password: string | null;
   confirm: string | null;
   birthdayDate: Date | null;
+  theme: THEME;
   // phoneNumber: IPhoneNumber;
 }
 
@@ -98,6 +100,7 @@ export interface IGoogleSignupForm {
   // phoneNumber: IPhoneNumber;
   gender: GENDER | null;
   birthdayDate: Date | null;
+  theme: THEME;
 }
 
 export interface IFaceIdForm {

@@ -345,6 +345,7 @@ const authSlice = createSlice({
       .addCase(signupVerify.fulfilled, (state, action) => {
         state.LOADING_SIGNUP_VERIFY = false;
         state.access_token = action.payload.access_token;
+        localStorage.setItem("access_token", action.payload.access_token);
       })
       .addCase(signupVerify.pending, (state) => {
         state.LOADING_SIGNUP_VERIFY = true;
