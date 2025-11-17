@@ -7,6 +7,9 @@ export enum LANGUAGE {
 
 export enum Resource {
   auth = "auth",
+  generalSettings = "general_settings",
+  privacySettings = "privacy_settings",
+  notificationSettings = "notification_settings",
 }
 
 export enum GENDER {
@@ -42,4 +45,35 @@ export enum PRIVACY_SETTINGS_CHOICE {
 export enum THEME {
   DARK = "dark",
   LIGHT = "light",
+}
+
+export enum NOTIFICATION_SOUND_MODE {
+  SOUND = "SOUND",
+  SLIENT = "SLIENT",
+  DND = "DND",
+}
+
+export enum NOTIFICATION_CONTENT_MODE {
+  HEADER_AND_CONTENT = "HEADER_AND_CONTENT",
+  HEADER_ONLY = "HEADER_ONLY",
+  HIDE_NOTIFICATION = "HIDE_NOTIFICATION",
+}
+
+export enum STARTUP_PAGE {
+  MESSENGER = "MESSENGER",
+  GROUPS = "GROUPS",
+  CHANNELS = "CHANNELS",
+  USERS = "USERS",
+  NOTIFICATION = "NOTIFICATION",
+  PROFILE = "PROFILE",
+}
+
+export enum TIME_FORMAT {
+  H24 = "24h",
+  H12 = "12h",
+}
+
+export enum DATE_FORMAT {
+  DDMMYYYY = "DD/MM/YYYY",
+  MMDDYYYY = "MM/DD/YYYY",
 }

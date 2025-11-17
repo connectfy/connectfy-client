@@ -90,7 +90,7 @@ export const signup = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.failed_to_signup")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -107,8 +107,7 @@ export const signupVerify = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          t("error_messages.failed_to_verify_signup")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -125,8 +124,7 @@ export const forgotPassword = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          t("error_messages.failed_to_forgot_password_request")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -143,8 +141,7 @@ export const resetPassword = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          t("error_messages.failed_to_reset_password")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -158,7 +155,7 @@ export const logout = createAsyncThunk<ILogoutResponse>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.failed_to_logout")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -172,7 +169,7 @@ export const googleLogin = createAsyncThunk<ILoginResponse, IGoogleLoginForm>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.failed_to_login")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -189,7 +186,7 @@ export const googleSignup = createAsyncThunk<
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.failed_to_signup")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -203,7 +200,7 @@ export const faceId = createAsyncThunk<ILoginResponse, IFaceIdForm>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.failed_to_signup")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }
@@ -217,8 +214,7 @@ export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          t("error_messages.failed_to_veridy_token")
+        error.response?.data?.message || t("error_messages.process_failed")
       );
     }
   }

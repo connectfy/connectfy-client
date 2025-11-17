@@ -1,5 +1,5 @@
 import "./index.style.css";
-import { Shield, Lock, Eye, UserCheck } from "lucide-react";
+import { Shield, UserCheck } from "lucide-react";
 import { Fragment, useState } from "react";
 import CustomSelect from "@/components/CustomSelect";
 import { useTranslation } from "react-i18next";
@@ -9,75 +9,27 @@ import SettingCard from "@/components/Card/SettingsCard";
 import ToggleCard from "@/components/Card/ToggleCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
+import { privacyOptions, privacySections } from "./constants/constant";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [messageKey, setMessageKey] = useState("EVERYONE");
-  const [emailKey, setEmailKey] = useState("NOBODY");
-  const [genderKey, setGenderKey] = useState("EVERYONE");
-  const [bioKey, setBioKey] = useState("EVERYONE");
-  const [locationKey, setLocationKey] = useState("EVERYONE");
-  const [socialKey, setSocialKey] = useState("EVERYONE");
-  const [lastSeenKey, setLastSeenKey] = useState("EVERYONE");
   const [friendRequestsOpen, setFriendRequestsOpen] = useState(true);
+  const [messageKey, setMessageKey] = useState(
+    PRIVACY_SETTINGS_CHOICE.EVERYONE
+  );
 
-  const privacyOptions = [
-    {
-      key: "EVERYONE",
-      name: t(`enum.${PRIVACY_SETTINGS_CHOICE.EVERYONE}`),
-      icon: Eye,
-    },
-    {
-      key: "MY_FRIENDS",
-      name: t(`enum.${PRIVACY_SETTINGS_CHOICE.MY_FRIENDS}`),
-      icon: UserCheck,
-    },
-    {
-      key: "NOBODY",
-      name: t(`enum.${PRIVACY_SETTINGS_CHOICE.NOBODY}`),
-      icon: Lock,
-    },
-  ];
+  const PRIVACY_OPTIONS = privacyOptions(t);
+  const PRIVACY_SECTIONS = privacySections(t);
 
-  const privacySections = [
-    {
-      label: t("common.email_visibility"),
-      key: emailKey,
-      setter: setEmailKey,
-    },
-    {
-      label: t("common.gender_visibility"),
-      key: genderKey,
-      setter: setGenderKey,
-    },
-    {
-      label: t("common.bio_visibility"),
-      key: bioKey,
-      setter: setBioKey,
-    },
-    {
-      label: t("common.location_visibility"),
-      key: locationKey,
-      setter: setLocationKey,
-    },
-    {
-      label: t("common.social_visibility"),
-      key: socialKey,
-      setter: setSocialKey,
-    },
-    {
-      label: t("common.last_seen_visibility"),
-      key: lastSeenKey,
-      setter: setLastSeenKey,
-    },
-  ];
-
-  const createOptions = (activeKey: string, setter: (key: string) => void) => ({
+  const createOptions = (
+    activeKey: string,
+    setter: (key: PRIVACY_SETTINGS_CHOICE) => void
+  ) => ({
     title: t("common.privacy_level"),
     activeKey,
-    selections: privacyOptions.map((opt) => ({
+    selections: PRIVACY_OPTIONS.map((opt) => ({
       key: opt.key,
       name: opt.name,
       title: opt.name,
@@ -87,9 +39,9 @@ const PrivacySettings = () => {
   });
 
   const getLabel = (key: string) =>
-    privacyOptions.find((opt) => opt.key === key)?.name || t("common.select");
+    PRIVACY_OPTIONS.find((opt) => opt.key === key)?.name || t("common.select");
 
-  const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN)
+  const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
   return (
     <Fragment>
@@ -147,7 +99,7 @@ const PrivacySettings = () => {
               <SettingCard
                 content={
                   <Fragment>
-                    {privacySections.map((item, idx) => (
+                    {PRIVACY_SECTIONS.map((item, idx) => (
                       <div
                         className="privacy-row"
                         key={idx}
