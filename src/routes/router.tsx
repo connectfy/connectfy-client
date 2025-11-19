@@ -1,24 +1,12 @@
 import { lazy } from "react";
 import {
   InsideProfile,
+  RedirectMain,
   RequireAuth,
 } from "@/components/routeGuard/RequireAuth";
 import { ROUTER } from "@/constants/routet";
 import { Navigate } from "react-router-dom";
 import Loader from "@/components/Loader/Loader";
-// import Loading from "@/components/Loading/Loading";
-
-// const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-//   <Suspense
-//     fallback={
-//       <div style={{ padding: "20px", textAlign: "center" }}>
-//         <Loading />
-//       </div>
-//     }
-//   >
-//     {children}
-//   </Suspense>
-// );
 
 // ======================= LAYOUT
 const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/index")));
@@ -30,9 +18,7 @@ const Auth = lazy(() => import("@/pages/auth/pages/Main/index"));
 const ForgotPassword = lazy(
   () => import("@/pages/auth/pages/ForgotPassword/index")
 );
-
 const VerifySignup = lazy(() => import("@/pages/auth/pages/Verify/index"));
-
 const ResetPassword = lazy(
   () => import("@/pages/auth/pages/ResesPassword/index")
 );
@@ -58,9 +44,14 @@ const BackgroundSettings = lazy(
 );
 
 const routes = [
-  // ======================= AUTH
+  // ======================= ROOT REDIRECT
   {
     path: "/",
+    element: <RedirectMain />,
+  },
+  // ======================= AUTH
+  {
+    path: "/auth",
     element: (
       <InsideProfile>
         <AuthLayout />
@@ -68,19 +59,19 @@ const routes = [
     ),
     children: [
       {
-        path: ROUTER.AUTH.MAIN,
+        index: true,
         element: <Auth />,
       },
       {
-        path: ROUTER.AUTH.FORGOT_PASSWORD,
+        path: "forgot-password",
         element: <ForgotPassword />,
       },
       {
-        path: ROUTER.AUTH.VERIFY_ACCOUNT,
+        path: "verify-account",
         element: <VerifySignup />,
       },
       {
-        path: ROUTER.AUTH.RESET_PASSWORD,
+        path: "reset-password",
         element: <ResetPassword />,
       },
       { path: "*", element: <Navigate to={ROUTER.AUTH.MAIN} replace /> },
@@ -91,6 +82,7 @@ const routes = [
     path: ROUTER.TERMS_AND_CONDITIONS,
     element: <TermsAndConditions />,
   },
+  // ======================= MAIN APP
   {
     path: "/",
     element: (

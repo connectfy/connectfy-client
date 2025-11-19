@@ -28,16 +28,15 @@ interface Props {
 
 const UniqueSidebar: FC<Props> = ({ title, subjects }) => {
   const location = useLocation();
-  const [activeKey, setActiveKey] = useState<string>("");
+  const [activeKey, setActiveKey] = useState<string | null>(null);
 
   useEffect(() => {
     const currentPath = location.pathname || "/";
     const matched = subjects.find((s) =>
       currentPath === s.path ? true : currentPath.startsWith(s.path)
     );
-    if (matched) {
-      setActiveKey(matched.key);
-    }
+    if (matched) setActiveKey(matched.key);
+    else setActiveKey(null);
   }, [location.pathname, subjects]);
 
   const handleClick = (s: Subject) => {

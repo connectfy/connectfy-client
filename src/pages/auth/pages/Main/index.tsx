@@ -7,7 +7,7 @@ import AuthFooter from "../../components/authFooter";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { AuthFormType } from "@/types/auth/auth.type";
+import { AuthFormType } from "@/types/auth/auth/auth.type";
 import { setAuthForm } from "@/features/auth/authSlice";
 
 const AuthPage: FC = () => {

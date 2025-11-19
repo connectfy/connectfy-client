@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import {
   ForgotPasswordModeType,
   IForgotPasswordForm,
-} from "@/types/auth/auth.type";
+} from "@/types/auth/auth/auth.type";
 import { useFormik } from "formik";
 import { forgotPasswordInitialState } from "../../constants/intialState";
 import { validateForgotPassword } from "../../constants/validation";

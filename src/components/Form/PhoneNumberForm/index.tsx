@@ -6,7 +6,7 @@ import Input from "@/components/Input/Input";
 import { Tooltip } from "@mui/material";
 import useBoolean from "@/hooks/useBoolean";
 import CountryCodeModal from "@/components/Modal/CountryCodeModal";
-import { IPhoneNumber } from "@/types/auth/auth.type";
+import { IPhoneNumber } from "@/types/auth/auth/auth.type";
 
 interface Props {
   name: string;

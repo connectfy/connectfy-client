@@ -1,7 +1,7 @@
 import {
   IEditPrivacySettings,
   IPrivacySettings,
-} from "@/types/account/privacy/privacy-settings.type";
+} from "@/types/account/settings/privacy/privacy-settings.type";
 import { ApiErrorType } from "@/types/api.types";
 import { Resource } from "@/types/enum.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";

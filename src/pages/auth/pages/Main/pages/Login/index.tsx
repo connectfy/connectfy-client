@@ -15,7 +15,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
-import { ILoginForm, LoginModeType } from "@/types/auth/auth.type";
+import { ILoginForm, LoginModeType } from "@/types/auth/auth/auth.type";
 import { useNavigate } from "react-router-dom";
 import useBoolean from "@/hooks/useBoolean";
 import { ROUTER } from "@/constants/routet";

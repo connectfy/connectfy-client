@@ -1,7 +1,7 @@
 import {
   IEditGeneralSettings,
   IGeneralSettings,
-} from "@/types/account/general/general-settings.type";
+} from "@/types/account/settings/general/general-settings.type";
 import { ApiErrorType } from "@/types/api.types";
 import { Resource } from "@/types/enum.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -10,6 +10,8 @@ import { t } from "i18next";
 
 export interface GeneralSettingsState {
   data: IGeneralSettings | null;
+
+  hasChanged: boolean;
 
   LOADING_GET: boolean;
   LOADING_UPDATE: boolean;
@@ -38,6 +40,8 @@ export const updateGeneralSettings = createAsyncThunk<
 const initialState: GeneralSettingsState = {
   data: null,
 
+  hasChanged: false,
+
   LOADING_GET: false,
   LOADING_UPDATE: false,
 
@@ -51,6 +55,9 @@ const generalSettingsSlice = createSlice({
   reducers: {
     setData: (state, action: PayloadAction<IGeneralSettings>) => {
       state.data = action.payload;
+    },
+    setHasChanged: (state, action: PayloadAction<boolean>) => {
+      state.hasChanged = action.payload;
     },
     clearError: (state) => {
       state.ERROR_GET = null;
@@ -73,5 +80,6 @@ const generalSettingsSlice = createSlice({
       }),
 });
 
-export const { clearError, setData } = generalSettingsSlice.actions;
+export const { clearError, setData, setHasChanged } =
+  generalSettingsSlice.actions;
 export default generalSettingsSlice.reducer;

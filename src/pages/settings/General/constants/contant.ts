@@ -1,5 +1,11 @@
-import { LANGUAGE } from "@/types/enum.types";
-import { i18n, TFunction } from "i18next";
+import {
+  DATE_FORMAT,
+  LANGUAGE,
+  STARTUP_PAGE,
+  THEME,
+  TIME_FORMAT,
+} from "@/types/enum.types";
+import { TFunction } from "i18next";
 import {
   Bell,
   Globe,
@@ -9,21 +15,21 @@ import {
   UserCircle,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { IEditGeneralSettings, IGeneralSettings } from "@/types/account/settings/general/general-settings.type";
+import { snack } from "@/utils/snackManager";
+import { FormikProps } from "formik";
 
-export const languageOptions = (t: TFunction, i18n: i18n) => {
-  const lang = localStorage.getItem("lang")
-    ? (localStorage.getItem("lang") as LANGUAGE)
-    : LANGUAGE.EN;
-
+export const languageOptions = (
+  t: TFunction,
+  formik: FormikProps<IEditGeneralSettings>
+) => {
   const handleLanguageChange = (code: LANGUAGE) => {
-    i18n.changeLanguage(code);
-    localStorage.setItem("lang", code);
+    formik.setFieldValue("language", code);
   };
 
   return {
     title: t("common.language_selection"),
-    activeKey: lang as string,
+    activeKey: formik.values.language!,
     selections: [
       {
         key: "az",
@@ -53,55 +59,114 @@ export const languageOptions = (t: TFunction, i18n: i18n) => {
   };
 };
 
-export const homepageOptions = (t: TFunction) => {
-  const [homepageKey, setHomepageKey] = useState("messenger");
-
+export const homepageOptions = (
+  t: TFunction,
+  formik: FormikProps<IEditGeneralSettings>
+) => {
   return {
     title: t("common.homepage"),
-    activeKey: homepageKey,
+    activeKey: formik.values.startupPage!,
     selections: [
       {
-        key: "messenger",
+        key: STARTUP_PAGE.MESSENGER,
         name: t("common.messenger"),
         title: t("common.messenger"),
         icon: MessageCircle,
-        onClick: () => setHomepageKey("messenger"),
+        onClick: () =>
+          formik.setFieldValue("startupPage", STARTUP_PAGE.MESSENGER),
       },
       {
-        key: "groups",
+        key: STARTUP_PAGE.GROUPS,
         name: t("common.groups"),
         title: t("common.groups"),
         icon: Users,
-        onClick: () => setHomepageKey("groups"),
+        onClick: () => formik.setFieldValue("startupPage", STARTUP_PAGE.GROUPS),
       },
       {
-        key: "channels",
+        key: STARTUP_PAGE.CHANNELS,
         name: t("common.channels"),
         title: t("common.channels"),
         icon: Radio,
-        onClick: () => setHomepageKey("channels"),
+        onClick: () =>
+          formik.setFieldValue("startupPage", STARTUP_PAGE.CHANNELS),
       },
       {
-        key: "users",
+        key: STARTUP_PAGE.USERS,
         name: t("common.users"),
         title: t("common.users"),
         icon: UserCircle,
-        onClick: () => setHomepageKey("users"),
+        onClick: () => formik.setFieldValue("startupPage", STARTUP_PAGE.USERS),
       },
       {
-        key: "notifications",
+        key: STARTUP_PAGE.NOTIFICATION,
         name: t("common.notifications"),
         title: t("common.notifications"),
         icon: Bell,
-        onClick: () => setHomepageKey("notifications"),
+        onClick: () =>
+          formik.setFieldValue("startupPage", STARTUP_PAGE.NOTIFICATION),
       },
       {
-        key: "my_profile",
+        key: STARTUP_PAGE.PROFILE,
         name: t("common.my_profile"),
         title: t("common.my_profile"),
         icon: User,
-        onClick: () => setHomepageKey("my_profile"),
+        onClick: () =>
+          formik.setFieldValue("startupPage", STARTUP_PAGE.PROFILE),
       },
     ],
   };
+};
+
+export const initialState = (data: IGeneralSettings): IEditGeneralSettings => {
+  const { _id, theme, language, startupPage, timeZone } = data;
+
+  const initialState = {
+    _id,
+    theme,
+    language,
+    startupPage,
+    timeZone,
+  };
+
+  return initialState;
+};
+
+export const validateGenerateSettings = (
+  values: IEditGeneralSettings,
+  t: TFunction
+): void => {
+  const { theme, language, startupPage, timeZone } = values;
+
+  if (theme && !Object.values(THEME).includes(theme))
+    snack.error(t("error_messages.invalid_theme"), {
+      anchorOrigin: { vertical: "top", horizontal: "center" },
+    });
+
+  if (language && !Object.values(LANGUAGE).includes(language))
+    snack.error(t("error_messages.invalid_language"), {
+      anchorOrigin: { vertical: "top", horizontal: "center" },
+    });
+
+  if (startupPage && !Object.values(STARTUP_PAGE).includes(startupPage))
+    snack.error(t("error_messages.invalid_startup_page"), {
+      anchorOrigin: { vertical: "top", horizontal: "center" },
+    });
+
+  if (timeZone) {
+    if (
+      timeZone.dateFormat &&
+      !Object.values(DATE_FORMAT).includes(timeZone.dateFormat)
+    )
+      snack.error(t("error_messages.invalid_date_format"), {
+        anchorOrigin: { vertical: "top", horizontal: "center" },
+      });
+
+    if (
+      timeZone.timeFormat &&
+      !Object.values(TIME_FORMAT).includes(timeZone.timeFormat)
+    )
+      snack.error(t("error_messages.invalid_time_format"), {
+        anchorOrigin: { vertical: "top", horizontal: "center" },
+      });
+  }
 };

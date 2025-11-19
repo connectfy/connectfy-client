@@ -3,7 +3,7 @@ import Button from "@/components/Button/Button";
 import PhoneNumber from "@/components/Form/PhoneNumberForm";
 import Spinner from "@/components/Spinner/Spinner";
 import { useAppSelector } from "@/hooks/useStore";
-import { IForgotPasswordForm, IPhoneNumber } from "@/types/auth/auth.type";
+import { IForgotPasswordForm, IPhoneNumber } from "@/types/auth/auth/auth.type";
 import { Resource } from "@/types/enum.types";
 import { FormikProps } from "formik";
 import { FC } from "react";

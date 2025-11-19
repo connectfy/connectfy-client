@@ -1,7 +1,7 @@
 import {
   IEditNotificationSettings,
   INotificationSettings,
-} from "@/types/account/notification/notification-settings.type";
+} from "@/types/account/settings/notification/notification-settings.type";
 import { ApiErrorType } from "@/types/api.types";
 import { Resource } from "@/types/enum.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";

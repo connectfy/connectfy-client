@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
 import { googleLogin, setAuthForm } from "@/features/auth/authSlice";
 import { Resource } from "@/types/enum.types";
-import { AuthFormType } from "@/types/auth/auth.type";
+import { AuthFormType } from "@/types/auth/auth/auth.type";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { GoogleLogin } from "@react-oauth/google";
 import { unwrapResult } from "@reduxjs/toolkit";

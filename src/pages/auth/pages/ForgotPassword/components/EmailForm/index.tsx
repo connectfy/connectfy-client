@@ -3,7 +3,7 @@ import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
 import { useTranslation } from "react-i18next";
 import { FormikProps } from "formik";
-import { IForgotPasswordForm } from "@/types/auth/auth.type";
+import { IForgotPasswordForm } from "@/types/auth/auth/auth.type";
 import { FC } from "react";
 import { useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";

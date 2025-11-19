@@ -1,7 +1,7 @@
 import {
   IEditNotificationSettings,
   INotificationSettings,
-} from "@/types/account/notification/notification-settings.type";
+} from "@/types/account/settings/notification/notification-settings.type";
 import axios from "@/helpers/instance";
 
 export const updateNotificationSettingsApi = (data: IEditNotificationSettings) =>

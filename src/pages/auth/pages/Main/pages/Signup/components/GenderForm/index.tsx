@@ -2,7 +2,7 @@ import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import { GENDER } from "@/types/enum.types";
 import { FormikProps } from "formik";
-import { IGoogleSignupForm, ISignupForm } from "@/types/auth/auth.type";
+import { IGoogleSignupForm, ISignupForm } from "@/types/auth/auth/auth.type";
 import { FC, useCallback } from "react";
 
 interface Props {

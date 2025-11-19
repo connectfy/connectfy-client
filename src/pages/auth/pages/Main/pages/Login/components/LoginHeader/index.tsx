@@ -4,7 +4,7 @@ import { Badge, Phone, Email, Face } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
 import { setLoginMode } from "@/features/auth/authSlice";
 import { IDENTIFIER_TYPE, Resource } from "@/types/enum.types";
-import { ILoginForm, LoginModeType } from "@/types/auth/auth.type";
+import { ILoginForm, LoginModeType } from "@/types/auth/auth/auth.type";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { FormikProps } from "formik";

@@ -1,7 +1,7 @@
 import {
   IEditGeneralSettings,
   IGeneralSettings,
-} from "@/types/account/general/general-settings.type";
+} from "@/types/account/settings/general/general-settings.type";
 import axios from "@/helpers/instance";
 
 export const updateGeneralSettingsApi = (data: IEditGeneralSettings) =>

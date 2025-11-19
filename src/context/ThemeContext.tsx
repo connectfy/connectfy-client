@@ -1,4 +1,5 @@
-import { THEME } from "@/types/enum.types";
+import { useAppSelector } from "@/hooks/useStore";
+import { Resource, THEME } from "@/types/enum.types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface ThemeContextType {
@@ -11,22 +12,33 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<THEME>(setThemeFunc());
+  const { data } = useAppSelector((state) => state[Resource.generalSettings]);
 
-  function setThemeFunc() {
-    const theme = localStorage.getItem("app-theme");
+  const [theme, setTheme] = useState<THEME>(() => {
+    const localTheme = localStorage.getItem("app-theme");
 
-    if (!theme) return THEME.LIGHT;
+    if (!localTheme) return THEME.LIGHT;
 
-    if (!Object.values(["light", "dark"]).includes(theme)) return THEME.LIGHT;
+    if (!["light", "dark"].includes(localTheme)) return THEME.LIGHT;
 
-    return theme as THEME;
-  }
+    return localTheme as THEME;
+  });
+
+  useEffect(() => {
+    if (data?.theme) {
+      setTheme(data.theme);
+    }
+  }, [data?.theme]);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("app-theme", theme);
-  }, [theme]);
+
+    if (data?.theme) {
+      localStorage.removeItem("app-theme");
+    } else {
+      localStorage.setItem("app-theme", theme);
+    }
+  }, [theme, data?.theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === THEME.LIGHT ? THEME.DARK : THEME.LIGHT));

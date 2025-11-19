@@ -8,7 +8,7 @@ import { useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";
 import Spinner from "@/components/Spinner/Spinner";
 import { FormikProps } from "formik";
-import { ILoginForm } from "@/types/auth/auth.type";
+import { ILoginForm } from "@/types/auth/auth/auth.type";
 import Button from "@/components/Button/Button";
 import { snack } from "@/utils/snackManager";
 

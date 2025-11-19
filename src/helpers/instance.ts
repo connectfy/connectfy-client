@@ -1,6 +1,5 @@
 // import { API_ENDPOINTS } from "@constants/apiEndpoints";
 // import { logout, setAccessToken } from "@features/auth/authSlice";
-// import { store } from "@/store/store";
 // import { type FailedRequest } from "../types/api.types";
 import { LANGUAGE } from "@/types/enum.types";
 import axios from "axios";
@@ -16,17 +15,19 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    const access_token = localStorage.getItem("access_token")
     const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+
+    if (access_token) {
+      config.headers.Authorization = `Bearer ${access_token}`;
+    }
 
     if (config.data) {
       if (typeof config.data === "object") {
         config.data._lang = _lang;
-      }
-      // FormData olarsa
-      else if (config.data instanceof FormData) {
+      } else if (config.data instanceof FormData) {
         config.data.append("_lang", _lang);
-      }
-      else if (typeof config.data === "string") {
+      } else if (typeof config.data === "string") {
         try {
           const parsedData = JSON.parse(config.data);
           parsedData._lang = _lang;
@@ -35,8 +36,7 @@ instance.interceptors.request.use(
           config.data += `&_lang=${_lang}`;
         }
       }
-    }
-    else {
+    } else {
       if (config.method?.toLowerCase() === "get") {
         config.params = {
           ...config.params,

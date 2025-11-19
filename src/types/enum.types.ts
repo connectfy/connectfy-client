@@ -10,6 +10,20 @@ export enum Resource {
   generalSettings = "general_settings",
   privacySettings = "privacy_settings",
   notificationSettings = "notification_settings",
+  user = "user",
+  account = "account"
+}
+
+export enum ROLE {
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR',
+  USER = 'USER',
+}
+
+export enum PROVIDER {
+  PASSWORD = 'PASSWORD',
+  GOOGLE = 'GOOGLE',
+  FACEBOOK = 'FACEBOOK',
 }
 
 export enum GENDER {

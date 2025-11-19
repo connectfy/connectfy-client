@@ -19,7 +19,7 @@ import {
   IGoogleSignupForm,
   IFaceIdForm,
   IIsValidToken,
-} from "@/types/auth/auth.type";
+} from "@/types/auth/auth/auth.type";
 import {
   faceIdApi,
   forgotPasswordApi,

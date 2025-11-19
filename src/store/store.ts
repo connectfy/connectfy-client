@@ -4,9 +4,22 @@ import { configureStore } from "@reduxjs/toolkit";
 // Auth
 import authReducer from "@/features/auth/authSlice";
 
+// Account
+import accountReducer from "@/features/account/account/accountSlice";
+import generalSettingsReducer from "@/features/account/settings/general/generalSettingsSlice";
+import privacySettingsReducer from "@/features/account/settings/privacy/privacySettingsSlice";
+import notificationSettingsReducer from "@/features/account/settings/notification/notificationSettingsSlice";
+
 export const store = configureStore({
   reducer: {
+    // Auth
     [Resource.auth]: authReducer,
+
+    // Account
+    [Resource.account]: accountReducer,
+    [Resource.generalSettings]: generalSettingsReducer,
+    [Resource.privacySettings]: privacySettingsReducer,
+    [Resource.notificationSettings]: notificationSettingsReducer,
   },
 });
 

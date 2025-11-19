@@ -20,7 +20,7 @@ import Spinner from "@/components/Spinner/Spinner";
 import { ROUTER } from "@/constants/routet";
 import { snack } from "@/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
-import { ISignupForm } from "@/types/auth/auth.type";
+import { ISignupForm } from "@/types/auth/auth/auth.type";
 
 const Signup = () => {
   const { t } = useTranslation();

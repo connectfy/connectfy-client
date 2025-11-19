@@ -5,7 +5,7 @@ import {
   IResetPasswordForm,
   ISignupForm,
   ISignupVerifyForm,
-} from "@/types/auth/auth.type";
+} from "@/types/auth/auth/auth.type";
 import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   IDENTIFIER_TYPE,

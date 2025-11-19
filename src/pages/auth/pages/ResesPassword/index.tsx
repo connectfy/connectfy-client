@@ -20,7 +20,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
-import { IResetPasswordForm } from "@/types/auth/auth.type";
+import { IResetPasswordForm } from "@/types/auth/auth/auth.type";
 
 const ResetPassword = () => {
   const { t } = useTranslation();

@@ -3,7 +3,7 @@ import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/Button/Button";
 import { FormikProps } from "formik";
-import { ILoginForm } from "@/types/auth/auth.type";
+import { ILoginForm } from "@/types/auth/auth/auth.type";
 import { FC, Fragment } from "react";
 import { useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";

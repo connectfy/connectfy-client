@@ -1,4 +1,4 @@
-import { Country } from "@/types/auth/auth.type";
+import { Country } from "@/types/auth/auth/auth.type";
 
 export const COUNTRIES: Country[] = [
   {
