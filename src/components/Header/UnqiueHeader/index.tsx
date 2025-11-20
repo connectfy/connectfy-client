@@ -7,9 +7,9 @@ interface Props {
   onClickBack: () => void;
   headerTitle: string;
   headerSubtitle: string;
-  showChangesButton: boolean;
+  showChangesButton?: boolean;
   isChangesDisasbled?: boolean;
-  onClickSave: () => void;
+  onClickSave?: () => void;
 }
 
 const UniqueHeader: FC<Props> = ({

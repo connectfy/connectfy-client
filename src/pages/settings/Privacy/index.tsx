@@ -1,31 +1,61 @@
 import "./index.style.css";
 import { Shield, UserCheck } from "lucide-react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import CustomSelect from "@/components/CustomSelect";
 import { useTranslation } from "react-i18next";
-import { PRIVACY_SETTINGS_CHOICE } from "@/types/enum.types";
+import { PRIVACY_SETTINGS_CHOICE, Resource } from "@/types/enum.types";
 import UniqueHeader from "@/components/Header/UnqiueHeader";
 import SettingCard from "@/components/Card/SettingsCard";
 import ToggleCard from "@/components/Card/ToggleCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
-import { privacyOptions, privacySections } from "./constants/constant";
+import {
+  initialState,
+  PRIVACY_FIELDS,
+  privacyOptions,
+  validatePrivacySettings,
+} from "./constants/constant";
+import { useFormik } from "formik";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { updatePrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { snack } from "@/utils/snackManager";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const [friendRequestsOpen, setFriendRequestsOpen] = useState(true);
-  const [messageKey, setMessageKey] = useState(
-    PRIVACY_SETTINGS_CHOICE.EVERYONE
-  );
+  const { data } = useAppSelector((state) => state[Resource.privacySettings]);
+
+  const formik = useFormik({
+    initialValues: initialState(data!),
+    validateOnBlur: false,
+    validateOnChange: false,
+    enableReinitialize: true,
+    validate: (values) => validatePrivacySettings(values, t),
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const actionResult = await dispatch(updatePrivacySettings(values));
+        const res = unwrapResult(actionResult);
+        if (res) {
+          snack.success(t("user_messages.successfully_updated"));
+          resetForm();
+        }
+      } catch (err) {
+        snack.error((err as Error).message);
+      }
+    },
+  });
 
   const PRIVACY_OPTIONS = privacyOptions(t);
-  const PRIVACY_SECTIONS = privacySections(t);
+
+  const getLabel = (key?: string | null) =>
+    PRIVACY_OPTIONS.find((opt) => opt.key === key)?.name || t("common.select");
 
   const createOptions = (
     activeKey: string,
-    setter: (key: PRIVACY_SETTINGS_CHOICE) => void
+    onSelect: (value: PRIVACY_SETTINGS_CHOICE) => void
   ) => ({
     title: t("common.privacy_level"),
     activeKey,
@@ -34,14 +64,13 @@ const PrivacySettings = () => {
       name: opt.name,
       title: opt.name,
       icon: opt.icon,
-      onClick: () => setter(opt.key),
+      onClick: () => onSelect(opt.key as PRIVACY_SETTINGS_CHOICE),
     })),
   });
 
-  const getLabel = (key: string) =>
-    PRIVACY_OPTIONS.find((opt) => opt.key === key)?.name || t("common.select");
-
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
+
+  const privacyFields = PRIVACY_FIELDS(t);
 
   return (
     <Fragment>
@@ -51,9 +80,9 @@ const PrivacySettings = () => {
             headerTitle={t("common.privacy_header")}
             headerSubtitle={t("common.privacy_description")}
             onClickBack={onClickBack}
-            onClickSave={() => {}}
+            onClickSave={formik.handleSubmit}
             showChangesButton
-            isChangesDisasbled={false}
+            isChangesDisasbled={!formik.dirty}
           />
 
           <div className="privacy-settings-content">
@@ -70,8 +99,12 @@ const PrivacySettings = () => {
                   subtitle: t("common.friend_requests_desc"),
                 }}
                 slider={{
-                  checked: friendRequestsOpen,
-                  onClick: () => setFriendRequestsOpen(!friendRequestsOpen),
+                  checked: !!formik.values.friendshipRequest,
+                  onClick: () =>
+                    formik.setFieldValue(
+                      "friendshipRequest",
+                      !formik.values.friendshipRequest
+                    ),
                 }}
               />
 
@@ -83,8 +116,13 @@ const PrivacySettings = () => {
                 }}
                 content={
                   <CustomSelect
-                    buttonTitle={getLabel(messageKey)}
-                    options={createOptions(messageKey, setMessageKey)}
+                    buttonTitle={getLabel(
+                      formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE
+                    )}
+                    options={createOptions(
+                      formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
+                      (val) => formik.setFieldValue("messageRequest", val)
+                    )}
                   />
                 }
               />
@@ -99,21 +137,31 @@ const PrivacySettings = () => {
               <SettingCard
                 content={
                   <Fragment>
-                    {PRIVACY_SECTIONS.map((item, idx) => (
-                      <div
-                        className="privacy-row"
-                        key={idx}
-                        style={idx > 0 ? { marginTop: "12px" } : {}}
-                      >
-                        <span className="privacy-row-label">{item.label}</span>
-                        <div className="privacy-row-select">
-                          <CustomSelect
-                            buttonTitle={getLabel(item.key)}
-                            options={createOptions(item.key, item.setter)}
-                          />
+                    {privacyFields.map((item, idx) => {
+                      const activeValue = formik.values[
+                        item.field as keyof typeof formik.values
+                      ] as string | undefined;
+                      return (
+                        <div
+                          className="privacy-row"
+                          key={item.field}
+                          style={idx > 0 ? { marginTop: "12px" } : {}}
+                        >
+                          <span className="privacy-row-label">
+                            {item.label}
+                          </span>
+                          <div className="privacy-row-select">
+                            <CustomSelect
+                              buttonTitle={getLabel(activeValue)}
+                              options={createOptions(
+                                activeValue as string,
+                                (val) => formik.setFieldValue(item.field, val)
+                              )}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </Fragment>
                 }
                 cardStyle={{

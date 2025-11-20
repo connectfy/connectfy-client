@@ -19,10 +19,15 @@ import UniqueHeader from "@/components/Header/UnqiueHeader";
 import SettingCard from "@/components/Card/SettingsCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
+import { useAppSelector } from "@/hooks/useStore";
+import { Resource } from "@/types/enum.types";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const { me } = useAppSelector((state) => state[Resource.account]);
+  const { user } = me!;
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
@@ -33,8 +38,6 @@ const AccountSettings: FC = () => {
           headerTitle={t("common.account_settings")}
           headerSubtitle={t("common.manage_account_info")}
           onClickBack={onClickBack}
-          onClickSave={() => {}}
-          showChangesButton
           isChangesDisasbled={false}
         />
 
@@ -48,7 +51,7 @@ const AccountSettings: FC = () => {
             content={
               <button className="account-action-button">
                 <span>
-                  <strong>@username</strong>
+                  <strong>@{user.username}</strong>
                 </span>
                 <ChevronRight size={18} className="chevron" />
               </button>
@@ -63,7 +66,7 @@ const AccountSettings: FC = () => {
             }}
             content={
               <button className="account-action-button">
-                <span>example@email.com</span>
+                <span>{user.email}</span>
                 <ChevronRight size={18} className="chevron" />
               </button>
             }
@@ -116,7 +119,11 @@ const AccountSettings: FC = () => {
             }}
             content={
               <button className="account-action-button">
-                <span>+994 XX XXX XX XX</span>
+                <span>
+                  {user.phoneNumber?.fullPhoneNumber
+                    ? user.phoneNumber.fullPhoneNumber
+                    : t("common.add_phhone_number")}
+                </span>
                 <ChevronRight size={18} className="chevron" />
               </button>
             }

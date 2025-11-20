@@ -12,6 +12,8 @@ export interface IMe {
     role: ROLE;
     provider: PROVIDER;
     phoneNumber: IPhoneNumber | null;
+    createdAt: Date;
+    updatedAt: Date;
   };
   settings: {
     generalSettings: IGeneralSettings;

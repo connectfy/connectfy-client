@@ -63,7 +63,7 @@ export enum THEME {
 
 export enum NOTIFICATION_SOUND_MODE {
   SOUND = "SOUND",
-  SLIENT = "SLIENT",
+  SILENT = "SILENT",
   DND = "DND",
 }
 

@@ -1,7 +1,11 @@
 import { PRIVACY_SETTINGS_CHOICE } from "@/types/enum.types";
 import { TFunction } from "i18next";
 import { Eye, UserCheck, Lock } from "lucide-react";
-import { useState } from "react";
+import {
+  IEditPrivacySettings,
+  IPrivacySettings,
+} from "@/types/account/settings/privacy/privacy-settings.type";
+import { snack } from "@/utils/snackManager";
 
 export const privacyOptions = (t: TFunction) => {
   return [
@@ -23,48 +27,93 @@ export const privacyOptions = (t: TFunction) => {
   ];
 };
 
-export const privacySections = (t: TFunction) => {
-  const [emailKey, setEmailKey] = useState(PRIVACY_SETTINGS_CHOICE.NOBODY);
-  const [genderKey, setGenderKey] = useState(PRIVACY_SETTINGS_CHOICE.EVERYONE);
-  const [bioKey, setBioKey] = useState(PRIVACY_SETTINGS_CHOICE.EVERYONE);
-  const [locationKey, setLocationKey] = useState(
-    PRIVACY_SETTINGS_CHOICE.EVERYONE
-  );
-  const [socialKey, setSocialKey] = useState(PRIVACY_SETTINGS_CHOICE.EVERYONE);
-  const [lastSeenKey, setLastSeenKey] = useState(
-    PRIVACY_SETTINGS_CHOICE.EVERYONE
-  );
+export const PRIVACY_FIELDS = (t: TFunction) => [
+  { name: "email", label: t("common.email_visibility"), field: "email" },
+  { name: "gender", label: t("common.gender_visibility"), field: "gender" },
+  { name: "avatar", label: t("common.avatar_visibility"), field: "avatar" },
+  { name: "birthdayDate", label: t("common.birthday_date_visibility"), field: "birthdayDate" },
+  { name: "bio", label: t("common.bio_visibility"), field: "bio" },
+  {
+    name: "location",
+    label: t("common.location_visibility"),
+    field: "location",
+  },
+  {
+    name: "socialLinks",
+    label: t("common.social_visibility"),
+    field: "socialLinks",
+  },
+  {
+    name: "lastSeen",
+    label: t("common.last_seen_visibility"),
+    field: "lastSeen",
+  },
+];
 
-  return [
-    {
-      label: t("common.email_visibility"),
-      key: emailKey,
-      setter: setEmailKey,
-    },
-    {
-      label: t("common.gender_visibility"),
-      key: genderKey,
-      setter: setGenderKey,
-    },
-    {
-      label: t("common.bio_visibility"),
-      key: bioKey,
-      setter: setBioKey,
-    },
-    {
-      label: t("common.location_visibility"),
-      key: locationKey,
-      setter: setLocationKey,
-    },
-    {
-      label: t("common.social_visibility"),
-      key: socialKey,
-      setter: setSocialKey,
-    },
-    {
-      label: t("common.last_seen_visibility"),
-      key: lastSeenKey,
-      setter: setLastSeenKey,
-    },
+export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
+  const {
+    _id,
+    email,
+    bio,
+    gender,
+    location,
+    socialLinks,
+    lastSeen,
+    avatar,
+    messageRequest,
+    birthdayDate,
+    friendshipRequest,
+  } = data;
+
+  const initialState = {
+    _id,
+    email,
+    bio,
+    gender,
+    location,
+    socialLinks,
+    lastSeen,
+    avatar,
+    messageRequest,
+    birthdayDate,
+    friendshipRequest,
+  };
+
+  return initialState;
+};
+
+export const validatePrivacySettings = (
+  values: IEditPrivacySettings,
+  t: TFunction
+): void => {
+  const {
+    email,
+    bio,
+    gender,
+    location,
+    socialLinks,
+    lastSeen,
+    avatar,
+    messageRequest,
+    birthdayDate,
+  } = values;
+
+  const valuesArray = [
+    email,
+    bio,
+    gender,
+    location,
+    socialLinks,
+    lastSeen,
+    avatar,
+    messageRequest,
+    birthdayDate,
   ];
+
+  valuesArray.forEach((val) => {
+    if (val && !Object.values(PRIVACY_SETTINGS_CHOICE).includes(val)) {
+      snack.error(t("error_messages.invalid_choice"));
+      return;
+    }
+  });
 };

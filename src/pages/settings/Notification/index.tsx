@@ -8,18 +8,51 @@ import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
 import SettingCard from "@/components/Card/SettingsCard";
 import {
-  messageSoundCard,
-  notificationBannerCards,
-  notificationSoundCard,
+  initialState,
+  NOTIFICATION_FIELDS,
+  notificationModeOptions,
+  notificationContentOptions,
+  validateNotificationSettings,
 } from "./constants/constant";
+import { useFormik } from "formik";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { Resource } from "@/types/enum.types";
+import { updateNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { snack } from "@/utils/snackManager";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const MESSAGE_SOUND_CARD = messageSoundCard(t);
-  const NOTIFICATION_SOUNDS_CARDS = notificationSoundCard(t);
-  const NOTIFICATION_BANNER_CARDS = notificationBannerCards(t);
+  const { data } = useAppSelector(
+    (state) => state[Resource.notificationSettings]
+  );
+
+  const formik = useFormik({
+    initialValues: initialState(data!),
+    validateOnBlur: false,
+    validateOnChange: false,
+    enableReinitialize: true,
+    validate: (values) => validateNotificationSettings(values, t),
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const actionResult = await dispatch(updateNotificationSettings(values));
+        const res = unwrapResult(actionResult);
+        if (res) {
+          snack.success(t("user_messages.successfully_updated"));
+          resetForm();
+        }
+      } catch (err) {
+        snack.error((err as Error).message);
+      }
+    },
+  });
+
+  const NOTIFICATION_MODE_OPTIONS = notificationModeOptions(t);
+  const NOTIFICATION_CONTENT_OPTIONS = notificationContentOptions(t);
+  const notificationFields = NOTIFICATION_FIELDS(t);
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
@@ -31,12 +64,13 @@ const NotificationSettings = () => {
             headerTitle={t("common.notification_header")}
             headerSubtitle={t("common.notification_subheader")}
             onClickBack={onClickBack}
-            onClickSave={() => {}}
+            onClickSave={formik.handleSubmit}
             showChangesButton
-            isChangesDisasbled={false}
+            isChangesDisasbled={!formik.dirty}
           />
 
           <div className="notification-settings-content">
+            {/* GENERAL NOTIFICATION SETTINGS */}
             <div className="notification-privacy-section">
               <h2 className="notification-section-title">
                 {t("common.general_notification_title")}
@@ -50,27 +84,30 @@ const NotificationSettings = () => {
                 }}
                 content={
                   <div className="general-notification-modes">
-                    <div className="general-notification-mode active">
-                      <div className="general-mode-radio"></div>
-                      <div className="general-mode-content">
-                        <h4>{t("common.sound_notifications")}</h4>
-                        <p>{t("common.all_notifications_with_sound")}</p>
-                      </div>
-                    </div>
-                    <div className="general-notification-mode">
-                      <div className="general-mode-radio"></div>
-                      <div className="general-mode-content">
-                        <h4>{t("common.silent_mode")}</h4>
-                        <p>{t("common.only_visual_no_sound")}</p>
-                      </div>
-                    </div>
-                    <div className="general-notification-mode">
-                      <div className="general-mode-radio"></div>
-                      <div className="general-mode-content">
-                        <h4>{t("common.do_not_disturb")}</h4>
-                        <p>{t("common.no_notifications")}</p>
-                      </div>
-                    </div>
+                    {NOTIFICATION_MODE_OPTIONS.map((option) => {
+                      return (
+                        <div
+                          key={option.key}
+                          className={`general-notification-mode ${
+                            formik.values.notificationSoundMode === option.key
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              "notificationSoundMode",
+                              option.key
+                            )
+                          }
+                        >
+                          <div className="general-mode-radio"></div>
+                          <div className="general-mode-content">
+                            <h4>{option.name}</h4>
+                            <p>{option.description}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 }
               />
@@ -83,27 +120,30 @@ const NotificationSettings = () => {
                 }}
                 content={
                   <div className="general-notification-modes">
-                    <div className="general-notification-mode active">
-                      <div className="general-mode-radio"></div>
-                      <div className="general-mode-content">
-                        <h4>{t("common.show_header_and_content")}</h4>
-                        <p>{t("common.show_header_and_content_desc")}</p>
-                      </div>
-                    </div>
-                    <div className="general-notification-mode">
-                      <div className="general-mode-radio"></div>
-                      <div className="general-mode-content">
-                        <h4>{t("common.show_header_only")}</h4>
-                        <p>{t("common.show_header_only_desc")}</p>
-                      </div>
-                    </div>
-                    <div className="general-notification-mode">
-                      <div className="general-mode-radio"></div>
-                      <div className="general-mode-content">
-                        <h4>{t("common.hide_notifications")}</h4>
-                        <p>{t("common.hide_notifications_desc")}</p>
-                      </div>
-                    </div>
+                    {NOTIFICATION_CONTENT_OPTIONS.map((option) => {
+                      return (
+                        <div
+                          key={option.key}
+                          className={`general-notification-mode ${
+                            formik.values.notificationContentMode === option.key
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              "notificationContentMode",
+                              option.key
+                            )
+                          }
+                        >
+                          <div className="general-mode-radio"></div>
+                          <div className="general-mode-content">
+                            <h4>{option.name}</h4>
+                            <p>{option.description}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 }
               />
@@ -115,19 +155,28 @@ const NotificationSettings = () => {
                 {t("common.message_sound_section_title")}
               </h2>
 
-              {MESSAGE_SOUND_CARD.map((card, idx) => {
-                const Icon = card.icon;
+              {notificationFields.messageSounds.map((field) => {
+                const Icon = field.icon;
                 return (
                   <ToggleCard
-                    key={`sound-${idx}`}
+                    key={field.field}
                     header={{
                       icon: Icon,
-                      title: card.title,
-                      subtitle: card.desc,
+                      title: field.title,
+                      subtitle: field.desc,
                     }}
                     slider={{
-                      checked: card.checked,
-                      onClick: card.onClick,
+                      checked:
+                        !!formik.values[
+                          field.field as keyof typeof formik.values
+                        ],
+                      onClick: () =>
+                        formik.setFieldValue(
+                          field.field,
+                          !formik.values[
+                            field.field as keyof typeof formik.values
+                          ]
+                        ),
                     }}
                   />
                 );
@@ -140,19 +189,28 @@ const NotificationSettings = () => {
                 {t("common.sound_section_title")}
               </h2>
 
-              {NOTIFICATION_SOUNDS_CARDS.map((card, idx) => {
-                const Icon = card.icon;
+              {notificationFields.notificationSounds.map((field) => {
+                const Icon = field.icon;
                 return (
                   <ToggleCard
-                    key={`sound-${idx}`}
+                    key={field.field}
                     header={{
                       icon: Icon,
-                      title: card.title,
-                      subtitle: card.desc,
+                      title: field.title,
+                      subtitle: field.desc,
                     }}
                     slider={{
-                      checked: card.checked,
-                      onClick: card.onClick,
+                      checked:
+                        !!formik.values[
+                          field.field as keyof typeof formik.values
+                        ],
+                      onClick: () =>
+                        formik.setFieldValue(
+                          field.field,
+                          !formik.values[
+                            field.field as keyof typeof formik.values
+                          ]
+                        ),
                     }}
                   />
                 );
@@ -165,19 +223,28 @@ const NotificationSettings = () => {
                 {t("common.banner_section_title")}
               </h2>
 
-              {NOTIFICATION_BANNER_CARDS.map((card, idx) => {
-                const Icon = card.icon;
+              {notificationFields.notificationBanners.map((field) => {
+                const Icon = field.icon;
                 return (
                   <ToggleCard
-                    key={`banner-${idx}`}
+                    key={field.field}
                     header={{
                       icon: Icon,
-                      title: card.title,
-                      subtitle: card.desc,
+                      title: field.title,
+                      subtitle: field.desc,
                     }}
                     slider={{
-                      checked: card.checked,
-                      onClick: card.onClick,
+                      checked:
+                        !!formik.values[
+                          field.field as keyof typeof formik.values
+                        ],
+                      onClick: () =>
+                        formik.setFieldValue(
+                          field.field,
+                          !formik.values[
+                            field.field as keyof typeof formik.values
+                          ]
+                        ),
                     }}
                   />
                 );

@@ -1,3 +1,12 @@
+import {
+  IEditNotificationSettings,
+  INotificationSettings,
+} from "@/types/account/settings/notification/notification-settings.type";
+import {
+  NOTIFICATION_CONTENT_MODE,
+  NOTIFICATION_SOUND_MODE,
+} from "@/types/enum.types";
+import { snack } from "@/utils/snackManager";
 import { TFunction } from "i18next";
 import {
   Bell,
@@ -7,117 +16,179 @@ import {
   Users,
   Volume2,
 } from "lucide-react";
-import { useState } from "react";
 
-export const messageSoundCard = (t: TFunction) => {
-  const [sentSound, setSentSound] = useState(true);
-  const [receiveSound, setReceiveSound] = useState(true);
-
+export const notificationModeOptions = (t: TFunction) => {
   return [
     {
-      icon: MessageSquare,
+      key: NOTIFICATION_SOUND_MODE.SOUND,
+      name: t("common.sound_notifications"),
+      description: t("common.all_notifications_with_sound"),
+    },
+    {
+      key: NOTIFICATION_SOUND_MODE.SILENT,
+      name: t("common.silent_mode"),
+      description: t("common.only_visual_no_sound"),
+    },
+    {
+      key: NOTIFICATION_SOUND_MODE.DND,
+      name: t("common.do_not_disturb"),
+      description: t("common.no_notifications"),
+    },
+  ];
+};
+
+export const notificationContentOptions = (t: TFunction) => {
+  return [
+    {
+      key: NOTIFICATION_CONTENT_MODE.HEADER_AND_CONTENT,
+      name: t("common.show_header_and_content"),
+      description: t("common.show_header_and_content_desc"),
+    },
+    {
+      key: NOTIFICATION_CONTENT_MODE.HEADER_ONLY,
+      name: t("common.show_header_only"),
+      description: t("common.show_header_only_desc"),
+    },
+    {
+      key: NOTIFICATION_CONTENT_MODE.HIDE_NOTIFICATION,
+      name: t("common.hide_notifications"),
+      description: t("common.hide_notifications_desc"),
+    },
+  ];
+};
+
+export const NOTIFICATION_FIELDS = (t: TFunction) => ({
+  messageSounds: [
+    {
+      field: "sendMessageSound",
       title: t("common.sent_sound"),
       desc: t("common.sent_sound_desc"),
-      checked: sentSound,
-      onClick: () => setSentSound(!sentSound),
+      icon: MessageSquare,
     },
     {
-      icon: Volume2,
+      field: "receiveMessageSound",
       title: t("common.receive_sound"),
       desc: t("common.receive_sound_desc"),
-      checked: receiveSound,
-      onClick: () => setReceiveSound(!receiveSound),
+      icon: Volume2,
     },
-  ];
-};
-
-export const notificationSoundCard = (t: TFunction) => {
-  const [notificationSound, setNotificationSound] = useState(true);
-  const [privateMessageSound, setPrivateMessageSound] = useState(true);
-  const [groupMessageSound, setGroupMessageSound] = useState(true);
-  const [systemNotificationSound, setSystemNotificationSound] = useState(true);
-  const [friendshipNotificationSound, setFriendshipNotificationSound] =
-    useState(true);
-
-  return [
+  ],
+  notificationSounds: [
     {
-      icon: Bell,
+      field: "notificationSound",
       title: t("common.notification_sound"),
       desc: t("common.notification_sound_desc"),
-      checked: notificationSound,
-      onClick: () => setNotificationSound(!notificationSound),
+      icon: Bell,
     },
     {
-      icon: MessageSquare,
+      field: "privateMessageSound",
       title: t("common.private_message_sound"),
       desc: t("common.private_message_sound_desc"),
-      checked: privateMessageSound,
-      onClick: () => setPrivateMessageSound(!privateMessageSound),
+      icon: MessageSquare,
     },
     {
-      icon: Users,
+      field: "groupMessageSound",
       title: t("common.group_message_sound"),
       desc: t("common.group_message_sound_desc"),
-      checked: groupMessageSound,
-      onClick: () => setGroupMessageSound(!groupMessageSound),
+      icon: Users,
     },
     {
-      icon: Cog,
+      field: "systemNotificationSound",
       title: t("common.system_notification_sound"),
       desc: t("common.system_notification_sound_desc"),
-      checked: systemNotificationSound,
-      onClick: () => setSystemNotificationSound(!systemNotificationSound),
+      icon: Cog,
     },
     {
-      icon: UserPlus,
+      field: "friendshipNotificationSound",
       title: t("common.friendship_notification_sound"),
       desc: t("common.friendship_notification_sound_desc"),
-      checked: friendshipNotificationSound,
-      onClick: () =>
-        setFriendshipNotificationSound(!friendshipNotificationSound),
+      icon: UserPlus,
     },
-  ];
-};
-
-export const notificationBannerCards = (t: TFunction) => {
-  const [showPrivateMessageNotification, setShowPrivateMessageNotification] =
-    useState(true);
-  const [showGroupMessageNotification, setShowGroupMessageNotification] =
-    useState(true);
-  const [showFriendshipNotification, setShowFriendshipNotification] =
-    useState(true);
-  const [showSystemNotification, setShowSystemNotification] = useState(true);
-
-  return [
+  ],
+  notificationBanners: [
     {
-      icon: MessageSquare,
+      field: "showPrivateMessageNotification",
       title: t("common.show_private_message_notification"),
       desc: t("common.show_private_message_notification_desc"),
-      checked: showPrivateMessageNotification,
-      onClick: () =>
-        setShowPrivateMessageNotification(!showPrivateMessageNotification),
+      icon: MessageSquare,
     },
     {
-      icon: Users,
+      field: "showGroupMessageNotification",
       title: t("common.show_group_message_notification"),
       desc: t("common.show_group_message_notification_desc"),
-      checked: showGroupMessageNotification,
-      onClick: () =>
-        setShowGroupMessageNotification(!showGroupMessageNotification),
+      icon: Users,
     },
     {
-      icon: UserPlus,
+      field: "showFriendshipNotification",
       title: t("common.show_friendship_notification"),
       desc: t("common.show_friendship_notification_desc"),
-      checked: showFriendshipNotification,
-      onClick: () => setShowFriendshipNotification(!showFriendshipNotification),
+      icon: UserPlus,
     },
     {
-      icon: Cog,
+      field: "showSystemNotification",
       title: t("common.show_system_notification"),
       desc: t("common.show_system_notification_desc"),
-      checked: showSystemNotification,
-      onClick: () => setShowSystemNotification(!showSystemNotification),
+      icon: Cog,
     },
-  ];
+  ],
+});
+
+export const initialState = (
+  data: INotificationSettings
+): IEditNotificationSettings => {
+  const {
+    _id,
+    notificationSoundMode,
+    notificationContentMode,
+    sendMessageSound,
+    receiveMessageSound,
+    notificationSound,
+    privateMessageSound,
+    groupMessageSound,
+    systemNotificationSound,
+    friendshipNotificationSound,
+    showPrivateMessageNotification,
+    showGroupMessageNotification,
+    showFriendshipNotification,
+    showSystemNotification,
+  } = data;
+
+  return {
+    _id,
+    notificationSoundMode,
+    notificationContentMode,
+    sendMessageSound,
+    receiveMessageSound,
+    notificationSound,
+    privateMessageSound,
+    groupMessageSound,
+    systemNotificationSound,
+    friendshipNotificationSound,
+    showPrivateMessageNotification,
+    showGroupMessageNotification,
+    showFriendshipNotification,
+    showSystemNotification,
+  };
+};
+
+export const validateNotificationSettings = (
+  values: IEditNotificationSettings,
+  t: TFunction
+): void => {
+  const { notificationSoundMode, notificationContentMode } = values;
+
+  if (
+    notificationSoundMode &&
+    !Object.values(NOTIFICATION_SOUND_MODE).includes(notificationSoundMode)
+  ) {
+    snack.error(t("error_messages.invalid_choice"));
+    return;
+  }
+
+  if (
+    notificationContentMode &&
+    !Object.values(NOTIFICATION_CONTENT_MODE).includes(notificationContentMode)
+  ) {
+    snack.error(t("error_messages.invalid_choice"));
+    return;
+  }
 };
