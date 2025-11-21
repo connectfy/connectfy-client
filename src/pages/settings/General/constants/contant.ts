@@ -138,17 +138,17 @@ export const validateGenerateSettings = (
   const { theme, language, startupPage, timeZone } = values;
 
   if (theme && !Object.values(THEME).includes(theme))
-    snack.error(t("error_messages.invalid_theme"), {
+    snack.error(t("error_messages.invalid_choice"), {
       anchorOrigin: { vertical: "top", horizontal: "center" },
     });
 
   if (language && !Object.values(LANGUAGE).includes(language))
-    snack.error(t("error_messages.invalid_language"), {
+    snack.error(t("error_messages.invalid_choice"), {
       anchorOrigin: { vertical: "top", horizontal: "center" },
     });
 
   if (startupPage && !Object.values(STARTUP_PAGE).includes(startupPage))
-    snack.error(t("error_messages.invalid_startup_page"), {
+    snack.error(t("error_messages.invalid_choice"), {
       anchorOrigin: { vertical: "top", horizontal: "center" },
     });
 
@@ -157,7 +157,7 @@ export const validateGenerateSettings = (
       timeZone.dateFormat &&
       !Object.values(DATE_FORMAT).includes(timeZone.dateFormat)
     )
-      snack.error(t("error_messages.invalid_date_format"), {
+      snack.error(t("error_messages.invalid_choice"), {
         anchorOrigin: { vertical: "top", horizontal: "center" },
       });
 
@@ -165,7 +165,7 @@ export const validateGenerateSettings = (
       timeZone.timeFormat &&
       !Object.values(TIME_FORMAT).includes(timeZone.timeFormat)
     )
-      snack.error(t("error_messages.invalid_time_format"), {
+      snack.error(t("error_messages.invalid_choice"), {
         anchorOrigin: { vertical: "top", horizontal: "center" },
       });
   }

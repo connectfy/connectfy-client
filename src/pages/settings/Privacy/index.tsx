@@ -20,6 +20,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { updatePrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
+import { useBlocker } from "@/hooks/useBlocker";
+import { useBeforeUnload } from "@/hooks/useBeforeUnload";
+import SaveChangesModal from "@/components/Modal/SaveChangesModal";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
@@ -39,7 +42,7 @@ const PrivacySettings = () => {
         const actionResult = await dispatch(updatePrivacySettings(values));
         const res = unwrapResult(actionResult);
         if (res) {
-          snack.success(t("user_messages.successfully_updated"));
+          snack.success(t("user_messages.information_updated"));
           resetForm();
         }
       } catch (err) {
@@ -47,6 +50,9 @@ const PrivacySettings = () => {
       }
     },
   });
+
+  const { pending, confirm, cancel } = useBlocker(!!formik.dirty);
+  useBeforeUnload(!!formik.dirty, t("common.unsaved_changes_message"));
 
   const PRIVACY_OPTIONS = privacyOptions(t);
 
@@ -71,6 +77,20 @@ const PrivacySettings = () => {
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
   const privacyFields = PRIVACY_FIELDS(t);
+
+  const handleSaveAndLeave = async () => {
+    await formik.submitForm();
+    confirm();
+  };
+
+  const handleDiscardChanges = () => {
+    formik.resetForm();
+    confirm();
+  };
+
+  const handleCancelModal = () => {
+    cancel();
+  };
 
   return (
     <Fragment>
@@ -172,6 +192,13 @@ const PrivacySettings = () => {
           </div>
         </div>
       </section>
+
+      <SaveChangesModal
+        open={!!pending}
+        handleSave={handleSaveAndLeave}
+        handleCancel={handleCancelModal}
+        handleDiscardChanges={handleDiscardChanges}
+      />
     </Fragment>
   );
 };

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import "./index.style.css";
 import { Fragment } from "react/jsx-runtime";
 import { FC } from "react";
+import { TriangleAlert } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -23,7 +24,9 @@ const SaveChangesModal: FC<Props> = ({
       {open && (
         <div className="unsaved-changes-overlay">
           <div className="unsaved-changes-modal">
-            <div className="unsaved-changes-icon">⚠️</div>
+            <div className="unsaved-changes-icon">
+              <TriangleAlert size={50} color="var(--error-color)" />
+            </div>
             <h2>{t("common.unsaved_changes") || "Unsaved Changes"}</h2>
             <p>
               {t("common.unsaved_changes_message") ||
@@ -46,7 +49,7 @@ const SaveChangesModal: FC<Props> = ({
                 className="unsaved-btn unsaved-btn-save"
                 onClick={handleSave}
               >
-                {t("common.save_and_leave") || "Save & Leave"}
+                {t("common.save") || "Save"}
               </button>
             </div>
           </div>

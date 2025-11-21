@@ -180,7 +180,9 @@ export const validateNotificationSettings = (
     notificationSoundMode &&
     !Object.values(NOTIFICATION_SOUND_MODE).includes(notificationSoundMode)
   ) {
-    snack.error(t("error_messages.invalid_choice"));
+    snack.error(t("error_messages.invalid_choice"), {
+      anchorOrigin: { vertical: "top", horizontal: "center" },
+    });
     return;
   }
 
@@ -188,7 +190,9 @@ export const validateNotificationSettings = (
     notificationContentMode &&
     !Object.values(NOTIFICATION_CONTENT_MODE).includes(notificationContentMode)
   ) {
-    snack.error(t("error_messages.invalid_choice"));
+    snack.error(t("error_messages.invalid_choice"), {
+      anchorOrigin: { vertical: "top", horizontal: "center" },
+    });
     return;
   }
 };

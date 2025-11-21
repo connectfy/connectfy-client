@@ -20,6 +20,9 @@ import { Resource } from "@/types/enum.types";
 import { updateNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
+import { useBlocker } from "@/hooks/useBlocker";
+import { useBeforeUnload } from "@/hooks/useBeforeUnload";
+import SaveChangesModal from "@/components/Modal/SaveChangesModal/index";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
@@ -41,7 +44,7 @@ const NotificationSettings = () => {
         const actionResult = await dispatch(updateNotificationSettings(values));
         const res = unwrapResult(actionResult);
         if (res) {
-          snack.success(t("user_messages.successfully_updated"));
+          snack.success(t("user_messages.information_updated"));
           resetForm();
         }
       } catch (err) {
@@ -49,6 +52,23 @@ const NotificationSettings = () => {
       }
     },
   });
+
+  const { pending, confirm, cancel } = useBlocker(!!formik.dirty);
+  useBeforeUnload(!!formik.dirty, t("common.unsaved_changes_message"));
+
+  const handleSaveAndLeave = async () => {
+    await formik.submitForm();
+    confirm();
+  };
+
+  const handleDiscardChanges = () => {
+    formik.resetForm();
+    confirm();
+  };
+
+  const handleCancelModal = () => {
+    cancel();
+  };
 
   const NOTIFICATION_MODE_OPTIONS = notificationModeOptions(t);
   const NOTIFICATION_CONTENT_OPTIONS = notificationContentOptions(t);
@@ -253,6 +273,13 @@ const NotificationSettings = () => {
           </div>
         </div>
       </section>
+
+      <SaveChangesModal
+        open={!!pending}
+        handleSave={handleSaveAndLeave}
+        handleCancel={handleCancelModal}
+        handleDiscardChanges={handleDiscardChanges}
+      />
     </Fragment>
   );
 };

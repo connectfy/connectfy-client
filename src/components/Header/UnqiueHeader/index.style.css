@@ -64,10 +64,10 @@
   color: #2ecc71;
 }
 
-.unique-header-back-btn:focus {
+/* .unique-header-back-btn:focus {
   outline: 2px solid rgba(46, 204, 113, 0.25);
   outline-offset: 2px;
-}
+} */
 
 .unique-header-save-btn {
   display: flex;

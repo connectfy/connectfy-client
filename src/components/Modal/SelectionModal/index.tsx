@@ -1,6 +1,13 @@
+import { Fade } from "@mui/material";
 import "./index.style.css";
 import { LucideProps } from "lucide-react";
-import { FC, ForwardRefExoticComponent, RefAttributes, useEffect } from "react";
+import {
+  FC,
+  ForwardRefExoticComponent,
+  Fragment,
+  RefAttributes,
+  useEffect,
+} from "react";
 
 interface Selections {
   name: string;
@@ -20,7 +27,13 @@ interface Props {
   activeKey: string;
 }
 
-const SelectionModal: FC<Props> = ({ title, selections, open, onClose, activeKey }) => {
+const SelectionModal: FC<Props> = ({
+  title,
+  selections,
+  open,
+  onClose,
+  activeKey,
+}) => {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -47,59 +60,69 @@ const SelectionModal: FC<Props> = ({ title, selections, open, onClose, activeKey
   if (!open) return null;
 
   return (
-    <>
+    <Fragment>
       <div className="selection-modal-overlay" onClick={onClose} />
-      <div className="selection-modal">
-        <div className="selection-modal-header">
-          <h3 className="selection-modal-title">{title}</h3>
-          <button
-            className="selection-modal-close"
-            onClick={onClose}
-            aria-label="Close modal"
-          >
-            ×
-          </button>
-        </div>
-        <div className="selection-modal-content">
-          {selections.map((selection) => {
-            const Icon = selection.icon;
-            const isActive = selection.key === activeKey;
 
-            return (
-              <button
-                key={selection.key}
-                className={`selection-item ${isActive ? "active" : ""}`}
-                onClick={() => {
-                  selection.onClick();
-                  onClose();
-                }}
-              >
-                <div className="selection-item-icon">
-                  <Icon size={20} />
-                </div>
-                <div className="selection-item-content">
-                  <div className="selection-item-name">{selection.name}</div>
-                  <div className="selection-item-title">{selection.title}</div>
-                </div>
-                {isActive && (
-                  <div className="selection-item-check">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M13.3337 4L6.00033 11.3333L2.66699 8"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+      <Fade in={open}>
+        <div className="selection-modal">
+          <div className="selection-modal-header">
+            <h3 className="selection-modal-title">{title}</h3>
+            <button
+              className="selection-modal-close"
+              onClick={onClose}
+              aria-label="Close modal"
+            >
+              ×
+            </button>
+          </div>
+          <div className="selection-modal-content">
+            {selections.map((selection) => {
+              const Icon = selection.icon;
+              const isActive = selection.key === activeKey;
+
+              return (
+                <button
+                  key={selection.key}
+                  className={`selection-item ${isActive ? "active" : ""}`}
+                  onClick={() => {
+                    selection.onClick();
+                    onClose();
+                  }}
+                >
+                  <div className="selection-item-icon">
+                    <Icon size={20} />
                   </div>
-                )}
-              </button>
-            );
-          })}
+                  <div className="selection-item-content">
+                    <div className="selection-item-name">{selection.name}</div>
+                    <div className="selection-item-title">
+                      {selection.title}
+                    </div>
+                  </div>
+                  {isActive && (
+                    <div className="selection-item-check">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M13.3337 4L6.00033 11.3333L2.66699 8"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </>
+      </Fade>
+    </Fragment>
   );
 };
 

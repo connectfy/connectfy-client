@@ -20,16 +20,16 @@ import { DATE_FORMAT, Resource, TIME_FORMAT } from "@/types/enum.types";
 import { snack } from "@/utils/snackManager";
 import { updateGeneralSettings } from "@/features/account/settings/general/generalSettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { useBlocker } from "@/hooks/useBlocker";
+import { useBeforeUnload } from "@/hooks/useBeforeUnload";
+import SaveChangesModal from "@/components/Modal/SaveChangesModal/index";
 
 const GeneralSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
   const { theme, toggleTheme } = useTheme();
-
   const { data } = useAppSelector((state) => state[Resource.generalSettings]);
-
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
   const formik = useFormik({
@@ -39,18 +39,17 @@ const GeneralSettings = () => {
     enableReinitialize: true,
     validate: (values) => validateGenerateSettings(values, t),
     onSubmit: async (values, { resetForm }) => {
-      try {
-        const actionResult = await dispatch(updateGeneralSettings(values));
-        const res = unwrapResult(actionResult);
-        if (res) {
-          snack.success(t("user_messages.successfully_updated"));
-          resetForm();
-        }
-      } catch (err) {
-        snack.error((err as Error).message);
+      const actionResult = await dispatch(updateGeneralSettings(values));
+      const res = unwrapResult(actionResult);
+      if (res) {
+      snack.success(t("user_messages.information_updated"));
+        resetForm();
       }
     },
   });
+
+  const { pending, confirm, cancel } = useBlocker(!!formik.dirty);
+  useBeforeUnload(!!formik.dirty, t("common.unsaved_changes_message"));
 
   const isActiveTheme = (theme: string) => selectedTheme === theme;
   const LANGUAGE_OPTIONS = languageOptions(t, formik);
@@ -62,10 +61,8 @@ const GeneralSettings = () => {
     toggleTheme();
   };
 
-  const getLabel = (
-    options: typeof LANGUAGE_OPTIONS | typeof HOMEPAGE_OPTIONS
-  ) =>
-    options.selections.find((s) => s.key === options.activeKey)?.name ||
+  const getLabel = (options: any) =>
+    options.selections.find((s: any) => s.key === options.activeKey)?.name ||
     options.title;
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
@@ -73,6 +70,25 @@ const GeneralSettings = () => {
   useEffect(() => {
     setSelectedTheme(theme);
   }, [theme]);
+
+  const handleSaveAndLeave = async () => {
+    await formik.submitForm();
+    confirm();
+  };
+
+  const handleDiscardChanges = () => {
+    if (formik.values.theme !== data?.theme) {
+      formik.setFieldValue("theme", data?.theme);
+      toggleTheme();
+    }
+
+    formik.resetForm();
+    confirm();
+  };
+
+  const handleCancelModal = () => {
+    cancel();
+  };
 
   return (
     <Fragment>
@@ -167,7 +183,11 @@ const GeneralSettings = () => {
                     </p>
                     <div className="general-time-format-options">
                       <div
-                        className={`general-format-option ${formik.values.timeZone?.timeFormat === TIME_FORMAT.H24 ? "active" : null}`}
+                        className={`general-format-option ${
+                          formik.values.timeZone?.timeFormat === TIME_FORMAT.H24
+                            ? "active"
+                            : ""
+                        }`}
                         onClick={() =>
                           formik.setFieldValue(
                             "timeZone.timeFormat",
@@ -178,7 +198,11 @@ const GeneralSettings = () => {
                         {t("common.format_24_hour_example")}
                       </div>
                       <div
-                        className={`general-format-option ${formik.values.timeZone?.timeFormat === TIME_FORMAT.H12 ? "active" : null}`}
+                        className={`general-format-option ${
+                          formik.values.timeZone?.timeFormat === TIME_FORMAT.H12
+                            ? "active"
+                            : ""
+                        }`}
                         onClick={() =>
                           formik.setFieldValue(
                             "timeZone.timeFormat",
@@ -204,7 +228,12 @@ const GeneralSettings = () => {
                     </p>
                     <div className="general-time-format-options">
                       <div
-                        className={`general-format-option ${formik.values.timeZone?.dateFormat === DATE_FORMAT.DDMMYYYY ? "active" : null}`}
+                        className={`general-format-option ${
+                          formik.values.timeZone?.dateFormat ===
+                          DATE_FORMAT.DDMMYYYY
+                            ? "active"
+                            : ""
+                        }`}
                         onClick={() =>
                           formik.setFieldValue(
                             "timeZone.dateFormat",
@@ -215,7 +244,12 @@ const GeneralSettings = () => {
                         {t("common.date_dd_mm_yyyy")}
                       </div>
                       <div
-                        className={`general-format-option ${formik.values.timeZone?.dateFormat === DATE_FORMAT.MMDDYYYY ? "active" : null}`}
+                        className={`general-format-option ${
+                          formik.values.timeZone?.dateFormat ===
+                          DATE_FORMAT.MMDDYYYY
+                            ? "active"
+                            : ""
+                        }`}
                         onClick={() =>
                           formik.setFieldValue(
                             "timeZone.dateFormat",
@@ -247,6 +281,13 @@ const GeneralSettings = () => {
           </div>
         </div>
       </section>
+
+      <SaveChangesModal
+        open={!!pending}
+        handleSave={handleSaveAndLeave}
+        handleCancel={handleCancelModal}
+        handleDiscardChanges={handleDiscardChanges}
+      />
     </Fragment>
   );
 };
