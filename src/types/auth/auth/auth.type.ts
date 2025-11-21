@@ -4,7 +4,7 @@ import {
   IDENTIFIER_TYPE,
   THEME,
   TOKEN_TYPE,
-} from "../enum.types";
+} from "../../enum.types";
 
 export type AuthFormType = "login" | "signup";
 

@@ -29,7 +29,7 @@ const NotificationSettings = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data } = useAppSelector(
+  const { data, LOADING_UPDATE } = useAppSelector(
     (state) => state[Resource.notificationSettings]
   );
 
@@ -86,7 +86,8 @@ const NotificationSettings = () => {
             onClickBack={onClickBack}
             onClickSave={formik.handleSubmit}
             showChangesButton
-            isChangesDisasbled={!formik.dirty}
+            isChangesDisasbled={!formik.dirty || LOADING_UPDATE}
+            isLoading={LOADING_UPDATE}
           />
 
           <div className="notification-settings-content">
@@ -279,6 +280,7 @@ const NotificationSettings = () => {
         handleSave={handleSaveAndLeave}
         handleCancel={handleCancelModal}
         handleDiscardChanges={handleDiscardChanges}
+        isLoading={LOADING_UPDATE}
       />
     </Fragment>
   );

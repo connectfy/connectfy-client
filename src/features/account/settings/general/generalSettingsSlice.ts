@@ -28,6 +28,7 @@ export const updateGeneralSettings = createAsyncThunk<
   async (data: IEditGeneralSettings, { rejectWithValue }) => {
     try {
       const res = await updateGeneralSettingsApi(data);
+      console.log("res.data: ", res.data)
       return res.data;
     } catch (error: any) {
       return rejectWithValue(

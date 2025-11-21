@@ -29,7 +29,9 @@ const PrivacySettings = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data } = useAppSelector((state) => state[Resource.privacySettings]);
+  const { data, LOADING_UPDATE } = useAppSelector(
+    (state) => state[Resource.privacySettings]
+  );
 
   const formik = useFormik({
     initialValues: initialState(data!),
@@ -102,7 +104,8 @@ const PrivacySettings = () => {
             onClickBack={onClickBack}
             onClickSave={formik.handleSubmit}
             showChangesButton
-            isChangesDisasbled={!formik.dirty}
+            isChangesDisasbled={!formik.dirty || LOADING_UPDATE}
+            isLoading={LOADING_UPDATE}
           />
 
           <div className="privacy-settings-content">
@@ -198,6 +201,7 @@ const PrivacySettings = () => {
         handleSave={handleSaveAndLeave}
         handleCancel={handleCancelModal}
         handleDiscardChanges={handleDiscardChanges}
+        isLoading={LOADING_UPDATE}
       />
     </Fragment>
   );

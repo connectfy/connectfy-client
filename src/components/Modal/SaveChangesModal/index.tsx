@@ -3,12 +3,14 @@ import "./index.style.css";
 import { Fragment } from "react/jsx-runtime";
 import { FC } from "react";
 import { TriangleAlert } from "lucide-react";
+import Spinner from "@/components/Spinner/Spinner";
 
 interface Props {
   open: boolean;
   handleSave: () => void;
   handleCancel: () => void;
   handleDiscardChanges: () => void;
+  isLoading: boolean;
 }
 
 const SaveChangesModal: FC<Props> = ({
@@ -16,6 +18,7 @@ const SaveChangesModal: FC<Props> = ({
   handleSave,
   handleCancel,
   handleDiscardChanges,
+  isLoading = false,
 }) => {
   const { t } = useTranslation();
 
@@ -36,20 +39,23 @@ const SaveChangesModal: FC<Props> = ({
               <button
                 className="unsaved-btn unsaved-btn-discard"
                 onClick={handleDiscardChanges}
+                disabled={isLoading}
               >
                 {t("common.discard") || "Discard"}
               </button>
               <button
                 className="unsaved-btn unsaved-btn-cancel"
                 onClick={handleCancel}
+                disabled={isLoading}
               >
                 {t("common.cancel") || "Cancel"}
               </button>
               <button
                 className="unsaved-btn unsaved-btn-save"
                 onClick={handleSave}
+                disabled={isLoading}
               >
-                {t("common.save") || "Save"}
+                {isLoading ? <Spinner /> : t("common.save") || "Save"}
               </button>
             </div>
           </div>

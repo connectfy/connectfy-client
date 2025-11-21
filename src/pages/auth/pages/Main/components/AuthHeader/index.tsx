@@ -46,7 +46,7 @@ const LoginAndSignupHeader = () => {
         const res = unwrapResult(actionResult);
         if (res) {
           snack.success(t("user_messages.login_successful"));
-          navigate(ROUTER.MESSENGER.MAIN);
+          navigate(ROUTER.MAIN);
           localStorage.removeItem("authPage");
           localStorage.removeItem("loginMode");
           localStorage.removeItem("forgotPasswordMode");

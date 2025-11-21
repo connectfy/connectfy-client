@@ -29,7 +29,7 @@ const GeneralSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const { data } = useAppSelector((state) => state[Resource.generalSettings]);
+  const { data, LOADING_UPDATE } = useAppSelector((state) => state[Resource.generalSettings]);
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
   const formik = useFormik({
@@ -100,7 +100,8 @@ const GeneralSettings = () => {
             onClickBack={onClickBack}
             onClickSave={formik.handleSubmit}
             showChangesButton
-            isChangesDisasbled={!formik.dirty}
+            isChangesDisasbled={!formik.dirty || LOADING_UPDATE}
+            isLoading={LOADING_UPDATE}
           />
 
           <div className="general-settings-content">
@@ -287,6 +288,7 @@ const GeneralSettings = () => {
         handleSave={handleSaveAndLeave}
         handleCancel={handleCancelModal}
         handleDiscardChanges={handleDiscardChanges}
+        isLoading={LOADING_UPDATE}
       />
     </Fragment>
   );

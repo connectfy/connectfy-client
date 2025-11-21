@@ -12,12 +12,20 @@ import "./index.style.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "@/hooks/useStore";
+import { Resource } from "@/types/enum.types";
+import { getHomeRouteByStartup } from "@/utils/routes";
 
 const DesktopSidebar = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string | null>(null);
+
+  const { me: userData } = useAppSelector((state) => state[Resource.account]);
+  const { data: generalSettings } = useAppSelector(
+    (state) => state[Resource.generalSettings]
+  );
 
   const menuItems = useMemo(
     () => [
@@ -88,7 +96,15 @@ const DesktopSidebar = () => {
       <section id="sidebar">
         <div className="sidebar">
           <div className="logo-section">
-            <div className="logo-container">
+            <div
+              className="logo-container"
+              onClick={() => {
+                const startup =
+                  generalSettings?.startupPage ??
+                  userData?.settings?.generalSettings?.startupPage;
+                navigate(getHomeRouteByStartup(startup));
+              }}
+            >
               <svg
                 viewBox="0 0 576 512"
                 aria-hidden="true"

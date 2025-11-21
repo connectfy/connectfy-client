@@ -1,7 +1,8 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Save } from "lucide-react";
+import Spinner from "@/components/Spinner/Spinner";
 
 interface Props {
   onClickBack: () => void;
@@ -10,6 +11,7 @@ interface Props {
   showChangesButton?: boolean;
   isChangesDisasbled?: boolean;
   onClickSave?: () => void;
+  isLoading?: boolean;
 }
 
 const UniqueHeader: FC<Props> = ({
@@ -19,6 +21,7 @@ const UniqueHeader: FC<Props> = ({
   showChangesButton = false,
   isChangesDisasbled = true,
   onClickSave,
+  isLoading,
 }) => {
   const { t } = useTranslation();
 
@@ -46,8 +49,14 @@ const UniqueHeader: FC<Props> = ({
               disabled={isChangesDisasbled}
               onClick={onClickSave}
             >
-              <Save fontSize="small" />
-              <span>{t("common.save_changes")}</span>
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                <Fragment>
+                  <Save fontSize="small" />
+                  <span>{t("common.save_changes")}</span>
+                </Fragment>
+              )}
             </button>
           </div>
         )}
