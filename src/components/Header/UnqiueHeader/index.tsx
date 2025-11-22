@@ -50,7 +50,7 @@ const UniqueHeader: FC<Props> = ({
               onClick={onClickSave}
             >
               {isLoading ? (
-                <Spinner />
+                <Spinner size={20} />
               ) : (
                 <Fragment>
                   <Save fontSize="small" />

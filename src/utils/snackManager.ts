@@ -7,6 +7,18 @@ type SnackOptions = {
   size?: "small" | "medium" | "large";
 };
 
+const isMobile = () => window.innerWidth < 768;
+
+const getAnchorOrigin = (customOrigin?: SnackbarOrigin): SnackbarOrigin => {
+  if (customOrigin && !isMobile()) {
+    return customOrigin;
+  }
+
+  return isMobile()
+    ? { vertical: "bottom", horizontal: "center" }
+    : { vertical: "bottom", horizontal: "right" };
+};
+
 export const snack = {
   show: (message: string, options: SnackOptions = {}) => {
     const size = options.size ?? "large";
@@ -14,10 +26,7 @@ export const snack = {
     enqueueSnackbar(message, {
       variant: options.variant ?? "default",
       autoHideDuration: options.autoHideDuration ?? 4000,
-      anchorOrigin: options.anchorOrigin ?? {
-        vertical: "bottom",
-        horizontal: "right",
-      },
+      anchorOrigin: getAnchorOrigin(options.anchorOrigin),
       className: `snackbar-${size}`,
     });
   },
