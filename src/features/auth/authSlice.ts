@@ -19,6 +19,7 @@ import {
   IGoogleSignupForm,
   IFaceIdForm,
   IIsValidToken,
+  IRefreshResponse,
 } from "@/types/auth/auth/auth.type";
 import {
   faceIdApi,
@@ -28,6 +29,7 @@ import {
   isValidTokenApi,
   loginApi,
   logoutApi,
+  refreshApi,
   resetPasswordApi,
   signupApi,
   signupVerifyApi,
@@ -53,6 +55,7 @@ export interface AuthState {
   LOADING_GOOGLE_SIGNUP: boolean;
   LOADING_FACE_ID: boolean;
   LOADING_IS_VALID_TOKEN: boolean;
+  LOADING_REFRESH: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -63,6 +66,7 @@ export interface AuthState {
   ERROR_GOOGLE_SIGNUP: ApiErrorType;
   ERROR_FACE_ID: ApiErrorType;
   ERROR_IS_VALID_TOKEN: ApiErrorType;
+  ERROR_REFRESH: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -220,6 +224,20 @@ export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
   }
 );
 
+export const refresh = createAsyncThunk<IRefreshResponse>(
+  "/auth/refresh",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await refreshApi();
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || t("error_messages.process_failed")
+      );
+    }
+  }
+);
+
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
   error: null,
@@ -238,6 +256,7 @@ const initialState: AuthState = {
   LOADING_GOOGLE_SIGNUP: false,
   LOADING_FACE_ID: false,
   LOADING_IS_VALID_TOKEN: false,
+  LOADING_REFRESH: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -248,6 +267,7 @@ const initialState: AuthState = {
   ERROR_GOOGLE_SIGNUP: null,
   ERROR_FACE_ID: null,
   ERROR_IS_VALID_TOKEN: null,
+  ERROR_REFRESH: null,
 };
 
 const authSlice = createSlice({
@@ -424,8 +444,21 @@ const authSlice = createSlice({
         state.LOADING_IS_VALID_TOKEN = true;
       })
       .addCase(isValidToken.rejected, (state, action) => {
-        state.LOADING_FACE_ID = false;
+        state.LOADING_IS_VALID_TOKEN = false;
         state.ERROR_IS_VALID_TOKEN = action.payload as string | string[];
+      })
+
+      // =================== REFRESH
+      .addCase(refresh.fulfilled, (state, action) => {
+        state.LOADING_REFRESH = false;
+        state.access_token = action.payload.access_token;
+      })
+      .addCase(refresh.pending, (state) => {
+        state.LOADING_REFRESH = true;
+      })
+      .addCase(refresh.rejected, (state, action) => {
+        state.LOADING_REFRESH = false;
+        state.ERROR_REFRESH = action.payload as string | string[];
       });
   },
 });

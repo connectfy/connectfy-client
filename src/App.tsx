@@ -16,14 +16,13 @@ function App() {
 
   const { data } = useAppSelector((state) => state[Resource.generalSettings]);
   const userLang = data?.language;
+  const access_token = localStorage.getItem("access_token");
 
   useEffect(() => {
-    const access_token = localStorage.getItem("access_token");
-
     if (access_token) {
       dispatch(setAccessToken(access_token));
     }
-  }, [dispatch]);
+  }, [dispatch, access_token]);
 
   useEffect(() => {
     if (userLang) {

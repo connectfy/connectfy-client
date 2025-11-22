@@ -1,47 +1,47 @@
-// import { API_ENDPOINTS } from "@constants/apiEndpoints";
-// import { logout, setAccessToken } from "@features/auth/authSlice";
-// import { type FailedRequest } from "../types/api.types";
+import { FailedRequest } from "@/types/api.types";
 import { LANGUAGE } from "@/types/enum.types";
 import axios from "axios";
 
+const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api`;
+
 const instance = axios.create({
-  // baseURL: BASE_URL,
-  // baseURL: BASE_URL,
-  // baseURL: "http://10.180.32.180:3000/api",
-  baseURL: `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api`,
-  // baseURL: "http://api-gateway-main-app:3000/api",
+  baseURL: BASE,
   withCredentials: true,
 });
 
 instance.interceptors.request.use(
   (config) => {
-    const access_token = localStorage.getItem("access_token")
+    const access_token = localStorage.getItem("access_token");
     const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
 
-    if (access_token) {
+    // ƏSAS DƏYİŞİKLİK: Refresh endpoint-ə Authorization header göndərmə
+    const isRefreshEndpoint = config.url?.includes("/auth/refresh");
+
+    if (access_token && !isRefreshEndpoint) {
+      config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${access_token}`;
     }
 
     if (config.data) {
-      if (typeof config.data === "object") {
+      if (
+        typeof config.data === "object" &&
+        !(config.data instanceof FormData)
+      ) {
         config.data._lang = _lang;
       } else if (config.data instanceof FormData) {
         config.data.append("_lang", _lang);
       } else if (typeof config.data === "string") {
         try {
-          const parsedData = JSON.parse(config.data);
-          parsedData._lang = _lang;
-          config.data = JSON.stringify(parsedData);
+          const parsed = JSON.parse(config.data);
+          parsed._lang = _lang;
+          config.data = JSON.stringify(parsed);
         } catch (e) {
           config.data += `&_lang=${_lang}`;
         }
       }
     } else {
       if (config.method?.toLowerCase() === "get") {
-        config.params = {
-          ...config.params,
-          _lang: _lang,
-        };
+        config.params = { ...(config.params || {}), _lang };
       } else {
         config.data = { _lang };
       }
@@ -49,81 +49,83 @@ instance.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// instance.interceptors.request.use((config) => {
-//   const state = store.getState().auth;
-//   const accessToken = state.access_token;
+let isRefreshing = false;
+let failedQueue: FailedRequest[] = [];
 
-//   if (accessToken) {
-//     config.headers.Authorization = `Bearer ${accessToken}`;
-//   }
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) prom.reject(error);
+    else prom.resolve(token!);
+  });
+  failedQueue = [];
+};
 
-//   return config;
-// });
+instance.interceptors.response.use(
+  (res) => res,
+  async (err) => {
+    const originalRequest = err.config;
 
-// let isRefreshing = false;
-// let failedQueue: FailedRequest[] = [];
+    if (!originalRequest) return Promise.reject(err);
 
-// const processQueue = (error: any, token: string | null = null) => {
-//   failedQueue.forEach((prom) => {
-//     if (error) prom.reject(error);
-//     else prom.resolve(token!);
-//   });
-//   failedQueue = [];
-// };
-// instance.interceptors.response.use(
-//   (res) => res,
-//   async (err) => {
-//     const originalRequest = err.config;
+    const isAuthEndpoint =
+      originalRequest.url && originalRequest.url.includes("/auth/refresh");
 
-//     if (
-//       err.response?.data?.error?.statusCode === 401 &&
-//       !originalRequest._retry &&
-//       !originalRequest.url.includes(API_ENDPOINTS.USERS.REFRESH)
-//     ) {
-//       originalRequest._retry = true;
+    const status =
+      err.response?.status ?? err.response?.data?.error?.statusCode;
 
-//       if (isRefreshing) {
-//         return new Promise(function (resolve, reject) {
-//           failedQueue.push({ resolve, reject });
-//         })
-//           .then((token) => {
-//             originalRequest.headers.Authorization = `Bearer ${token}`;
-//             return instance(originalRequest);
-//           })
-//           .catch((error) => {
-//             return Promise.reject(error);
-//           });
-//       }
+    if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+      originalRequest._retry = true;
 
-//       isRefreshing = true;
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers = originalRequest.headers || {};
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return instance(originalRequest);
+          })
+          .catch((error) => Promise.reject(error));
+      }
 
-//       try {
-//         const response = await instance.post(API_ENDPOINTS.USERS.REFRESH, {});
+      isRefreshing = true;
 
-//         const newAccessToken = response.data.access_token;
+      try {
+        const refreshUrl = `${BASE}/auth/refresh`;
 
-//         store.dispatch(setAccessToken(newAccessToken));
-//         processQueue(null, newAccessToken);
+        // ƏSAS DƏYİŞİKLİK: Lang parametrini göndər, amma Authorization header-siz
+        const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+        const response = await axios.post(
+          refreshUrl,
+          { _lang },
+          { withCredentials: true }
+        );
 
-//         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-//         return instance(originalRequest);
-//       } catch (refreshErr) {
-//         processQueue(refreshErr, null);
-//         store.dispatch(logout());
-//         window.location.href = "/login";
-//         return Promise.reject(refreshErr);
-//       } finally {
-//         isRefreshing = false;
-//       }
-//     }
+        const newAccessToken = response.data?.access_token;
+        if (!newAccessToken)
+          throw new Error("No access token in refresh response");
 
-//     return Promise.reject(err);
-//   },
-// );
+        localStorage.setItem("access_token", newAccessToken);
+        processQueue(null, newAccessToken);
+
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return instance(originalRequest);
+      } catch (refreshErr) {
+        processQueue(refreshErr, null);
+        localStorage.removeItem("access_token");
+        window.location.href = "/login";
+        return Promise.reject(refreshErr);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(err);
+  }
+);
 
 export default instance;

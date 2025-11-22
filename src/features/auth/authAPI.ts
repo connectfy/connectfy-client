@@ -14,6 +14,7 @@ import {
   IGoogleSignupForm,
   IFaceIdForm,
   IIsValidToken,
+  IRefreshResponse,
 } from "@/types/auth/auth/auth.type";
 import axios from "@/helpers/instance";
 
@@ -45,3 +46,5 @@ export const faceIdApi = (data: IFaceIdForm) =>
 
 export const isValidTokenApi = (data: IIsValidToken) =>
   axios.post<boolean>("/auth/is-valid-token", data);
+
+export const refreshApi = () => axios.post<IRefreshResponse>("/auth/refresh", {});

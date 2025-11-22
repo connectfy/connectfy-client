@@ -112,3 +112,9 @@ export interface IIsValidToken {
   token: string | null;
   type: TOKEN_TYPE;
 }
+
+export interface IRefreshResponse {
+  user_id: string;
+  access_token: string;
+  refresh_token: string;
+}

@@ -7,7 +7,6 @@ import { me } from "@/features/account/account/accountSlice";
 import { setData as setGeneralSettings } from "@/features/account/settings/general/generalSettingsSlice";
 import { setData as setPrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
 import { setData as setNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
-import { jwtDecode } from "jwt-decode";
 import { getHomeRouteByStartup } from "@/utils/routes";
 
 type AuthType = {
@@ -20,24 +19,9 @@ export function RequireAuth({ children }: AuthType) {
   const { me: userData } = useAppSelector((state) => state[Resource.account]);
   const location = useLocation();
 
+  // Sadəcə token olub-olmadığını yoxlayırıq
+  // Vaxtı bitibsə, axios interceptor refresh edəcək
   if (!access_token) {
-    return (
-      <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
-    );
-  }
-
-  try {
-    const decodedToken: any = jwtDecode(access_token);
-    const currentTime = Date.now() / 1000;
-
-    if (!decodedToken || (decodedToken.exp && decodedToken.exp < currentTime)) {
-      localStorage.removeItem("access_token");
-      return (
-        <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
-      );
-    }
-  } catch (error) {
-    localStorage.removeItem("access_token");
     return (
       <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
     );
@@ -95,23 +79,6 @@ export function RedirectMain() {
 
   useEffect(() => {
     if (!access_token) {
-      navigate(ROUTER.AUTH.MAIN, { replace: true });
-      return;
-    }
-
-    try {
-      const decodedToken: any = jwtDecode(access_token);
-      const currentTime = Date.now() / 1000;
-      if (
-        !decodedToken ||
-        (decodedToken.exp && decodedToken.exp < currentTime)
-      ) {
-        localStorage.removeItem("access_token");
-        navigate(ROUTER.AUTH.MAIN, { replace: true });
-        return;
-      }
-    } catch (err) {
-      localStorage.removeItem("access_token");
       navigate(ROUTER.AUTH.MAIN, { replace: true });
       return;
     }
