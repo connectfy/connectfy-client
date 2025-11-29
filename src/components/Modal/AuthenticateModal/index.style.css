@@ -1,0 +1,182 @@
+.authenticate-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.authenticate-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 440px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .authenticate-modal {
+  background: #1e293b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.authenticate-icon {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 16px;
+  animation: bounce 0.6s ease;
+}
+
+.authenticate-modal h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+[data-theme="dark"] .authenticate-modal h2 {
+  color: #f8fafc;
+}
+
+.authenticate-modal p {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+  text-align: center;
+  line-height: 1.6;
+}
+
+[data-theme="dark"] .authenticate-modal p {
+  color: #94a3b8;
+}
+
+.authenticate-input-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.authenticate-error-message {
+  color: var(--error-color);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  text-align: left;
+  padding: 0 4px;
+}
+
+.authenticate-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.authenticate-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.authenticate-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.authenticate-btn-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+[data-theme="dark"] .authenticate-btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+.authenticate-btn-cancel:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+[data-theme="dark"] .authenticate-btn-cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.authenticate-btn-submit {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.authenticate-btn-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.35);
+  transform: translateY(-1px);
+}
+
+.authenticate-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.authenticate-spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .authenticate-modal {
+    padding: 24px;
+  }
+
+  .authenticate-modal h2 {
+    font-size: 20px;
+  }
+
+  .authenticate-btn {
+    width: 50%;
+  }
+}

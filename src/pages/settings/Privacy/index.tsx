@@ -17,19 +17,23 @@ import {
 } from "./constants/constant";
 import { useFormik } from "formik";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { updatePrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
+import {
+  clearError,
+  updatePrivacySettings,
+} from "@/features/account/settings/privacy/privacySettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal";
+import { useToastError } from "@/hooks/useToastError";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data, LOADING_UPDATE } = useAppSelector(
+  const { data, LOADING_UPDATE, ERROR_UPDATE } = useAppSelector(
     (state) => state[Resource.privacySettings]
   );
 
@@ -93,6 +97,11 @@ const PrivacySettings = () => {
   const handleCancelModal = () => {
     cancel();
   };
+
+  useToastError({
+    error: ERROR_UPDATE,
+    clearErrorAction: clearError,
+  });
 
   return (
     <Fragment>

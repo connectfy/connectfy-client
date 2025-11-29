@@ -118,3 +118,11 @@ export interface IRefreshResponse {
   access_token: string;
   refresh_token: string;
 }
+
+export interface IAuthenticateUser {
+  password: string | null;
+}
+
+export interface IAuthenticateUserResponse {
+  statusCode: number;
+}

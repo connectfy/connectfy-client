@@ -20,8 +20,11 @@ import {
   IFaceIdForm,
   IIsValidToken,
   IRefreshResponse,
+  IAuthenticateUserResponse,
+  IAuthenticateUser,
 } from "@/types/auth/auth/auth.type";
 import {
+  authenticateUserApi,
   faceIdApi,
   forgotPasswordApi,
   googleLoginApi,
@@ -56,6 +59,7 @@ export interface AuthState {
   LOADING_FACE_ID: boolean;
   LOADING_IS_VALID_TOKEN: boolean;
   LOADING_REFRESH: boolean;
+  LOADING_AUTHENTICATE_USER: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -67,6 +71,7 @@ export interface AuthState {
   ERROR_FACE_ID: ApiErrorType;
   ERROR_IS_VALID_TOKEN: ApiErrorType;
   ERROR_REFRESH: ApiErrorType;
+  ERROR_AUTHENTICATE_USER: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -238,6 +243,23 @@ export const refresh = createAsyncThunk<IRefreshResponse>(
   }
 );
 
+export const authenticateUser = createAsyncThunk<
+  IAuthenticateUserResponse,
+  IAuthenticateUser
+>(
+  "/auth/authenticate-user",
+  async (data: IAuthenticateUser, { rejectWithValue }) => {
+    try {
+      const res = await authenticateUserApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data.message || t("error_messages.process_failed")
+      );
+    }
+  }
+);
+
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
   error: null,
@@ -257,6 +279,7 @@ const initialState: AuthState = {
   LOADING_FACE_ID: false,
   LOADING_IS_VALID_TOKEN: false,
   LOADING_REFRESH: false,
+  LOADING_AUTHENTICATE_USER: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -268,6 +291,7 @@ const initialState: AuthState = {
   ERROR_FACE_ID: null,
   ERROR_IS_VALID_TOKEN: null,
   ERROR_REFRESH: null,
+  ERROR_AUTHENTICATE_USER: null,
 };
 
 const authSlice = createSlice({
@@ -303,7 +327,12 @@ const authSlice = createSlice({
     clearError: (
       state,
       action: PayloadAction<
-        "login" | "signup" | "verify" | "resetPassword" | "forgotPassword"
+        | "login"
+        | "signup"
+        | "verify"
+        | "resetPassword"
+        | "forgotPassword"
+        | "authenticateUser"
       >
     ) => {
       switch (action.payload) {
@@ -323,6 +352,9 @@ const authSlice = createSlice({
           break;
         case "forgotPassword":
           state.ERROR_FORGOT_PASSWORD = null;
+          break;
+        case "authenticateUser":
+          state.ERROR_AUTHENTICATE_USER = null;
           break;
         default:
           break;
@@ -459,6 +491,18 @@ const authSlice = createSlice({
       .addCase(refresh.rejected, (state, action) => {
         state.LOADING_REFRESH = false;
         state.ERROR_REFRESH = action.payload as string | string[];
+      })
+
+      // =================== REFRESH
+      .addCase(authenticateUser.fulfilled, (state) => {
+        state.LOADING_AUTHENTICATE_USER = false;
+      })
+      .addCase(authenticateUser.pending, (state) => {
+        state.LOADING_AUTHENTICATE_USER = true;
+      })
+      .addCase(authenticateUser.rejected, (state, action) => {
+        state.LOADING_AUTHENTICATE_USER = false;
+        state.ERROR_AUTHENTICATE_USER = action.payload as string | string[];
       });
   },
 });

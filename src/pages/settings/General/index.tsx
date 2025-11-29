@@ -18,18 +18,24 @@ import { useFormik } from "formik";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { DATE_FORMAT, Resource, TIME_FORMAT } from "@/types/enum.types";
 import { snack } from "@/utils/snackManager";
-import { updateGeneralSettings } from "@/features/account/settings/general/generalSettingsSlice";
+import {
+  clearError,
+  updateGeneralSettings,
+} from "@/features/account/settings/general/generalSettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/index";
+import { useToastError } from "@/hooks/useToastError";
 
 const GeneralSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const { data, LOADING_UPDATE } = useAppSelector((state) => state[Resource.generalSettings]);
+  const { data, LOADING_UPDATE, ERROR_UPDATE } = useAppSelector(
+    (state) => state[Resource.generalSettings]
+  );
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
   const formik = useFormik({
@@ -42,7 +48,7 @@ const GeneralSettings = () => {
       const actionResult = await dispatch(updateGeneralSettings(values));
       const res = unwrapResult(actionResult);
       if (res) {
-      snack.success(t("user_messages.information_updated"));
+        snack.success(t("user_messages.information_updated"));
         resetForm();
       }
     },
@@ -89,6 +95,11 @@ const GeneralSettings = () => {
   const handleCancelModal = () => {
     cancel();
   };
+
+  useToastError({
+    error: ERROR_UPDATE,
+    clearErrorAction: clearError,
+  });
 
   return (
     <Fragment>

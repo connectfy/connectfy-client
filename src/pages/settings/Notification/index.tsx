@@ -17,19 +17,23 @@ import {
 import { useFormik } from "formik";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";
-import { updateNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
+import {
+  clearError,
+  updateNotificationSettings,
+} from "@/features/account/settings/notification/notificationSettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/index";
+import { useToastError } from "@/hooks/useToastError";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data, LOADING_UPDATE } = useAppSelector(
+  const { data, LOADING_UPDATE, ERROR_UPDATE } = useAppSelector(
     (state) => state[Resource.notificationSettings]
   );
 
@@ -75,6 +79,11 @@ const NotificationSettings = () => {
   const notificationFields = NOTIFICATION_FIELDS(t);
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
+
+  useToastError({
+    error: ERROR_UPDATE,
+    clearErrorAction: clearError,
+  });
 
   return (
     <Fragment>
