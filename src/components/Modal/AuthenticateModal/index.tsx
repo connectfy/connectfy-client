@@ -33,7 +33,7 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
     const errors: Record<string, any> = {};
 
     if (!password || !checkEmptyString(password)) {
-      errors.password = t("error_messages.password_is_required");
+      errors.password = t("common.this_field_required");
     }
 
     return errors;
