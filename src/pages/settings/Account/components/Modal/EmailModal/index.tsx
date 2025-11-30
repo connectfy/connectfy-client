@@ -150,15 +150,28 @@ const EmailModal: FC<Props> = ({ open, onClose }) => {
     formik.handleSubmit();
   };
 
+  const handleClose = () => {
+    setSuccess(false);
+    setEmail(null);
+    formik.resetForm();
+    onClose();
+  };
+
   const globalKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!open) return;
 
       if (e.key === "Enter") {
         e.preventDefault();
-        if (LOADING_UPDATE_EMAIL || ERROR_UPDATE_EMAIL || !formik.values.email)
+        if (
+          LOADING_UPDATE_EMAIL ||
+          ERROR_UPDATE_EMAIL ||
+          (!success && !formik.values.email)
+        )
           return;
-        formik.submitForm();
+
+        if (success) handleClose();
+        else formik.submitForm();
       }
 
       if (e.key === "Escape") {
@@ -169,13 +182,6 @@ const EmailModal: FC<Props> = ({ open, onClose }) => {
     },
     [open, LOADING_UPDATE_EMAIL, ERROR_UPDATE_EMAIL, formik, onClose]
   );
-
-  const handleClose = () => {
-    setSuccess(false);
-    setEmail(null);
-    formik.resetForm();
-    onClose();
-  };
 
   useToastError({
     error: ERROR_UPDATE_EMAIL,
@@ -198,14 +204,16 @@ const EmailModal: FC<Props> = ({ open, onClose }) => {
       onMouseDown={handleOverlayPointerDown}
     >
       <div className="account-settings-modal-container">
-        <div className="account-settings-modal-header">
-          <h2 className="account-settings-modal-title">
-            {t("common.update_email")}
-          </h2>
-          <p className="account-settings-modal-subtitle">
-            {t("common.update_email_description")}
-          </p>
-        </div>
+        {!success && (
+          <div className="account-settings-modal-header">
+            <h2 className="account-settings-modal-title">
+              {t("common.update_email")}
+            </h2>
+            <p className="account-settings-modal-subtitle">
+              {t("common.update_email_description")}
+            </p>
+          </div>
+        )}
 
         {success ? (
           <div className="account-settings-modal-success">
