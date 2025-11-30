@@ -8,7 +8,7 @@ import {
   clearError,
   setSignupForm,
   signupVerify,
-} from "@/features/auth/authSlice";
+} from "@/features/auth/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";

@@ -19,15 +19,18 @@ import SettingCard from "@/components/Card/SettingsCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
 import { useAppSelector } from "@/hooks/useStore";
-import { PROVIDER, Resource } from "@/types/enum.types";
+import { PROVIDER, Resource, TOKEN_TYPE } from "@/types/enum.types";
 import useBoolean from "@/hooks/useBoolean";
 import AuthenticateModal from "@/components/Modal/AuthenticateModal";
+import UsernameModal from "./components/Modal/UsernameModal";
+import EmailModal from "./components/Modal/EmailModal";
+import PasswordModal from "./components/Modal/PasswordModal";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { me } = useAppSelector((state) => state[Resource.account]);
+  const { me } = useAppSelector((state) => state[Resource.user]);
   const { user } = me!;
 
   const {
@@ -46,6 +49,24 @@ const AccountSettings: FC = () => {
     open: passwordModalOpen,
     onOpen: onPasswordModalOpen,
     onClose: onPasswordModalClose,
+  } = useBoolean();
+
+  const {
+    open: changeUsernameModalOpen,
+    onOpen: onChangeUsernameModalOpen,
+    onClose: onChangeUsernameModalClose,
+  } = useBoolean();
+
+  const {
+    open: changeEmailModalOpen,
+    onOpen: onChangeEmailModalOpen,
+    onClose: onChangeEmailModalClose,
+  } = useBoolean();
+
+  const {
+    open: changePasswordModalOpen,
+    onOpen: onChangePasswordModalOpen,
+    onClose: onChangePasswordModalClose,
   } = useBoolean();
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
@@ -233,17 +254,47 @@ const AccountSettings: FC = () => {
         <AuthenticateModal
           open={usernameModalOpen}
           onClose={OnUsernameModalClose}
+          onAuthenticate={onChangeUsernameModalOpen}
+          authType={TOKEN_TYPE.CHANGE_USERNAME}
         />
       )}
 
       {emailModalOpen && (
-        <AuthenticateModal open={emailModalOpen} onClose={onEmailModalClose} />
+        <AuthenticateModal
+          open={emailModalOpen}
+          onClose={onEmailModalClose}
+          onAuthenticate={onChangeEmailModalOpen}
+          authType={TOKEN_TYPE.CHANGE_EMAIL}
+        />
       )}
 
       {passwordModalOpen && (
         <AuthenticateModal
           open={passwordModalOpen}
           onClose={onPasswordModalClose}
+          onAuthenticate={onChangePasswordModalOpen}
+          authType={TOKEN_TYPE.CHANGE_PASSWORD}
+        />
+      )}
+
+      {changeUsernameModalOpen && (
+        <UsernameModal
+          open={changeUsernameModalOpen}
+          onClose={onChangeUsernameModalClose}
+        />
+      )}
+
+      {changeEmailModalOpen && (
+        <EmailModal
+          open={changeEmailModalOpen}
+          onClose={onChangeEmailModalClose}
+        />
+      )}
+
+      {changePasswordModalOpen && (
+        <PasswordModal
+          open={changePasswordModalOpen}
+          onClose={onChangePasswordModalClose}
         />
       )}
     </Fragment>

@@ -7,7 +7,7 @@ import {
   ForgotPasswordModeType,
   IForgotPasswordForm,
 } from "@/types/auth/auth/auth.type";
-import { setForgotPasswordMode } from "@/features/auth/authSlice";
+import { setForgotPasswordMode } from "@/features/auth/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { FormikProps } from "formik";
 import { FC } from "react";

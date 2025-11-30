@@ -2,7 +2,7 @@ import "./index.style.css";
 import { type FC } from "react";
 import { Badge, Phone, Email, Face } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
-import { setLoginMode } from "@/features/auth/authSlice";
+import { setLoginMode } from "@/features/auth/auth/authSlice";
 import { IDENTIFIER_TYPE, Resource } from "@/types/enum.types";
 import { ILoginForm, LoginModeType } from "@/types/auth/auth/auth.type";
 import { useTranslation } from "react-i18next";

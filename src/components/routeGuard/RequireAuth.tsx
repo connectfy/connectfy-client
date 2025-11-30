@@ -3,7 +3,7 @@ import { Resource } from "@/types/enum.types";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { me } from "@/features/account/account/accountSlice";
+import { me } from "@/features/auth/user/userSlice";
 import { setData as setGeneralSettings } from "@/features/account/settings/general/generalSettingsSlice";
 import { setData as setPrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
 import { setData as setNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
@@ -16,7 +16,7 @@ type AuthType = {
 export function RequireAuth({ children }: AuthType) {
   const dispatch = useAppDispatch();
   const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.account]);
+  const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const location = useLocation();
 
   // Sadəcə token olub-olmadığını yoxlayırıq
@@ -46,7 +46,7 @@ export function RequireAuth({ children }: AuthType) {
 
 export function InsideProfile({ children }: AuthType) {
   const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.account]);
+  const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const { data: generalSettings } = useAppSelector(
     (state) => state[Resource.generalSettings]
   );
@@ -71,7 +71,7 @@ export function InsideProfile({ children }: AuthType) {
 export function RedirectMain() {
   const navigate = useNavigate();
   const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.account]);
+  const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const { data: generalSettings } = useAppSelector(
     (state) => state[Resource.generalSettings]
   );

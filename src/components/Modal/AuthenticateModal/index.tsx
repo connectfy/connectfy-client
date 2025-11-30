@@ -7,17 +7,25 @@ import { IAuthenticateUser } from "@/types/auth/auth/auth.type";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/utils/checkValues";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { Resource } from "@/types/enum.types";
+import { Resource, TOKEN_TYPE } from "@/types/enum.types";
 import { useToastError } from "@/hooks/useToastError";
-import { authenticateUser, clearError } from "@/features/auth/authSlice";
+import { authenticateUser, clearError } from "@/features/auth/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import Modal from "..";
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  onAuthenticate: () => void;
+  authType: TOKEN_TYPE;
 }
 
-const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
+const AuthenticateModal: FC<Props> = ({
+  open,
+  onClose,
+  onAuthenticate,
+  authType,
+}) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -27,13 +35,14 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
 
   const initialState: IAuthenticateUser = {
     password: null,
+    type: authType,
   };
 
   const validate = ({ password }: IAuthenticateUser): Record<string, any> => {
     const errors: Record<string, any> = {};
 
     if (!password || !checkEmptyString(password)) {
-      errors.password = t("common.this_field_required");
+      errors.password = t("error_messages.this_field_required");
     }
 
     return errors;
@@ -49,6 +58,7 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
       const actionResult = await dispatch(authenticateUser(values));
       const res = unwrapResult(actionResult);
       if (res) {
+        onAuthenticate();
         resetForm();
         onClose();
       }
@@ -98,15 +108,8 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
     clearErrorAction: () => clearError("authenticateUser"),
   });
 
-  if (!open) return null;
-
   return (
-    <div
-      className="authenticate-overlay"
-      onMouseDown={handleOverlayPointerDown}
-      role="dialog"
-      aria-modal="true"
-    >
+    <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>
       <div className="authenticate-modal">
         <div className="authenticate-icon">
           <ShieldCheck size={50} color="var(--primary-color)" />
@@ -122,7 +125,6 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
         <div className="authenticate-input-container">
           <PasswordInput
             size="medium"
-            className={`authenticate-input ${formik.errors.password ? "authenticate-input-error" : ""}`}
             label={t("common.password")}
             value={formik.values.password}
             onChange={(e) => {
@@ -152,7 +154,7 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
           <button
             className="authenticate-btn authenticate-btn-submit"
             onClick={formik.submitForm}
-            disabled={LOADING_AUTHENTICATE_USER}
+            disabled={LOADING_AUTHENTICATE_USER || !formik.values.password}
           >
             {LOADING_AUTHENTICATE_USER ? (
               <div className="authenticate-spinner" />
@@ -162,7 +164,7 @@ const AuthenticateModal: FC<Props> = ({ open, onClose }) => {
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

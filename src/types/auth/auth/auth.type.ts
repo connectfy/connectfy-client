@@ -121,8 +121,10 @@ export interface IRefreshResponse {
 
 export interface IAuthenticateUser {
   password: string | null;
+  type: TOKEN_TYPE;
 }
 
 export interface IAuthenticateUserResponse {
   statusCode: number;
+  token: string;
 }

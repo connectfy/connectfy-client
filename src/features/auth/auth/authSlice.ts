@@ -43,6 +43,7 @@ import { ApiErrorType } from "@/types/api.types";
 export interface AuthState {
   access_token: string | null;
   error: string | null;
+  authToken: string | null;
 
   authForm: AuthFormType;
   loginMode: LoginModeType;
@@ -263,6 +264,7 @@ export const authenticateUser = createAsyncThunk<
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
   error: null,
+  authToken: null,
 
   authForm: "login",
   loginMode: "username",
@@ -494,8 +496,9 @@ const authSlice = createSlice({
       })
 
       // =================== REFRESH
-      .addCase(authenticateUser.fulfilled, (state) => {
+      .addCase(authenticateUser.fulfilled, (state, action) => {
         state.LOADING_AUTHENTICATE_USER = false;
+        state.authToken = action.payload.token;
       })
       .addCase(authenticateUser.pending, (state) => {
         state.LOADING_AUTHENTICATE_USER = true;

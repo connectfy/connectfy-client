@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { AuthFormType } from "@/types/auth/auth/auth.type";
-import { setAuthForm } from "@/features/auth/authSlice";
+import { setAuthForm } from "@/features/auth/auth/authSlice";
 
 const AuthPage: FC = () => {
   const dispatch = useAppDispatch();

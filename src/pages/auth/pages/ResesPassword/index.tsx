@@ -16,7 +16,7 @@ import {
   clearError,
   isValidToken,
   resetPassword,
-} from "@/features/auth/authSlice";
+} from "@/features/auth/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";

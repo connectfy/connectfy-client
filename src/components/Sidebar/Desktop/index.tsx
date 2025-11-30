@@ -22,7 +22,7 @@ const DesktopSidebar = () => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
-  const { me: userData } = useAppSelector((state) => state[Resource.account]);
+  const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const { data: generalSettings } = useAppSelector(
     (state) => state[Resource.generalSettings]
   );

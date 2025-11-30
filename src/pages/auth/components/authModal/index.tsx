@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { clearError, googleSignup } from "@/features/auth/authSlice";
+import { clearError, googleSignup } from "@/features/auth/auth/authSlice";
 import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../constants/intialState";
 import { valdiateGoogleSignup } from "../../constants/validation";

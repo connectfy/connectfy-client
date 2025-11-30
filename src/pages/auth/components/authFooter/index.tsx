@@ -6,7 +6,7 @@ import { LightMode, DarkMode } from "@mui/icons-material";
 
 import { useTheme } from "@/context/ThemeContext";
 import LanguageModal from "@/components/Modal/LanguageModal";
-import { setAuthForm } from "@/features/auth/authSlice";
+import { setAuthForm } from "@/features/auth/auth/authSlice";
 import { LANGUAGE } from "@/types/enum.types";
 import useBoolean from "@/hooks/useBoolean";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";

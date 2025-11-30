@@ -1,4 +1,3 @@
-import { Fade } from "@mui/material";
 import "./index.style.css";
 import { LucideProps } from "lucide-react";
 import {
@@ -8,6 +7,7 @@ import {
   RefAttributes,
   useEffect,
 } from "react";
+import Modal from "..";
 
 interface Selections {
   name: string;
@@ -57,13 +57,19 @@ const SelectionModal: FC<Props> = ({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open, onClose]);
 
-  if (!open) return null;
+  const handleOverlayPointerDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   return (
     <Fragment>
-      <div className="selection-modal-overlay" onClick={onClose} />
-
-      <Fade in={open}>
+      <Modal
+        open={open}
+        onClose={onClose}
+        onMouseDown={handleOverlayPointerDown}
+      >
         <div className="selection-modal">
           <div className="selection-modal-header">
             <h3 className="selection-modal-title">{title}</h3>
@@ -121,7 +127,7 @@ const SelectionModal: FC<Props> = ({
             })}
           </div>
         </div>
-      </Fade>
+      </Modal>
     </Fragment>
   );
 };

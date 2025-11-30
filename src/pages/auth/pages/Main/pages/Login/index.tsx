@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import { loginInitialState } from "../../../../constants/intialState";
 import { validateLogin } from "../../../../constants/validation";
 import { useTranslation } from "react-i18next";
-import { clearError, login, setLoginMode } from "@/features/auth/authSlice";
+import { clearError, login, setLoginMode } from "@/features/auth/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useToastError } from "@/hooks/useToastError";

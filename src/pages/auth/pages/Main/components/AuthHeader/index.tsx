@@ -1,7 +1,7 @@
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
-import { googleLogin, setAuthForm } from "@/features/auth/authSlice";
+import { googleLogin, setAuthForm } from "@/features/auth/auth/authSlice";
 import { Resource } from "@/types/enum.types";
 import { AuthFormType } from "@/types/auth/auth/auth.type";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";

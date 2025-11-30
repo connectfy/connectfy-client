@@ -6,7 +6,7 @@ import {
   forgotPassword,
   setForgotPasswordMode,
   setLoginMode,
-} from "@/features/auth/authSlice";
+} from "@/features/auth/auth/authSlice";
 import ForgotPasswordHeader from "./components/ForgotPasswordHeader";
 import { Resource } from "@/types/enum.types";
 import { useCallback, useEffect } from "react";

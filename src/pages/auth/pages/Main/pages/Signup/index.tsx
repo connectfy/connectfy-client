@@ -5,7 +5,7 @@ import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button/Button";
-import { clearError, setSignupForm, signup } from "@/features/auth/authSlice";
+import { clearError, setSignupForm, signup } from "@/features/auth/auth/authSlice";
 import DatePicker from "@/components/DatePicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
