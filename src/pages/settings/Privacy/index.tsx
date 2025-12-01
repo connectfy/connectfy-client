@@ -1,5 +1,5 @@
 import "./index.style.css";
-import { Shield, UserCheck } from "lucide-react";
+import { CheckCircle, Shield, UserCheck } from "lucide-react";
 import { Fragment } from "react";
 import CustomSelect from "@/components/CustomSelect";
 import { useTranslation } from "react-i18next";
@@ -123,6 +123,22 @@ const PrivacySettings = () => {
               <h2 className="privacy-section-title">
                 {t("common.activity_privacy")}
               </h2>
+
+              <ToggleCard
+                header={{
+                  icon: CheckCircle,
+                  title: t("common.read_receipts"),
+                  subtitle: t("common.read_receipts_desc"),
+                }}
+                slider={{
+                  checked: !!formik.values.readReceipts,
+                  onClick: () =>
+                    formik.setFieldValue(
+                      "readReceipts",
+                      !formik.values.readReceipts
+                    ),
+                }}
+              />
 
               <ToggleCard
                 header={{

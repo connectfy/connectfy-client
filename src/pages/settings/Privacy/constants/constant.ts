@@ -63,6 +63,7 @@ export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
     messageRequest,
     birthdayDate,
     friendshipRequest,
+    readReceipts
   } = data;
 
   const initialState = {
@@ -77,6 +78,7 @@ export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
     messageRequest,
     birthdayDate,
     friendshipRequest,
+    readReceipts
   };
 
   return initialState;

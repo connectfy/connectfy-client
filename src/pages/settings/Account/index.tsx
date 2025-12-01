@@ -61,6 +61,14 @@ const AccountSettings: FC = () => {
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
   const openAuthThen = (authType: TOKEN_TYPE, next: ChangeModalKey = null) => {
+    if (
+      authType !== TOKEN_TYPE.CHANGE_USERNAME &&
+      user.provider !== PROVIDER.PASSWORD
+    ) {
+      snack.warning(t("user_messages.google_login_error"), { autoHideDuration: 3000 });
+      return;
+    }
+
     setAuthModal({ open: true, authType, next });
   };
 
@@ -101,7 +109,6 @@ const AccountSettings: FC = () => {
       renderContent: () => (
         <AccountActionButton
           onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_EMAIL, "email")}
-          disabled={user.provider !== PROVIDER.PASSWORD}
         >
           {user.email}
         </AccountActionButton>
@@ -117,7 +124,6 @@ const AccountSettings: FC = () => {
       renderContent: () => (
         <AccountActionButton
           onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_PASSWORD, "password")}
-          disabled={user.provider !== PROVIDER.PASSWORD}
         >
           {"••••••••"}
         </AccountActionButton>

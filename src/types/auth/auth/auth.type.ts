@@ -122,6 +122,7 @@ export interface IRefreshResponse {
 export interface IAuthenticateUser {
   password: string | null;
   type: TOKEN_TYPE;
+  idToken: string | null;
 }
 
 export interface IAuthenticateUserResponse {

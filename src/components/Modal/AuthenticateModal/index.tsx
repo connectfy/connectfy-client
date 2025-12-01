@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from "react";
+import { FC, Fragment, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
 import "./index.style.css";
@@ -7,11 +7,13 @@ import { IAuthenticateUser } from "@/types/auth/auth/auth.type";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/utils/checkValues";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { Resource, TOKEN_TYPE } from "@/types/enum.types";
+import { PROVIDER, Resource, TOKEN_TYPE } from "@/types/enum.types";
 import { useToastError } from "@/hooks/useToastError";
 import { authenticateUser, clearError } from "@/features/auth/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Modal from "..";
+import { snack } from "@/utils/snackManager";
+import { GoogleLogin } from "@react-oauth/google";
 
 interface Props {
   open: boolean;
@@ -32,18 +34,31 @@ const AuthenticateModal: FC<Props> = ({
   const { LOADING_AUTHENTICATE_USER, ERROR_AUTHENTICATE_USER } = useAppSelector(
     (state) => state[Resource.auth]
   );
+  const { me } = useAppSelector((state) => state[Resource.user]);
+
+  const isPasswordProvider = me?.user.provider === PROVIDER.PASSWORD;
 
   const initialState: IAuthenticateUser = {
     password: null,
     type: authType,
+    idToken: null,
   };
 
-  const validate = ({ password }: IAuthenticateUser): Record<string, any> => {
+  const validate = ({
+    password,
+    idToken,
+  }: IAuthenticateUser): Record<string, any> => {
     const errors: Record<string, any> = {};
 
-    if (!password || !checkEmptyString(password)) {
+    if (isPasswordProvider && (!password || !checkEmptyString(password))) {
       errors.password = t("error_messages.this_field_required");
     }
+
+    if (
+      me?.user.provider === PROVIDER.GOOGLE &&
+      (!idToken || !checkEmptyString(idToken))
+    )
+      errors.idToken = t("error_messages.this_field_required");
 
     return errors;
   };
@@ -72,6 +87,13 @@ const AuthenticateModal: FC<Props> = ({
     }
   };
 
+  const handleSubmit = () => {
+    if (isPasswordProvider) {
+      formik.submitForm();
+      return;
+    }
+  };
+
   const isButtonsDisabled =
     LOADING_AUTHENTICATE_USER || ERROR_AUTHENTICATE_USER;
 
@@ -82,7 +104,7 @@ const AuthenticateModal: FC<Props> = ({
       if (e.key === "Enter") {
         e.preventDefault();
         if (isButtonsDisabled || !formik.values.password) return;
-        formik.submitForm().catch((err) => console.error("submit error:", err));
+        formik.submitForm();
       }
 
       if (e.key === "Escape") {
@@ -93,6 +115,28 @@ const AuthenticateModal: FC<Props> = ({
     },
     [open, isButtonsDisabled, formik, onClose]
   );
+
+  const handleGoogleSuccess = async (tokenResponse: any) => {
+    const idToken = tokenResponse.credential;
+
+    if (!idToken) {
+      snack.error(t("error_messages.process_failed"));
+      return;
+    }
+
+    const finalValues = {
+      ...formik.values,
+      idToken,
+    };
+
+    const actionResult = await dispatch(authenticateUser(finalValues));
+    const res = unwrapResult(actionResult);
+    if (res) {
+      onAuthenticate();
+      formik.resetForm();
+      onClose();
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -114,33 +158,37 @@ const AuthenticateModal: FC<Props> = ({
         <div className="authenticate-icon">
           <ShieldCheck size={50} color="var(--primary-color)" />
         </div>
-        <h2>
-          {t("common.authentication_required") || "Authentication Required"}
-        </h2>
+        <h2>{t("common.authentication_required")}</h2>
+
         <p>
-          {t("common.enter_password_to_continue") ||
-            "Please enter your password to continue"}
+          {isPasswordProvider
+            ? t("common.enter_password_to_continue")
+            : t("common.verify_identity_to_continue")}
         </p>
 
-        <div className="authenticate-input-container">
-          <PasswordInput
-            size="medium"
-            label={t("common.password")}
-            value={formik.values.password}
-            onChange={(e) => {
-              formik.setFieldValue("password", e.target.value || null);
-            }}
-            disabled={LOADING_AUTHENTICATE_USER}
-            autoFocus
-            fullWidth
-            hasError={formik.errors.password ? true : false}
-          />
-        </div>
+        {isPasswordProvider && (
+          <Fragment>
+            <div className="authenticate-input-container">
+              <PasswordInput
+                size="medium"
+                label={t("common.password")}
+                value={formik.values.password}
+                onChange={(e) => {
+                  formik.setFieldValue("password", e.target.value || null);
+                }}
+                disabled={LOADING_AUTHENTICATE_USER}
+                autoFocus
+                fullWidth
+                hasError={formik.errors.password ? true : false}
+              />
+            </div>
 
-        {formik.errors.password && (
-          <div className="authenticate-error-message">
-            {formik.errors.password}
-          </div>
+            {formik.errors.password && (
+              <div className="authenticate-error-message">
+                {formik.errors.password}
+              </div>
+            )}
+          </Fragment>
         )}
 
         <div className="authenticate-actions">
@@ -149,19 +197,37 @@ const AuthenticateModal: FC<Props> = ({
             onClick={onClose}
             disabled={LOADING_AUTHENTICATE_USER}
           >
-            {t("common.cancel") || "Cancel"}
+            {t("common.cancel")}
           </button>
-          <button
-            className="authenticate-btn authenticate-btn-submit"
-            onClick={formik.submitForm}
-            disabled={LOADING_AUTHENTICATE_USER || !formik.values.password}
-          >
-            {LOADING_AUTHENTICATE_USER ? (
-              <div className="authenticate-spinner" />
-            ) : (
-              t("common.submit") || "Submit"
-            )}
-          </button>
+          <div className="authenticate-btn-submit-container">
+            <button
+              className="authenticate-btn authenticate-btn-submit"
+              onClick={handleSubmit}
+              disabled={
+                LOADING_AUTHENTICATE_USER ||
+                (isPasswordProvider && !formik.values.password)
+              }
+            >
+              {LOADING_AUTHENTICATE_USER ? (
+                <div className="authenticate-spinner" />
+              ) : isPasswordProvider ? (
+                t("common.submit")
+              ) : (
+                t("common.authenticate")
+              )}
+            </button>
+
+            <div className="google-real-button">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() =>
+                  snack.error(t("error_messages.google_login_failed"))
+                }
+                useOneTap={false}
+                width="410"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </Modal>

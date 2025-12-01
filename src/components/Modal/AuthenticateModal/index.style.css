@@ -127,6 +127,37 @@
   animation: spin 0.8s linear infinite;
 }
 
+.authenticate-btn-submit-container {
+  position: relative;
+  display: inline-block;
+}
+
+.authenticate-btn-submit-container .google-real-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 102%;
+  height: 100%;
+  opacity: 0;
+  z-index: 2;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.authenticate-btn-submit-container .google-real-button iframe {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.authenticate-btn-submit-container .google-real-button > div {
+  width: 102% !important;
+  height: 100% !important;
+  cursor: pointer;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
