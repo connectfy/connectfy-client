@@ -1,4 +1,4 @@
-import "../UsernameModal/index.style.css";
+import "../../UsernameModal/index.style.css";
 import { FC, useCallback, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";

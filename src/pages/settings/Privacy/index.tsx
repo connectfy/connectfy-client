@@ -146,18 +146,17 @@ const PrivacySettings = () => {
                   title: t("common.message_privacy"),
                   subtitle: t("common.message_privacy_desc"),
                 }}
-                content={
-                  <CustomSelect
-                    buttonTitle={getLabel(
-                      formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE
-                    )}
-                    options={createOptions(
-                      formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
-                      (val) => formik.setFieldValue("messageRequest", val)
-                    )}
-                  />
-                }
-              />
+              >
+                <CustomSelect
+                  buttonTitle={getLabel(
+                    formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE
+                  )}
+                  options={createOptions(
+                    formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
+                    (val) => formik.setFieldValue("messageRequest", val)
+                  )}
+                />
+              </SettingCard>
             </div>
 
             {/* DATA PRIVACY */}
@@ -167,39 +166,36 @@ const PrivacySettings = () => {
               </h2>
 
               <SettingCard
-                content={
-                  <Fragment>
-                    {privacyFields.map((item, idx) => {
-                      const activeValue = formik.values[
-                        item.field as keyof typeof formik.values
-                      ] as string | undefined;
-                      return (
-                        <div
-                          className="privacy-row"
-                          key={item.field}
-                          style={idx > 0 ? { marginTop: "12px" } : {}}
-                        >
-                          <span className="privacy-row-label">
-                            {item.label}
-                          </span>
-                          <div className="privacy-row-select">
-                            <CustomSelect
-                              buttonTitle={getLabel(activeValue)}
-                              options={createOptions(
-                                activeValue as string,
-                                (val) => formik.setFieldValue(item.field, val)
-                              )}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </Fragment>
-                }
                 cardStyle={{
                   padding: "5px 16px 20px 16px",
                 }}
-              />
+              >
+                <Fragment>
+                  {privacyFields.map((item, idx) => {
+                    const activeValue = formik.values[
+                      item.field as keyof typeof formik.values
+                    ] as string | undefined;
+                    return (
+                      <div
+                        className="privacy-row"
+                        key={item.field}
+                        style={idx > 0 ? { marginTop: "12px" } : {}}
+                      >
+                        <span className="privacy-row-label">{item.label}</span>
+                        <div className="privacy-row-select">
+                          <CustomSelect
+                            buttonTitle={getLabel(activeValue)}
+                            options={createOptions(
+                              activeValue as string,
+                              (val) => formik.setFieldValue(item.field, val)
+                            )}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </Fragment>
+              </SettingCard>
             </div>
           </div>
         </div>

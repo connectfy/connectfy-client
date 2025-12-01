@@ -18,14 +18,14 @@ interface Props {
     iconStyle?: CSSProperties;
     headerStyle?: CSSProperties;
   };
-  content?: ReactNode;
+  children?: ReactNode;
   contentStyle?: CSSProperties;
   cardStyle?: CSSProperties;
 }
 
 const SettingCard: FC<Props> = ({
   header,
-  content,
+  children,
   contentStyle,
   cardStyle,
 }) => {
@@ -44,7 +44,7 @@ const SettingCard: FC<Props> = ({
           </div>
         )}
       </div>
-      <div style={contentStyle}>{content}</div>
+      <div style={contentStyle}>{children}</div>
     </div>
   );
 };

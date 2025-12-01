@@ -112,35 +112,34 @@ const NotificationSettings = () => {
                   title: t("common.notification_mode"),
                   subtitle: t("common.select_default_notification"),
                 }}
-                content={
-                  <div className="general-notification-modes">
-                    {NOTIFICATION_MODE_OPTIONS.map((option) => {
-                      return (
-                        <div
-                          key={option.key}
-                          className={`general-notification-mode ${
-                            formik.values.notificationSoundMode === option.key
-                              ? "active"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            formik.setFieldValue(
-                              "notificationSoundMode",
-                              option.key
-                            )
-                          }
-                        >
-                          <div className="general-mode-radio"></div>
-                          <div className="general-mode-content">
-                            <h4>{option.name}</h4>
-                            <p>{option.description}</p>
-                          </div>
+              >
+                <div className="general-notification-modes">
+                  {NOTIFICATION_MODE_OPTIONS.map((option) => {
+                    return (
+                      <div
+                        key={option.key}
+                        className={`general-notification-mode ${
+                          formik.values.notificationSoundMode === option.key
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          formik.setFieldValue(
+                            "notificationSoundMode",
+                            option.key
+                          )
+                        }
+                      >
+                        <div className="general-mode-radio"></div>
+                        <div className="general-mode-content">
+                          <h4>{option.name}</h4>
+                          <p>{option.description}</p>
                         </div>
-                      );
-                    })}
-                  </div>
-                }
-              />
+                      </div>
+                    );
+                  })}
+                </div>
+              </SettingCard>
 
               <SettingCard
                 header={{
@@ -148,35 +147,34 @@ const NotificationSettings = () => {
                   title: t("common.notification_content"),
                   subtitle: t("common.select_default_content"),
                 }}
-                content={
-                  <div className="general-notification-modes">
-                    {NOTIFICATION_CONTENT_OPTIONS.map((option) => {
-                      return (
-                        <div
-                          key={option.key}
-                          className={`general-notification-mode ${
-                            formik.values.notificationContentMode === option.key
-                              ? "active"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            formik.setFieldValue(
-                              "notificationContentMode",
-                              option.key
-                            )
-                          }
-                        >
-                          <div className="general-mode-radio"></div>
-                          <div className="general-mode-content">
-                            <h4>{option.name}</h4>
-                            <p>{option.description}</p>
-                          </div>
+              >
+                <div className="general-notification-modes">
+                  {NOTIFICATION_CONTENT_OPTIONS.map((option) => {
+                    return (
+                      <div
+                        key={option.key}
+                        className={`general-notification-mode ${
+                          formik.values.notificationContentMode === option.key
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          formik.setFieldValue(
+                            "notificationContentMode",
+                            option.key
+                          )
+                        }
+                      >
+                        <div className="general-mode-radio"></div>
+                        <div className="general-mode-content">
+                          <h4>{option.name}</h4>
+                          <p>{option.description}</p>
                         </div>
-                      );
-                    })}
-                  </div>
-                }
-              />
+                      </div>
+                    );
+                  })}
+                </div>
+              </SettingCard>
             </div>
 
             {/* MESSAGE SOUND SETTINGS */}

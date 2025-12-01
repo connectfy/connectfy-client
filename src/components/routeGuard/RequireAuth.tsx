@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Resource } from "@/types/enum.types";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";

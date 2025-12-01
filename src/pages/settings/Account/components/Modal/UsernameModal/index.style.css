@@ -161,6 +161,74 @@
   max-width: 420px;
 }
 
+.verifying-illustration {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.03);
+  position: relative;
+}
+
+[data-theme="dark"] .verifying-illustration {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.verifying-illustration .account-settings-modal-loader {
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(0, 0, 0, 0.12);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: account-settings-modal-spin 0.8s linear infinite;
+}
+
+[data-theme="dark"] .verifying-illustration .account-settings-modal-loader {
+  border: 3px solid rgba(255, 255, 255, 0.08);
+}
+
+.verifying-badge {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .verifying-badge {
+  background: #0b1220;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+/* Slight pulse to call attention while verifying */
+@keyframes verifying-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.verifying-illustration {
+  animation: verifying-pulse 2.2s ease-in-out infinite;
+}
+
 @media (max-width: 576px) {
   .account-settings-modal-container {
     padding: 24px;
@@ -182,5 +250,15 @@
   .success-illustration {
     width: 60px;
     height: 60px;
+  }
+
+  .verifying-illustration {
+    width: 60px;
+    height: 60px;
+  }
+
+  .verifying-illustration .account-settings-modal-loader {
+    width: 28px;
+    height: 28px;
   }
 }
