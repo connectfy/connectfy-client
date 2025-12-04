@@ -65,7 +65,10 @@ const AccountSettings: FC = () => {
       authType !== TOKEN_TYPE.CHANGE_USERNAME &&
       user.provider !== PROVIDER.PASSWORD
     ) {
-      snack.warning(t("user_messages.google_login_error"), { autoHideDuration: 3000 });
+      snack.warning(t("user_messages.google_login_error"), {
+        autoHideDuration: 3000,
+        anchorOrigin: { horizontal: "center", vertical: "bottom" },
+      });
       return;
     }
 

@@ -191,15 +191,16 @@ const AuthenticateModal: FC<Props> = ({
           </Fragment>
         )}
 
-        <div className="authenticate-actions">
-          <button
-            className="authenticate-btn authenticate-btn-cancel"
-            onClick={onClose}
-            disabled={LOADING_AUTHENTICATE_USER}
-          >
-            {t("common.cancel")}
-          </button>
-          <div className="authenticate-btn-submit-container">
+        {isPasswordProvider ? (
+          <div className="authenticate-actions">
+            <button
+              className="authenticate-btn authenticate-btn-cancel"
+              onClick={onClose}
+              disabled={LOADING_AUTHENTICATE_USER}
+            >
+              {t("common.cancel")}
+            </button>
+
             <button
               className="authenticate-btn authenticate-btn-submit"
               onClick={handleSubmit}
@@ -210,25 +211,54 @@ const AuthenticateModal: FC<Props> = ({
             >
               {LOADING_AUTHENTICATE_USER ? (
                 <div className="authenticate-spinner" />
-              ) : isPasswordProvider ? (
-                t("common.submit")
               ) : (
-                t("common.authenticate")
+                t("common.submit")
               )}
             </button>
+          </div>
+        ) : (
+          // Google Provider 时的布局
+          <div className="authenticate-actions google-provider-layout">
+            <button
+              className="authenticate-btn authenticate-btn-cancel"
+              onClick={onClose}
+              disabled={LOADING_AUTHENTICATE_USER}
+            >
+              {t("common.cancel")}
+            </button>
 
-            <div className="google-real-button">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() =>
-                  snack.error(t("error_messages.google_login_failed"))
-                }
-                useOneTap={false}
-                width="410"
-              />
+            <div className="authenticate-google-wrapper">
+              <button
+                className="authenticate-btn authenticate-btn-submit"
+                onClick={handleSubmit}
+                disabled={LOADING_AUTHENTICATE_USER}
+              >
+                {LOADING_AUTHENTICATE_USER ? (
+                  <div className="authenticate-spinner" />
+                ) : (
+                  t("common.authenticate")
+                )}
+              </button>
+
+              <div className="google-button-overlay">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() =>
+                    snack.error(t("error_messages.google_login_failed"))
+                  }
+                  useOneTap={false}
+                  width="100%"
+                  locale="en"
+                  theme="filled_blue"
+                  size="large"
+                  type="standard"
+                  shape="rectangular"
+                  text="continue_with"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </Modal>
   );

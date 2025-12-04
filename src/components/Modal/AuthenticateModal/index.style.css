@@ -5,6 +5,7 @@
   max-width: 440px;
   width: 90%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-out;
 }
 
 [data-theme="dark"] .authenticate-modal {
@@ -64,6 +65,20 @@
   margin-top: 24px;
 }
 
+.authenticate-actions.google-provider-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.authenticate-google-wrapper {
+  position: relative;
+  flex: 1.3;
+  min-width: 0;
+}
+
 .authenticate-btn {
   padding: 12px 28px;
   border: none;
@@ -73,6 +88,12 @@
   cursor: pointer;
   transition: all 0.2s ease;
   flex: 1;
+  min-width: 120px;
+  height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .authenticate-btn:disabled {
@@ -83,6 +104,8 @@
 .authenticate-btn-cancel {
   background: #f1f5f9;
   color: #475569;
+  flex: 1;
+  min-width: 120px;
 }
 
 [data-theme="dark"] .authenticate-btn-cancel {
@@ -106,6 +129,8 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
+  width: 100%;
+  position: relative;
 }
 
 .authenticate-btn-submit:hover:not(:disabled) {
@@ -127,43 +152,42 @@
   animation: spin 0.8s linear infinite;
 }
 
-.authenticate-btn-submit-container {
-  position: relative;
-  display: inline-block;
-}
-
-.authenticate-btn-submit-container .google-real-button {
+.google-button-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 102%;
+  width: 100%;
   height: 100%;
   opacity: 0;
-  z-index: 2;
+  z-index: 10;
   cursor: pointer;
   overflow: hidden;
+  border-radius: 10px;
 }
 
-.authenticate-btn-submit-container .google-real-button iframe {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-.authenticate-btn-submit-container .google-real-button > div {
-  width: 102% !important;
+.google-button-overlay > div {
+  width: 100% !important;
   height: 100% !important;
-  cursor: pointer;
+  min-width: 100% !important;
+  min-height: 100% !important;
+}
+
+.google-button-overlay iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  opacity: 0 !important;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -192,7 +216,20 @@
     font-size: 20px;
   }
 
+  .authenticate-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .authenticate-actions.google-provider-layout {
+    flex-direction: column;
+  }
+
   .authenticate-btn {
-    width: 50%;
+    width: 100%;
+  }
+
+  .authenticate-google-wrapper {
+    width: 100%;
   }
 }
