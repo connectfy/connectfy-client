@@ -11,8 +11,8 @@ import { IPhoneNumber } from "@/types/auth/auth/auth.type";
 interface Props {
   name: string;
   value?: IPhoneNumber | null;
-  blur: boolean;
-  onBlur: () => void;
+  blur?: boolean;
+  onBlur?: () => void;
   onChange: (value: IPhoneNumber | null) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
 }

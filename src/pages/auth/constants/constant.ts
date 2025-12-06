@@ -1,6 +1,6 @@
-import { Country } from "@/types/auth/auth/auth.type";
+import { ICountry } from "@/types/auth/auth/auth.type";
 
-export const COUNTRIES: Country[] = [
+export const COUNTRIES: ICountry[] = [
   {
     key: "az",
     name: "azerbaijan",

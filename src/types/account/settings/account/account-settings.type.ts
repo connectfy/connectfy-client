@@ -1,1 +1,6 @@
-export type ChangeModalKey = "username" | "email" | "password" | null;
+export type ChangeModalKey =
+  | "username"
+  | "email"
+  | "password"
+  | "phone_number"
+  | null;

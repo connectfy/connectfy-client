@@ -3,14 +3,14 @@ import { Modal, Box, IconButton, Slide } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./index.style.css";
 import { COUNTRIES } from "@/pages/auth/constants/constant";
-import { Country } from "@/types/auth/auth/auth.type";
+import { ICountry } from "@/types/auth/auth/auth.type";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSelect?: (country: Country) => void;
+  onSelect?: (country: ICountry) => void;
   initialSelectedKey?: string;
 }
 
@@ -34,7 +34,7 @@ export const CountryCodeModal: FC<Props> = ({
     );
   }, [query]);
 
-  const handleSelect = (country: Country) => {
+  const handleSelect = (country: ICountry) => {
     if (onSelect) onSelect(country);
     onClose();
   };

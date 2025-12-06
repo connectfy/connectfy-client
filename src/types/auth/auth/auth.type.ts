@@ -16,13 +16,13 @@ export type LoginModeType =
 
 export type ForgotPasswordModeType = "email" | "phoneNumber";
 
-export type Country = {
+export interface ICountry {
   key: string;
   name: string;
   flag: string;
   code: string;
   numberLength: number;
-};
+}
 
 export interface ILoginResponse {
   access_token: string;

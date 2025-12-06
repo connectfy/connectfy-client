@@ -4,6 +4,8 @@ import {
   IUpdateEmailResponse,
   IUpdatePassword,
   IUpdatePasswordResponse,
+  IUpdatePhoneNumber,
+  IUpdatePhoneNumberResponse,
   IUpdateUsername,
   IUpdateUsernameResponse,
   IVerifyChangeEmail,
@@ -15,6 +17,7 @@ import {
   meApi,
   updateEmailApi,
   updatePasswordApi,
+  updatePhoneNumberApi,
   updateUsernameApi,
   verifyChangeEmailApi,
 } from "./userApi";
@@ -29,12 +32,14 @@ export interface UserState {
   LOADING_UPDATE_EMAIL: boolean;
   LOADING_UPDATE_PASSWORD: boolean;
   LOADING_VERIFY_CHANGE_EMAIL: boolean;
+  LOADING_UPDATE_PHONE_NUMBER: boolean;
 
   ERROR_ME: ApiErrorType;
   ERROR_UPDATE_USERNAME: ApiErrorType;
   ERROR_UPDATE_EMAIL: ApiErrorType;
   ERROR_UPDATE_PASSWORD: ApiErrorType;
   ERROR_VERIFY_CHANGE_EMAIL: ApiErrorType;
+  ERROR_UPDATE_PHONE_NUMBER: ApiErrorType;
 }
 
 // ================== ME
@@ -121,6 +126,24 @@ export const verifyChangeEmail = createAsyncThunk<
   }
 );
 
+// ================== UPDATE PHONE NUMBER
+export const updatePhoneNumber = createAsyncThunk<
+  IUpdatePhoneNumberResponse,
+  IUpdatePhoneNumber
+>(
+  "/user/change-phone-number",
+  async (data: IUpdatePhoneNumber, { rejectWithValue }) => {
+    try {
+      const res = await updatePhoneNumberApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || t("error_messages.process_failed")
+      );
+    }
+  }
+);
+
 const initialState: UserState = {
   me: null,
 
@@ -129,12 +152,14 @@ const initialState: UserState = {
   LOADING_UPDATE_EMAIL: false,
   LOADING_UPDATE_PASSWORD: false,
   LOADING_VERIFY_CHANGE_EMAIL: false,
+  LOADING_UPDATE_PHONE_NUMBER: false,
 
   ERROR_ME: null,
   ERROR_UPDATE_USERNAME: null,
   ERROR_UPDATE_EMAIL: null,
   ERROR_UPDATE_PASSWORD: null,
   ERROR_VERIFY_CHANGE_EMAIL: null,
+  ERROR_UPDATE_PHONE_NUMBER: null,
 };
 
 const userSlice = createSlice({
@@ -149,6 +174,7 @@ const userSlice = createSlice({
         | "updateEmail"
         | "updatePassword"
         | "verifyChangeEmail"
+        | "updatePhoneNumber"
       >
     ) => {
       switch (action.payload) {
@@ -166,6 +192,9 @@ const userSlice = createSlice({
           break;
         case "verifyChangeEmail":
           state.ERROR_VERIFY_CHANGE_EMAIL = null;
+          break;
+        case "updatePhoneNumber":
+          state.ERROR_UPDATE_PHONE_NUMBER = null;
           break;
         default:
           break;
@@ -245,6 +274,21 @@ const userSlice = createSlice({
       .addCase(verifyChangeEmail.rejected, (state, action) => {
         state.LOADING_VERIFY_CHANGE_EMAIL = false;
         state.ERROR_VERIFY_CHANGE_EMAIL = action.payload as string;
+      })
+
+      // ================== UPDATE PHONE NUMBER
+      .addCase(updatePhoneNumber.fulfilled, (state, action) => {
+        state.LOADING_UPDATE_PHONE_NUMBER = false;
+        state.me!.user.phoneNumber = action.payload.phoneNumber;
+        state.ERROR_UPDATE_PHONE_NUMBER = null;
+      })
+      .addCase(updatePhoneNumber.pending, (state) => {
+        state.LOADING_UPDATE_PHONE_NUMBER = true;
+        state.ERROR_UPDATE_PHONE_NUMBER = null;
+      })
+      .addCase(updatePhoneNumber.rejected, (state, action) => {
+        state.LOADING_UPDATE_PHONE_NUMBER = false;
+        state.ERROR_UPDATE_PHONE_NUMBER = action.payload as string;
       }),
 });
 

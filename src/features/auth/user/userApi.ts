@@ -4,6 +4,8 @@ import {
   IUpdateEmailResponse,
   IUpdatePassword,
   IUpdatePasswordResponse,
+  IUpdatePhoneNumber,
+  IUpdatePhoneNumberResponse,
   IUpdateUsername,
   IUpdateUsernameResponse,
   IVerifyChangeEmail,
@@ -24,3 +26,6 @@ export const updatePasswordApi = (data: IUpdatePassword) =>
 
 export const verifyChangeEmailApi = (data: IVerifyChangeEmail) =>
   axios.patch<IVerifyChangeEmailResponse>("/user/change-email/verify", data);
+
+export const updatePhoneNumberApi = (data: IUpdatePhoneNumber) =>
+  axios.patch<IUpdatePhoneNumberResponse>("/user/change-phone-number", data);

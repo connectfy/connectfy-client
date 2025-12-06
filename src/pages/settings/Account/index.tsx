@@ -31,6 +31,7 @@ import { snack } from "@/utils/snackManager";
 import useBoolean from "@/hooks/useBoolean";
 import VerifyChangeEmail from "./components/Modal/EmailModal/VerifyChangeEmailModal";
 import { useToastError } from "@/hooks/useToastError";
+import PhoneNumberModal from "./components/Modal/PhoneNumberModal";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
@@ -61,11 +62,16 @@ const AccountSettings: FC = () => {
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
   const openAuthThen = (authType: TOKEN_TYPE, next: ChangeModalKey = null) => {
+    const sensitiveForPasswordOnly = [
+      TOKEN_TYPE.CHANGE_PASSWORD,
+      TOKEN_TYPE.CHANGE_EMAIL,
+    ];
+
     if (
-      authType !== TOKEN_TYPE.CHANGE_USERNAME &&
-      user.provider !== PROVIDER.PASSWORD
+      user.provider !== PROVIDER.PASSWORD &&
+      sensitiveForPasswordOnly.includes(authType)
     ) {
-      snack.warning(t("user_messages.google_login_error"), {
+      snack.error(t("user_messages.google_login_error"), {
         autoHideDuration: 3000,
         anchorOrigin: { horizontal: "center", vertical: "bottom" },
       });
@@ -129,6 +135,25 @@ const AccountSettings: FC = () => {
           onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_PASSWORD, "password")}
         >
           {"••••••••"}
+        </AccountActionButton>
+      ),
+    },
+    {
+      id: "phone_number",
+      header: {
+        icon: Phone,
+        title: t("common.phone_number"),
+        subtitle: t("common.update_phone"),
+      },
+      renderContent: () => (
+        <AccountActionButton
+          onClick={() =>
+            openAuthThen(TOKEN_TYPE.CHANGE_PHONE_NUMBER, "phone_number")
+          }
+        >
+          {user.phoneNumber?.fullPhoneNumber
+            ? user.phoneNumber.fullPhoneNumber
+            : t("common.add_phone_number")}
         </AccountActionButton>
       ),
     },
@@ -200,20 +225,6 @@ const AccountSettings: FC = () => {
                 {it.renderContent()}
               </SettingCard>
             ))}
-
-            <SettingCard
-              header={{
-                icon: Phone,
-                title: t("common.phone_number"),
-                subtitle: t("common.update_phone"),
-              }}
-            >
-              <AccountActionButton>
-                {user.phoneNumber?.fullPhoneNumber
-                  ? user.phoneNumber.fullPhoneNumber
-                  : t("common.add_phone_number")}
-              </AccountActionButton>
-            </SettingCard>
 
             <SettingCard
               header={{
@@ -293,18 +304,19 @@ const AccountSettings: FC = () => {
       )}
 
       {openModal === "username" && (
-        <UsernameModal open={true} onClose={closeChangeModal} />
+        <UsernameModal open onClose={closeChangeModal} />
       )}
-      {openModal === "email" && (
-        <EmailModal open={true} onClose={closeChangeModal} />
-      )}
+      {openModal === "email" && <EmailModal open onClose={closeChangeModal} />}
       {openModal === "password" && (
-        <PasswordModal open={true} onClose={closeChangeModal} />
+        <PasswordModal open onClose={closeChangeModal} />
+      )}
+      {openModal === "phone_number" && (
+        <PhoneNumberModal open onClose={closeChangeModal} />
       )}
 
       {verifiedModalOpen && (
         <VerifyChangeEmail
-          open={true}
+          open
           onClose={onVerifiedModalClose}
           isLoading={LOADING_VERIFY_CHANGE_EMAIL}
         />

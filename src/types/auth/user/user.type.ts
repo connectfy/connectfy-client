@@ -1,4 +1,4 @@
-import { PROVIDER, ROLE } from "@/types/enum.types";
+import { PHONE_NUMBER_ACTION, PROVIDER, ROLE } from "@/types/enum.types";
 import { IPhoneNumber } from "../auth/auth.type";
 import { IGeneralSettings } from "../../account/settings/general/general-settings.type";
 import { INotificationSettings } from "../../account/settings/notification/notification-settings.type";
@@ -46,6 +46,12 @@ export interface IVerifyChangeEmail {
   token: string | null;
 }
 
+export interface IUpdatePhoneNumber {
+  token: string | null;
+  action: PHONE_NUMBER_ACTION | null;
+  phoneNumber: IPhoneNumber | null;
+}
+
 export interface IUpdateUsernameResponse extends IUser {}
 
 export interface IUpdateEmailResponse {
@@ -55,3 +61,5 @@ export interface IUpdateEmailResponse {
 export interface IUpdatePasswordResponse extends IUser {}
 
 export interface IVerifyChangeEmailResponse extends IUser {}
+
+export interface IUpdatePhoneNumberResponse extends IUser {}
