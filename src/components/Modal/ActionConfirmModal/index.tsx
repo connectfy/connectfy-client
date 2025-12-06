@@ -10,7 +10,6 @@ interface Props {
   onCancel: Function;
   header: {
     title: string;
-    iconColor: string;
   };
   children?: string | ReactNode;
   cancelBtn: {
@@ -72,12 +71,7 @@ const ActionConfirmModal: FC<Props> = ({
 
           {/* Header Section */}
           <div className="action-confirm-modal__header">
-            <h2
-              className="action-confirm-modal__title"
-              style={{ color: header.iconColor }}
-            >
-              {header.title}
-            </h2>
+            <h2 className="action-confirm-modal__title">{header.title}</h2>
           </div>
 
           {/* Content Section */}

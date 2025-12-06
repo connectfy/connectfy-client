@@ -118,6 +118,12 @@ const GeneralSettings = () => {
     const res = unwrapResult(actionResult);
     if (res) {
       snack.success(t("user_messages.information_updated"));
+
+      if (formik.values.theme !== data?.theme) {
+        formik.setFieldValue("theme", data?.theme);
+        toggleTheme();
+      }
+
       formik.resetForm();
       resetSettingsModal.onClose();
     }
@@ -334,7 +340,6 @@ const GeneralSettings = () => {
         onConfirm={handleResetSettings}
         header={{
           title: t("common.reset_settings_title"),
-          iconColor: "var(--error-color)",
         }}
         cancelBtn={{ title: t("common.cancel") }}
         confirmBtn={{ title: t("common.reset"), color: "var(--error-color)" }}
