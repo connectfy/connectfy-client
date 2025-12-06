@@ -103,10 +103,6 @@
   border: 1px solid var(--primary-color);
 }
 
-.input_root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: var(--border-color);
-}
-
 .input_root.Mui-error .MuiInputLabel-root,
 .input_root .MuiInputLabel-root.Mui-error,
 .input_root .MuiInputLabel-root.Mui-focused.Mui-error {
