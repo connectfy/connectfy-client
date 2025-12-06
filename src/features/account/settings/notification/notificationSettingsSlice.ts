@@ -7,6 +7,7 @@ import { Resource } from "@/types/enum.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { t } from "i18next";
 import { updateNotificationSettingsApi } from "./notificationSettingsAPI";
+import { resetSettings } from "../general/generalSettingsSlice";
 
 export interface NotificationSettingsState {
   data: INotificationSettings | null;
@@ -70,6 +71,11 @@ const notificationSettingsSlice = createSlice({
       .addCase(updateNotificationSettings.rejected, (state, action) => {
         state.LOADING_UPDATE = false;
         state.ERROR_UPDATE = action.payload as string | string[];
+      })
+
+      // =================== RESET SETTINGS
+      .addCase(resetSettings.fulfilled, (state, action) => {
+        state.data = action.payload.notificationSettings;
       }),
 });
 

@@ -3,7 +3,7 @@ import "./index.style.css";
 
 interface Props {
   open: boolean;
-  onClose: () => void;
+  onClose: Function;
   children: ReactNode;
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }

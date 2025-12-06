@@ -23,6 +23,7 @@ import {
 } from "./userApi";
 import { ApiErrorType } from "@/types/api.types";
 import { t } from "i18next";
+import { resetSettings } from "@/features/account/settings/general/generalSettingsSlice";
 
 export interface UserState {
   me: IMe | null;
@@ -200,6 +201,9 @@ const userSlice = createSlice({
           break;
       }
     },
+    updateMe: (state, action: PayloadAction<Partial<IMe>>) => {
+      state.me = { ...state.me, ...(action.payload as IMe) };
+    },
   },
   extraReducers: (builder) =>
     builder
@@ -289,8 +293,16 @@ const userSlice = createSlice({
       .addCase(updatePhoneNumber.rejected, (state, action) => {
         state.LOADING_UPDATE_PHONE_NUMBER = false;
         state.ERROR_UPDATE_PHONE_NUMBER = action.payload as string;
+      })
+
+      // =================== RESET SETTINGS
+      .addCase(resetSettings.fulfilled, (state, action) => {
+        state.me!.settings.generalSettings = action.payload.generalSettings;
+        state.me!.settings.notificationSettings =
+          action.payload.notificationSettings;
+        state.me!.settings.privacySettings = action.payload.privacySettings;
       }),
 });
 
-export const { clearError } = userSlice.actions;
+export const { clearError, updateMe } = userSlice.actions;
 export default userSlice.reducer;

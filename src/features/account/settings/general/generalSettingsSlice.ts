@@ -1,11 +1,15 @@
 import {
   IEditGeneralSettings,
   IGeneralSettings,
+  IResetSettings,
 } from "@/types/account/settings/general/general-settings.type";
 import { ApiErrorType } from "@/types/api.types";
 import { Resource } from "@/types/enum.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { updateGeneralSettingsApi } from "./generalSettingsAPI";
+import {
+  resetSettingsApi,
+  updateGeneralSettingsApi,
+} from "./generalSettingsAPI";
 import { t } from "i18next";
 
 export interface GeneralSettingsState {
@@ -15,9 +19,11 @@ export interface GeneralSettingsState {
 
   LOADING_GET: boolean;
   LOADING_UPDATE: boolean;
+  LOADING_RESET_SETTINGS: boolean;
 
   ERROR_GET: ApiErrorType;
   ERROR_UPDATE: ApiErrorType;
+  ERROR_RESET_SETTINGS: ApiErrorType;
 }
 
 export const updateGeneralSettings = createAsyncThunk<
@@ -37,6 +43,20 @@ export const updateGeneralSettings = createAsyncThunk<
   }
 );
 
+export const resetSettings = createAsyncThunk<IResetSettings>(
+  "/account/settings/general-settings/reset",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await resetSettingsApi();
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || t("error_messages.process_failed")
+      );
+    }
+  }
+);
+
 const initialState: GeneralSettingsState = {
   data: null,
 
@@ -44,9 +64,11 @@ const initialState: GeneralSettingsState = {
 
   LOADING_GET: false,
   LOADING_UPDATE: false,
+  LOADING_RESET_SETTINGS: false,
 
   ERROR_GET: null,
   ERROR_UPDATE: null,
+  ERROR_RESET_SETTINGS: null,
 };
 
 const generalSettingsSlice = createSlice({
@@ -62,6 +84,7 @@ const generalSettingsSlice = createSlice({
     clearError: (state) => {
       state.ERROR_GET = null;
       state.ERROR_UPDATE = null;
+      state.ERROR_RESET_SETTINGS = null;
     },
   },
   extraReducers: (builder) =>
@@ -77,6 +100,19 @@ const generalSettingsSlice = createSlice({
       .addCase(updateGeneralSettings.rejected, (state, action) => {
         state.LOADING_UPDATE = false;
         state.ERROR_UPDATE = action.payload as string | string[];
+      })
+
+      // =================== RESET SETTINGS
+      .addCase(resetSettings.fulfilled, (state, action) => {
+        state.LOADING_RESET_SETTINGS = false;
+        state.data = action.payload.generalSettings;
+      })
+      .addCase(resetSettings.pending, (state) => {
+        state.LOADING_RESET_SETTINGS = true;
+      })
+      .addCase(resetSettings.rejected, (state, action) => {
+        state.LOADING_RESET_SETTINGS = false;
+        state.ERROR_RESET_SETTINGS = action.payload as string | string[];
       }),
 });
 

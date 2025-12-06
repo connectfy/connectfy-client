@@ -1,4 +1,12 @@
-import { Sun, Moon, Globe, Home, Clock, RefreshCw } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Globe,
+  Home,
+  Clock,
+  RefreshCw,
+  TriangleAlert,
+} from "lucide-react";
 import "./index.style.css";
 import { Fragment, useEffect, useState } from "react";
 import CustomSelect from "@/components/CustomSelect";
@@ -20,6 +28,7 @@ import { DATE_FORMAT, Resource, TIME_FORMAT } from "@/types/enum.types";
 import { snack } from "@/utils/snackManager";
 import {
   clearError,
+  resetSettings,
   updateGeneralSettings,
 } from "@/features/account/settings/general/generalSettingsSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -27,16 +36,24 @@ import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/index";
 import { useToastError } from "@/hooks/useToastError";
+import useBoolean from "@/hooks/useBoolean";
+import ActionConfirmModal from "@/components/Modal/ActionConfirmModal";
 
 const GeneralSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const { data, LOADING_UPDATE, ERROR_UPDATE } = useAppSelector(
-    (state) => state[Resource.generalSettings]
-  );
+  const {
+    data,
+    LOADING_UPDATE,
+    ERROR_UPDATE,
+    LOADING_RESET_SETTINGS,
+    ERROR_RESET_SETTINGS,
+  } = useAppSelector((state) => state[Resource.generalSettings]);
   const [selectedTheme, setSelectedTheme] = useState(theme);
+
+  const resetSettingsModal = useBoolean();
 
   const formik = useFormik({
     initialValues: initialState(data!),
@@ -96,8 +113,18 @@ const GeneralSettings = () => {
     cancel();
   };
 
+  const handleResetSettings = async () => {
+    const actionResult = await dispatch(resetSettings());
+    const res = unwrapResult(actionResult);
+    if (res) {
+      snack.success(t("user_messages.information_updated"));
+      formik.resetForm();
+      resetSettingsModal.onClose();
+    }
+  };
+
   useToastError({
-    error: ERROR_UPDATE,
+    error: ERROR_UPDATE || ERROR_RESET_SETTINGS,
     clearErrorAction: clearError,
   });
 
@@ -280,7 +307,10 @@ const GeneralSettings = () => {
                 subtitle: t("common.reset_all_general_settings"),
               }}
             >
-              <button className="general-reset-button">
+              <button
+                className="general-reset-button"
+                onClick={resetSettingsModal.onOpen}
+              >
                 <RefreshCw size={18} />
                 {t("common.reset_settings")}
               </button>
@@ -296,6 +326,35 @@ const GeneralSettings = () => {
         handleDiscardChanges={handleDiscardChanges}
         isLoading={LOADING_UPDATE}
       />
+
+      <ActionConfirmModal
+        open={resetSettingsModal.open}
+        onClose={resetSettingsModal.onClose}
+        onCancel={resetSettingsModal.onClose}
+        onConfirm={handleResetSettings}
+        header={{
+          title: t("common.reset_settings_title"),
+          iconColor: "var(--error-color)",
+        }}
+        cancelBtn={{ title: t("common.cancel") }}
+        confirmBtn={{ title: t("common.reset"), color: "var(--error-color)" }}
+        icon={{
+          content: TriangleAlert,
+          color: "var(--error-color)",
+        }}
+        isLoading={LOADING_RESET_SETTINGS}
+      >
+        <div className="reset-settings-modal-content">
+          <p className="reset-settings-modal-subtitle">
+            {t("common.reset_settings_subtitle")}
+          </p>
+          <ul className="reset-settings-modal-list">
+            <li>{t("common.general_settings_reset")}</li>
+            <li>{t("common.privacy_settings")}</li>
+            <li>{t("common.notification_settings")}</li>
+          </ul>
+        </div>
+      </ActionConfirmModal>
     </Fragment>
   );
 };
