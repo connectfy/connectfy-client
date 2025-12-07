@@ -17,6 +17,8 @@ import {
   IRefreshResponse,
   IAuthenticateUserResponse,
   IAuthenticateUser,
+  IDeleteAccount,
+  IDeleteAccountResponse,
 } from "@/types/auth/auth/auth.type";
 import axios from "@/helpers/instance";
 
@@ -54,3 +56,6 @@ export const refreshApi = () =>
 
 export const authenticateUserApi = (data: IAuthenticateUser) =>
   axios.post<IAuthenticateUserResponse>("/auth/authenticate-user", data);
+
+export const deleteAccountApi = (data: IDeleteAccount) =>
+  axios.post<IDeleteAccountResponse>("/auth/delete-account", data);

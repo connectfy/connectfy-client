@@ -1,4 +1,5 @@
 import {
+  DELETE_REASON,
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   GENDER,
   IDENTIFIER_TYPE,
@@ -128,4 +129,14 @@ export interface IAuthenticateUser {
 export interface IAuthenticateUserResponse {
   statusCode: number;
   token: string;
+}
+
+export interface IDeleteAccount {
+  token: string | null;
+  reason: DELETE_REASON;
+  otherReason: string | null;
+}
+
+export interface IDeleteAccountResponse {
+  statusCode: number;
 }

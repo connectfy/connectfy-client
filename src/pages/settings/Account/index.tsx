@@ -36,6 +36,7 @@ import PhoneNumberModal from "./components/Modal/PhoneNumberModal";
 import { DDMMMYYYY, showDateWithHour } from "@/utils/formatDate";
 import { logout } from "@/features/auth/auth/authSlice";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal";
+import DeleteAccountModal from "./components/Modal/DeleteAccountModal";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
@@ -307,7 +308,12 @@ const AccountSettings: FC = () => {
                   </span>
                   <ChevronRight size={18} />
                 </button>
-                <button className="account-danger-button delete">
+                <button
+                  className="account-danger-button delete"
+                  onClick={() =>
+                    openAuthThen(TOKEN_TYPE.DELETE_ACCOUNT, "delete_account")
+                  }
+                >
                   <span>
                     <Trash2 size={18} />
                     {t("common.delete_account")}
@@ -356,6 +362,10 @@ const AccountSettings: FC = () => {
           onClose={onVerifiedModalClose}
           isLoading={LOADING_VERIFY_CHANGE_EMAIL}
         />
+      )}
+
+      {openModal === "delete_account" && (
+        <DeleteAccountModal open onClose={closeChangeModal} />
       )}
 
       {logoutModalOpen && (

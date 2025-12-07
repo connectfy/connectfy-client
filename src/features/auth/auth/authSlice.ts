@@ -22,9 +22,12 @@ import {
   IRefreshResponse,
   IAuthenticateUserResponse,
   IAuthenticateUser,
+  IDeleteAccount,
+  IDeleteAccountResponse,
 } from "@/types/auth/auth/auth.type";
 import {
   authenticateUserApi,
+  deleteAccountApi,
   faceIdApi,
   forgotPasswordApi,
   googleLoginApi,
@@ -62,6 +65,7 @@ export interface AuthState {
   LOADING_REFRESH: boolean;
   LOADING_AUTHENTICATE_USER: boolean;
   LOADING_LOGOUT: boolean;
+  LOADING_DELETE_ACCOUNT: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -75,6 +79,7 @@ export interface AuthState {
   ERROR_REFRESH: ApiErrorType;
   ERROR_AUTHENTICATE_USER: ApiErrorType;
   ERROR_LOGOUT: ApiErrorType;
+  ERROR_DELETE_ACCOUNT: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -263,6 +268,20 @@ export const authenticateUser = createAsyncThunk<
   }
 );
 
+export const deleteAccount = createAsyncThunk<
+  IDeleteAccountResponse,
+  IDeleteAccount
+>("/auth/delete-account", async (data: IDeleteAccount, { rejectWithValue }) => {
+  try {
+    const res = await deleteAccountApi(data);
+    return res.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data.message || t("error_messages.process_failed")
+    );
+  }
+});
+
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
   error: null,
@@ -285,6 +304,7 @@ const initialState: AuthState = {
   LOADING_REFRESH: false,
   LOADING_AUTHENTICATE_USER: false,
   LOADING_LOGOUT: false,
+  LOADING_DELETE_ACCOUNT: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -298,6 +318,7 @@ const initialState: AuthState = {
   ERROR_REFRESH: null,
   ERROR_AUTHENTICATE_USER: null,
   ERROR_LOGOUT: null,
+  ERROR_DELETE_ACCOUNT: null,
 };
 
 const authSlice = createSlice({
@@ -339,6 +360,7 @@ const authSlice = createSlice({
         | "resetPassword"
         | "forgotPassword"
         | "authenticateUser"
+        | "deleteAccount"
       >
     ) => {
       switch (action.payload) {
@@ -361,6 +383,9 @@ const authSlice = createSlice({
           break;
         case "authenticateUser":
           state.ERROR_AUTHENTICATE_USER = null;
+          break;
+        case "deleteAccount":
+          state.ERROR_DELETE_ACCOUNT = null;
           break;
         default:
           break;
@@ -523,6 +548,19 @@ const authSlice = createSlice({
       .addCase(logout.rejected, (state, action) => {
         state.LOADING_LOGOUT = false;
         state.ERROR_LOGOUT = action.payload as string | string[];
+      })
+
+      // =================== DELETE ACCOUNT
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.LOADING_DELETE_ACCOUNT = false;
+        state.access_token = null;
+      })
+      .addCase(deleteAccount.pending, (state) => {
+        state.LOADING_DELETE_ACCOUNT = true;
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
+        state.LOADING_DELETE_ACCOUNT = false;
+        state.ERROR_DELETE_ACCOUNT = action.payload as string | string[];
       });
   },
 });
