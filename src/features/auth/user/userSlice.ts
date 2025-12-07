@@ -181,6 +181,7 @@ const userSlice = createSlice({
         | "updatePassword"
         | "verifyChangeEmail"
         | "updatePhoneNumber"
+        | "logout"
       >
     ) => {
       switch (action.payload) {

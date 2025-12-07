@@ -15,23 +15,17 @@ type AuthType = {
 
 export function RequireAuth({ children }: AuthType) {
   const dispatch = useAppDispatch();
-  const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const location = useLocation();
 
-  // Sadəcə token olub-olmadığını yoxlayırıq
-  // Vaxtı bitibsə, axios interceptor refresh edəcək
-  if (!access_token) {
-    return (
-      <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
-    );
-  }
+  // ✅ Əvvəlcə bütün hooks-ları çağırın
+  const { access_token } = useAppSelector((state) => state[Resource.auth]);
+  const { me: userData } = useAppSelector((state) => state[Resource.user]);
 
   useEffect(() => {
-    if (!userData) {
+    if (access_token && !userData) {
       dispatch(me());
     }
-  }, [dispatch, userData]);
+  }, [dispatch, userData, access_token]);
 
   useEffect(() => {
     if (userData?.settings?.generalSettings) {
@@ -41,17 +35,27 @@ export function RequireAuth({ children }: AuthType) {
     }
   }, [userData, dispatch]);
 
+  // ✅ Sonra conditional logic
+  if (!access_token) {
+    return (
+      <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
+    );
+  }
+
   return <>{children}</>;
 }
 
 export function InsideProfile({ children }: AuthType) {
+  const location = useLocation();
+
+  // ✅ Bütün hooks-lar birlikdə
   const { access_token } = useAppSelector((state) => state[Resource.auth]);
   const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const { data: generalSettings } = useAppSelector(
     (state) => state[Resource.generalSettings]
   );
-  const location = useLocation();
 
+  // ✅ Conditional logic sonunda
   if (access_token && userData) {
     const startup =
       userData?.settings?.generalSettings?.startupPage ??
@@ -70,12 +74,14 @@ export function InsideProfile({ children }: AuthType) {
 
 export function RedirectMain() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // ✅ Bütün hooks-lar birlikdə
   const { access_token } = useAppSelector((state) => state[Resource.auth]);
   const { me: userData } = useAppSelector((state) => state[Resource.user]);
   const { data: generalSettings } = useAppSelector(
     (state) => state[Resource.generalSettings]
   );
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!access_token) {

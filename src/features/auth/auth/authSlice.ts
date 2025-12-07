@@ -61,6 +61,7 @@ export interface AuthState {
   LOADING_IS_VALID_TOKEN: boolean;
   LOADING_REFRESH: boolean;
   LOADING_AUTHENTICATE_USER: boolean;
+  LOADING_LOGOUT: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -73,6 +74,7 @@ export interface AuthState {
   ERROR_IS_VALID_TOKEN: ApiErrorType;
   ERROR_REFRESH: ApiErrorType;
   ERROR_AUTHENTICATE_USER: ApiErrorType;
+  ERROR_LOGOUT: ApiErrorType;
 }
 
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
@@ -282,6 +284,7 @@ const initialState: AuthState = {
   LOADING_IS_VALID_TOKEN: false,
   LOADING_REFRESH: false,
   LOADING_AUTHENTICATE_USER: false,
+  LOADING_LOGOUT: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -294,6 +297,7 @@ const initialState: AuthState = {
   ERROR_IS_VALID_TOKEN: null,
   ERROR_REFRESH: null,
   ERROR_AUTHENTICATE_USER: null,
+  ERROR_LOGOUT: null,
 };
 
 const authSlice = createSlice({
@@ -506,6 +510,19 @@ const authSlice = createSlice({
       .addCase(authenticateUser.rejected, (state, action) => {
         state.LOADING_AUTHENTICATE_USER = false;
         state.ERROR_AUTHENTICATE_USER = action.payload as string | string[];
+      })
+
+      // =================== LOGOUT
+      .addCase(logout.fulfilled, (state) => {
+        state.LOADING_LOGOUT = false;
+        state.access_token = null;
+      })
+      .addCase(logout.pending, (state) => {
+        state.LOADING_LOGOUT = true;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.LOADING_LOGOUT = false;
+        state.ERROR_LOGOUT = action.payload as string | string[];
       });
   },
 });

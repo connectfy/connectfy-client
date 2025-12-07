@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import {
   User,
   Mail,
@@ -10,6 +10,7 @@ import {
   Clock,
   AlertTriangle,
   LogOutIcon,
+  TriangleAlert,
 } from "lucide-react";
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
@@ -33,6 +34,8 @@ import VerifyChangeEmail from "./components/Modal/EmailModal/VerifyChangeEmailMo
 import { useToastError } from "@/hooks/useToastError";
 import PhoneNumberModal from "./components/Modal/PhoneNumberModal";
 import { DDMMMYYYY, showDateWithHour } from "@/utils/formatDate";
+import { logout } from "@/features/auth/auth/authSlice";
+import ActionConfirmModal from "@/components/Modal/ActionConfirmModal";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
@@ -44,6 +47,10 @@ const AccountSettings: FC = () => {
 
   const { me, LOADING_VERIFY_CHANGE_EMAIL, ERROR_VERIFY_CHANGE_EMAIL } =
     useAppSelector((state) => state[Resource.user]);
+  const { LOADING_LOGOUT, ERROR_LOGOUT } = useAppSelector(
+    (state) => state[Resource.auth]
+  );
+
   const { user } = me!;
 
   const [authModal, setAuthModal] = useState<{
@@ -58,6 +65,12 @@ const AccountSettings: FC = () => {
     open: verifiedModalOpen,
     onClose: onVerifiedModalClose,
     onOpen: onVerifiedOpen,
+  } = useBoolean();
+
+  const {
+    open: logoutModalOpen,
+    onClose: onLogoutModalClose,
+    onOpen: onLogoutOpen,
   } = useBoolean();
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
@@ -92,6 +105,16 @@ const AccountSettings: FC = () => {
   };
 
   const closeChangeModal = () => setOpenModal(null);
+
+  const handleLogout = async () => {
+    const actionResult = await dispatch(logout());
+    const res = unwrapResult(actionResult);
+
+    if (res) {
+      navigate(ROUTER.AUTH.MAIN);
+      localStorage.removeItem("access_token");
+    }
+  };
 
   const items = [
     {
@@ -160,22 +183,14 @@ const AccountSettings: FC = () => {
     },
   ];
 
-  const showLastSeen = useCallback(() => {
-    return (
-      <p className="account-info-item-value">
-        <Clock size={16} className="account-info-item-icon" />
-        {showDateWithHour(
-          me!.account.lastSeen,
-          me!.settings.generalSettings.timeZone.dateFormat,
-          me!.settings.generalSettings.timeZone.timeFormat
-        )}
-      </p>
-    );
-  }, [showDateWithHour, me]);
-
   useToastError({
     error: ERROR_VERIFY_CHANGE_EMAIL,
     clearErrorAction: () => clearError("verifyChangeEmail"),
+  });
+
+  useToastError({
+    error: ERROR_LOGOUT,
+    clearErrorAction: () => clearError("logout"),
   });
 
   useEffect(() => {
@@ -261,7 +276,14 @@ const AccountSettings: FC = () => {
                   <p className="account-info-item-label">
                     {t("common.last_login")}
                   </p>
-                  {showLastSeen()}
+                  <p className="account-info-item-value">
+                    <Clock size={16} className="account-info-item-icon" />
+                    {showDateWithHour(
+                      me!.account.lastSeen,
+                      me!.settings.generalSettings.timeZone.dateFormat,
+                      me!.settings.generalSettings.timeZone.timeFormat
+                    )}
+                  </p>
                 </div>
               </div>
             </SettingCard>
@@ -292,7 +314,10 @@ const AccountSettings: FC = () => {
                   </span>
                   <ChevronRight size={18} />
                 </button>
-                <button className="account-danger-button delete">
+                <button
+                  className="account-danger-button delete"
+                  onClick={onLogoutOpen}
+                >
                   <span>
                     <LogOutIcon size={18} />
                     {t("common.logout_account")}
@@ -331,6 +356,30 @@ const AccountSettings: FC = () => {
           onClose={onVerifiedModalClose}
           isLoading={LOADING_VERIFY_CHANGE_EMAIL}
         />
+      )}
+
+      {logoutModalOpen && (
+        <ActionConfirmModal
+          open={logoutModalOpen}
+          onClose={onLogoutModalClose}
+          onCancel={onLogoutModalClose}
+          onConfirm={handleLogout}
+          header={{
+            title: t("common.logout"),
+          }}
+          cancelBtn={{ title: t("common.cancel") }}
+          confirmBtn={{
+            title: t("common.logout"),
+            color: "var(--error-color)",
+          }}
+          icon={{
+            content: TriangleAlert,
+            color: "var(--error-color)",
+          }}
+          isLoading={LOADING_LOGOUT}
+        >
+          {t("common.logout_desc")}
+        </ActionConfirmModal>
       )}
     </Fragment>
   );
