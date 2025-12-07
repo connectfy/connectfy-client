@@ -23,7 +23,12 @@ import {
 } from "./userApi";
 import { ApiErrorType } from "@/types/api.types";
 import { t } from "i18next";
-import { resetSettings } from "@/features/account/settings/general/generalSettingsSlice";
+import {
+  resetSettings,
+  updateGeneralSettings,
+} from "@/features/account/settings/general/generalSettingsSlice";
+import { updatePrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
+import { updateNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
 
 export interface UserState {
   me: IMe | null;
@@ -301,6 +306,21 @@ const userSlice = createSlice({
         state.me!.settings.notificationSettings =
           action.payload.notificationSettings;
         state.me!.settings.privacySettings = action.payload.privacySettings;
+      })
+
+      // =================== GENERAL SETTINGS
+      .addCase(updateGeneralSettings.fulfilled, (state, action) => {
+        state.me!.settings.generalSettings = action.payload;
+      })
+
+      // =================== PRIVACY SETTINGS
+      .addCase(updatePrivacySettings.fulfilled, (state, action) => {
+        state.me!.settings.privacySettings = action.payload;
+      })
+
+      // =================== NOTIFICATION SETTINGS
+      .addCase(updateNotificationSettings.fulfilled, (state, action) => {
+        state.me!.settings.notificationSettings = action.payload;
       }),
 });
 

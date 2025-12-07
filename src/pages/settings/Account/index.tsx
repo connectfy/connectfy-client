@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import {
   User,
   Mail,
@@ -32,6 +32,7 @@ import useBoolean from "@/hooks/useBoolean";
 import VerifyChangeEmail from "./components/Modal/EmailModal/VerifyChangeEmailModal";
 import { useToastError } from "@/hooks/useToastError";
 import PhoneNumberModal from "./components/Modal/PhoneNumberModal";
+import { DDMMMYYYY, showDateWithHour } from "@/utils/formatDate";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
@@ -159,6 +160,19 @@ const AccountSettings: FC = () => {
     },
   ];
 
+  const showLastSeen = useCallback(() => {
+    return (
+      <p className="account-info-item-value">
+        <Clock size={16} className="account-info-item-icon" />
+        {showDateWithHour(
+          me!.account.lastSeen,
+          me!.settings.generalSettings.timeZone.dateFormat,
+          me!.settings.generalSettings.timeZone.timeFormat
+        )}
+      </p>
+    );
+  }, [showDateWithHour, me]);
+
   useToastError({
     error: ERROR_VERIFY_CHANGE_EMAIL,
     clearErrorAction: () => clearError("verifyChangeEmail"),
@@ -240,17 +254,14 @@ const AccountSettings: FC = () => {
                   </p>
                   <p className="account-info-item-value">
                     <Calendar size={16} className="account-info-item-icon" />
-                    15 Yanvar 2024
+                    {DDMMMYYYY(user.createdAt)}
                   </p>
                 </div>
                 <div className="account-info-item">
                   <p className="account-info-item-label">
                     {t("common.last_login")}
                   </p>
-                  <p className="account-info-item-value">
-                    <Clock size={16} className="account-info-item-icon" />2{" "}
-                    {t("common.hours_ago")}
-                  </p>
+                  {showLastSeen()}
                 </div>
               </div>
             </SettingCard>

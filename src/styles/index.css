@@ -1,6 +1,10 @@
 @import "variables.css";
 @import "typography.css";
 
+* {
+  user-select: none;
+}
+
 body {
   margin: 0;
   padding: 0;
