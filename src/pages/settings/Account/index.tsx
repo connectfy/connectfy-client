@@ -112,8 +112,9 @@ const AccountSettings: FC = () => {
     const res = unwrapResult(actionResult);
 
     if (res) {
-      navigate(ROUTER.AUTH.MAIN);
       localStorage.removeItem("access_token");
+      navigate(ROUTER.AUTH.MAIN);
+      snack.success(t("user_messages.logout_successfull"));
     }
   };
 
