@@ -1,5 +1,5 @@
 import { Resource } from "../types/enum.types";
-import { configureStore, Middleware } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
 
 // Auth
 import authReducer, { logout } from "@/features/auth/auth/authSlice";
@@ -10,6 +10,23 @@ import userReducer from "@/features/auth/user/userSlice";
 import generalSettingsReducer from "@/features/account/settings/general/generalSettingsSlice";
 import privacySettingsReducer from "@/features/account/settings/privacy/privacySettingsSlice";
 import notificationSettingsReducer from "@/features/account/settings/notification/notificationSettingsSlice";
+
+const appReducer = combineReducers({
+  // Auth
+  [Resource.auth]: authReducer,
+  [Resource.user]: userReducer,
+
+  // Account
+  [Resource.generalSettings]: generalSettingsReducer,
+  [Resource.privacySettings]: privacySettingsReducer,
+  [Resource.notificationSettings]: notificationSettingsReducer,
+});
+
+const rootReducer = (state: any, action: any) => {
+  if (action.type === "RESET_APP") state = undefined;
+
+  return appReducer(state, action);
+};
 
 export const resetMiddleware: Middleware =
   (storeAPI) => (next) => (action: any) => {
@@ -25,17 +42,7 @@ export const resetMiddleware: Middleware =
   };
 
 export const store = configureStore({
-  reducer: {
-    // Auth
-    [Resource.auth]: authReducer,
-    [Resource.user]: userReducer,
-
-    // Account
-    // [Resource.account]: accountReducer,
-    [Resource.generalSettings]: generalSettingsReducer,
-    [Resource.privacySettings]: privacySettingsReducer,
-    [Resource.notificationSettings]: notificationSettingsReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(resetMiddleware),
   devTools: process.env.NODE_ENV !== "production",

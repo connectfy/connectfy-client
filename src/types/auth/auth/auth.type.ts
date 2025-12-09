@@ -140,3 +140,11 @@ export interface IDeleteAccount {
 export interface IDeleteAccountResponse {
   statusCode: number;
 }
+
+export interface IRestoreAccount {
+  token: string | null;
+}
+
+export interface IRestoreAccountResponse {
+  access_token: string;
+}

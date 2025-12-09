@@ -24,6 +24,8 @@ import {
   IAuthenticateUser,
   IDeleteAccount,
   IDeleteAccountResponse,
+  IRestoreAccountResponse,
+  IRestoreAccount,
 } from "@/types/auth/auth/auth.type";
 import {
   authenticateUserApi,
@@ -37,6 +39,7 @@ import {
   logoutApi,
   refreshApi,
   resetPasswordApi,
+  restoreAccountApi,
   signupApi,
   signupVerifyApi,
 } from "./authAPI";
@@ -66,6 +69,7 @@ export interface AuthState {
   LOADING_AUTHENTICATE_USER: boolean;
   LOADING_LOGOUT: boolean;
   LOADING_DELETE_ACCOUNT: boolean;
+  LOADING_RESTORE_ACCOUNT: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -80,8 +84,10 @@ export interface AuthState {
   ERROR_AUTHENTICATE_USER: ApiErrorType;
   ERROR_LOGOUT: ApiErrorType;
   ERROR_DELETE_ACCOUNT: ApiErrorType;
+  ERROR_RESTORE_ACCOUNT: ApiErrorType;
 }
 
+// ======================== LOGIN
 export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
   "/auth/login",
   async (data: ILoginForm, { rejectWithValue }) => {
@@ -96,6 +102,7 @@ export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
   }
 );
 
+// ======================== SIGNUP
 export const signup = createAsyncThunk<
   ISignupResponse,
   Omit<ISignupForm, "confirm">
@@ -113,6 +120,7 @@ export const signup = createAsyncThunk<
   }
 );
 
+// ======================== VERIFY SIGNUP
 export const signupVerify = createAsyncThunk<
   ISignupVerifyResponse,
   ISignupVerifyForm
@@ -130,6 +138,7 @@ export const signupVerify = createAsyncThunk<
   }
 );
 
+// ======================== FORGOT PASSWORD
 export const forgotPassword = createAsyncThunk<
   IForgotPasswordResponse,
   IForgotPasswordForm
@@ -147,6 +156,7 @@ export const forgotPassword = createAsyncThunk<
   }
 );
 
+// ======================== RESET PASSWORD
 export const resetPassword = createAsyncThunk<
   IResetPasswordResponse,
   IResetPasswordForm
@@ -164,6 +174,7 @@ export const resetPassword = createAsyncThunk<
   }
 );
 
+// ======================== LOGOUT
 export const logout = createAsyncThunk<ILogoutResponse>(
   "/auth/logout",
   async (_, { rejectWithValue }) => {
@@ -178,6 +189,7 @@ export const logout = createAsyncThunk<ILogoutResponse>(
   }
 );
 
+// ======================== GOOGLE LOGIN
 export const googleLogin = createAsyncThunk<ILoginResponse, IGoogleLoginForm>(
   "/auth/google/login",
   async (data: IGoogleLoginForm, { rejectWithValue }) => {
@@ -192,6 +204,7 @@ export const googleLogin = createAsyncThunk<ILoginResponse, IGoogleLoginForm>(
   }
 );
 
+// ======================== GOOGLE SIGNUP
 export const googleSignup = createAsyncThunk<
   ISignupVerifyResponse,
   IGoogleSignupForm
@@ -209,6 +222,7 @@ export const googleSignup = createAsyncThunk<
   }
 );
 
+// ======================== FACE ID
 export const faceId = createAsyncThunk<ILoginResponse, IFaceIdForm>(
   "/auth/face-descriptor",
   async (data: IFaceIdForm, { rejectWithValue }) => {
@@ -223,6 +237,7 @@ export const faceId = createAsyncThunk<ILoginResponse, IFaceIdForm>(
   }
 );
 
+// ======================== VALIDATE TOKEN
 export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
   "/auth/is-valid-token",
   async (data, { rejectWithValue }) => {
@@ -237,6 +252,7 @@ export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
   }
 );
 
+// ======================== REFRESH
 export const refresh = createAsyncThunk<IRefreshResponse>(
   "/auth/refresh",
   async (_, { rejectWithValue }) => {
@@ -251,6 +267,7 @@ export const refresh = createAsyncThunk<IRefreshResponse>(
   }
 );
 
+// ======================== AUTHENTICATE USER
 export const authenticateUser = createAsyncThunk<
   IAuthenticateUserResponse,
   IAuthenticateUser
@@ -268,6 +285,7 @@ export const authenticateUser = createAsyncThunk<
   }
 );
 
+// ======================== DELETE ACCOUNT
 export const deleteAccount = createAsyncThunk<
   IDeleteAccountResponse,
   IDeleteAccount
@@ -281,6 +299,24 @@ export const deleteAccount = createAsyncThunk<
     );
   }
 });
+
+// ======================== RESTORE ACCOUNT
+export const restoreAccount = createAsyncThunk<
+  IRestoreAccountResponse,
+  IRestoreAccount
+>(
+  "/auth/restore-account",
+  async (data: IRestoreAccount, { rejectWithValue }) => {
+    try {
+      const res = await restoreAccountApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data.message || t("error_messages.process_failed")
+      );
+    }
+  }
+);
 
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
@@ -305,6 +341,7 @@ const initialState: AuthState = {
   LOADING_AUTHENTICATE_USER: false,
   LOADING_LOGOUT: false,
   LOADING_DELETE_ACCOUNT: false,
+  LOADING_RESTORE_ACCOUNT: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -319,6 +356,7 @@ const initialState: AuthState = {
   ERROR_AUTHENTICATE_USER: null,
   ERROR_LOGOUT: null,
   ERROR_DELETE_ACCOUNT: null,
+  ERROR_RESTORE_ACCOUNT: null,
 };
 
 const authSlice = createSlice({
@@ -361,6 +399,7 @@ const authSlice = createSlice({
         | "forgotPassword"
         | "authenticateUser"
         | "deleteAccount"
+        | "restoreAccount"
       >
     ) => {
       switch (action.payload) {
@@ -386,6 +425,9 @@ const authSlice = createSlice({
           break;
         case "deleteAccount":
           state.ERROR_DELETE_ACCOUNT = null;
+          break;
+        case "restoreAccount":
+          state.ERROR_RESTORE_ACCOUNT = null;
           break;
         default:
           break;
@@ -561,6 +603,20 @@ const authSlice = createSlice({
       .addCase(deleteAccount.rejected, (state, action) => {
         state.LOADING_DELETE_ACCOUNT = false;
         state.ERROR_DELETE_ACCOUNT = action.payload as string | string[];
+      })
+
+      // =================== RESTORE ACCOUNT
+      .addCase(restoreAccount.fulfilled, (state, action) => {
+        state.LOADING_RESTORE_ACCOUNT = false;
+        state.access_token = action.payload.access_token;
+        localStorage.setItem("access_token", action.payload.access_token);
+      })
+      .addCase(restoreAccount.pending, (state) => {
+        state.LOADING_RESTORE_ACCOUNT = true;
+      })
+      .addCase(restoreAccount.rejected, (state, action) => {
+        state.LOADING_RESTORE_ACCOUNT = false;
+        state.ERROR_RESTORE_ACCOUNT = action.payload as string | string[];
       });
   },
 });

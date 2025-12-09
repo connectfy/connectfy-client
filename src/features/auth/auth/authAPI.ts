@@ -19,6 +19,8 @@ import {
   IAuthenticateUser,
   IDeleteAccount,
   IDeleteAccountResponse,
+  IRestoreAccount,
+  IRestoreAccountResponse,
 } from "@/types/auth/auth/auth.type";
 import axios from "@/helpers/instance";
 
@@ -59,3 +61,6 @@ export const authenticateUserApi = (data: IAuthenticateUser) =>
 
 export const deleteAccountApi = (data: IDeleteAccount) =>
   axios.post<IDeleteAccountResponse>("/auth/delete-account", data);
+
+export const restoreAccountApi = (data: IRestoreAccount) =>
+  axios.post<IRestoreAccountResponse>("/auth/restore-account", data);
