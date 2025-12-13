@@ -25,7 +25,15 @@ import UsernameModal from "./components/Modal/UsernameModal";
 import EmailModal from "./components/Modal/EmailModal/ChangeEmailModal";
 import PasswordModal from "./components/Modal/PasswordModal";
 import { ChangeModalKey } from "@/types/account/settings/account/account-settings.type";
-import { clearError, verifyChangeEmail } from "@/features/auth/user/userSlice";
+import {
+  clearError,
+  clearMe,
+  verifyChangeEmail,
+} from "@/features/auth/user/userSlice";
+import {
+  clearError as clearAuthError,
+  deactivateAccount,
+} from "@/features/auth/auth/authSlice";
 import { jwtDecode } from "jwt-decode";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/utils/snackManager";
@@ -48,9 +56,13 @@ const AccountSettings: FC = () => {
 
   const { me, LOADING_VERIFY_CHANGE_EMAIL, ERROR_VERIFY_CHANGE_EMAIL } =
     useAppSelector((state) => state[Resource.user]);
-  const { LOADING_LOGOUT, ERROR_LOGOUT } = useAppSelector(
-    (state) => state[Resource.auth]
-  );
+  const {
+    authToken,
+    LOADING_LOGOUT,
+    ERROR_LOGOUT,
+    LOADING_DEACTIVATE_ACCOUNT,
+    ERROR_DEACTIVATE_ACCOUNT,
+  } = useAppSelector((state) => state[Resource.auth]);
 
   const { user } = me!;
 
@@ -112,9 +124,28 @@ const AccountSettings: FC = () => {
     const res = unwrapResult(actionResult);
 
     if (res) {
+      localStorage.setItem("app-theme", me!.settings.generalSettings.theme);
+      localStorage.setItem("lang", me!.settings.generalSettings.language);
       localStorage.removeItem("access_token");
+      dispatch(clearMe());
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.logout_successfull"));
+    }
+  };
+
+  const handleDeactivateAccount = async () => {
+    const actionResult = await dispatch(
+      deactivateAccount({ token: authToken })
+    );
+    const res = unwrapResult(actionResult);
+
+    if (res) {
+      localStorage.setItem("app-theme", me!.settings.generalSettings.theme);
+      localStorage.setItem("lang", me!.settings.generalSettings.language);
+      localStorage.removeItem("access_token");
+      dispatch(clearMe());
+      navigate(ROUTER.AUTH.MAIN);
+      snack.success(t("user_messages.account_deactivated"));
     }
   };
 
@@ -193,6 +224,11 @@ const AccountSettings: FC = () => {
   useToastError({
     error: ERROR_LOGOUT,
     clearErrorAction: () => clearError("logout"),
+  });
+
+  useToastError({
+    error: ERROR_DEACTIVATE_ACCOUNT,
+    clearErrorAction: () => clearAuthError("deactivateAccount"),
   });
 
   useEffect(() => {
@@ -302,7 +338,15 @@ const AccountSettings: FC = () => {
               }}
             >
               <div className="account-danger-actions">
-                <button className="account-danger-button deactivate">
+                <button
+                  className="account-danger-button deactivate"
+                  onClick={() =>
+                    openAuthThen(
+                      TOKEN_TYPE.DEACTIVATE_ACCOUNT,
+                      "deactivate_account"
+                    )
+                  }
+                >
                   <span>
                     <LogOutIcon size={18} />
                     {t("common.deactivate_account")}
@@ -367,6 +411,30 @@ const AccountSettings: FC = () => {
 
       {openModal === "delete_account" && (
         <DeleteAccountModal open onClose={closeChangeModal} />
+      )}
+
+      {openModal === "deactivate_account" && (
+        <ActionConfirmModal
+          open
+          onClose={closeChangeModal}
+          onCancel={closeChangeModal}
+          onConfirm={handleDeactivateAccount}
+          header={{
+            title: t("common.deactivate_account"),
+          }}
+          cancelBtn={{ title: t("common.cancel") }}
+          confirmBtn={{
+            title: t("common.confirm"),
+            color: "var(--error-color)",
+          }}
+          icon={{
+            content: TriangleAlert,
+            color: "var(--error-color)",
+          }}
+          isLoading={LOADING_DEACTIVATE_ACCOUNT}
+        >
+          {t("common.deactivate_account_desc")}
+        </ActionConfirmModal>
       )}
 
       {logoutModalOpen && (

@@ -4,4 +4,5 @@ export type ChangeModalKey =
   | "password"
   | "phone_number"
   | "delete_account"
+  | "deactivate_account"
   | null;

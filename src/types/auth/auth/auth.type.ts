@@ -148,3 +148,11 @@ export interface IRestoreAccount {
 export interface IRestoreAccountResponse {
   access_token: string;
 }
+
+export interface IDeactivateAccount {
+  token: string | null;
+}
+
+export interface IDeactivateAccountResponse {
+  statusCode: number;
+}

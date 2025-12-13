@@ -26,9 +26,12 @@ import {
   IDeleteAccountResponse,
   IRestoreAccountResponse,
   IRestoreAccount,
+  IDeactivateAccountResponse,
+  IDeactivateAccount,
 } from "@/types/auth/auth/auth.type";
 import {
   authenticateUserApi,
+  deactivateAccountApi,
   deleteAccountApi,
   faceIdApi,
   forgotPasswordApi,
@@ -70,6 +73,7 @@ export interface AuthState {
   LOADING_LOGOUT: boolean;
   LOADING_DELETE_ACCOUNT: boolean;
   LOADING_RESTORE_ACCOUNT: boolean;
+  LOADING_DEACTIVATE_ACCOUNT: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -85,6 +89,7 @@ export interface AuthState {
   ERROR_LOGOUT: ApiErrorType;
   ERROR_DELETE_ACCOUNT: ApiErrorType;
   ERROR_RESTORE_ACCOUNT: ApiErrorType;
+  ERROR_DEACTIVATE_ACCOUNT: ApiErrorType;
 }
 
 // ======================== LOGIN
@@ -318,6 +323,24 @@ export const restoreAccount = createAsyncThunk<
   }
 );
 
+// ======================== DEACTIVATE ACCOUNT
+export const deactivateAccount = createAsyncThunk<
+  IDeactivateAccountResponse,
+  IDeactivateAccount
+>(
+  "/auth/deactivate-account",
+  async (data: IDeactivateAccount, { rejectWithValue }) => {
+    try {
+      const res = await deactivateAccountApi(data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data.message || t("error_messages.process_failed")
+      );
+    }
+  }
+);
+
 const initialState: AuthState = {
   access_token: localStorage.getItem("access_token"),
   error: null,
@@ -342,6 +365,7 @@ const initialState: AuthState = {
   LOADING_LOGOUT: false,
   LOADING_DELETE_ACCOUNT: false,
   LOADING_RESTORE_ACCOUNT: false,
+  LOADING_DEACTIVATE_ACCOUNT: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -357,6 +381,7 @@ const initialState: AuthState = {
   ERROR_LOGOUT: null,
   ERROR_DELETE_ACCOUNT: null,
   ERROR_RESTORE_ACCOUNT: null,
+  ERROR_DEACTIVATE_ACCOUNT: null,
 };
 
 const authSlice = createSlice({
@@ -400,6 +425,7 @@ const authSlice = createSlice({
         | "authenticateUser"
         | "deleteAccount"
         | "restoreAccount"
+        | "deactivateAccount"
       >
     ) => {
       switch (action.payload) {
@@ -428,6 +454,9 @@ const authSlice = createSlice({
           break;
         case "restoreAccount":
           state.ERROR_RESTORE_ACCOUNT = null;
+          break;
+        case "deactivateAccount":
+          state.ERROR_DEACTIVATE_ACCOUNT = null;
           break;
         default:
           break;
@@ -617,6 +646,19 @@ const authSlice = createSlice({
       .addCase(restoreAccount.rejected, (state, action) => {
         state.LOADING_RESTORE_ACCOUNT = false;
         state.ERROR_RESTORE_ACCOUNT = action.payload as string | string[];
+      })
+
+      // =================== DEACTIVATE ACCOUNT
+      .addCase(deactivateAccount.fulfilled, (state) => {
+        state.LOADING_DEACTIVATE_ACCOUNT = false;
+        localStorage.removeItem("access_token");
+      })
+      .addCase(deactivateAccount.pending, (state) => {
+        state.LOADING_DEACTIVATE_ACCOUNT = true;
+      })
+      .addCase(deactivateAccount.rejected, (state, action) => {
+        state.LOADING_DEACTIVATE_ACCOUNT = false;
+        state.ERROR_DEACTIVATE_ACCOUNT = action.payload as string | string[];
       });
   },
 });

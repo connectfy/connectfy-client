@@ -181,6 +181,7 @@ const userSlice = createSlice({
         | "updatePassword"
         | "verifyChangeEmail"
         | "updatePhoneNumber"
+        | "deactivateAccount"
         | "logout"
       >
     ) => {
@@ -209,6 +210,9 @@ const userSlice = createSlice({
     },
     updateMe: (state, action: PayloadAction<Partial<IMe>>) => {
       state.me = { ...state.me, ...(action.payload as IMe) };
+    },
+    clearMe: (state) => {
+      state.me = null;
     },
   },
   extraReducers: (builder) =>
@@ -325,5 +329,5 @@ const userSlice = createSlice({
       }),
 });
 
-export const { clearError, updateMe } = userSlice.actions;
+export const { clearError, updateMe, clearMe } = userSlice.actions;
 export default userSlice.reducer;
