@@ -1,4 +1,12 @@
-import { FC, Fragment, useEffect, useRef, useState } from "react";
+import {
+  FC,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   User,
   Mail,
@@ -19,7 +27,13 @@ import SettingCard from "@/components/Card/SettingsCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/constants/routet";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { PROVIDER, Resource, TOKEN_TYPE } from "@/types/enum.types";
+import {
+  DATE_FORMAT,
+  PROVIDER,
+  Resource,
+  TIME_FORMAT,
+  TOKEN_TYPE,
+} from "@/types/enum.types";
 import AuthenticateModal from "@/components/Modal/AuthenticateModal";
 import UsernameModal from "./components/Modal/UsernameModal";
 import EmailModal from "./components/Modal/EmailModal/ChangeEmailModal";
@@ -64,7 +78,7 @@ const AccountSettings: FC = () => {
     ERROR_DEACTIVATE_ACCOUNT,
   } = useAppSelector((state) => state[Resource.auth]);
 
-  const { user } = me!;
+  const { user } = me ?? {};
 
   const [authModal, setAuthModal] = useState<{
     open: boolean;
@@ -88,25 +102,28 @@ const AccountSettings: FC = () => {
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
 
-  const openAuthThen = (authType: TOKEN_TYPE, next: ChangeModalKey = null) => {
-    const sensitiveForPasswordOnly = [
-      TOKEN_TYPE.CHANGE_PASSWORD,
-      TOKEN_TYPE.CHANGE_EMAIL,
-    ];
+  const openAuthThen = useCallback(
+    (authType: TOKEN_TYPE, next: ChangeModalKey = null) => {
+      const sensitiveForPasswordOnly = [
+        TOKEN_TYPE.CHANGE_PASSWORD,
+        TOKEN_TYPE.CHANGE_EMAIL,
+      ];
 
-    if (
-      user.provider !== PROVIDER.PASSWORD &&
-      sensitiveForPasswordOnly.includes(authType)
-    ) {
-      snack.error(t("user_messages.google_login_error"), {
-        autoHideDuration: 3000,
-        anchorOrigin: { horizontal: "center", vertical: "bottom" },
-      });
-      return;
-    }
+      if (
+        user?.provider !== PROVIDER.PASSWORD &&
+        sensitiveForPasswordOnly.includes(authType)
+      ) {
+        snack.error(t("user_messages.google_login_error"), {
+          autoHideDuration: 3000,
+          anchorOrigin: { horizontal: "center", vertical: "bottom" },
+        });
+        return;
+      }
 
-    setAuthModal({ open: true, authType, next });
-  };
+      setAuthModal({ open: true, authType, next });
+    },
+    [user?.provider, t]
+  );
 
   const closeAuth = () =>
     setAuthModal({ open: false, authType: undefined, next: null });
@@ -127,9 +144,9 @@ const AccountSettings: FC = () => {
       localStorage.setItem("app-theme", me!.settings.generalSettings.theme);
       localStorage.setItem("lang", me!.settings.generalSettings.language);
       localStorage.removeItem("access_token");
-      dispatch(clearMe());
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.logout_successfull"));
+      dispatch(clearMe());
     }
   };
 
@@ -143,78 +160,81 @@ const AccountSettings: FC = () => {
       localStorage.setItem("app-theme", me!.settings.generalSettings.theme);
       localStorage.setItem("lang", me!.settings.generalSettings.language);
       localStorage.removeItem("access_token");
-      dispatch(clearMe());
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.account_deactivated"));
+      dispatch(clearMe());
     }
   };
 
-  const items = [
-    {
-      id: "username",
-      header: {
-        icon: User,
-        title: t("common.username"),
-        subtitle: t("common.change_username"),
+  const items = useMemo(
+    () => [
+      {
+        id: "username",
+        header: {
+          icon: User,
+          title: t("common.username"),
+          subtitle: t("common.change_username"),
+        },
+        renderContent: () => (
+          <AccountActionButton
+            onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_USERNAME, "username")}
+          >
+            <strong>@{user?.username}</strong>
+          </AccountActionButton>
+        ),
       },
-      renderContent: () => (
-        <AccountActionButton
-          onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_USERNAME, "username")}
-        >
-          <strong>@{user.username}</strong>
-        </AccountActionButton>
-      ),
-    },
-    {
-      id: "email",
-      header: {
-        icon: Mail,
-        title: t("common.email_address"),
-        subtitle: t("common.update_email"),
+      {
+        id: "email",
+        header: {
+          icon: Mail,
+          title: t("common.email_address"),
+          subtitle: t("common.update_email"),
+        },
+        renderContent: () => (
+          <AccountActionButton
+            onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_EMAIL, "email")}
+          >
+            {user?.email}
+          </AccountActionButton>
+        ),
       },
-      renderContent: () => (
-        <AccountActionButton
-          onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_EMAIL, "email")}
-        >
-          {user.email}
-        </AccountActionButton>
-      ),
-    },
-    {
-      id: "password",
-      header: {
-        icon: Key,
-        title: t("common.password"),
-        subtitle: t("common.change_password"),
+      {
+        id: "password",
+        header: {
+          icon: Key,
+          title: t("common.password"),
+          subtitle: t("common.change_password"),
+        },
+        renderContent: () => (
+          <AccountActionButton
+            onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_PASSWORD, "password")}
+          >
+            {"••••••••"}
+          </AccountActionButton>
+        ),
       },
-      renderContent: () => (
-        <AccountActionButton
-          onClick={() => openAuthThen(TOKEN_TYPE.CHANGE_PASSWORD, "password")}
-        >
-          {"••••••••"}
-        </AccountActionButton>
-      ),
-    },
-    {
-      id: "phone_number",
-      header: {
-        icon: Phone,
-        title: t("common.phone_number"),
-        subtitle: t("common.update_phone"),
+      {
+        id: "phone_number",
+        header: {
+          icon: Phone,
+          title: t("common.phone_number"),
+          subtitle: t("common.update_phone"),
+        },
+        renderContent: () => (
+          <AccountActionButton
+            onClick={() =>
+              openAuthThen(TOKEN_TYPE.CHANGE_PHONE_NUMBER, "phone_number")
+            }
+          >
+            {user?.phoneNumber?.fullPhoneNumber
+              ? user.phoneNumber.fullPhoneNumber
+              : t("common.add_phone_number")}
+          </AccountActionButton>
+        ),
       },
-      renderContent: () => (
-        <AccountActionButton
-          onClick={() =>
-            openAuthThen(TOKEN_TYPE.CHANGE_PHONE_NUMBER, "phone_number")
-          }
-        >
-          {user.phoneNumber?.fullPhoneNumber
-            ? user.phoneNumber.fullPhoneNumber
-            : t("common.add_phone_number")}
-        </AccountActionButton>
-      ),
-    },
-  ];
+    ],
+    [user, t]
+  );
 
   useToastError({
     error: ERROR_VERIFY_CHANGE_EMAIL,
@@ -307,7 +327,7 @@ const AccountSettings: FC = () => {
                   </p>
                   <p className="account-info-item-value">
                     <Calendar size={16} className="account-info-item-icon" />
-                    {DDMMMYYYY(user.createdAt)}
+                    {user?.createdAt ? DDMMMYYYY(user.createdAt) : "-"}
                   </p>
                 </div>
                 <div className="account-info-item">
@@ -317,9 +337,11 @@ const AccountSettings: FC = () => {
                   <p className="account-info-item-value">
                     <Clock size={16} className="account-info-item-icon" />
                     {showDateWithHour(
-                      me!.account.lastSeen,
-                      me!.settings.generalSettings.timeZone.dateFormat,
-                      me!.settings.generalSettings.timeZone.timeFormat
+                      me?.account.lastSeen as Date,
+                      me?.settings.generalSettings.timeZone
+                        .dateFormat as DATE_FORMAT,
+                      me?.settings.generalSettings.timeZone
+                        .timeFormat as TIME_FORMAT
                     )}
                   </p>
                 </div>
