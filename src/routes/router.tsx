@@ -43,6 +43,9 @@ const BackgroundSettings = lazy(
   () => import("@/pages/settings/Background/index")
 );
 
+// ======================= PROFILE
+const Profile = lazy(() => import("@/pages/profile/index"));
+
 const routes = [
   // ======================= ROOT REDIRECT
   {
@@ -112,10 +115,13 @@ const routes = [
         path: ROUTER.NOTIFICATIONS.MAIN,
         element: <Messenger />,
       },
+
+      // ======================= PROFILE
       {
         path: ROUTER.PROFILE.MAIN,
-        element: <Messenger />,
+        element: <Profile />,
       },
+
       // ======================= SETTINGS
       {
         path: ROUTER.SETTINGS.MAIN,
@@ -138,7 +144,7 @@ const routes = [
             element: <AccountSettings />,
           },
           {
-            path: ROUTER.SETTINGS.NOTİFİCATİON,
+            path: ROUTER.SETTINGS.NOTIFICATION,
             element: <NotificationSettings />,
           },
           {
@@ -147,6 +153,8 @@ const routes = [
           },
         ],
       },
+
+      // ======================= *
       { path: "*", element: <Navigate to={ROUTER.MESSENGER.MAIN} replace /> },
     ],
   },

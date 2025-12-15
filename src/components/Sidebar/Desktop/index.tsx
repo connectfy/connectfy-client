@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/hooks/useStore";
 import { Resource } from "@/types/enum.types";
 import { getHomeRouteByStartup } from "@/utils/routes";
+import { Avatar } from "@mui/material";
 
 const DesktopSidebar = () => {
   const { t } = useTranslation();
@@ -23,9 +24,6 @@ const DesktopSidebar = () => {
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
   const { me: userData } = useAppSelector((state) => state[Resource.user]);
-  const { data: generalSettings } = useAppSelector(
-    (state) => state[Resource.generalSettings]
-  );
 
   const menuItems = useMemo(
     () => [
@@ -100,7 +98,6 @@ const DesktopSidebar = () => {
               className="logo-container"
               onClick={() => {
                 const startup =
-                  generalSettings?.startupPage ??
                   userData?.settings?.generalSettings?.startupPage;
                 navigate(getHomeRouteByStartup(startup));
               }}
@@ -159,7 +156,16 @@ const DesktopSidebar = () => {
               }}
             >
               <div className="avatar">
-                <User size={20} />
+                {userData?.account.avatar ? (
+                  <Avatar
+                    src={userData?.account.avatar}
+                    sx={{ borderRadius: "50%" }}
+                  />
+                ) : (
+                  <div className="default-avatar">
+                    <User size={20} />
+                  </div>
+                )}
               </div>
               <div className="tooltip">{t("common.my_profile")}</div>
             </div>

@@ -270,16 +270,10 @@
 }
 
 .profile-item:hover {
-  /* background: rgba(46, 204, 113, 0.08); */
   transform: translateY(-2px);
 }
 
-/* profile hover for dark */
-/* [data-theme="dark"] .profile-item:hover {
-  background: rgba(46, 204, 113, 0.12);
-} */
-
-.avatar {
+.default-avatar {
   width: 42px;
   height: 42px;
   border-radius: 14px;
@@ -295,11 +289,16 @@
   overflow: hidden;
 }
 
+.avatar {
+  position: relative;
+  overflow: hidden;
+}
+
 .avatar::after {
   content: "";
   position: absolute;
-  bottom: 2px;
-  right: 2px;
+  bottom: 0px;
+  right: 0px;
   width: 12px;
   height: 12px;
   background: #22c55e;
@@ -322,4 +321,12 @@
 
 [data-theme="dark"] .settings-section {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 884px) {
+  .default-avatar {
+    width: 25px;
+    height: 25px;
+    border-radius: 14px;
+  }
 }

@@ -1,0 +1,9 @@
+.profile-privacy-icon {
+  color: var(--muted-color);
+  transition: all 0.3s ease-in-out;
+}
+
+.profile-privacy-icon:hover {
+  color: var(--primary-color);
+  cursor: pointer;
+}

@@ -112,3 +112,28 @@ export enum DELETE_REASON {
   ADMIN_ACTION = "ADMIN_ACTION",
   OTHER = "OTHER",
 }
+
+export enum SOCIAL_LINK_PLATFORM {
+  INSTAGRAM = "Instagram",
+  FACEBOOK = "Facebook",
+  TWITTER = "Twitter",
+  LINKEDIN = "Linkedin",
+  YOUTUBE = "Youtube",
+  GITHUB = "Github",
+  REDDIT = "Reddit",
+  PINTEREST = "Pinterest",
+  TIKTOK = "Tiktok",
+  TELEGRAM = "Telegram",
+  DISCORD = "Discord",
+  SNAPCHAT = "Snapchat",
+  WHATSAPP = "Whatsapp",
+  MEDIUM = "Medium",
+  DEVTO = "Devto",
+  DRIBBBLE = "Dribbble",
+  BEHANCE = "Behance",
+  VIMEO = "Vimeo",
+  STACKOVERFLOW = "Stackoverflow",
+  EMAIL = "Email",
+  WEBSITE = "Website",
+  OTHER = "Other",
+}

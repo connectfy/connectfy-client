@@ -4,7 +4,14 @@ import { Outlet, useNavigate, useLocation, matchPath } from "react-router-dom";
 import UniqueSidebar from "@/components/Sidebar/UniqueSidebar";
 import { useTranslation } from "react-i18next";
 import { ROUTER } from "@/constants/routet";
-import { Settings, KeyRound, Paintbrush, UserCog, BellRing } from "lucide-react";
+import {
+  Settings,
+  KeyRound,
+  Paintbrush,
+  UserCog,
+  BellRing,
+  Keyboard,
+} from "lucide-react";
 
 interface Props {
   children?: ReactNode;
@@ -47,11 +54,11 @@ const SettingsLayout: FC<Props> = ({ children }) => {
     },
     {
       name: t("common.notification_settings"),
-      path: ROUTER.SETTINGS.NOTİFİCATİON,
+      path: ROUTER.SETTINGS.NOTIFICATION,
       icon: BellRing,
       key: "notification",
       badge: null,
-      onClick: () => navigate(ROUTER.SETTINGS.NOTİFİCATİON),
+      onClick: () => navigate(ROUTER.SETTINGS.NOTIFICATION),
     },
     {
       name: t("common.change_background"),
@@ -60,7 +67,15 @@ const SettingsLayout: FC<Props> = ({ children }) => {
       key: "background",
       badge: null,
       onClick: () => navigate(ROUTER.SETTINGS.BACKGROUND),
-    }
+    },
+    {
+      name: t("common.keyboard_shortcuts"),
+      path: ROUTER.SETTINGS.SHORTCUT,
+      icon: Keyboard,
+      key: "keyboard",
+      badge: null,
+      onClick: () => navigate(ROUTER.SETTINGS.SHORTCUT),
+    },
   ];
 
   const [isMobile, setIsMobile] = useState<boolean>(() =>

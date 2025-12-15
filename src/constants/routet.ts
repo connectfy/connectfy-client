@@ -18,6 +18,10 @@ export const ROUTER = {
   },
   USERS: {
     MAIN: "/users",
+    BLOCKLIST: "/users/blocklist",
+    FRIENDS: "/users/friends",
+    REQUESTS: "/users/requests",
+    SEARCH: "/users/search",
   },
   NOTIFICATIONS: {
     MAIN: "/notifications",
@@ -31,6 +35,7 @@ export const ROUTER = {
     PRIVACY: "/settings/privacy",
     ACCOUNT: "/settings/account",
     BACKGROUND: "/settings/background",
-    NOTİFİCATİON: "/settings/notification"
+    NOTIFICATION: "/settings/notification",
+    SHORTCUT: "/settings/shortcut",
   },
 };

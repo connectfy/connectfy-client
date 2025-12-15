@@ -4,6 +4,7 @@ import { IGeneralSettings } from "../../account/settings/general/general-setting
 import { INotificationSettings } from "../../account/settings/notification/notification-settings.type";
 import { IPrivacySettings } from "../../account/settings/privacy/privacy-settings.type";
 import { IAccount } from "@/types/account/account/account.type";
+import { ISocialLink } from "@/types/account/social-links/social-links.type";
 
 export interface IUser {
   _id: string;
@@ -24,6 +25,7 @@ export interface IMe {
     notificationSettings: INotificationSettings;
     privacySettings: IPrivacySettings;
   };
+  socialLinks: ISocialLink[];
 }
 
 export interface IUpdateUsername {

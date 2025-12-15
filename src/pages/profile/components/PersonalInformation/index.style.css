@@ -1,0 +1,71 @@
+.profile-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+/* Info Grid */
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Info Card */
+.profile-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  box-shadow: var(--card-shadow);
+}
+
+.profile-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-color);
+}
+
+.profile-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.profile-info-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color);
+  padding-left: 24px;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-page-section {
+    padding: 20px 16px;
+  }
+
+  .profile-edit-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .profile-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .profile-info-card {
+    padding: 16px;
+  }
+}

@@ -1,0 +1,132 @@
+/* Reset & Base */
+.profile-container * {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+/* Profile Container */
+.profile-container {
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--bg-color);
+  position: relative;
+  scroll-behavior: smooth;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.profile-page-section {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--card-shadow);
+  animation: profileSlideUp 0.6s ease 0.1s both;
+}
+
+/* Content Wrapper */
+.profile-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  animation: profileFadeIn 0.5s ease;
+}
+
+.profile-page-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+@keyframes profileFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-page-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Privacy Badge */
+.profile-privacy-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.profile-info-card:hover .profile-privacy-badge {
+  opacity: 1;
+}
+
+.profile-edit-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-edit-button:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  color: #ffffff;
+  box-shadow: var(--active-shadow);
+}
+
+.profile-edit-button:active {
+  transform: translateY(0);
+}
+
+.profile-page-section-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-content {
+    padding: 24px 16px 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-page-section-title {
+    font-size: 18px;
+  }
+
+  .profile-social-header {
+    padding: 14px 16px;
+  }
+}
+
+/* Accessibility improvements for non-header elements */
+.profile-social-header:focus-visible,
+.profile-action-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
