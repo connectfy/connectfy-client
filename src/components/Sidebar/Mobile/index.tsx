@@ -105,9 +105,9 @@ const MobileSidebar = () => {
             >
               <div className="mobile-icon-wrapper">
                 {item.key === "profile" ? (
-                  !userData?.account.avatar ? (
+                  userData?.account.avatar ? (
                     <Avatar
-                      // src={userData?.account.avatar}
+                      src={userData?.account.avatar}
                       sx={{
                         borderRadius: "50%",
                         width: "25px",
