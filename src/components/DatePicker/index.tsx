@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from 'react-dom';
 import "./index.style.css";
 import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -30,6 +31,7 @@ export default function CustomDatePicker({
   );
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>("days");
+  const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0, width: 0 });
 
   const calendarRef = useRef<HTMLDivElement>(null);
 
@@ -287,6 +289,17 @@ export default function CustomDatePicker({
     }
   }, [value])
 
+  useEffect(() => {
+    if (isOpen && calendarRef.current) {
+      const rect = calendarRef.current.getBoundingClientRect();
+      setPopupPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width
+      });
+    }
+  }, [isOpen]);
+
   return (
     <div
       className={`custom_date_picker ${inputSize} ${hasError ? "error" : ""}`}
@@ -306,8 +319,17 @@ export default function CustomDatePicker({
         </div>
       </div>
 
-      {isOpen && (
-        <div className="calendar_popup">
+      {isOpen && createPortal(
+        <div
+          className="calendar_popup"
+          style={{
+            position: 'fixed',
+            top: popupPosition.top,
+            left: popupPosition.left,
+            width: popupPosition.width,
+            zIndex: 9999
+          }}
+        >
           <div className="calendar_header">
             <button
               className={`nav_button ${isPrevDisabled() ? "disabled" : ""}`}
@@ -422,7 +444,8 @@ export default function CustomDatePicker({
               {t("common.today")}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

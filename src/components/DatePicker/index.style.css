@@ -101,17 +101,14 @@
 }
 
 .calendar_popup {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
+  position: fixed;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: var(--card-shadow);
   padding: 16px;
-  z-index: 1000;
-  margin-top: 4px;
+  width: 350px !important;
+  z-index: 9999;
   animation: calendarFadeIn 0.2s ease-out;
   color: var(--text-color);
 }
@@ -358,9 +355,9 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(0%, -50%);
     width: 90vw;
-    max-width: 320px;
+    max-width: 310px;
   }
   
   .custom_date_picker.small .date_input {

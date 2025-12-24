@@ -1,79 +1,401 @@
-.signup-modal-override .MuiDialog-paper {
-  box-shadow: var(--card-shadow);
-  border-radius: 16px;
+/* ============================================
+   EPIC SIGNUP MODAL - MODERN & LEGENDARY DESIGN
+   ============================================ */
+
+/* Container */
+.signup-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
   background: var(--card-bg);
-  color: var(--text-color) !important;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 
+    var(--card-shadow),
+    0 0 0 1px rgba(46, 204, 113, 0.1),
+    0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: signup-modal-scale-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(46, 204, 113, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Decorative Elements */
+.signup-modal-decoration {
+  position: absolute;
+  background: linear-gradient(135deg, var(--primary-color), #27ae60);
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+  animation: signup-modal-pulse 3s ease-in-out infinite;
+}
+
+.signup-modal-decoration-top {
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+
+.signup-modal-decoration-bottom {
+  bottom: -120px;
+  left: -120px;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  filter: blur(70px);
+  animation-delay: 1.5s;
+}
+
+/* Header */
+.signup-modal-header {
+  position: relative;
+  z-index: 1;
+  padding: 40px 32px 32px;
+  text-align: center;
+  border-bottom: 1px solid rgba(46, 204, 113, 0.1);
+  background: linear-gradient(180deg, var(--active-bg-2) 0%, transparent 100%);
+}
+
+.signup-modal-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  background: var(--active-bg);
+  border-radius: 20px;
+  color: var(--primary-color);
+  box-shadow: 
+    0 8px 24px rgba(46, 204, 113, 0.25),
+    0 0 0 4px var(--active-bg-2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  animation: signup-modal-icon-float 3s ease-in-out infinite;
+  position: relative;
+}
+
+.signup-modal-header-icon::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--primary-color), #27ae60);
+  opacity: 0.3;
+  filter: blur(8px);
+  z-index: -1;
+  animation: signup-modal-icon-glow 2s ease-in-out infinite alternate;
+}
+
+.signup-modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text-color), var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: signup-modal-title-slide 0.6s ease-out 0.2s both;
+}
+
+.signup-modal-subtitle {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted-color);
+  margin: 0;
+  max-width: 400px;
+  margin: 0 auto;
+  animation: signup-modal-subtitle-fade 0.6s ease-out 0.3s both;
+}
+
+/* Content */
+.signup-modal-content {
+  position: relative;
+  z-index: 1;
+  padding: 32px;
+}
+
+.signup-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Field */
+.signup-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: signup-modal-field-slide 0.5s ease-out both;
+}
+
+.signup-modal-field:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.signup-modal-field:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.signup-modal-field:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.signup-modal-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.signup-modal-field:focus-within .signup-modal-label {
+  color: var(--primary-color);
+}
+
+/* Error Message */
+.signup-modal-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(211, 47, 47, 0.08);
+  border-left: 3px solid var(--error-color);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--error-color);
+  font-weight: 500;
+  animation: signup-modal-error-shake 0.4s ease-in-out;
+}
+
+.signup-modal-error svg {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.signup-modal-error span {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Footer */
+.signup-modal-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 12px;
+  padding: 24px 32px 32px;
+  border-top: 1px solid rgba(46, 204, 113, 0.1);
+  background: linear-gradient(0deg, var(--active-bg-2) 0%, transparent 100%);
+}
+
+.signup-modal-footer button {
+  height: 48px;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.signup-modal-footer button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(46, 204, 113, 0.3);
+}
+
+.signup-modal-footer button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.signup-modal-footer button svg {
+  transition: transform 0.3s ease;
+}
+
+.signup-modal-footer button:not(:disabled):hover svg {
+  transform: translateX(4px);
 }
 
 /* Animations */
-@keyframes slideIn {
-  from {
+@keyframes signup-modal-scale-in {
+  0% {
     opacity: 0;
-    transform: translateY(-30px) scale(0.95);
+    transform: scale(0.85) translateY(20px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 
-@keyframes slideDownFadeIn {
-  from {
-    opacity: 0;
-    max-height: 0;
-    transform: translateY(-8px);
+@keyframes signup-modal-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.08;
   }
-  to {
+  50% {
+    transform: scale(1.1);
+    opacity: 0.12;
+  }
+}
+
+@keyframes signup-modal-icon-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes signup-modal-icon-glow {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes signup-modal-title-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
     opacity: 1;
-    max-height: 50px;
     transform: translateY(0);
   }
 }
 
-.signup-modal-override .MuiDialog-container {
-  animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  background: rgba(0, 0, 0, 0.5);
+@keyframes signup-modal-subtitle-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.signup-modal-override .MuiOutlinedInput-root {
-  border-radius: 8px !important;
+@keyframes signup-modal-field-slide {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.signup-modal-override .MuiOutlinedInput-notchedOutline {
-  border-color: var(--border-color) !important;
+@keyframes signup-modal-error-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
 }
 
-.signup-modal-override .Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 3px var(--active-bg) !important;
-}
-
-/* Responsive adjustments for mobile */
+/* Mobile Responsive */
 @media (max-width: 600px) {
-  .signup-modal-override .MuiDialog-paper {
-    margin: 0;
-    border-radius: 0;
-    height: 100%;
-    max-height: 100%;
-    border: none;
-    min-height: auto;
+  .signup-modal-container {
+    max-width: 95%;
+    animation: signup-modal-slide-up 0.4s ease-out;
   }
-  
-  .signup-modal-override .MuiDialog-container {
-    animation: none;
+
+  .signup-modal-container:hover {
+    transform: none;
   }
-  
-  .signup-modal-override .MuiDialogContent-root {
-    padding: 16px !important;
+
+  .signup-modal-header {
+    padding: 32px 24px 24px;
   }
-  
-  .signup-modal-override .MuiDialogActions-root {
-    padding: 16px !important;
+
+  .signup-modal-header-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+  }
+
+  .signup-modal-title {
+    font-size: 24px;
+  }
+
+  .signup-modal-subtitle {
+    font-size: 13px;
+  }
+
+  .signup-modal-content {
+    padding: 24px;
+    flex: 1;
+  }
+
+  .signup-modal-footer {
+    padding: 20px 24px 32px;
     flex-direction: column;
   }
-  
-  .signup-modal-override .MuiDialogActions-root button {
+
+  .signup-modal-footer button {
     width: 100%;
-    margin: 0 !important;
   }
+
+  .signup-modal-decoration {
+    display: none;
+  }
+}
+
+@keyframes signup-modal-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark Mode Enhancements */
+[data-theme="dark"] .signup-modal-container {
+  box-shadow: 
+    var(--card-shadow),
+    0 0 0 1px rgba(46, 204, 113, 0.15),
+    0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .signup-modal-header-icon {
+  box-shadow: 
+    0 8px 24px rgba(46, 204, 113, 0.35),
+    0 0 0 4px var(--active-bg-2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+/* Loading State Enhancement */
+.signup-modal-footer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Smooth Transitions */
+.signup-modal-container * {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
 }

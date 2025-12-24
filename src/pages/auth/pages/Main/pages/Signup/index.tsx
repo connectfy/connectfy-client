@@ -5,7 +5,11 @@ import GenderForm from "./components/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button/Button";
-import { clearError, setSignupForm, signup } from "@/features/auth/auth/authSlice";
+import {
+  clearError,
+  setSignupForm,
+  signup,
+} from "@/features/auth/auth/authSlice";
 import DatePicker from "@/components/DatePicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
@@ -105,72 +109,64 @@ const Signup = () => {
   return (
     <div className="signup-form">
       <div className="signup-form-block">
-        <div>
-          <Input
-            inputSize="medium"
-            label={t("common.first_name")}
-            name="firstName"
-            value={formik.values.firstName || ""}
-            onBlur={() => formik.setFieldTouched("firstName", true, false)}
-            onChange={(e) =>
-              formik.setFieldValue("firstName", e.target.value || null)
-            }
-            hasError={!!(formik.errors.firstName && formik.touched.firstName)}
-          />
-          {formik.errors.firstName && formik.touched.firstName && (
-            <h6>{formik.errors.firstName}</h6>
-          )}
-        </div>
-        <div>
-          <Input
-            inputSize="medium"
-            label={t("common.last_name")}
-            name="lastName"
-            value={formik.values.lastName || ""}
-            onBlur={() => formik.setFieldTouched("lastName", true, false)}
-            onChange={(e) =>
-              formik.setFieldValue("lastName", e.target.value || null)
-            }
-            hasError={!!(formik.errors.lastName && formik.touched.lastName)}
-          />
-          {formik.errors.lastName && formik.touched.lastName && (
-            <h6>{formik.errors.lastName}</h6>
-          )}
-        </div>
+        <Input
+          inputSize="medium"
+          label={t("common.first_name")}
+          name="firstName"
+          value={formik.values.firstName || ""}
+          onBlur={() => formik.setFieldTouched("firstName", true, false)}
+          onChange={(e) =>
+            formik.setFieldValue("firstName", e.target.value || null)
+          }
+          hasError={!!(formik.errors.firstName && formik.touched.firstName)}
+        />
+        {formik.errors.firstName && formik.touched.firstName && (
+          <h6>{formik.errors.firstName}</h6>
+        )}
+        <Input
+          inputSize="medium"
+          label={t("common.last_name")}
+          name="lastName"
+          value={formik.values.lastName || ""}
+          onBlur={() => formik.setFieldTouched("lastName", true, false)}
+          onChange={(e) =>
+            formik.setFieldValue("lastName", e.target.value || null)
+          }
+          hasError={!!(formik.errors.lastName && formik.touched.lastName)}
+        />
+        {formik.errors.lastName && formik.touched.lastName && (
+          <h6>{formik.errors.lastName}</h6>
+        )}
       </div>
       <div className="signup-form-block">
-        <div>
-          <Input
-            inputSize="medium"
-            label={t("common.username")}
-            name="username"
-            value={formik.values.username || ""}
-            onBlur={() => formik.setFieldTouched("username", true, false)}
-            onChange={(e) =>
-              formik.setFieldValue("username", e.target.value || null)
-            }
-            hasError={!!(formik.errors.username && formik.touched.username)}
-          />
-          {formik.errors.username && formik.touched.username && (
-            <h6>{formik.errors.username}</h6>
-          )}
-        </div>
-        <div>
-          <Input
-            inputSize="medium"
-            label={t("common.email")}
-            name="email"
-            value={formik.values.email || ""}
-            onBlur={() => formik.setFieldTouched("email", true, false)}
-            onChange={(e) =>
-              formik.setFieldValue("email", e.target.value || null)
-            }
-            hasError={!!(formik.errors.email && formik.touched.email)}
-          />
-          {formik.errors.email && formik.touched.email && (
-            <h6>{formik.errors.email}</h6>
-          )}
-        </div>
+        <Input
+          inputSize="medium"
+          label={t("common.username")}
+          name="username"
+          value={formik.values.username || ""}
+          onBlur={() => formik.setFieldTouched("username", true, false)}
+          onChange={(e) =>
+            formik.setFieldValue("username", e.target.value || null)
+          }
+          hasError={!!(formik.errors.username && formik.touched.username)}
+        />
+        {formik.errors.username && formik.touched.username && (
+          <h6>{formik.errors.username}</h6>
+        )}
+        <Input
+          inputSize="medium"
+          label={t("common.email")}
+          name="email"
+          value={formik.values.email || ""}
+          onBlur={() => formik.setFieldTouched("email", true, false)}
+          onChange={(e) =>
+            formik.setFieldValue("email", e.target.value || null)
+          }
+          hasError={!!(formik.errors.email && formik.touched.email)}
+        />
+        {formik.errors.email && formik.touched.email && (
+          <h6>{formik.errors.email}</h6>
+        )}
       </div>
       {/* <div className="signup-form-block">
         <PhoneNumberForm

@@ -13,29 +13,21 @@ import { checkEmptyString } from "@/utils/checkValues";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
 
 // MUI Components
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Box,
-  Typography,
-  useTheme,
-  useMediaQuery,
-  CircularProgress,
-  alpha,
-} from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 // Custom Components
 import Input from "@/components/Input/Input";
 import DatePicker from "@/components/DatePicker";
 import Button from "@/components/Button/Button";
+import Modal from "@/components/Modal";
+import GenderForm from "../../pages/Main/pages/Signup/components/GenderForm";
+
+// Utils
+import { ROUTER } from "@/constants/routet";
+import { snack } from "@/utils/snackManager";
 
 // Styles
 import "./index.style.css";
-import { ROUTER } from "@/constants/routet";
-import GenderForm from "../../pages/Main/pages/Signup/components/GenderForm";
-import { snack } from "@/utils/snackManager";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -46,9 +38,7 @@ interface SignupModalProps {
 const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { ERROR_GOOGLE_SIGNUP, LOADING_GOOGLE_SIGNUP } = useAppSelector(
     (state) => state[Resource.auth]
@@ -85,7 +75,6 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
           formik.handleSubmit();
         });
         break;
-
       case "Escape":
         onPressEsc(e, onClose);
     }
@@ -122,198 +111,149 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
   }, [formik.values, LOADING_GOOGLE_SIGNUP]);
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={handleOnClose}
-      maxWidth="sm"
-      fullWidth
-      fullScreen={isMobile}
-      PaperProps={{
-        sx: {
-          borderRadius: isMobile ? 0 : 3,
-          background: "var(--card-bg)",
-          boxShadow: "var(--card-shadow)",
-          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-          backgroundImage: "none",
-          overflow: "visible",
-        },
-      }}
-      className="signup-modal-override"
-    >
-      <DialogTitle
-        sx={{
-          pb: 2,
-          pt: 3,
-          px: 3,
-          borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-          background: "var(--card-bg)",
-          position: "relative",
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            bottom: 0,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "60px",
-            height: "3px",
-            background: "var(--primary-color)",
-            borderRadius: "3px",
-          },
-        }}
-        component={"div"}
+    <Modal open={isOpen} onClose={handleOnClose}>
+      <div
+        className="signup-modal-container"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={onKeyDown}
       >
-        <Typography
-          variant="h5"
-          component="h2"
-          align="center"
-          sx={{
-            fontWeight: 600,
-            color: "var(--text-color)",
-          }}
-        >
-          {t("common.complete_signup")}
-        </Typography>
-      </DialogTitle>
+        {/* Decorative Elements */}
+        <div className="signup-modal-decoration signup-modal-decoration-top"></div>
+        <div className="signup-modal-decoration signup-modal-decoration-bottom"></div>
 
-      <DialogContent sx={{ mt: 2, px: 3, py: 3 }}>
-        <Box
-          sx={{
-            mb: 3,
-            p: 2,
-            borderRadius: 2,
-            background: "var(--active-bg-2)",
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-          }}
-        >
-          <Typography
-            variant="body2"
-            color="var(--muted-color)"
-            align="center"
-            sx={{
-              lineHeight: 1.6,
-              fontSize: "0.875rem",
+        {/* Header */}
+        <div className="signup-modal-header">
+          <div className="signup-modal-header-icon">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <h2 className="signup-modal-title">{t("common.complete_signup")}</h2>
+          <p className="signup-modal-subtitle">
+            {t("common.google_signup_description")}
+          </p>
+        </div>
+
+        {/* Content */}
+        <div className="signup-modal-content">
+          <form className="signup-modal-form">
+            {/* Username Field */}
+            <div className="signup-modal-field">
+              <Input
+                inputSize="large"
+                name="username"
+                value={formik.values.username || ""}
+                onChange={(e) =>
+                  formik.setFieldValue("username", e.target.value || null)
+                }
+                onBlur={() => formik.setFieldTouched("username", true, false)}
+                onKeyDown={(e) => onKeyDown(e)}
+                hasError={!!(formik.errors.username && formik.touched.username)}
+                title={t("common.username")}
+                label={t("common.username")}
+              />
+              {formik.errors.username && formik.touched.username && (
+                <div className="signup-modal-error">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                  </svg>
+                  <span>{formik.errors.username}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Birthday Date Field */}
+            <div className="signup-modal-field">
+              <DatePicker
+                value={formik.values.birthdayDate?.toString() || ""}
+                onChange={(date) => formik.setFieldValue("birthdayDate", date)}
+                inputSize="medium"
+                hasError={
+                  !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
+                }
+                placeholder={t("common.birthday")}
+                onKeyDown={(e) => onKeyDown(e)}
+              />
+              {formik.errors.birthdayDate && formik.touched.birthdayDate && (
+                <div className="signup-modal-error">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                  </svg>
+                  <span>{String(formik.errors.birthdayDate)}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Gender Field */}
+            <div className="signup-modal-field">
+              <label className="signup-modal-label">{t("common.gender")}</label>
+              <GenderForm formik={formik} formId="signup-modal" />
+              {formik.errors.gender && formik.touched.gender && (
+                <div className="signup-modal-error">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                  </svg>
+                  <span>{formik.errors.gender}</span>
+                </div>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="signup-modal-footer">
+          <Button
+            size="small"
+            onClick={handleOnClose}
+            disabled={LOADING_GOOGLE_SIGNUP}
+            style={{
+              backgroundColor: "var(--muted-color)",
+              flex: 1,
             }}
           >
-            {t("common.google_signup_description")}
-          </Typography>
-        </Box>
-
-        <Box
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-          }}
-        >
-          {/* Username Field */}
-          <Box>
-            <Input
-              inputSize="large"
-              label={t("common.username")}
-              name="username"
-              value={formik.values.username || ""}
-              onChange={(e) =>
-                formik.setFieldValue("username", e.target.value || null)
-              }
-              onBlur={() => formik.setFieldTouched("username", true, false)}
-              onKeyDown={(e) => onKeyDown(e)}
-              hasError={!!(formik.errors.username && formik.touched.username)}
-            />
-            {formik.errors.username && formik.touched.username && (
-              <Typography
-                variant="caption"
-                sx={{
-                  mt: 1,
-                  display: "block",
-                  animation: "slideDownFadeIn 0.3s ease-in-out",
-                  color: "var(--error-color)",
-                  fontWeight: 500,
-                  flexWrap: "wrap",
-                  whiteSpace: "normal",
-                  overflowWrap: "anywhere",
-                  maxWidth: "100%",
-                }}
-                fontWeight={900}
-                className="form-error"
-              >
-                {formik.errors.username}
-              </Typography>
+            {t("common.cancel")}
+          </Button>
+          <Button
+            size="small"
+            onClick={() => {
+              if (LOADING_GOOGLE_SIGNUP) return;
+              formik.handleSubmit();
+            }}
+            disabled={isDisabled}
+            style={{ flex: 1 }}
+          >
+            {LOADING_GOOGLE_SIGNUP ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <span>{t("common.complete_signup")}</span>
             )}
-          </Box>
-
-          {/* Birthday Date Field */}
-          <Box>
-            <DatePicker
-              value={formik.values.birthdayDate?.toString() || ""}
-              onChange={(date) => formik.setFieldValue("birthdayDate", date)}
-              inputSize="medium"
-              hasError={false}
-              placeholder={t("common.birthday")}
-              onKeyDown={(e) => onKeyDown(e)}
-            />
-            {formik.errors.birthdayDate && formik.touched.birthdayDate && (
-              <Typography
-                variant="caption"
-                sx={{
-                  mt: 1,
-                  display: "block",
-                  animation: "slideDownFadeIn 0.3s ease-in-out",
-                  color: "var(--error-color)",
-                  fontWeight: 500,
-                }}
-              >
-                {String(formik.errors.birthdayDate)}
-              </Typography>
-            )}
-          </Box>
-
-          {/* Gender Field */}
-          <Box>
-            <GenderForm formik={formik} formId="signup-modal" />
-            {formik.errors.gender && formik.touched.gender && (
-              <Typography
-                variant="caption"
-                sx={{
-                  mt: 1,
-                  display: "block",
-                  animation: "slideDownFadeIn 0.3s ease-in-out",
-                  color: "var(--error-color)",
-                  fontWeight: 500,
-                }}
-              >
-                {formik.errors.gender}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      </DialogContent>
-
-      <DialogActions sx={{ p: 3, pt: 1, gap: 2, background: "var(--card-bg)" }}>
-        <Button
-          size="small"
-          onClick={handleOnClose}
-          disabled={LOADING_GOOGLE_SIGNUP}
-          style={{ backgroundColor: "var(--muted-color)" }}
-        >
-          {t("common.cancel")}
-        </Button>
-        <Button
-          size="small"
-          onClick={() => {
-            if (LOADING_GOOGLE_SIGNUP) return;
-            formik.handleSubmit();
-          }}
-          disabled={isDisabled}
-        >
-          {LOADING_GOOGLE_SIGNUP ? (
-            <CircularProgress size={20} color="inherit" />
-          ) : (
-            t("common.complete_signup")
-          )}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 };
 

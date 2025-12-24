@@ -8,6 +8,7 @@
   justify-content: center;
   gap: 1rem;
   min-height: 98vh;
+  overflow-x: hidden;
 }
 
 .auth-controls {
@@ -20,6 +21,10 @@
 
 @media (max-width: 880px) {
   #auth-page {
-    width: 100vw;
+    width: 100%;
+  }
+
+  .auth-controls {
+    width: 90vw;
   }
 }
