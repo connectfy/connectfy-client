@@ -5,7 +5,7 @@ import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
 interface CustomDatePickerProps {
-  value?: string;
+  value?: string | Date | null;
   onChange: (date: string) => void;
   hasError?: boolean;
   inputSize?: "small" | "medium" | "large" | "xlarge";
@@ -27,13 +27,14 @@ export default function CustomDatePicker({
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(
-    value ? new Date(value) : null
+    value ? (typeof value === 'string' ? new Date(value) : value) : null
   );
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>("days");
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0, width: 0 });
 
   const calendarRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   const minDate = new Date(1960, 0, 1);
   const maxDate = new Date();
@@ -41,7 +42,10 @@ export default function CustomDatePicker({
 
   const formatDate = (date: Date | null): string => {
     if (!date) return "";
-    return date.toISOString().split("T")[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const displayDate = selectedDate
@@ -270,10 +274,11 @@ export default function CustomDatePicker({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        calendarRef.current &&
-        !calendarRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      const isInsideCalendar = calendarRef.current && calendarRef.current.contains(target);
+      const isInsidePopup = popupRef.current && popupRef.current.contains(target);
+
+      if (!isInsideCalendar && !isInsidePopup) {
         setIsOpen(false);
         setViewMode("days");
       }
@@ -285,7 +290,9 @@ export default function CustomDatePicker({
 
   useEffect(() => {
     if (value) {
-      setSelectedDate(new Date(value))
+      setSelectedDate(typeof value === 'string' ? new Date(value) : value)
+    } else {
+      setSelectedDate(null)
     }
   }, [value])
 
@@ -321,6 +328,7 @@ export default function CustomDatePicker({
 
       {isOpen && createPortal(
         <div
+          ref={popupRef}
           className="calendar_popup"
           style={{
             position: 'fixed',

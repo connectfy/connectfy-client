@@ -31,7 +31,11 @@ export const PRIVACY_FIELDS = (t: TFunction) => [
   { name: "email", label: t("common.email_visibility"), field: "email" },
   { name: "gender", label: t("common.gender_visibility"), field: "gender" },
   { name: "avatar", label: t("common.avatar_visibility"), field: "avatar" },
-  { name: "birthdayDate", label: t("common.birthday_date_visibility"), field: "birthdayDate" },
+  {
+    name: "birthdayDate",
+    label: t("common.birthday_date_visibility"),
+    field: "birthdayDate",
+  },
   { name: "bio", label: t("common.bio_visibility"), field: "bio" },
   {
     name: "location",
@@ -48,6 +52,11 @@ export const PRIVACY_FIELDS = (t: TFunction) => [
     label: t("common.last_seen_visibility"),
     field: "lastSeen",
   },
+  {
+    name: "phoneNumber",
+    label: t("common.phone_number_visibility"),
+    field: "phoneNumber",
+  },
 ];
 
 export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
@@ -63,7 +72,8 @@ export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
     messageRequest,
     birthdayDate,
     friendshipRequest,
-    readReceipts
+    readReceipts,
+    phoneNumber,
   } = data;
 
   const initialState = {
@@ -78,7 +88,8 @@ export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
     messageRequest,
     birthdayDate,
     friendshipRequest,
-    readReceipts
+    readReceipts,
+    phoneNumber,
   };
 
   return initialState;
@@ -98,6 +109,7 @@ export const validatePrivacySettings = (
     avatar,
     messageRequest,
     birthdayDate,
+    phoneNumber,
   } = values;
 
   const valuesArray = [
@@ -110,6 +122,7 @@ export const validatePrivacySettings = (
     avatar,
     messageRequest,
     birthdayDate,
+    phoneNumber,
   ];
 
   valuesArray.forEach((val) => {

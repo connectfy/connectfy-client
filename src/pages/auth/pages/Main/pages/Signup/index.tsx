@@ -16,7 +16,7 @@ import { useFormik } from "formik";
 import { signupInitialState } from "../../../../constants/intialState";
 import { validateSignup } from "../../../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Resource } from "@/types/enum.types";
+import { Resource, THEME } from "@/types/enum.types";
 import { useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
@@ -45,9 +45,15 @@ const Signup = () => {
     enableReinitialize: true,
     validate: (values) => validateSignup(values, t),
     onSubmit: async (values, { resetForm }) => {
-      const { confirm, ...valuesWithoutConfirm } = values;
+      const { confirm, ...rest } = values;
+      
+      rest.birthdayDate = rest.birthdayDate
+      ? new Date(rest.birthdayDate)
+      : null;
 
-      const actionResult = await dispatch(signup(valuesWithoutConfirm));
+      rest.theme = localStorage.getItem("app-theme") as THEME || THEME.LIGHT;
+      
+      const actionResult = await dispatch(signup(rest));
       const res = unwrapResult(actionResult);
       if (res) {
         // snack.success(t("user_messages.signup_successful"));

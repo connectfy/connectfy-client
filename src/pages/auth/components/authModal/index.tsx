@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../constants/intialState";
 import { valdiateGoogleSignup } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Resource } from "@/types/enum.types";
+import { Resource, THEME } from "@/types/enum.types";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/utils/checkValues";
 import { onPressEnter, onPressEsc } from "@/utils/keyPressDown";
@@ -53,6 +53,12 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
     enableReinitialize: true,
     validate: (values) => valdiateGoogleSignup(values, t),
     onSubmit: async (values, { resetForm }) => {
+      values.birthdayDate = values.birthdayDate
+        ? new Date(values.birthdayDate)
+        : null;
+
+      values.theme = localStorage.getItem("app-theme") as THEME || THEME.LIGHT;
+
       const actionResult = await dispatch(googleSignup(values));
       const res = unwrapResult(actionResult);
       if (res) {
@@ -178,8 +184,8 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
             {/* Birthday Date Field */}
             <div className="signup-modal-field">
               <DatePicker
-                value={formik.values.birthdayDate?.toString() || ""}
-                onChange={(date) => formik.setFieldValue("birthdayDate", date)}
+                value={formik.values.birthdayDate}
+                onChange={(date) => formik.setFieldValue("birthdayDate", date ? new Date(date) : null)}
                 inputSize="medium"
                 hasError={
                   !!(formik.errors.birthdayDate && formik.touched.birthdayDate)

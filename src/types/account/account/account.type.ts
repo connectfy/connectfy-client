@@ -10,4 +10,5 @@ export interface IAccount {
   location: string | null;
   avatar: string | null;
   lastSeen: Date;
+  birthdayDate: Date;
 }

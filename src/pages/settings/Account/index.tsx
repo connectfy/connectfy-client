@@ -55,7 +55,7 @@ import useBoolean from "@/hooks/useBoolean";
 import VerifyChangeEmail from "./components/Modal/EmailModal/VerifyChangeEmailModal";
 import { useToastError } from "@/hooks/useToastError";
 import PhoneNumberModal from "./components/Modal/PhoneNumberModal";
-import { DDMMMYYYY, showDateWithHour } from "@/utils/formatDate";
+import { DDMMMMYYY, showDateWithHour } from "@/utils/formatDate";
 import { logout } from "@/features/auth/auth/authSlice";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal";
@@ -327,7 +327,7 @@ const AccountSettings: FC = () => {
                   </p>
                   <p className="account-info-item-value">
                     <Calendar size={16} className="account-info-item-icon" />
-                    {user?.createdAt ? DDMMMYYYY(user.createdAt) : "-"}
+                    {user?.createdAt ? DDMMMMYYY(user.createdAt) : "-"}
                   </p>
                 </div>
                 <div className="account-info-item">

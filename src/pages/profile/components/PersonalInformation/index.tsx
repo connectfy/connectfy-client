@@ -1,34 +1,27 @@
-import { useMemo } from "react";
 import {
-  Calendar,
-  Clock,
+  Cake,
+  Phone,
   Mail,
   MapPin,
   UserIcon,
   Edit2,
   MapMinusIcon,
+  Minus,
 } from "lucide-react";
 import "./index.style.css";
-import { DATE_FORMAT, Resource } from "@/types/enum.types";
+import { Resource } from "@/types/enum.types";
 import { useAppSelector } from "@/hooks/useStore";
 import { PrivacyIcon } from "../PrivacyIcon";
 import { IMe } from "@/types/auth/user/user.type";
 import { useTranslation } from "react-i18next";
+import { DDMMMMYYY } from "@/utils/formatDate";
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
 
   const { me: profile } = useAppSelector((state) => state[Resource.user]);
   const { user, account, settings } = profile as IMe;
-  const { generalSettings, privacySettings } = settings;
-
-  const dateFormatLabel = useMemo(
-    () =>
-      generalSettings.timeZone.dateFormat === DATE_FORMAT.DDMMYYYY
-        ? "DD/MM/YYYY"
-        : "MM/DD/YYYY",
-    [generalSettings.timeZone.dateFormat]
-  );
+  const { privacySettings } = settings;
 
   return (
     <div>
@@ -83,24 +76,26 @@ const PersonalInformation = () => {
 
           <div className="profile-info-card">
             <div className="profile-info-header">
-              <Clock size={16} aria-hidden="true" />
+              <Cake size={16} aria-hidden="true" />
               <span className="profile-info-label">
-                {t("common.time_format")}
+                {t("common.birthday")}
               </span>
+              <PrivacyIcon privacy={privacySettings.birthdayDate} />
             </div>
             <p className="profile-info-value">
-              {generalSettings.timeZone.timeFormat}
+              {DDMMMMYYY(account.birthdayDate)}
             </p>
           </div>
 
           <div className="profile-info-card">
             <div className="profile-info-header">
-              <Calendar size={16} aria-hidden="true" />
+              <Phone size={16} aria-hidden="true" />
               <span className="profile-info-label">
-                {t("common.date_format")}
+                {t("common.phone")}
               </span>
+              <PrivacyIcon privacy={privacySettings.phoneNumber} />
             </div>
-            <p className="profile-info-value">{dateFormatLabel}</p>
+            <p className="profile-info-value">{user.phoneNumber ? user.phoneNumber.fullPhoneNumber : <Minus />}</p>
           </div>
         </div>
       </section>

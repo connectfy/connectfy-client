@@ -12,6 +12,7 @@ export interface IPrivacySettings {
   avatar: PRIVACY_SETTINGS_CHOICE;
   messageRequest: PRIVACY_SETTINGS_CHOICE;
   birthdayDate: PRIVACY_SETTINGS_CHOICE;
+  phoneNumber: PRIVACY_SETTINGS_CHOICE;
   friendshipRequest: boolean;
   readReceipts: boolean;
 }
