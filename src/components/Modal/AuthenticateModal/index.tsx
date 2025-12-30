@@ -3,17 +3,17 @@ import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
 import "./index.style.css";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
-import { IAuthenticateUser } from "@/types/auth/auth/auth.type";
 import { useFormik } from "formik";
-import { checkEmptyString } from "@/utils/checkValues";
+import { checkEmptyString } from "@/common/utils/checkValues";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { PROVIDER, Resource, TOKEN_TYPE } from "@/types/enum.types";
+import { PROVIDER, RESOURCE, TOKEN_TYPE } from "@/common/enums/enums";
 import { useToastError } from "@/hooks/useToastError";
-import { authenticateUser, clearError } from "@/features/auth/auth/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Modal from "..";
-import { snack } from "@/utils/snackManager";
+import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
+import { IAuthenticateUser } from "@/modules/auth/types/types";
+import { authenticateUser, clearError } from "@/modules/auth/api/api";
 
 interface Props {
   open: boolean;
@@ -32,9 +32,9 @@ const AuthenticateModal: FC<Props> = ({
   const dispatch = useAppDispatch();
 
   const { LOADING_AUTHENTICATE_USER, ERROR_AUTHENTICATE_USER } = useAppSelector(
-    (state) => state[Resource.auth]
+    (state) => state[RESOURCE.AUTH]
   );
-  const { me } = useAppSelector((state) => state[Resource.user]);
+  const { me } = useAppSelector((state) => state[RESOURCE.PROFILE]);
 
   const isPasswordProvider = me?.user.provider === PROVIDER.PASSWORD;
 

@@ -3,7 +3,7 @@ import "./index.style.css";
 import { Outlet, useNavigate, useLocation, matchPath } from "react-router-dom";
 import UniqueSidebar from "@/components/Sidebar/UniqueSidebar";
 import { useTranslation } from "react-i18next";
-import { ROUTER } from "@/constants/routet";
+import { ROUTER } from "@/common/constants/routet";
 import {
   Settings,
   KeyRound,

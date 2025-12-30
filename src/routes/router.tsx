@@ -4,7 +4,7 @@ import {
   RedirectMain,
   RequireAuth,
 } from "@/components/routeGuard/RequireAuth";
-import { ROUTER } from "@/constants/routet";
+import { ROUTER } from "@/common/constants/routet";
 import { Navigate } from "react-router-dom";
 import Loader from "@/components/Loader/Loader";
 
@@ -12,39 +12,16 @@ import Loader from "@/components/Loader/Loader";
 const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/index")));
 const BaseLayout = Loader(lazy(() => import("@/layouts/Base/index")));
 const SettingsLayout = lazy(() => import("@/layouts/Settings/index"));
+const Messenger = lazy(() => import("@/modules/messenger/ui/Messenger"));
 
-// ======================= AUTH
-const Auth = lazy(() => import("@/pages/auth/pages/Main/index"));
-const ForgotPassword = lazy(
-  () => import("@/pages/auth/pages/ForgotPassword/index")
-);
-const VerifySignup = lazy(() => import("@/pages/auth/pages/Verify/index"));
-const ResetPassword = lazy(
-  () => import("@/pages/auth/pages/ResesPassword/index")
-);
-
-// ======================= TERMS AND CONDITIONS
-const TermsAndConditions = lazy(
-  () => import("@/pages/termsAndConditions/index")
-);
-
-// ======================= MESSENGER
-const Messenger = lazy(() => import("@/pages/messenger/index"));
-
-// ======================= SETTINGS
-const Settings = lazy(() => import("@/pages/settings/Main/index"));
-const GeneralSettings = lazy(() => import("@/pages/settings/General/index"));
-const PrivacySettings = lazy(() => import("@/pages/settings/Privacy/index"));
-const AccountSettings = lazy(() => import("@/pages/settings/Account/index"));
-const NotificationSettings = lazy(
-  () => import("@/pages/settings/Notification/index")
-);
-const BackgroundSettings = lazy(
-  () => import("@/pages/settings/Background/index")
-);
-
-// ======================= PROFILE
-const Profile = lazy(() => import("@/pages/profile/index"));
+import authRoutes from "@/modules/auth/router/router";
+import termsAndConditionsRoutes from "@/modules/termsAndConditions/router/router";
+import settingsRoutes from "@/modules/settings/Settings/router/router"
+import generalSettingsRoutes from "@/modules/settings/GeneralSettings/router/router"
+import accountSettingsRoutes from "@/modules/settings/AccountSettings/router/router"
+import privacySettingsRoutes from "@/modules/settings/PrivacySettings/router/router"
+import notificationSettingsRoutes from "@/modules/settings/NotificationSettings/router/router"
+import profileRoutes from "@/modules/profile/router/router"
 
 const routes = [
   // ======================= ROOT REDIRECT
@@ -54,37 +31,19 @@ const routes = [
   },
   // ======================= AUTH
   {
-    path: "/auth",
+    path: "/",
     element: (
       <InsideProfile>
         <AuthLayout />
       </InsideProfile>
     ),
     children: [
-      {
-        index: true,
-        element: <Auth />,
-      },
-      {
-        path: "forgot-password",
-        element: <ForgotPassword />,
-      },
-      {
-        path: "verify-account",
-        element: <VerifySignup />,
-      },
-      {
-        path: "reset-password",
-        element: <ResetPassword />,
-      },
+      ...authRoutes,
       { path: "*", element: <Navigate to={ROUTER.AUTH.MAIN} replace /> },
     ],
   },
   // ======================= TERMS AND CONDITIONS
-  {
-    path: ROUTER.TERMS_AND_CONDITIONS,
-    element: <TermsAndConditions />,
-  },
+  ...termsAndConditionsRoutes,
   // ======================= MAIN APP
   {
     path: "/",
@@ -99,58 +58,24 @@ const routes = [
         path: ROUTER.MESSENGER.MAIN,
         element: <Messenger />,
       },
-      {
-        path: ROUTER.GROUPS.MAIN,
-        element: <Messenger />,
-      },
-      {
-        path: ROUTER.CHANNELS.MAIN,
-        element: <Messenger />,
-      },
-      {
-        path: ROUTER.USERS.MAIN,
-        element: <Messenger />,
-      },
-      {
-        path: ROUTER.NOTIFICATIONS.MAIN,
-        element: <Messenger />,
-      },
 
       // ======================= PROFILE
-      {
-        path: ROUTER.PROFILE.MAIN,
-        element: <Profile />,
-      },
+      ...profileRoutes,
 
       // ======================= SETTINGS
       {
-        path: ROUTER.SETTINGS.MAIN,
+        path: "/",
         element: <SettingsLayout />,
         children: [
-          {
-            index: true,
-            element: <Settings />,
-          },
-          {
-            path: ROUTER.SETTINGS.GENERAL,
-            element: <GeneralSettings />,
-          },
-          {
-            path: ROUTER.SETTINGS.PRIVACY,
-            element: <PrivacySettings />,
-          },
-          {
-            path: ROUTER.SETTINGS.ACCOUNT,
-            element: <AccountSettings />,
-          },
-          {
-            path: ROUTER.SETTINGS.NOTIFICATION,
-            element: <NotificationSettings />,
-          },
-          {
-            path: ROUTER.SETTINGS.BACKGROUND,
-            element: <BackgroundSettings />,
-          },
+          // {
+          //   index: true,
+          //   element: <Settings />,
+          // },
+          ...settingsRoutes,
+          ...generalSettingsRoutes,
+          ...accountSettingsRoutes,
+          ...privacySettingsRoutes,
+          ...notificationSettingsRoutes,
         ],
       },
 

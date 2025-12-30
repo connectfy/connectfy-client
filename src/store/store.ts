@@ -1,25 +1,26 @@
-import { Resource } from "../types/enum.types";
+import { RESOURCE } from "@/common/enums/enums";
 import { combineReducers, configureStore, Middleware } from "@reduxjs/toolkit";
 
 // Auth
-import authReducer, { logout } from "@/features/auth/auth/authSlice";
-import userReducer from "@/features/auth/user/userSlice";
+import authReducer from "@/modules/auth/api/api";
 
 // Account
-// import accountReducer from "@/features/account/account/accountSlice";
-import generalSettingsReducer from "@/features/account/settings/general/generalSettingsSlice";
-import privacySettingsReducer from "@/features/account/settings/privacy/privacySettingsSlice";
-import notificationSettingsReducer from "@/features/account/settings/notification/notificationSettingsSlice";
+import accountReducer from "@/modules/profile/api/api";
+import accountSettingsReducer, { logout } from "@/modules/settings/AccountSettings/api/api";
+import generalSettingsReducer from "@/modules/settings/GeneralSettings/api/api";
+import privacySettingsReducer from "@/modules/settings/PrivacySettings/api/api";
+import notificationSettingsReducer from "@/modules/settings/NotificationSettings/api/api";
 
 const appReducer = combineReducers({
   // Auth
-  [Resource.auth]: authReducer,
-  [Resource.user]: userReducer,
+  [RESOURCE.AUTH]: authReducer,
 
   // Account
-  [Resource.generalSettings]: generalSettingsReducer,
-  [Resource.privacySettings]: privacySettingsReducer,
-  [Resource.notificationSettings]: notificationSettingsReducer,
+  [RESOURCE.PROFILE]: accountReducer,
+  [RESOURCE.ACCOUNT_SETTINGS]: accountSettingsReducer,
+  [RESOURCE.GENERAL_SETTINGS]: generalSettingsReducer,
+  [RESOURCE.PRIVACY_SETTINGS]: privacySettingsReducer,
+  [RESOURCE.NOTIFICATION_SETTINGS]: notificationSettingsReducer,
 });
 
 const rootReducer = (state: any, action: any) => {

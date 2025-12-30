@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/context/ThemeContext.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { SnackbarProvider } from "notistack";
 import CloseButton from "./components/CloseButton/index.tsx";
-import { history } from "@/helpers/history";
+import { history } from "@/common/helpers/history.ts";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;

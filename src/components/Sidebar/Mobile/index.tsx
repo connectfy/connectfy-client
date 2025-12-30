@@ -2,10 +2,10 @@ import { Fragment, memo, useEffect, useMemo, useState } from "react";
 import { MessageCircle, Users, Radio, UserCircle, User } from "lucide-react";
 import "./index.style.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ROUTER } from "@/constants/routet";
+import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/hooks/useStore";
-import { Resource } from "@/types/enum.types";
+import { RESOURCE } from "@/common/enums/enums";
 import { Avatar } from "@mui/material";
 
 const MobileSidebar = () => {
@@ -13,7 +13,7 @@ const MobileSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { me: userData } = useAppSelector((state) => state[Resource.user]);
+  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
 
   const [activeItem, setActiveItem] = useState<string | null>(null);
 

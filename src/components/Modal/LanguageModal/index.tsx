@@ -16,7 +16,7 @@ import {
   Slide,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { LANGUAGE } from "@/types/enum.types";
+import { LANGUAGE } from "@/common/enums/enums";
 
 interface LanguageModalProps {
   open: boolean;

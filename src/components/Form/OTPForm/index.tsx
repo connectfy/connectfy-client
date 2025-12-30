@@ -1,7 +1,7 @@
 import "./index.style.css";
 import { Box } from "@mui/material";
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
-import { ROUTER } from "@/constants/routet";
+import { ROUTER } from "@/common/constants/routet";
 import { useNavigate } from "react-router-dom";
 
 type OTPProps = {

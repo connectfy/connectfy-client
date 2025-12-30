@@ -1,12 +1,12 @@
 import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import "./index.style.css";
-import { COUNTRIES } from "@/pages/auth/constants/constant";
+import { COUNTRIES } from "@/common/constants/constants";
 import { useTranslation } from "react-i18next";
 import Input from "@/components/Input/Input";
 import { Tooltip } from "@mui/material";
 import useBoolean from "@/hooks/useBoolean";
 import CountryCodeModal from "@/components/Modal/CountryCodeModal";
-import { IPhoneNumber } from "@/types/auth/auth/auth.type";
+import { IPhoneNumber } from "@/modules/auth/types/types";
 
 interface Props {
   name: string;

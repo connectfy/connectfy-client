@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { history } from "@/helpers/history";
+import { history } from "@/common/helpers/history";
 
 interface PendingTransition {
   retry?: () => void;

@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/hooks/useStore";
-import { Resource, THEME } from "@/types/enum.types";
+import { RESOURCE, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface ThemeContextType {
@@ -12,7 +12,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data } = useAppSelector((state) => state[Resource.generalSettings]);
+  const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
 
   const [theme, setTheme] = useState<THEME>(() => {
     const localTheme = localStorage.getItem("app-theme");

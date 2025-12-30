@@ -1,8 +1,8 @@
 // import { TFunction } from "i18next";
-import { ApiErrorType } from "@/types/api.types";
+import { ApiErrorType } from "@/common/types/types";
 import { useAppDispatch } from "./useStore";
 import { useEffect } from "react";
-import { snack } from "@/utils/snackManager";
+import { snack } from "@/common/utils/snackManager";
 // import { toast } from "react-toastify";
 
 type UseToastErrorParams = {

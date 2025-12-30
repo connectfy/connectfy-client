@@ -5,12 +5,12 @@ import * as faceapi from "face-api.js";
 // import { useDispatch } from "react-redux";
 import { CircularProgress } from "@mui/material";
 import { useAppSelector } from "@/hooks/useStore";
-import { Resource } from "@/types/enum.types";
+import { RESOURCE } from "@/common/enums/enums";
 import Spinner from "@/components/Spinner/Spinner";
 import { FormikProps } from "formik";
-import { ILoginForm } from "@/types/auth/auth/auth.type";
 import Button from "@/components/Button/Button";
-import { snack } from "@/utils/snackManager";
+import { snack } from "@/common/utils/snackManager";
+import { ILoginForm } from "@/modules/auth/types/types";
 
 type FaceIdModalProps = {
   isOpen: boolean;
@@ -40,7 +40,7 @@ const FaceIdModal: FC<FaceIdModalProps> = ({
 
   const hasDescriptorRef = useRef<boolean>(false);
 
-  const { LOADING_FACE_ID } = useAppSelector((state) => state[Resource.auth]);
+  const { LOADING_FACE_ID } = useAppSelector((state) => state[RESOURCE.AUTH]);
 
   useEffect(() => {
     hasDescriptorRef.current = hasDescriptor;

@@ -2,10 +2,10 @@ import { type FC, useMemo, useState } from "react";
 import { Modal, Box, IconButton, Slide } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./index.style.css";
-import { COUNTRIES } from "@/pages/auth/constants/constant";
-import { ICountry } from "@/types/auth/auth/auth.type";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
+import { ICountry } from "@/common/interfaces/interfaces";
+import { COUNTRIES } from "@/common/constants/constants";
 
 interface Props {
   open: boolean;

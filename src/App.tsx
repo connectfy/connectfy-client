@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
-import { LANGUAGE, Resource } from "./types/enum.types";
+import { LANGUAGE, RESOURCE } from "@/common/enums/enums";
 import routes from "@/routes/router";
 import { useRoutes } from "react-router-dom";
-import { setAccessToken } from "@/features/auth/auth/authSlice";
 import "@/styles/index.css";
 import "flag-icons/css/flag-icons.min.css";
 import { useAppDispatch, useAppSelector } from "./hooks/useStore";
+import { setAccessToken } from "./modules/auth/api/api";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -14,7 +14,7 @@ function App() {
   const content = useRoutes(routes);
   const lang = localStorage.getItem("lang");
 
-  const { data } = useAppSelector((state) => state[Resource.generalSettings]);
+  const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
   const userLang = data?.language;
   const access_token = localStorage.getItem("access_token");
 

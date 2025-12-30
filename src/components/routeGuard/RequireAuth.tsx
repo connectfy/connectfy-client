@@ -1,13 +1,13 @@
 import { ReactNode, useEffect } from "react";
-import { Resource } from "@/types/enum.types";
+import { RESOURCE } from "@/common/enums/enums";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { ROUTER } from "@/constants/routet";
+import { ROUTER } from "@/common/constants/routet";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { me } from "@/features/auth/user/userSlice";
-import { setData as setGeneralSettings } from "@/features/account/settings/general/generalSettingsSlice";
-import { setData as setPrivacySettings } from "@/features/account/settings/privacy/privacySettingsSlice";
-import { setData as setNotificationSettings } from "@/features/account/settings/notification/notificationSettingsSlice";
-import { getHomeRouteByStartup } from "@/utils/routes";
+import { me } from "@/modules/profile/api/api.ts";
+import { setData as setGeneralSettings } from "@/modules/settings/GeneralSettings/api/api.ts";
+import { setData as setPrivacySettings } from "@/modules/settings/PrivacySettings/api/api.ts";
+import { setData as setNotificationSettings } from "@/modules/settings/NotificationSettings/api/api.ts";
+import { getHomeRouteByStartup } from "@/common/utils/routes";
 
 type AuthType = {
   children: ReactNode;
@@ -18,8 +18,8 @@ export function RequireAuth({ children }: AuthType) {
   const location = useLocation();
 
   // ✅ Əvvəlcə bütün hooks-ları çağırın
-  const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.user]);
+  const { access_token } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
 
   useEffect(() => {
     if (access_token && !userData) {
@@ -49,10 +49,10 @@ export function InsideProfile({ children }: AuthType) {
   const location = useLocation();
 
   // ✅ Bütün hooks-lar birlikdə
-  const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.user]);
+  const { access_token } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
   const { data: generalSettings } = useAppSelector(
-    (state) => state[Resource.generalSettings]
+    (state) => state[RESOURCE.GENERAL_SETTINGS]
   );
 
   // ✅ Conditional logic sonunda
@@ -77,10 +77,10 @@ export function RedirectMain() {
   const dispatch = useAppDispatch();
 
   // ✅ Bütün hooks-lar birlikdə
-  const { access_token } = useAppSelector((state) => state[Resource.auth]);
-  const { me: userData } = useAppSelector((state) => state[Resource.user]);
+  const { access_token } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
   const { data: generalSettings } = useAppSelector(
-    (state) => state[Resource.generalSettings]
+    (state) => state[RESOURCE.GENERAL_SETTINGS]
   );
 
   useEffect(() => {
