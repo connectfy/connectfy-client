@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from 'react-dom';
-import "./index.style.css";
+import "./datePicker.style.css";
 import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 

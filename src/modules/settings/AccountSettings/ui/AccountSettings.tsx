@@ -23,7 +23,7 @@ import {
 import "./accountSettings.style.css";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
-import SettingCard from "@/components/Card/SettingsCard";
+import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";

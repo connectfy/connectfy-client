@@ -1,7 +1,7 @@
 import Input from "@/components/Input/Input";
 import "./index.style.css";
 import { useTranslation } from "react-i18next";
-import Button from "@/components/Button/Button";
+import Button from "@/components/Buttons/Button/Button";
 import { FormikProps } from "formik";
 import { ILoginForm } from "../../../../../../types/types";
 import { FC, Fragment } from "react";

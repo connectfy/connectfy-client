@@ -1,5 +1,5 @@
 import { FC, ForwardRefExoticComponent, Fragment, RefAttributes } from "react";
-import "./index.style.css";
+import "./customSelect.style.css";
 import { ChevronRight, LucideProps } from "lucide-react";
 import useBoolean from "@/hooks/useBoolean";
 import SelectionModal from "../Modal/SelectionModal";

@@ -1,12 +1,12 @@
 import "./privacySettings.style.css";
 import { CheckCircle, Shield, UserCheck } from "lucide-react";
 import { Fragment } from "react";
-import CustomSelect from "@/components/CustomSelect";
+import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { useTranslation } from "react-i18next";
 import { PRIVACY_SETTINGS_CHOICE, RESOURCE } from "@/common/enums/enums";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
-import SettingCard from "@/components/Card/SettingsCard";
-import ToggleCard from "@/components/Card/ToggleCard";
+import SettingCard from "@/components/Card/SettingsCard/SettingCard";
+import ToggleCard from "@/components/Card/ToggleCard/ToggleCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import {

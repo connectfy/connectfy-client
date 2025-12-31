@@ -9,9 +9,9 @@ import { Navigate } from "react-router-dom";
 import Loader from "@/components/Loader/Loader";
 
 // ======================= LAYOUT
-const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/index")));
-const BaseLayout = Loader(lazy(() => import("@/layouts/Base/index")));
-const SettingsLayout = lazy(() => import("@/layouts/Settings/index"));
+const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/AuthLayout")));
+const BaseLayout = Loader(lazy(() => import("@/layouts/Base/BaseLayout")));
+const SettingsLayout = lazy(() => import("@/layouts/Settings/SettingsLayout"));
 const Messenger = lazy(() => import("@/modules/messenger/ui/Messenger"));
 
 import authRoutes from "@/modules/auth/router/router";

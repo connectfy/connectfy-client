@@ -1,5 +1,5 @@
-import Button from "@/components/Button/Button";
-import OTPForm from "@/components/Form/OTPForm";
+import Button from "@/components/Buttons/Button/Button";
+import OTPForm from "@/components/Form/OTPForm/OTPForm";
 import "./verify.style.css";
 import { useTranslation } from "react-i18next";
 import { RESOURCE } from "@/common/enums/enums";

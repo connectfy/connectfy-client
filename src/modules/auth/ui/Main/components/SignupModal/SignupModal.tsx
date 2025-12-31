@@ -17,8 +17,8 @@ import { CircularProgress } from "@mui/material";
 
 // Custom Components
 import Input from "@/components/Input/Input";
-import DatePicker from "@/components/DatePicker";
-import Button from "@/components/Button/Button";
+import DatePicker from "@/components/DatePicker/DatePicker";
+import Button from "@/components/Buttons/Button/Button";
 import Modal from "@/components/Modal";
 import GenderForm from "@/components/Form/GenderForm/GenderForm";
 

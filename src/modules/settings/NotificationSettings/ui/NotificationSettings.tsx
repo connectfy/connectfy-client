@@ -3,10 +3,10 @@ import { Fragment } from "react";
 import "./notificationSettings.style.css";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
-import ToggleCard from "@/components/Card/ToggleCard";
+import ToggleCard from "@/components/Card/ToggleCard/ToggleCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
-import SettingCard from "@/components/Card/SettingsCard";
+import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import {
   initialState,
   NOTIFICATION_FIELDS,

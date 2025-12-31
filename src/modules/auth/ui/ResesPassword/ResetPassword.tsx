@@ -2,7 +2,7 @@ import "./resetPassword.style.css";
 import { useTranslation } from "react-i18next";
 import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
 import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
-import Button from "@/components/Button/Button";
+import Button from "@/components/Buttons/Button/Button";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { resetPasswordInitialState } from "../../constants/intialState";

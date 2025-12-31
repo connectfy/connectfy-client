@@ -1,5 +1,5 @@
 import { FC, Fragment, memo, useEffect, useState } from "react";
-import "./index.style.css";
+import "./uniqueSidebar.style.css";
 import { useLocation } from "react-router-dom";
 import { ChevronRight, LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";

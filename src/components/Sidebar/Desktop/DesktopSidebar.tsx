@@ -8,7 +8,7 @@ import {
   User,
   Settings,
 } from "lucide-react";
-import "./index.style.css";
+import "./desktopSidebar.style.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";

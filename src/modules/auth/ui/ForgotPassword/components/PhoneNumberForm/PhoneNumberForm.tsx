@@ -1,6 +1,6 @@
 import "./phoneNumberForm.style.css";
-import Button from "@/components/Button/Button";
-import PhoneNumber from "@/components/Form/PhoneNumberForm";
+import Button from "@/components/Buttons/Button/Button";
+import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Spinner from "@/components/Spinner/Spinner";
 import { useAppSelector } from "@/hooks/useStore";
 import { IForgotPasswordForm, IPhoneNumber } from "../../../../types/types";

@@ -1,8 +1,8 @@
-import PhoneNumber from "@/components/Form/PhoneNumberForm";
+import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import "./phoneNumberForm.style.css";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useTranslation } from "react-i18next";
-import Button from "@/components/Button/Button";
+import Button from "@/components/Buttons/Button/Button";
 import { FormikProps } from "formik";
 import { ILoginForm, IPhoneNumber } from "../../../../../../types/types";
 import { FC } from "react";

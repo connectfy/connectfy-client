@@ -1,4 +1,4 @@
-import "./index.style.css";
+import "./otpForm.style.css";
 import { Box } from "@mui/material";
 import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { ROUTER } from "@/common/constants/routet";

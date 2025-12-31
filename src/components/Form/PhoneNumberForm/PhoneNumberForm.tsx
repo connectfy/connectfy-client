@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useMemo, useState } from "react";
-import "./index.style.css";
+import "./phoneNumberForm.style.css";
 import { COUNTRIES } from "@/common/constants/constants";
 import { useTranslation } from "react-i18next";
 import Input from "@/components/Input/Input";

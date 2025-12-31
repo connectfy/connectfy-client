@@ -2,11 +2,11 @@ import {
   CSSProperties,
   FC,
   ForwardRefExoticComponent,
+  ReactNode,
   RefAttributes,
 } from "react";
-import "./index.style.css";
+import "./settingCard.style.css";
 import { LucideProps } from "lucide-react";
-import ToggleSlider from "@/components/ToggleSlider";
 
 interface Props {
   header?: {
@@ -18,31 +18,35 @@ interface Props {
     iconStyle?: CSSProperties;
     headerStyle?: CSSProperties;
   };
-  slider: {
-    checked: boolean;
-    onClick: () => void;
-  };
+  children?: ReactNode;
+  contentStyle?: CSSProperties;
+  cardStyle?: CSSProperties;
 }
 
-const ToggleCard: FC<Props> = ({ header, slider }) => {
+const SettingCard: FC<Props> = ({
+  header,
+  children,
+  contentStyle,
+  cardStyle,
+}) => {
   return (
-    <div className="toggle-card">
-      <div className="toggle-card-header" style={header?.headerStyle}>
+    <div className="setting-card" style={cardStyle}>
+      <div className="setting-card-header">
         {header?.icon && (
-          <div className="toggle-card-icon" style={header.iconStyle}>
+          <div className="setting-icon" style={header.iconStyle}>
             <header.icon size={20} />
           </div>
         )}
         {(header?.title || header?.subtitle) && (
-          <div className="toggle-card-title">
+          <div className="setting-card-title">
             <h3>{header?.title}</h3>
             <p>{header?.subtitle}</p>
           </div>
         )}
-        <ToggleSlider checked={slider.checked} onClick={slider.onClick} />
       </div>
+      <div style={contentStyle}>{children}</div>
     </div>
   );
 };
 
-export default ToggleCard;
+export default SettingCard;

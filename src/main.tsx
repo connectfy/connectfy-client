@@ -6,7 +6,7 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@/context/ThemeContext.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { SnackbarProvider } from "notistack";
-import CloseButton from "./components/CloseButton/index.tsx";
+import CloseButton from "./components/Buttons/CloseButton/CloseButton.tsx";
 import { history } from "@/common/helpers/history.ts";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 

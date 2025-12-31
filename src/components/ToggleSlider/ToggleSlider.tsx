@@ -1,5 +1,5 @@
 import { FC } from "react";
-import "./index.style.css";
+import "./toggleSlider.style.css";
 
 interface Props {
   checked: boolean;

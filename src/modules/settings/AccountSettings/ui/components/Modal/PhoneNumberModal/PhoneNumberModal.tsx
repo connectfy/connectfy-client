@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useToastError } from "@/hooks/useToastError";
 import { PHONE_NUMBER_ACTION, RESOURCE } from "@/common/enums/enums";
-import PhoneNumberForm from "@/components/Form/PhoneNumberForm";
+import PhoneNumberForm from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { snack } from "@/common/utils/snackManager";
 import { COUNTRIES } from "@/common/constants/constants";

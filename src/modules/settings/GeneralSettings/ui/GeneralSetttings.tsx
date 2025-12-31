@@ -9,11 +9,11 @@ import {
 } from "lucide-react";
 import "./generalSetttings.style.css";
 import { Fragment, useEffect, useState } from "react";
-import CustomSelect from "@/components/CustomSelect";
+import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
-import SettingCard from "@/components/Card/SettingsCard";
+import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import {

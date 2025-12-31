@@ -1,6 +1,6 @@
-import "./index.style.css";
-import DesktopSidebar from "@/components/Sidebar/Desktop";
-import MobileSidebar from "@/components/Sidebar/Mobile";
+import "./baseLayout.style.css";
+import DesktopSidebar from "@/components/Sidebar/Desktop/DesktopSidebar";
+import MobileSidebar from "@/components/Sidebar/Mobile/MobileSidebar";
 import { FC, memo, ReactNode, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 

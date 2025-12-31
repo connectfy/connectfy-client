@@ -1,7 +1,7 @@
 import { FC, memo, ReactNode, useEffect, useState } from "react";
-import "./index.style.css";
+import "./settingsLayout.style.css";
 import { Outlet, useNavigate, useLocation, matchPath } from "react-router-dom";
-import UniqueSidebar from "@/components/Sidebar/UniqueSidebar";
+import UniqueSidebar from "@/components/Sidebar/UniqueSidebar/UniqueSidebar";
 import { useTranslation } from "react-i18next";
 import { ROUTER } from "@/common/constants/routet";
 import {
