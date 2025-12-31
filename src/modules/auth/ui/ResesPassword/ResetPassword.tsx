@@ -12,11 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { RESOURCE, TOKEN_TYPE } from "@/common/enums/enums";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToastError } from "@/hooks/useToastError";
-import {
-  clearError,
-  isValidToken,
-  resetPassword,
-} from "../../api/api";
+import { clearError, isValidToken, resetPassword } from "../../api/api";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
@@ -132,9 +128,13 @@ const ResetPassword = () => {
                 showGenerateIcon
                 fullWidth
                 value={formik.values.password || ""}
-                onChange={(e) =>
-                  formik.setFieldValue("password", e.target.value || null)
-                }
+                onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 30) return;
+
+                  formik.setFieldValue("password", value || null);
+                }}
                 onBlur={() => formik.setFieldTouched("password", true, false)}
                 onGenerate={(value?: string) => {
                   navigator.clipboard.writeText(value as string);
@@ -161,12 +161,13 @@ const ResetPassword = () => {
                 name="confirmPassword"
                 fullWidth
                 value={formik.values.confirmPassword || ""}
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    "confirmPassword",
-                    e.target.value || null
-                  )
-                }
+                onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 30) return;
+
+                  formik.setFieldValue("confirmPassword", value || null);
+                }}
                 onBlur={() =>
                   formik.setFieldTouched("confirmPassword", true, false)
                 }

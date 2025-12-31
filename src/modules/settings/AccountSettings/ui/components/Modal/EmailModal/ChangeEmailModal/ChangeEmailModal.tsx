@@ -10,7 +10,10 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useToastError } from "@/hooks/useToastError";
 import { RESOURCE } from "@/common/enums/enums";
 import Input from "@/components/Input/Input";
-import { clearError, updateEmail } from "@/modules/settings/AccountSettings/api/api";
+import {
+  clearError,
+  updateEmail,
+} from "@/modules/settings/AccountSettings/api/api";
 
 interface Props {
   open: boolean;
@@ -279,7 +282,13 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
                 name="email"
                 label={t("common.email")}
                 value={formik.values.email || ""}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 254) return;
+
+                  formik.setFieldValue("email", value);
+                }}
                 onBlur={formik.handleBlur}
                 hasError={!!formik.errors.email}
                 disabled={LOADING_UPDATE_EMAIL}

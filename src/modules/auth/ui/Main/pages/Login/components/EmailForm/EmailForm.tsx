@@ -27,9 +27,13 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
           label={t("common.email")}
           name="identifier"
           value={formik.values.identifier || ""}
-          onChange={(e) =>
-            formik.setFieldValue("identifier", e.target.value || null)
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 254) return;
+
+            formik.setFieldValue("identifier", value || null)
+          }}
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
           hasError={!!(formik.errors.identifier && formik.touched.identifier)}
         />
@@ -38,9 +42,13 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
           label={t("common.password")}
           name="password"
           value={formik.values.password || ""}
-          onChange={(e) =>
-            formik.setFieldValue("password", e.target.value || "")
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 30) return;
+
+            formik.setFieldValue("password", value || "")
+          }}
           onBlur={() => formik.setFieldTouched("password", true, false)}
           hasError={!!(formik.errors.password && formik.touched.password)}
         />

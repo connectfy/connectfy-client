@@ -35,9 +35,13 @@ const PhoneNumberForm: FC<Props> = ({ formik, isDisabled }) => {
           label={t("common.password")}
           name="password"
           value={formik.values.password || ""}
-          onChange={(e) =>
-            formik.setFieldValue("password", e.target.value || null)
-          }
+          onChange={(e) => {
+            const value = e.target.value || null;
+
+            if (value && value.length > 30) return;
+
+            formik.setFieldValue("password", value || null);
+          }}
           onBlur={() => formik.setFieldTouched("password", true, false)}
         />
       </div>

@@ -104,7 +104,7 @@ export default function PasswordInput({
 
   const mergedSx = Array.isArray(sx) ? [...sx, customSx] : [sx ?? {}, customSx];
 
-  async function generatePassword(len = 12) {
+  async function generatePassword(len = 15) {
     const chars =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
     let res = "";

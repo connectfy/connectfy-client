@@ -5,11 +5,7 @@ import GenderForm from "@/components/Form/GenderForm/GenderForm";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button/Button";
-import {
-  clearError,
-  setSignupForm,
-  signup,
-} from "../../../../api/api";
+import { clearError, setSignupForm, signup } from "../../../../api/api";
 import DatePicker from "@/components/DatePicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
@@ -46,13 +42,13 @@ const Signup = () => {
     validate: (values) => validateSignup(values, t),
     onSubmit: async (values, { resetForm }) => {
       const { confirm, ...rest } = values;
-      
-      rest.birthdayDate = rest.birthdayDate
-      ? new Date(rest.birthdayDate)
-      : null;
 
-      rest.theme = localStorage.getItem("app-theme") as THEME || THEME.LIGHT;
-      
+      rest.birthdayDate = rest.birthdayDate
+        ? new Date(rest.birthdayDate)
+        : null;
+
+      rest.theme = (localStorage.getItem("app-theme") as THEME) || THEME.LIGHT;
+
       const actionResult = await dispatch(signup(rest));
       const res = unwrapResult(actionResult);
       if (res) {
@@ -121,9 +117,13 @@ const Signup = () => {
           name="firstName"
           value={formik.values.firstName || ""}
           onBlur={() => formik.setFieldTouched("firstName", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("firstName", e.target.value || null)
-          }
+          onChange={(e) => {
+            const value = e.target.value || null;
+
+            if (value && value.length > 50) return;
+
+            formik.setFieldValue("firstName", value || null);
+          }}
           hasError={!!(formik.errors.firstName && formik.touched.firstName)}
         />
         {formik.errors.firstName && formik.touched.firstName && (
@@ -135,9 +135,13 @@ const Signup = () => {
           name="lastName"
           value={formik.values.lastName || ""}
           onBlur={() => formik.setFieldTouched("lastName", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("lastName", e.target.value || null)
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 50) return;
+
+            formik.setFieldValue("lastName", value || null);
+          }}
           hasError={!!(formik.errors.lastName && formik.touched.lastName)}
         />
         {formik.errors.lastName && formik.touched.lastName && (
@@ -151,9 +155,13 @@ const Signup = () => {
           name="username"
           value={formik.values.username || ""}
           onBlur={() => formik.setFieldTouched("username", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("username", e.target.value || null)
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 30) return;
+
+            formik.setFieldValue("username", value || null);
+          }}
           hasError={!!(formik.errors.username && formik.touched.username)}
         />
         {formik.errors.username && formik.touched.username && (
@@ -165,9 +173,13 @@ const Signup = () => {
           name="email"
           value={formik.values.email || ""}
           onBlur={() => formik.setFieldTouched("email", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("email", e.target.value || null)
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 254) return;
+
+            formik.setFieldValue("email", value || null);
+          }}
           hasError={!!(formik.errors.email && formik.touched.email)}
         />
         {formik.errors.email && formik.touched.email && (
@@ -217,9 +229,13 @@ const Signup = () => {
           name="password"
           value={formik.values.password || ""}
           onBlur={() => formik.setFieldTouched("password", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("password", e.target.value || null)
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 30) return;
+
+            formik.setFieldValue("password", value || null);
+          }}
           onGenerate={(value?: string) => {
             navigator.clipboard.writeText(value as string);
             snack.info(t("user_messages.password_generated_message"), {
@@ -244,9 +260,13 @@ const Signup = () => {
           name="confirm"
           value={formik.values.confirm || ""}
           onBlur={() => formik.setFieldTouched("confirm", true, false)}
-          onChange={(e) =>
-            formik.setFieldValue("confirm", e.target.value || null)
-          }
+          onChange={(e) =>{
+            const value = e.target.value || null;
+
+            if (value && value.length > 30) return;
+
+            formik.setFieldValue("confirm", value || null);
+          }}
           hasError={!!(formik.errors.confirm && formik.touched.confirm)}
         />
         {formik.errors.confirm && formik.touched.confirm && (

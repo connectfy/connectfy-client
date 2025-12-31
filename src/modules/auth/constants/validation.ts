@@ -76,9 +76,14 @@ export const validateSignup = (
     errors.username = t("error_messages.username_is_required");
   else if (!usernameRegex.test(username))
     errors.username = t("error_messages.invalid_username");
+  else if (username.length < 3)
+    errors.username = t("error_messages.min_length", { length: 3 })
+  else if (username.length > 30)
+    errors.username = t("error_message.max_length", { length: 30 }) 
 
   if (!email || !checkEmptyString(email))
     errors.email = t("error_messages.email_name_is_required");
+  
   else if (!email.includes("@"))
     errors.email = t("error_messages.invalid_email");
 
@@ -108,7 +113,7 @@ export const validateSignup = (
 
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
-  else if (password.length < 8 || !passwordComplexityRegex.test(password))
+  else if (password.length < 8 || password.length > 30 || !passwordComplexityRegex.test(password))
     errors.password = t("error_messages.password_rule");
 
   if (confirm !== password)
@@ -169,7 +174,7 @@ export const validateResetPassword = (
 
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
-  else if (password.length < 8 || !passwordComplexityRegex.test(password))
+  else if (password.length < 8 || password.length > 30 || !passwordComplexityRegex.test(password))
     errors.password = t("error_messages.password_rule");
 
   if (confirmPassword !== password)
@@ -195,6 +200,10 @@ export const valdiateGoogleSignup = (
     errors.username = t("error_messages.username_is_required");
   else if (!usernameRegex.test(username))
     errors.username = t("error_messages.invalid_username");
+  else if (username.length < 3)
+    errors.username = t("error_messages.min_length", { length: 3 })
+  else if (username.length > 30)
+    errors.username = t("error_message.max_length", { length: 30 }) 
 
   if (!gender || !Object.values(GENDER).includes(gender))
     errors.gender = t("error_messages.gender_is_required");

@@ -144,7 +144,13 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                 name="password"
                 label={t("common.password")}
                 value={formik.values.password || ""}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 30) return;
+
+                  formik.setFieldValue("password", value);
+                }}
                 onBlur={formik.handleBlur}
                 hasError={!!formik.errors.password}
                 disabled={LOADING_UPDATE_PASSWORD}
@@ -178,7 +184,13 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                 name="confirmPassword"
                 label={t("common.confirm_password")}
                 value={formik.values.confirmPassword || ""}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 30) return;
+
+                  formik.setFieldValue("confirmPassword", value);
+                }}
                 onBlur={formik.handleBlur}
                 hasError={!!formik.errors.confirmPassword}
                 disabled={LOADING_UPDATE_PASSWORD}

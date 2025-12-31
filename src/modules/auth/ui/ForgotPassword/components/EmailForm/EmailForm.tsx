@@ -30,9 +30,13 @@ const EmailForm: FC<Props> = ({ formik, isDisabled, onKeyDown }) => {
           label={t("common.email")}
           name="identifier"
           value={formik.values.identifier || ""}
-          onChange={(e) =>
-            formik.setFieldValue("identifier", e.target.value || null)
-          }
+          onChange={(e) => {
+            const value = e.target.value || null;
+
+            if (value && value.length > 254) return;
+
+            formik.setFieldValue("identifier", value || null);
+          }}
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
           onKeyDown={(e) => onKeyDown(e)}
           hasError={!!(formik.errors.identifier && formik.touched.identifier)}

@@ -41,6 +41,8 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
       errors.username = t("error_messages.this_field_required");
     else if (!usernameRegex.test(username))
       errors.username = t("error_messages.invalid_username");
+    else if (username.length < 3)
+      errors.username = t("error_messages.min_length", { length: 3 })
 
     return errors;
   };
@@ -131,7 +133,13 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
               name="username"
               label={t("common.username")}
               value={formik.values.username || ""}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 30) return;
+
+                  formik.setFieldValue("username", value);
+                }}
               onBlur={formik.handleBlur}
               hasError={!!formik.errors.username}
               disabled={LOADING_UPDATE_USERNAME}

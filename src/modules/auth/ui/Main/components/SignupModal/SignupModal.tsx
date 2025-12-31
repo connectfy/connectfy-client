@@ -57,7 +57,8 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
         ? new Date(values.birthdayDate)
         : null;
 
-      values.theme = localStorage.getItem("app-theme") as THEME || THEME.LIGHT;
+      values.theme =
+        (localStorage.getItem("app-theme") as THEME) || THEME.LIGHT;
 
       const actionResult = await dispatch(googleSignup(values));
       const res = unwrapResult(actionResult);
@@ -157,9 +158,13 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
                 inputSize="large"
                 name="username"
                 value={formik.values.username || ""}
-                onChange={(e) =>
-                  formik.setFieldValue("username", e.target.value || null)
-                }
+                onChange={(e) => {
+                  const value = e.target.value || null;
+
+                  if (value && value.length > 30) return;
+
+                  formik.setFieldValue("username", value || null);
+                }}
                 onBlur={() => formik.setFieldTouched("username", true, false)}
                 onKeyDown={(e) => onKeyDown(e)}
                 hasError={!!(formik.errors.username && formik.touched.username)}
@@ -185,7 +190,12 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
             <div className="signup-modal-field">
               <DatePicker
                 value={formik.values.birthdayDate}
-                onChange={(date) => formik.setFieldValue("birthdayDate", date ? new Date(date) : null)}
+                onChange={(date) =>
+                  formik.setFieldValue(
+                    "birthdayDate",
+                    date ? new Date(date) : null
+                  )
+                }
                 inputSize="medium"
                 hasError={
                   !!(formik.errors.birthdayDate && formik.touched.birthdayDate)

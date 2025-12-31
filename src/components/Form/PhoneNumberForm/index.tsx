@@ -84,8 +84,15 @@ const PhoneNumberForm: FC<Props> = ({
               name={name}
               value={fieldValue || ""}
               onChange={(e) => {
-                const value = e.target.value;
-                const numericValue = value.replace(/\D/g, "");
+                const val = e.target.value;
+                const numericValue = val.replace(/\D/g, "");
+
+                if (
+                  !country ||
+                  country.numberLength < String(numericValue).length
+                )
+                  return;
+
                 setFieldValue(numericValue || null);
               }}
               onBlur={onBlur}

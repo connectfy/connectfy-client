@@ -40,9 +40,13 @@ const FaceIdForm: FC<Props> = ({
             label={t("common.username")}
             name="identifier"
             value={formik.values.identifier || ""}
-            onChange={(e) =>
-              formik.setFieldValue("identifier", e.target.value || null)
-            }
+            onChange={(e) => {
+              const value = e.target.value || null;
+
+              if (value && value.length > 30) return;
+
+              formik.setFieldValue("identifier", value || null);
+            }}
             onBlur={() => formik.setFieldTouched("identifier", true, false)}
             hasError={!!(formik.errors.identifier && formik.touched.identifier)}
           />
