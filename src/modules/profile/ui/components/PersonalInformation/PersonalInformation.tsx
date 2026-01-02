@@ -49,7 +49,7 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Mail size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.email")}</span>
-              <PrivacyIcon privacy={privacySettings.email} />
+              <PrivacyIcon privacy={privacySettings.email} fieldName="email" />
             </div>
             <p className="profile-info-value">{user.email}</p>
           </div>
@@ -58,7 +58,7 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <UserIcon size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.gender")}</span>
-              <PrivacyIcon privacy={privacySettings.gender} />
+              <PrivacyIcon privacy={privacySettings.gender} fieldName="gender" />
             </div>
             <p className="profile-info-value">{account.gender}</p>
           </div>
@@ -67,7 +67,7 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <MapPin size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.location")}</span>
-              <PrivacyIcon privacy={privacySettings.location} />
+              <PrivacyIcon privacy={privacySettings.location} fieldName="location" />
             </div>
             <p className="profile-info-value">
               {account.location ?? <MapMinusIcon />}
@@ -78,7 +78,7 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Cake size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.birthday")}</span>
-              <PrivacyIcon privacy={privacySettings.birthdayDate} />
+              <PrivacyIcon privacy={privacySettings.birthdayDate} fieldName="birthdayDate" />
             </div>
             <p className="profile-info-value">
               {DDMMMMYYY(account.birthdayDate)}
@@ -89,7 +89,7 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Phone size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.phone")}</span>
-              <PrivacyIcon privacy={privacySettings.phoneNumber} />
+              <PrivacyIcon privacy={privacySettings.phoneNumber} fieldName="phoneNumber" />
             </div>
             <p className="profile-info-value">
               {user.phoneNumber ? user.phoneNumber.fullPhoneNumber : <Minus />}

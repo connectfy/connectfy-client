@@ -145,7 +145,10 @@ const SocialLinks = () => {
           {t("common.social_links")}
         </h2>
         <div className="profile-page-section-actions">
-          <PrivacyIcon privacy={privacySettings.socialLinks} />
+          <PrivacyIcon
+            privacy={privacySettings.socialLinks}
+            fieldName="socialLinks"
+          />
           <button
             className="profile-edit-button"
             aria-label="Edit personal information"

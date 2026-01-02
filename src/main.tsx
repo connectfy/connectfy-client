@@ -5,7 +5,7 @@ import { store } from "@/store/store.ts";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@/context/ThemeContext.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { SnackbarProvider } from "notistack";
+import { closeSnackbar, SnackbarProvider } from "notistack";
 import CloseButton from "./components/Buttons/CloseButton/CloseButton.tsx";
 import { history } from "@/common/helpers/history.ts";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
@@ -21,7 +21,9 @@ createRoot(document.getElementById("root")!).render(
             maxSnack={5}
             autoHideDuration={5000}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            action={(snackbarKey) => <CloseButton snackbarKey={snackbarKey} />}
+            action={(snackbarKey) => (
+              <CloseButton onClick={() => closeSnackbar(snackbarKey)} />
+            )}
           >
             <App />
           </SnackbarProvider>

@@ -1,19 +1,35 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import "./privacyIconModal.style.css";
 import Modal from "@/components/Modal";
 import { Globe, Users, Lock, Shield, Check } from "lucide-react";
-import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
+import { PRIVACY_SETTINGS_CHOICE, RESOURCE } from "@/common/enums/enums";
 import Button from "@/components/Buttons/Button/Button";
 import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { updatePrivacySettings } from "@/modules/settings/PrivacySettings/api/api";
+import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { snack } from "@/common/utils/snackManager";
+import CloseButton from "@/components/Buttons/CloseButton/CloseButton";
 
 interface Props {
   open: boolean;
   onClose: Function;
   currentPrivacy: PRIVACY_SETTINGS_CHOICE;
+  fieldName: keyof IEditPrivacySettings;
 }
 
-const PrivacyIconModal: FC<Props> = ({ open, onClose, currentPrivacy }) => {
+const PrivacyIconModal: FC<Props> = ({
+  open,
+  onClose,
+  currentPrivacy,
+  fieldName,
+}) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { data, LOADING_UPDATE } = useAppSelector(
+    (state) => state[RESOURCE.PRIVACY_SETTINGS]
+  );
 
   const privacyOptions = [
     {
@@ -39,14 +55,39 @@ const PrivacyIconModal: FC<Props> = ({ open, onClose, currentPrivacy }) => {
     },
   ];
 
+  const [privacy, setPrivacy] =
+    useState<PRIVACY_SETTINGS_CHOICE>(currentPrivacy);
+
+  const handleClose = () => {
+    setPrivacy(currentPrivacy);
+    onClose();
+  };
+
+  const submitSelect = async () => {
+    const actionResult = await dispatch(
+      updatePrivacySettings({ _id: data!._id, [fieldName]: privacy })
+    );
+    const res = unwrapResult(actionResult);
+
+    if (res) {
+      onClose();
+      snack.success(t("user_messages.information_updated"));
+    }
+  };
+
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <div className="privacy-modal-content">
         <div className="privacy-modal-header">
-          <h2 className="privacy-modal-title">
-            <Shield size={24} color="var(--primary-color)" />
-            {t("common.privacy_title")}
-          </h2>
+          <div className="privacy-modal-header-top">
+            <h2 className="privacy-modal-title">
+              <Shield size={24} color="var(--primary-color)" />
+              {t("common.privacy_title")}
+            </h2>
+
+            <CloseButton onClick={handleClose} />
+          </div>
+
           <p className="privacy-modal-subtitle">
             {t("common.privacy_subtitle")}
           </p>
@@ -55,12 +96,13 @@ const PrivacyIconModal: FC<Props> = ({ open, onClose, currentPrivacy }) => {
         <div className="privacy-modal-body">
           {privacyOptions.map((option) => {
             const Icon = option.icon;
-            const isActive = currentPrivacy === option.value;
+            const isActive = privacy === option.value;
 
             return (
               <div
                 key={option.value}
                 className={`privacy-option ${isActive ? "active" : ""}`}
+                onClick={() => setPrivacy(option.value)}
               >
                 <div className={`privacy-option-icon ${option.iconClass}`}>
                   <Icon size={24} color="#fff" />
@@ -82,11 +124,13 @@ const PrivacyIconModal: FC<Props> = ({ open, onClose, currentPrivacy }) => {
           })}
 
           <Button
-            onClick={() => onClose()}
+            onClick={submitSelect}
             fillWidth
             style={{ marginTop: "10px" }}
+            disabled={currentPrivacy === privacy || LOADING_UPDATE}
+            isLoading={LOADING_UPDATE}
           >
-            {t("common.close")}
+            {t("common.save")}
           </Button>
         </div>
       </div>

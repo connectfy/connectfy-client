@@ -1,9 +1,14 @@
-import { closeSnackbar } from "notistack";
 import CloseIcon from "@mui/icons-material/Close";
+import { CSSProperties, FC } from "react";
 
-const CloseButton = ({ snackbarKey }: { snackbarKey: any }) => (
+interface Props {
+  onClick: () => void;
+  style?: CSSProperties
+}
+
+const CloseButton: FC<Props> = ({ onClick }) => (
   <button
-    onClick={() => closeSnackbar(snackbarKey)}
+    onClick={onClick}
     style={{
       background: "none",
       border: "none",
@@ -14,7 +19,7 @@ const CloseButton = ({ snackbarKey }: { snackbarKey: any }) => (
       justifyContent: "center",
       color: "inherit",
       opacity: 0.8,
-      transition: "opacity 0.2s",
+      transition: "opacity 0.3s ease-in-out",
     }}
     onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
     onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}

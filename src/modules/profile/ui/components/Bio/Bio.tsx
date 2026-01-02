@@ -21,7 +21,7 @@ const Bio = () => {
         </h2>
 
         <div className="profile-page-section-actions">
-          <PrivacyIcon privacy={privacySettings.bio} />
+          <PrivacyIcon privacy={privacySettings.bio} fieldName="bio" />
           <button
             className="profile-edit-button"
             aria-label="Edit personal information"

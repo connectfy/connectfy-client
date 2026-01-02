@@ -6,14 +6,16 @@ import useBoolean from "@/hooks/useBoolean";
 import PrivacyIconModal from "../Modal/PrivacyIconModal/PrivacyIconModal";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "@mui/material";
+import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 
 interface Props {
   privacy: PRIVACY_SETTINGS_CHOICE;
+  fieldName: keyof IEditPrivacySettings;
 }
 
 export const PrivacyIcon = memo((data: Props) => {
   const { t } = useTranslation();
-  const { privacy } = data;
+  const { privacy, fieldName } = data;
 
   const { open, onOpen, onClose } = useBoolean();
 
@@ -35,6 +37,7 @@ export const PrivacyIcon = memo((data: Props) => {
         open={open}
         onClose={onClose}
         currentPrivacy={privacy}
+        fieldName={fieldName}
       />
     </Fragment>
   );
