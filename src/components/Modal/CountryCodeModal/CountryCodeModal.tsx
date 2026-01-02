@@ -1,7 +1,7 @@
 import { type FC, useMemo, useState } from "react";
 import { Modal, Box, IconButton, Slide } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./index.style.css";
+import "./countryCodeModal.style.css";
 import Input from "@/components/Input/Input";
 import { useTranslation } from "react-i18next";
 import { ICountry } from "@/common/interfaces/interfaces";

@@ -1,7 +1,7 @@
 import { FC, Fragment, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
-import "./index.style.css";
+import "./authenticateModal.style.css";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";

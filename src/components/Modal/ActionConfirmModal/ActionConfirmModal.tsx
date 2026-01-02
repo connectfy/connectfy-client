@@ -1,5 +1,5 @@
 import { FC, ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
-import "./index.style.css";
+import "./actionConfirmModal.style.css";
 import Modal from "..";
 import { LucideProps } from "lucide-react";
 

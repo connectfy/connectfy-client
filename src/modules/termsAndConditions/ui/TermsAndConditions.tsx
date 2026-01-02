@@ -2,7 +2,7 @@ import "./termsAndConditions.style.css";
 import { useCallback, useState, Fragment } from "react";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import LanguageModal from "@/components/Modal/LanguageModal";
+import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
 import { LANGUAGE } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
 

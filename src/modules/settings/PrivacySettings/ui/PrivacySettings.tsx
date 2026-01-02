@@ -25,7 +25,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
-import SaveChangesModal from "@/components/Modal/SaveChangesModal";
+import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
 import { useToastError } from "@/hooks/useToastError";
 
 const PrivacySettings = () => {

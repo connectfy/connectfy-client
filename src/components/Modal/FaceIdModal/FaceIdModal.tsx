@@ -1,4 +1,4 @@
-import "./index.style.css";
+import "./faceIdModal.style.css";
 import { useEffect, useRef, useState, type FC, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import * as faceapi from "face-api.js";

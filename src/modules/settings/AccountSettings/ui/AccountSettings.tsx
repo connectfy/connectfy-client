@@ -34,7 +34,7 @@ import {
   TIME_FORMAT,
   TOKEN_TYPE,
 } from "@/common/enums/enums";
-import AuthenticateModal from "@/components/Modal/AuthenticateModal";
+import AuthenticateModal from "@/components/Modal/AuthenticateModal/AuthenticateModal";
 import UsernameModal from "./components/Modal/UsernameModal/UsernameModal";
 import ChangeEmailModal from "./components/Modal/EmailModal/ChangeEmailModal/ChangeEmailModal";
 import PasswordModal from "./components/Modal/PasswordModal/PasswordModal";
@@ -47,7 +47,7 @@ import VerifyChangeEmailModal from "./components/Modal/EmailModal/VerifyChangeEm
 import { useToastError } from "@/hooks/useToastError";
 import PhoneNumberModal from "./components/Modal/PhoneNumberModal/PhoneNumberModal";
 import { DDMMMMYYY, showDateWithHour } from "@/common/utils/formatDate";
-import ActionConfirmModal from "@/components/Modal/ActionConfirmModal";
+import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
 import { clearMe } from "@/modules/profile/api/api";
 import {

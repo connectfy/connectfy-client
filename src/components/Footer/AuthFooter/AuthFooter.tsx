@@ -5,7 +5,7 @@ import { Tooltip } from "@mui/material";
 import { LightMode, DarkMode } from "@mui/icons-material";
 
 import { useTheme } from "@/context/ThemeContext";
-import LanguageModal from "@/components/Modal/LanguageModal";
+import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
 import { LANGUAGE } from "@/common/enums/enums";
 import useBoolean from "@/hooks/useBoolean";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";

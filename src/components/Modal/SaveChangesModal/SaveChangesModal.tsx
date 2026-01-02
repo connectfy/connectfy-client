@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import "./index.style.css";
+import "./saveChangesModal.style.css";
 import { FC } from "react";
 import { TriangleAlert } from "lucide-react";
 import Spinner from "@/components/Spinner/Spinner";

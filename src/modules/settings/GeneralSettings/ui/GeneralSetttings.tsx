@@ -34,10 +34,10 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
-import SaveChangesModal from "@/components/Modal/SaveChangesModal/index";
+import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
 import { useToastError } from "@/hooks/useToastError";
 import useBoolean from "@/hooks/useBoolean";
-import ActionConfirmModal from "@/components/Modal/ActionConfirmModal";
+import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 
 const GeneralSettings = () => {
   const dispatch = useAppDispatch();

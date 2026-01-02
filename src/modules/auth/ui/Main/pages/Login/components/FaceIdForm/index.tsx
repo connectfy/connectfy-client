@@ -9,7 +9,7 @@ import { useAppSelector } from "@/hooks/useStore";
 import { RESOURCE } from "@/common/enums/enums";
 import Spinner from "@/components/Spinner/Spinner";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import FaceIdModal from "@/components/Modal/FaceIdModal";
+import FaceIdModal from "@/components/Modal/FaceIdModal/FaceIdModal";
 
 interface Props {
   formik: FormikProps<ILoginForm>;

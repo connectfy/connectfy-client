@@ -1,4 +1,4 @@
-import "./index.style.css";
+import "./selectionModal.style.css";
 import { LucideProps } from "lucide-react";
 import {
   FC,
