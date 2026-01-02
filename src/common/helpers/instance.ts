@@ -1,8 +1,14 @@
 import { FailedRequest } from "@/common/interfaces/interfaces";
 import { LANGUAGE } from "@/common/enums/enums";
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
+import { API_ENDPOINTS } from "../constants/apiEndpoints";
 
 const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api`;
+
+// Custom type definition: _retry property əlavə edirik
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const instance = axios.create({
   baseURL: BASE,
@@ -10,16 +16,18 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (config) => {
-    const access_token = localStorage.getItem("access_token");
+  (config: CustomAxiosRequestConfig) => {
     const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+    const isRefreshEndpoint = config.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
 
-    // ƏSAS DƏYİŞİKLİK: Refresh endpoint-ə Authorization header göndərmə
-    const isRefreshEndpoint = config.url?.includes("/auth/refresh");
-
-    if (access_token && !isRefreshEndpoint) {
-      config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${access_token}`;
+    // Əgər retry request-idirsə, token artıq set olunub, yenidən set etmə
+    if (!config._retry) {
+      const access_token = localStorage.getItem("access_token");
+      
+      if (access_token && !isRefreshEndpoint) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${access_token}`;
+      }
     }
 
     if (config.data) {
@@ -66,18 +74,28 @@ const processQueue = (error: any, token: string | null = null) => {
 instance.interceptors.response.use(
   (res) => res,
   async (err) => {
-    const originalRequest = err.config;
+    const originalRequest: CustomAxiosRequestConfig = err.config;
 
     if (!originalRequest) return Promise.reject(err);
 
     const isAuthEndpoint =
-      originalRequest.url && originalRequest.url.includes("/auth/refresh");
+      originalRequest.url &&
+      originalRequest.url.includes(API_ENDPOINTS.AUTH.REFRESH);
 
     const status =
-      err.response?.status ?? err.response?.data?.error?.statusCode;
+      err.response?.data?.error?.statusCode ?? err.response?.status;
+
+    const shouldNavigate =
+      err.response?.data?.error?.additional?.navigate === true;
 
     if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
+
+      if (shouldNavigate) {
+        localStorage.removeItem("access_token");
+        window.location.href = "/auth";
+        return Promise.reject(err);
+      }
 
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {
@@ -95,9 +113,8 @@ instance.interceptors.response.use(
 
       try {
         const refreshUrl = `${BASE}/auth/refresh`;
-
-        // ƏSAS DƏYİŞİKLİK: Lang parametrini göndər, amma Authorization header-siz
         const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+        
         const response = await axios.post(
           refreshUrl,
           { _lang },
@@ -109,12 +126,19 @@ instance.interceptors.response.use(
           throw new Error("No access token in refresh response");
 
         localStorage.setItem("access_token", newAccessToken);
+        
+        // Queue-daki request-lərə yeni token-i göndər
         processQueue(null, newAccessToken);
 
+        // Original request-ə yeni token-i əlavə et
         originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        
+        console.log("🔄 Retrying with new token:", newAccessToken.substring(0, 20) + "...");
+        
         return instance(originalRequest);
       } catch (refreshErr) {
+        console.error("❌ Refresh token failed:", refreshErr);
         processQueue(refreshErr, null);
         localStorage.removeItem("access_token");
         window.location.href = "/login";
