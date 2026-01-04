@@ -6,7 +6,7 @@ import { LightMode, DarkMode } from "@mui/icons-material";
 
 import { useTheme } from "@/context/ThemeContext";
 import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
-import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import { LANGUAGE, LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import useBoolean from "@/hooks/useBoolean";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -56,7 +56,7 @@ const AuthFooter = () => {
         <p className="auth-footer-other-links">
           {authForm === "login"
             ? t("common.do_not_have_account")
-            : t("common.already_have_accpount")} {" "}
+            : t("common.already_have_accpount")}{" "}
           <span
             className="auth-footer-other-link"
             onClick={() =>
@@ -70,8 +70,13 @@ const AuthFooter = () => {
 
       <div className="auth-footer-actions">
         <Tooltip placement="top" title={t("common.change_theme")}>
-          <button className="auth-footer-action-btn" onClick={toggleTheme}>
-            {theme === "light" ? (
+          <button
+            className="auth-footer-action-btn"
+            onClick={() =>
+              toggleTheme(theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT)
+            }
+          >
+            {theme === THEME.LIGHT ? (
               <DarkMode fontSize="small" />
             ) : (
               <LightMode fontSize="small" />

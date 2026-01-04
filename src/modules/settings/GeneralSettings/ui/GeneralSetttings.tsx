@@ -6,6 +6,7 @@ import {
   Clock,
   RefreshCw,
   TriangleAlert,
+  MonitorSmartphone,
 } from "lucide-react";
 import "./generalSetttings.style.css";
 import { Fragment, useEffect, useState } from "react";
@@ -24,13 +25,14 @@ import {
 } from "../constants/contant";
 import { useFormik } from "formik";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { DATE_FORMAT, RESOURCE, TIME_FORMAT } from "@/common/enums/enums";
-import { snack } from "@/common/utils/snackManager";
 import {
-  clearError,
-  resetSettings,
-  updateGeneralSettings,
-} from "../api/api";
+  DATE_FORMAT,
+  RESOURCE,
+  THEME,
+  TIME_FORMAT,
+} from "@/common/enums/enums";
+import { snack } from "@/common/utils/snackManager";
+import { clearError, resetSettings, updateGeneralSettings } from "../api/api";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
@@ -74,14 +76,14 @@ const GeneralSettings = () => {
   const { pending, confirm, cancel } = useBlocker(!!formik.dirty);
   useBeforeUnload(!!formik.dirty, t("common.unsaved_changes_message"));
 
-  const isActiveTheme = (theme: string) => selectedTheme === theme;
+  const isActiveTheme = (theme: THEME) => selectedTheme === theme;
   const LANGUAGE_OPTIONS = languageOptions(t, formik);
   const HOMEPAGE_OPTIONS = homepageOptions(t, formik);
 
-  const changeAppTheme = (appTheme: "dark" | "light") => {
+  const changeAppTheme = (appTheme: THEME) => {
     if (theme === appTheme) return;
     formik.setFieldValue("theme", appTheme);
-    toggleTheme();
+    toggleTheme(appTheme);
   };
 
   const getLabel = (options: any) =>
@@ -102,7 +104,7 @@ const GeneralSettings = () => {
   const handleDiscardChanges = () => {
     if (formik.values.theme !== data?.theme) {
       formik.setFieldValue("theme", data?.theme);
-      toggleTheme();
+      toggleTheme(data?.theme as THEME);
     }
 
     formik.resetForm();
@@ -121,7 +123,7 @@ const GeneralSettings = () => {
 
       if (formik.values.theme !== data?.theme) {
         formik.setFieldValue("theme", data?.theme);
-        toggleTheme();
+        toggleTheme(data?.theme as THEME);
       }
 
       formik.resetForm();
@@ -158,8 +160,8 @@ const GeneralSettings = () => {
             >
               <div className="general-theme-options">
                 <div
-                  className={`general-theme-option ${isActiveTheme("light") ? "active" : ""}`}
-                  onClick={() => changeAppTheme("light")}
+                  className={`general-theme-option ${isActiveTheme(THEME.LIGHT) ? "active" : ""}`}
+                  onClick={() => changeAppTheme(THEME.LIGHT)}
                 >
                   <div className="general-theme-option-icon">
                     <Sun size={24} />
@@ -167,13 +169,22 @@ const GeneralSettings = () => {
                   <span>{t("common.light")}</span>
                 </div>
                 <div
-                  className={`general-theme-option ${isActiveTheme("dark") ? "active" : ""}`}
-                  onClick={() => changeAppTheme("dark")}
+                  className={`general-theme-option ${isActiveTheme(THEME.DARK) ? "active" : ""}`}
+                  onClick={() => changeAppTheme(THEME.DARK)}
                 >
                   <div className="general-theme-option-icon">
                     <Moon size={24} />
                   </div>
                   <span>{t("common.dark")}</span>
+                </div>
+                <div
+                  className={`general-theme-option ${isActiveTheme(THEME.DEVICE) ? "active" : ""}`}
+                  onClick={() => changeAppTheme(THEME.DEVICE)}
+                >
+                  <div className="general-theme-option-icon">
+                    <MonitorSmartphone size={24} />
+                  </div>
+                  <span>{t("common.device")}</span>
                 </div>
               </div>
             </SettingCard>

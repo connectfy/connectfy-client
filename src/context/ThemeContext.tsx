@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface ThemeContextType {
   theme: THEME;
-  toggleTheme: () => void;
+  toggleTheme: (theme: THEME) => void;
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -19,10 +19,32 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (!localTheme) return THEME.LIGHT;
 
-    if (!["light", "dark"].includes(localTheme)) return THEME.LIGHT;
+    if (!["light", "dark", "device"].includes(localTheme)) return THEME.LIGHT;
 
     return localTheme as THEME;
   });
+
+  const getDeviceTheme = (): THEME => {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return THEME.DARK;
+    }
+    return THEME.LIGHT;
+  };
+
+  useEffect(() => {
+    if (theme !== THEME.DEVICE) return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      const deviceTheme = e.matches ? THEME.DARK : THEME.LIGHT;
+      document.documentElement.setAttribute("data-theme", deviceTheme);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme]);
 
   useEffect(() => {
     if (data?.theme) {
@@ -31,7 +53,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, [data?.theme]);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    const actualTheme = theme === THEME.DEVICE ? getDeviceTheme() : theme;
+    
+    document.documentElement.setAttribute("data-theme", actualTheme);
 
     if (data?.theme) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
@@ -40,9 +64,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [theme, data?.theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === THEME.LIGHT ? THEME.DARK : THEME.LIGHT));
-  };
+  const toggleTheme = (newTheme: THEME): void => setTheme(newTheme);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
