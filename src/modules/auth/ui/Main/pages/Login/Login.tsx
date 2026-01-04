@@ -21,6 +21,7 @@ import useBoolean from "@/hooks/useBoolean";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
+import { checkDeviceId } from "@/common/utils/checkDevice";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -44,6 +45,7 @@ const Login = () => {
     validate: (values) => validateLogin(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
+        values.deviceId = checkDeviceId();
         const actionResult = await dispatch(login(values));
         const res = unwrapResult(actionResult);
         if (res) {

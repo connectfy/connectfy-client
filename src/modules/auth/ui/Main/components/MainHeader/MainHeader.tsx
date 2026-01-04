@@ -1,7 +1,7 @@
 import "./mainHeader.style.css";
 import { useTranslation } from "react-i18next";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
-import { googleLogin, setAuthForm } from "../../../../api/api"
+import { googleLogin, setAuthForm } from "../../../../api/api";
 import { RESOURCE } from "@/common/enums/enums";
 import { AuthFormType } from "../../../../types/types";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
@@ -13,6 +13,7 @@ import { useState } from "react";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import SignupModal from "../SignupModal/SignupModal";
+import { checkDeviceId } from "@/common/utils/checkDevice";
 
 const LoginAndSignupHeader = () => {
   const { t } = useTranslation();
@@ -42,7 +43,8 @@ const LoginAndSignupHeader = () => {
       }
 
       if (authForm === "login") {
-        const actionResult = await dispatch(googleLogin({ idToken }));
+        const deviceId = checkDeviceId();
+        const actionResult = await dispatch(googleLogin({ idToken, deviceId }));
         const res = unwrapResult(actionResult);
         if (res) {
           snack.success(t("user_messages.login_successful"));

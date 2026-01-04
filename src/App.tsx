@@ -7,16 +7,18 @@ import "@/styles/index.css";
 import "flag-icons/css/flag-icons.min.css";
 import { useAppDispatch, useAppSelector } from "./hooks/useStore";
 import { setAccessToken } from "./modules/auth/api/api";
+import { checkDeviceId } from "./common/utils/checkDevice";
 
 function App() {
   const dispatch = useAppDispatch();
   const { i18n } = useTranslation();
   const content = useRoutes(routes);
   const lang = localStorage.getItem("lang");
+  const deviceId = localStorage.getItem("deviceId");
+  const access_token = localStorage.getItem("access_token");
 
   const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
   const userLang = data?.language;
-  const access_token = localStorage.getItem("access_token");
 
   useEffect(() => {
     if (access_token) {
@@ -41,6 +43,10 @@ function App() {
     i18n.changeLanguage(validLang);
     localStorage.setItem("lang", validLang);
   }, [lang, i18n, userLang]);
+
+  useEffect(() => {
+    checkDeviceId();
+  }, [deviceId]);
 
   return <>{content}</>;
 }

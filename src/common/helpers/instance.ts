@@ -2,6 +2,7 @@ import { FailedRequest } from "@/common/interfaces/interfaces";
 import { LANGUAGE } from "@/common/enums/enums";
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
+import { checkDeviceId } from "../utils/checkDevice";
 
 const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api`;
 
@@ -23,7 +24,7 @@ instance.interceptors.request.use(
     // Əgər retry request-idirsə, token artıq set olunub, yenidən set etmə
     if (!config._retry) {
       const access_token = localStorage.getItem("access_token");
-      
+
       if (access_token && !isRefreshEndpoint) {
         config.headers = config.headers || {};
         config.headers.Authorization = `Bearer ${access_token}`;
@@ -114,10 +115,11 @@ instance.interceptors.response.use(
       try {
         const refreshUrl = `${BASE}/auth/refresh`;
         const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
-        
+        const deviceId = checkDeviceId();
+
         const response = await axios.post(
           refreshUrl,
-          { _lang },
+          { _lang, deviceId },
           { withCredentials: true }
         );
 
@@ -126,19 +128,16 @@ instance.interceptors.response.use(
           throw new Error("No access token in refresh response");
 
         localStorage.setItem("access_token", newAccessToken);
-        
+
         // Queue-daki request-lərə yeni token-i göndər
         processQueue(null, newAccessToken);
 
         // Original request-ə yeni token-i əlavə et
         originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        
-        console.log("🔄 Retrying with new token:", newAccessToken.substring(0, 20) + "...");
-        
+
         return instance(originalRequest);
       } catch (refreshErr) {
-        console.error("❌ Refresh token failed:", refreshErr);
         processQueue(refreshErr, null);
         localStorage.removeItem("access_token");
         window.location.href = "/login";

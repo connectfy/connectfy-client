@@ -28,6 +28,7 @@ import { snack } from "@/common/utils/snackManager";
 
 // Styles
 import "./signupModal.style.css";
+import { checkDeviceId } from "@/common/utils/checkDevice";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -59,6 +60,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
 
       values.theme =
         (localStorage.getItem("app-theme") as THEME) || THEME.LIGHT;
+      values.deviceId = checkDeviceId();
 
       const actionResult = await dispatch(googleSignup(values));
       const res = unwrapResult(actionResult);

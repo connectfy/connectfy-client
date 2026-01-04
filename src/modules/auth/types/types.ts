@@ -42,6 +42,7 @@ export interface ILoginForm {
   identifierType: IDENTIFIER_TYPE;
   identifier: string | null;
   password: string | null;
+  deviceId: string | null;
 }
 
 export interface IPhoneNumber {
@@ -65,6 +66,7 @@ export interface ISignupForm {
 
 export interface ISignupVerifyForm {
   verifyCode: string | null;
+  deviceId: string | null;
 }
 
 export interface IForgotPasswordForm {
@@ -80,6 +82,7 @@ export interface IResetPasswordForm {
 
 export interface IGoogleLoginForm {
   idToken: string | null;
+  deviceId: string | null;
 }
 
 export interface IGoogleSignupForm {
@@ -89,6 +92,7 @@ export interface IGoogleSignupForm {
   gender: GENDER | null;
   birthdayDate: Date | null;
   theme: THEME;
+  deviceId: string | null;
 }
 
 export interface IFaceIdForm {

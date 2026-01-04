@@ -4,11 +4,7 @@ import "./verify.style.css";
 import { useTranslation } from "react-i18next";
 import { RESOURCE } from "@/common/enums/enums";
 import { KeyboardBackspace } from "@mui/icons-material";
-import {
-  clearError,
-  setSignupForm,
-  signupVerify,
-} from "../../api/api";
+import { clearError, setSignupForm, signupVerify } from "../../api/api";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
@@ -22,6 +18,7 @@ import { ROUTER } from "@/common/constants/routet";
 import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
 import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
 import { snack } from "@/common/utils/snackManager";
+import { checkDeviceId } from "@/common/utils/checkDevice";
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
@@ -37,6 +34,7 @@ const VerifyAccount = () => {
     enableReinitialize: true,
     validate: (values) => validateVerifySignup(values, t),
     onSubmit: async (values, { resetForm }) => {
+      values.deviceId = checkDeviceId();
       const actionResult = await dispatch(signupVerify(values));
       if (signupVerify.fulfilled.match(actionResult)) {
         snack.success(t("user_messages.verify_successful"));

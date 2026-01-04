@@ -18,6 +18,7 @@ export const loginInitialState: ILoginForm = {
   identifierType: IDENTIFIER_TYPE.USERNAME,
   identifier: null,
   password: null,
+  deviceId: null,
 };
 
 export const signupInitialState: ISignupForm = {
@@ -39,6 +40,7 @@ export const signupInitialState: ISignupForm = {
 
 export const verifySignupInitialState: ISignupVerifyForm = {
   verifyCode: null,
+  deviceId: null,
 };
 
 export const forgotPasswordInitialState: IForgotPasswordForm = {
@@ -63,4 +65,5 @@ export const googleSignupInitialState: IGoogleSignupForm = {
   gender: null,
   birthdayDate: null,
   theme,
+  deviceId: null,
 };
