@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../../../constants/intialState";
 import { valdiateGoogleSignup } from "../../../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { RESOURCE, THEME } from "@/common/enums/enums";
+import { LOCAL_STORAGE_KEYS, RESOURCE, THEME } from "@/common/enums/enums";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
@@ -59,7 +59,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
         : null;
 
       values.theme =
-        (localStorage.getItem("app-theme") as THEME) || THEME.LIGHT;
+        (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) || THEME.LIGHT;
       values.deviceId = checkDeviceId();
 
       const actionResult = await dispatch(googleSignup(values));

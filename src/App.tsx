@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
-import { LANGUAGE, RESOURCE } from "@/common/enums/enums";
+import { LANGUAGE, LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
 import routes from "@/routes/router";
 import { useRoutes } from "react-router-dom";
 import "@/styles/index.css";
@@ -13,9 +13,9 @@ function App() {
   const dispatch = useAppDispatch();
   const { i18n } = useTranslation();
   const content = useRoutes(routes);
-  const lang = localStorage.getItem("lang");
-  const deviceId = localStorage.getItem("deviceId");
-  const access_token = localStorage.getItem("access_token");
+  const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
+  const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
+  const access_token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
 
   const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
   const userLang = data?.language;
@@ -29,7 +29,7 @@ function App() {
   useEffect(() => {
     if (userLang) {
       i18n.changeLanguage(userLang);
-      localStorage.removeItem("lang");
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
       return;
     }
 
@@ -41,7 +41,7 @@ function App() {
         : LANGUAGE.EN;
 
     i18n.changeLanguage(validLang);
-    localStorage.setItem("lang", validLang);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, validLang);
   }, [lang, i18n, userLang]);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/hooks/useStore";
-import { RESOURCE, THEME } from "@/common/enums/enums";
+import { LOCAL_STORAGE_KEYS, RESOURCE, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface ThemeContextType {
@@ -15,7 +15,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
 
   const [theme, setTheme] = useState<THEME>(() => {
-    const localTheme = localStorage.getItem("app-theme");
+    const localTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME);
 
     if (!localTheme) return THEME.LIGHT;
 
@@ -34,9 +34,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     document.documentElement.setAttribute("data-theme", theme);
 
     if (data?.theme) {
-      localStorage.removeItem("app-theme");
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
     } else {
-      localStorage.setItem("app-theme", theme);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
     }
   }, [theme, data?.theme]);
 

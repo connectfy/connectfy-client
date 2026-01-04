@@ -9,10 +9,11 @@ import {
 import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   IDENTIFIER_TYPE,
+  LOCAL_STORAGE_KEYS,
   THEME,
 } from "@/common/enums/enums";
 
-const theme = localStorage.getItem("app-theme") as THEME;
+const theme = localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME;
 
 export const loginInitialState: ILoginForm = {
   identifierType: IDENTIFIER_TYPE.USERNAME,

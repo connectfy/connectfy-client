@@ -3,14 +3,14 @@ import { useCallback, useState, Fragment } from "react";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
-import { LANGUAGE } from "@/common/enums/enums";
+import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
 
 const TermsAndConditions = () => {
   const { t } = useTranslation();
 
-  const lang = localStorage.getItem("lang")
-    ? (localStorage.getItem("lang") as LANGUAGE)
+  const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG)
+    ? (localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) as LANGUAGE)
     : LANGUAGE.EN;
 
   const [openLangModal, setOpenLangModal] = useState<boolean>(false);

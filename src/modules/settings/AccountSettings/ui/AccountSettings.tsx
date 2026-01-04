@@ -29,6 +29,7 @@ import { ROUTER } from "@/common/constants/routet";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import {
   DATE_FORMAT,
+  LOCAL_STORAGE_KEYS,
   PROVIDER,
   RESOURCE,
   TIME_FORMAT,
@@ -140,9 +141,15 @@ const AccountSettings: FC = () => {
     const res = unwrapResult(actionResult);
 
     if (res) {
-      localStorage.setItem("app-theme", me!.settings.generalSettings.theme);
-      localStorage.setItem("lang", me!.settings.generalSettings.language);
-      localStorage.removeItem("access_token");
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.APP_THEME,
+        me!.settings.generalSettings.theme
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.LANG,
+        me!.settings.generalSettings.language
+      );
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.logout_successfull"));
       dispatch(clearMe());
@@ -156,9 +163,15 @@ const AccountSettings: FC = () => {
     const res = unwrapResult(actionResult);
 
     if (res) {
-      localStorage.setItem("app-theme", me!.settings.generalSettings.theme);
-      localStorage.setItem("lang", me!.settings.generalSettings.language);
-      localStorage.removeItem("access_token");
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.APP_THEME,
+        me!.settings.generalSettings.theme
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.LANG,
+        me!.settings.generalSettings.language
+      );
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.account_deactivated"));
       dispatch(clearMe());

@@ -1,11 +1,12 @@
 import { v4 as uuid } from "uuid";
+import { LOCAL_STORAGE_KEYS } from "../enums/enums";
 
 export function checkDeviceId(): string {
-  const deviceId = localStorage.getItem("deviceId");
+  const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
 
   if (deviceId) return deviceId;
 
   const newDeviceId = uuid();
-  localStorage.setItem("deviceId", newDeviceId);
+  localStorage.setItem(LOCAL_STORAGE_KEYS.DEVICE_ID, newDeviceId);
   return newDeviceId;
 }

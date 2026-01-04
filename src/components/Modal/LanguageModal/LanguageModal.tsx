@@ -16,7 +16,7 @@ import {
   Slide,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { LANGUAGE } from "@/common/enums/enums";
+import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 
 interface LanguageModalProps {
   open: boolean;
@@ -34,13 +34,13 @@ const LanguageModal: React.FC<LanguageModalProps> = ({ open, onClose }) => {
   const { i18n, t } = useTranslation();
   const theme = useTheme();
 
-  const lang = localStorage.getItem("lang")
-    ? (localStorage.getItem("lang") as LANGUAGE)
+  const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG)
+    ? (localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) as LANGUAGE)
     : LANGUAGE.EN;
 
   const handleLanguageChange = (code: LANGUAGE) => {
     i18n.changeLanguage(code);
-    localStorage.setItem("lang", code);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, code);
     onClose();
   };
 

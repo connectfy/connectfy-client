@@ -1,7 +1,7 @@
 import "./main.style.css";
 import { Fragment, useCallback, useEffect, type FC } from "react";
 import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
-import { RESOURCE } from "@/common/enums/enums";
+import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
 import LoginAndSignupHeader from "./components/MainHeader/MainHeader";
 import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
 import Login from "./pages/Login/Login";
@@ -24,7 +24,7 @@ const MainPage: FC = () => {
   const { authForm, LOADING_RESTORE_ACCOUNT } = useAppSelector(
     (state) => state[RESOURCE.AUTH]
   );
-  const authMode = localStorage.getItem("authPage") || "login";
+  const authMode = localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH_PAGE) || "login";
 
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
@@ -47,7 +47,7 @@ const MainPage: FC = () => {
     const validAuthForms: AuthFormType[] = ["login", "signup"];
 
     if (!validAuthForms.includes(authMode as AuthFormType)) {
-      localStorage.setItem("authPage", "login");
+      localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH_PAGE, "login");
       dispatch(setAuthForm("login"));
     } else dispatch(setAuthForm(authMode as AuthFormType));
   }, [authMode]);

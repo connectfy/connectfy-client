@@ -8,7 +8,7 @@ import {
   setLoginMode,
 } from "../../api/api";
 import ForgotPasswordHeader from "./components/ForgotPasswordHeader/ForgotPasswordHeader";
-import { RESOURCE } from "@/common/enums/enums";
+import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
 import { useCallback, useEffect } from "react";
 import EmailForm from "./components/EmailForm/EmailForm";
 import PhoneNumberForm from "./components/PhoneNumberForm/PhoneNumberForm";
@@ -40,7 +40,7 @@ const ForgotPassword = () => {
     useAppSelector((state) => state[RESOURCE.AUTH]);
 
   const localForgotPasswordMode =
-    localStorage.getItem("forgotPasswordMode") || "email";
+    localStorage.getItem(LOCAL_STORAGE_KEYS.FORGOT_PASSWORD_MODE) || "email";
 
   const formik = useFormik({
     initialValues: forgotPasswordInitialState,
@@ -121,7 +121,7 @@ const ForgotPassword = () => {
       )
     ) {
       dispatch(setForgotPasswordMode("email"));
-      localStorage.setItem("forgotPasswordMode", "email");
+      localStorage.setItem(LOCAL_STORAGE_KEYS.FORGOT_PASSWORD_MODE, "email");
     } else
       dispatch(
         setForgotPasswordMode(localForgotPasswordMode as ForgotPasswordModeType)

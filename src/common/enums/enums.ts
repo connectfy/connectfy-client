@@ -154,3 +154,13 @@ export enum SOCIAL_LINK_PLATFORM {
   WEBSITE = "Website",
   OTHER = "Other",
 }
+
+export enum LOCAL_STORAGE_KEYS {
+  LANG = "lang",
+  ACCESS_TOKEN = "access_token",
+  DEVICE_ID = "deviceId",
+  APP_THEME = "app-theme",
+  AUTH_PAGE = "auth-page",
+  LOGIN_MODE = "login-mode",
+  FORGOT_PASSWORD_MODE = "forgot-password-mode",
+}

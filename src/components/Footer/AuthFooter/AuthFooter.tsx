@@ -6,7 +6,7 @@ import { LightMode, DarkMode } from "@mui/icons-material";
 
 import { useTheme } from "@/context/ThemeContext";
 import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
-import { LANGUAGE } from "@/common/enums/enums";
+import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import useBoolean from "@/hooks/useBoolean";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -25,8 +25,8 @@ const AuthFooter = () => {
 
   const langModal = useBoolean();
 
-  const lang = localStorage.getItem("lang")
-    ? (localStorage.getItem("lang") as LANGUAGE)
+  const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG)
+    ? (localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) as LANGUAGE)
     : LANGUAGE.EN;
 
   const renderLangIcon = useCallback(() => {

@@ -1,6 +1,6 @@
 import "./login.style.css";
 import { Fragment, useCallback, useEffect } from "react";
-import { RESOURCE } from "@/common/enums/enums";
+import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
 import UsernameForm from "./components/UsernameForm/UsernameForm";
 import EmailForm from "./components/EmailForm/EmailForm";
 import PhoneNumberForm from "./components/PhoneNumberForm/PhoneNumberForm";
@@ -33,7 +33,7 @@ const Login = () => {
   );
 
   const localLoginMode =
-    (localStorage.getItem("loginMode") as LoginModeType) || "username";
+    (localStorage.getItem(LOCAL_STORAGE_KEYS.LOGIN_MODE) as LoginModeType) || "username";
 
   const { open, onOpen, onClose } = useBoolean();
 
@@ -52,7 +52,7 @@ const Login = () => {
           snack.success(t("user_messages.login_successful"));
           navigate(ROUTER.MAIN);
           localStorage.removeItem("authPage");
-          localStorage.removeItem("loginMode");
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.LOGIN_MODE);
           localStorage.removeItem("forgotPasswordMode");
           resetForm();
         }
@@ -120,7 +120,7 @@ const Login = () => {
 
     if (!loginModes.includes(mode)) {
       dispatch(setLoginMode("username"));
-      localStorage.setItem("loginMode", "username");
+      localStorage.setItem(LOCAL_STORAGE_KEYS.LOGIN_MODE, "username");
     } else {
       dispatch(setLoginMode(mode));
     }

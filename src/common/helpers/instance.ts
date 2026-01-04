@@ -1,5 +1,5 @@
 import { FailedRequest } from "@/common/interfaces/interfaces";
-import { LANGUAGE } from "@/common/enums/enums";
+import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import { checkDeviceId } from "../utils/checkDevice";
@@ -18,12 +18,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
-    const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+    const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
     const isRefreshEndpoint = config.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
 
     // Əgər retry request-idirsə, token artıq set olunub, yenidən set etmə
     if (!config._retry) {
-      const access_token = localStorage.getItem("access_token");
+      const access_token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
 
       if (access_token && !isRefreshEndpoint) {
         config.headers = config.headers || {};
@@ -93,7 +93,7 @@ instance.interceptors.response.use(
       originalRequest._retry = true;
 
       if (shouldNavigate) {
-        localStorage.removeItem("access_token");
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
         window.location.href = "/auth";
         return Promise.reject(err);
       }
@@ -114,7 +114,7 @@ instance.interceptors.response.use(
 
       try {
         const refreshUrl = `${BASE}/auth/refresh`;
-        const _lang = localStorage.getItem("lang") || LANGUAGE.EN;
+        const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
         const deviceId = checkDeviceId();
 
         const response = await axios.post(
@@ -127,7 +127,7 @@ instance.interceptors.response.use(
         if (!newAccessToken)
           throw new Error("No access token in refresh response");
 
-        localStorage.setItem("access_token", newAccessToken);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, newAccessToken);
 
         // Queue-daki request-lərə yeni token-i göndər
         processQueue(null, newAccessToken);
@@ -139,7 +139,7 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshErr) {
         processQueue(refreshErr, null);
-        localStorage.removeItem("access_token");
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
         window.location.href = "/login";
         return Promise.reject(refreshErr);
       } finally {

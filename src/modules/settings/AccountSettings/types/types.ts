@@ -56,6 +56,7 @@ export interface IResetPasswordResponse {
 export interface ILogoutResponse {
   statusCode: number;
 }
+
 export interface IDeleteAccount {
   token: string | null;
   reason: DELETE_REASON;
