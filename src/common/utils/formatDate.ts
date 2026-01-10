@@ -34,11 +34,12 @@ export const DDMMMYYY = (date: string | Date) => {
 export const showDateWithHour = (
   date: string | Date,
   dateFormat: DATE_FORMAT,
-  timeFormat: TIME_FORMAT
+  timeFormat: TIME_FORMAT,
+  splitWith?: string
 ) => {
   const d = dayjs(date);
 
   const timePattern = timeFormat === TIME_FORMAT.H24 ? "HH:mm" : "hh:mm A";
 
-  return `${d.format(dateFormat).split("/").join("-")} ${d.format(timePattern)}`;
+  return `${d.format(dateFormat).split("/").join(splitWith ?? "-")} ${d.format(timePattern)}`;
 };

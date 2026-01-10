@@ -353,7 +353,8 @@ const AccountSettings: FC = () => {
                       me?.settings.generalSettings.timeZone
                         .dateFormat as DATE_FORMAT,
                       me?.settings.generalSettings.timeZone
-                        .timeFormat as TIME_FORMAT
+                        .timeFormat as TIME_FORMAT,
+                      " - "
                     )}
                   </p>
                 </div>
