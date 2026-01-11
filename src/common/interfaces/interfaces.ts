@@ -1,3 +1,5 @@
+import { InternalAxiosRequestConfig } from "axios";
+
 export interface ICountry {
   key: string;
   name: string;
@@ -18,4 +20,8 @@ export interface IPagination {
 export interface FailedRequest {
   resolve: (token: string) => void;
   reject: (error: any) => void;
+}
+
+export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
 }
