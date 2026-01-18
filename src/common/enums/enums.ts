@@ -84,9 +84,9 @@ export enum PRIVACY_SETTINGS_CHOICE {
 }
 
 export enum THEME {
-  DARK = 'dark',
-  LIGHT = 'light',
-  DEVICE = 'device',
+  DARK = "dark",
+  LIGHT = "light",
+  DEVICE = "device",
 }
 
 export enum NOTIFICATION_SOUND_MODE {
@@ -164,4 +164,11 @@ export enum LOCAL_STORAGE_KEYS {
   AUTH_PAGE = "auth-page",
   LOGIN_MODE = "login-mode",
   FORGOT_PASSWORD_MODE = "forgot-password-mode",
+}
+
+export enum TIME_DIFFERENCE_TYPE {
+  NOW = "just_now",
+  MINUTE = "minutes_ago",
+  HOUR = "hours_ago",
+  DAY = "days_ago",
 }
