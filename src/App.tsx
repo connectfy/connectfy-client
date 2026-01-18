@@ -8,6 +8,7 @@ import "flag-icons/css/flag-icons.min.css";
 import { useAppDispatch, useAppSelector } from "./hooks/useStore";
 import { setAccessToken } from "./modules/auth/api/api";
 import { checkDeviceId } from "./common/utils/checkDevice";
+import { authTokenManager } from "./common/helpers/authToken.manager";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -15,7 +16,7 @@ function App() {
   const content = useRoutes(routes);
   const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
   const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
-  const access_token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+  const access_token = authTokenManager.getToken();
 
   const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
   const userLang = data?.language;

@@ -32,6 +32,7 @@ import {
   deleteAccount,
   logout,
 } from "@/modules/settings/AccountSettings/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 export interface AuthState {
   access_token: string | null;
@@ -286,7 +287,7 @@ export const restoreAccount = createAsyncThunk<
 });
 
 const initialState: AuthState = {
-  access_token: localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN),
+  access_token: authTokenManager.getToken(),
   error: null,
   authToken: null,
 
@@ -328,11 +329,11 @@ const authSlice = createSlice({
   reducers: {
     setlogout(state) {
       state.access_token = null;
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+      authTokenManager.clear()
     },
     setAccessToken(state, action: PayloadAction<string>) {
       state.access_token = action.payload;
-      localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, action.payload);
+      authTokenManager.setToken(action.payload);
     },
     setAuthForm: (state, action: PayloadAction<AuthFormType>) => {
       state.authForm = action.payload;
@@ -402,10 +403,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.LOADING_LOGIN = false;
         state.access_token = action.payload.access_token;
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
-          action.payload.access_token
-        );
+        authTokenManager.setToken(action.payload.access_token);
       })
       .addCase(login.pending, (state) => {
         state.LOADING_LOGIN = true;
@@ -431,10 +429,7 @@ const authSlice = createSlice({
       .addCase(signupVerify.fulfilled, (state, action) => {
         state.LOADING_SIGNUP_VERIFY = false;
         state.access_token = action.payload.access_token;
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
-          action.payload.access_token
-        );
+        authTokenManager.setToken(action.payload.access_token);
       })
       .addCase(signupVerify.pending, (state) => {
         state.LOADING_SIGNUP_VERIFY = true;
@@ -472,10 +467,7 @@ const authSlice = createSlice({
       .addCase(googleLogin.fulfilled, (state, action) => {
         state.LOADING_GOOGLE_LOGIN = false;
         state.access_token = action.payload.access_token;
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
-          action.payload.access_token
-        );
+        authTokenManager.setToken(action.payload.access_token);
       })
       .addCase(googleLogin.pending, (state) => {
         state.LOADING_GOOGLE_LOGIN = true;
@@ -489,10 +481,7 @@ const authSlice = createSlice({
       .addCase(googleSignup.fulfilled, (state, action) => {
         state.LOADING_GOOGLE_SIGNUP = false;
         state.access_token = action.payload.access_token;
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
-          action.payload.access_token
-        );
+        authTokenManager.setToken(action.payload.access_token);
       })
       .addCase(googleSignup.pending, (state) => {
         state.LOADING_GOOGLE_SIGNUP = true;
@@ -556,23 +545,20 @@ const authSlice = createSlice({
       // =================== LOGOUT
       .addCase(logout.fulfilled, (state) => {
         state.access_token = null;
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+        authTokenManager.clear()
       })
 
       // =================== DELETE ACCOUNT
       .addCase(deleteAccount.fulfilled, (state) => {
         state.access_token = null;
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+        authTokenManager.clear()
       })
 
       // =================== RESTORE ACCOUNT
       .addCase(restoreAccount.fulfilled, (state, action) => {
         state.LOADING_RESTORE_ACCOUNT = false;
         state.access_token = action.payload.access_token;
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
-          action.payload.access_token
-        );
+        authTokenManager.setToken(action.payload.access_token);
       })
       .addCase(restoreAccount.pending, (state) => {
         state.LOADING_RESTORE_ACCOUNT = true;

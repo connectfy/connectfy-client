@@ -57,6 +57,7 @@ import {
   logout,
   verifyChangeEmail,
 } from "../api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
@@ -149,7 +150,7 @@ const AccountSettings: FC = () => {
         LOCAL_STORAGE_KEYS.LANG,
         me!.settings.generalSettings.language
       );
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+      authTokenManager.clear();
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.logout_successfull"));
       dispatch(clearMe());
@@ -171,7 +172,7 @@ const AccountSettings: FC = () => {
         LOCAL_STORAGE_KEYS.LANG,
         me!.settings.generalSettings.language
       );
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+      authTokenManager.clear();
       navigate(ROUTER.AUTH.MAIN);
       snack.success(t("user_messages.account_deactivated"));
       dispatch(clearMe());
