@@ -16,7 +16,6 @@ import {
   IResetPasswordResponse,
   IGoogleLoginForm,
   IGoogleSignupForm,
-  IFaceIdForm,
   IIsValidToken,
   IRefreshResponse,
   IAuthenticateUserResponse,
@@ -78,15 +77,15 @@ export const login = createAsyncThunk<ILoginResponse, ILoginForm>(
     try {
       const res = await axios.post<ILoginResponse>(
         API_ENDPOINTS.AUTH.LOGIN,
-        data
+        data,
       );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.process_failed")
+        error.response?.data?.message || t("error_messages.process_failed"),
       );
     }
-  }
+  },
 );
 
 // ======================== SIGNUP
@@ -97,12 +96,12 @@ export const signup = createAsyncThunk<
   try {
     const res = await axios.post<ISignupResponse>(
       API_ENDPOINTS.AUTH.SIGNUP,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || t("error_messages.process_failed")
+      error.response?.data?.message || t("error_messages.process_failed"),
     );
   }
 });
@@ -115,12 +114,12 @@ export const signupVerify = createAsyncThunk<
   try {
     const res = await axios.post<ISignupVerifyResponse>(
       API_ENDPOINTS.AUTH.SIGNUP_VERIFY,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || t("error_messages.process_failed")
+      error.response?.data?.message || t("error_messages.process_failed"),
     );
   }
 });
@@ -133,12 +132,12 @@ export const forgotPassword = createAsyncThunk<
   try {
     const res = await axios.post<IForgotPasswordResponse>(
       API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || t("error_messages.process_failed")
+      error.response?.data?.message || t("error_messages.process_failed"),
     );
   }
 });
@@ -151,12 +150,12 @@ export const resetPassword = createAsyncThunk<
   try {
     const res = await axios.post<IResetPasswordResponse>(
       API_ENDPOINTS.AUTH.RESET_PASSWORD,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || t("error_messages.process_failed")
+      error.response?.data?.message || t("error_messages.process_failed"),
     );
   }
 });
@@ -168,15 +167,15 @@ export const googleLogin = createAsyncThunk<ILoginResponse, IGoogleLoginForm>(
     try {
       const res = await axios.post<ILoginResponse>(
         API_ENDPOINTS.AUTH.GOOGLE_LOGIN,
-        data
+        data,
       );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.process_failed")
+        error.response?.data?.message || t("error_messages.process_failed"),
       );
     }
-  }
+  },
 );
 
 // ======================== GOOGLE SIGNUP
@@ -187,33 +186,15 @@ export const googleSignup = createAsyncThunk<
   try {
     const res = await axios.post<ISignupVerifyResponse>(
       API_ENDPOINTS.AUTH.GOOGLE_SIGNUP,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data?.message || t("error_messages.process_failed")
+      error.response?.data?.message || t("error_messages.process_failed"),
     );
   }
 });
-
-// ======================== FACE ID
-export const faceId = createAsyncThunk<ILoginResponse, IFaceIdForm>(
-  API_ENDPOINTS.AUTH.FACE_DESCRIPTOR,
-  async (data, { rejectWithValue }) => {
-    try {
-      const res = await axios.post<ILoginResponse>(
-        API_ENDPOINTS.AUTH.FACE_DESCRIPTOR,
-        data
-      );
-      return res.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || t("error_messages.process_failed")
-      );
-    }
-  }
-);
 
 // ======================== VALIDATE TOKEN
 export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
@@ -222,15 +203,15 @@ export const isValidToken = createAsyncThunk<boolean, IIsValidToken>(
     try {
       const res = await axios.post<boolean>(
         API_ENDPOINTS.AUTH.IS_VALID_TOKEN,
-        data
+        data,
       );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.process_failed")
+        error.response?.data?.message || t("error_messages.process_failed"),
       );
     }
-  }
+  },
 );
 
 // ======================== REFRESH
@@ -239,15 +220,15 @@ export const refresh = createAsyncThunk<IRefreshResponse>(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.post<IRefreshResponse>(
-        API_ENDPOINTS.AUTH.REFRESH
+        API_ENDPOINTS.AUTH.REFRESH,
       );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response?.data?.message || t("error_messages.process_failed")
+        error.response?.data?.message || t("error_messages.process_failed"),
       );
     }
-  }
+  },
 );
 
 // ======================== AUTHENTICATE USER
@@ -258,12 +239,12 @@ export const authenticateUser = createAsyncThunk<
   try {
     const res = await axios.post<IAuthenticateUserResponse>(
       API_ENDPOINTS.AUTH.AUTHENTICATE_USER,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data.message || t("error_messages.process_failed")
+      error.response?.data.message || t("error_messages.process_failed"),
     );
   }
 });
@@ -276,12 +257,12 @@ export const restoreAccount = createAsyncThunk<
   try {
     const res = await axios.post<IRestoreAccountResponse>(
       API_ENDPOINTS.AUTH.RESTORE_ACCOUNT,
-      data
+      data,
     );
     return res.data;
   } catch (error: any) {
     return rejectWithValue(
-      error.response?.data.message || t("error_messages.process_failed")
+      error.response?.data.message || t("error_messages.process_failed"),
     );
   }
 });
@@ -329,7 +310,7 @@ const authSlice = createSlice({
   reducers: {
     setlogout(state) {
       state.access_token = null;
-      authTokenManager.clear()
+      authTokenManager.clear();
     },
     setAccessToken(state, action: PayloadAction<string>) {
       state.access_token = action.payload;
@@ -348,12 +329,12 @@ const authSlice = createSlice({
     },
     setForgotPasswordMode: (
       state,
-      action: PayloadAction<ForgotPasswordModeType>
+      action: PayloadAction<ForgotPasswordModeType>,
     ) => {
       state.forgotPasswordMode = action.payload;
       localStorage.setItem(
         LOCAL_STORAGE_KEYS.FORGOT_PASSWORD_MODE,
-        action.payload
+        action.payload,
       );
     },
     clearError: (
@@ -366,7 +347,7 @@ const authSlice = createSlice({
         | "forgotPassword"
         | "authenticateUser"
         | "restoreAccount"
-      >
+      >,
     ) => {
       switch (action.payload) {
         case "login":
@@ -491,19 +472,6 @@ const authSlice = createSlice({
         state.ERROR_GOOGLE_SIGNUP = action.payload as string | string[];
       })
 
-      // =================== FACE DESCRIPTOR
-      .addCase(faceId.fulfilled, (state, action) => {
-        state.LOADING_FACE_ID = false;
-        void action;
-      })
-      .addCase(faceId.pending, (state) => {
-        state.LOADING_FACE_ID = true;
-      })
-      .addCase(faceId.rejected, (state, action) => {
-        state.LOADING_FACE_ID = false;
-        state.ERROR_GOOGLE_SIGNUP = action.payload as string | string[];
-      })
-
       // =================== IS VALID TOKEN
       .addCase(isValidToken.fulfilled, (state) => {
         state.LOADING_IS_VALID_TOKEN = false;
@@ -545,13 +513,13 @@ const authSlice = createSlice({
       // =================== LOGOUT
       .addCase(logout.fulfilled, (state) => {
         state.access_token = null;
-        authTokenManager.clear()
+        authTokenManager.clear();
       })
 
       // =================== DELETE ACCOUNT
       .addCase(deleteAccount.fulfilled, (state) => {
         state.access_token = null;
-        authTokenManager.clear()
+        authTokenManager.clear();
       })
 
       // =================== RESTORE ACCOUNT

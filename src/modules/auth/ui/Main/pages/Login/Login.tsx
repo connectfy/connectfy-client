@@ -4,7 +4,6 @@ import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
 import UsernameForm from "./components/UsernameForm/UsernameForm";
 import EmailForm from "./components/EmailForm/EmailForm";
 import PhoneNumberForm from "./components/PhoneNumberForm/PhoneNumberForm";
-import FaceIdForm from "./components/FaceIdForm";
 import LoginHeader from "./components/LoginHeader/LoginHeader";
 import { useFormik } from "formik";
 import { loginInitialState } from "../../../../constants/intialState";
@@ -17,7 +16,6 @@ import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { ILoginForm, LoginModeType } from "../../../../types/types";
 import { useNavigate } from "react-router-dom";
-import useBoolean from "@/hooks/useBoolean";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
@@ -29,13 +27,12 @@ const Login = () => {
   const navigate = useNavigate();
 
   const { loginMode, ERROR_LOGIN, LOADING_LOGIN } = useAppSelector(
-    (state) => state[RESOURCE.AUTH]
+    (state) => state[RESOURCE.AUTH],
   );
 
   const localLoginMode =
-    (localStorage.getItem(LOCAL_STORAGE_KEYS.LOGIN_MODE) as LoginModeType) || "username";
-
-  const { open, onOpen, onClose } = useBoolean();
+    (localStorage.getItem(LOCAL_STORAGE_KEYS.LOGIN_MODE) as LoginModeType) ||
+    "username";
 
   const formik = useFormik({
     initialValues: loginInitialState,
@@ -68,9 +65,6 @@ const Login = () => {
     validationRules: [
       (values) => !!values.identifier && checkEmptyString(values.identifier),
       (values) => {
-        if (loginMode === "faceDescriptor") {
-          return Array.isArray(values.password);
-        }
         return checkEmptyString(values.password || "");
       },
     ],
@@ -87,21 +81,10 @@ const Login = () => {
       case "phoneNumber":
         return <PhoneNumberForm formik={formik} isDisabled={isDisabled} />;
 
-      case "faceDescriptor":
-        return (
-          <FaceIdForm
-            formik={formik}
-            isDisabled={isDisabled}
-            open={open}
-            onOpen={onOpen}
-            onClose={onClose}
-          />
-        );
-
       default:
         return null;
     }
-  }, [loginMode, formik, isDisabled, open, onOpen, onClose]);
+  }, [loginMode, formik, isDisabled]);
 
   useToastError({
     error: ERROR_LOGIN,
@@ -109,12 +92,7 @@ const Login = () => {
   });
 
   useEffect(() => {
-    const loginModes: LoginModeType[] = [
-      "username",
-      "email",
-      "phoneNumber",
-      "faceDescriptor",
-    ];
+    const loginModes: LoginModeType[] = ["username", "email", "phoneNumber"];
 
     const mode = localLoginMode as LoginModeType;
 
@@ -127,19 +105,6 @@ const Login = () => {
   }, [localLoginMode, dispatch]);
 
   useEffect(() => {
-    if (loginMode === "faceDescriptor") {
-      const handleFaceEnter = (e: KeyboardEvent) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          onOpen();
-        }
-      };
-      document.addEventListener("keydown", handleFaceEnter);
-      return () => {
-        document.removeEventListener("keydown", handleFaceEnter);
-      };
-    }
-
     if (isDisabled) return;
 
     const handleSubmitEnter = (e: KeyboardEvent) => {
@@ -153,7 +118,7 @@ const Login = () => {
     return () => {
       document.removeEventListener("keydown", handleSubmitEnter);
     };
-  }, [isDisabled, loginMode, formik.handleSubmit, onOpen]);
+  }, [isDisabled, loginMode, formik]);
 
   return (
     <Fragment>

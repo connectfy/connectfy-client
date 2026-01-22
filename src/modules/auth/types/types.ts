@@ -12,7 +12,6 @@ export type LoginModeType =
   | "email"
   | "username"
   | "phoneNumber"
-  | "faceDescriptor";
 
 export type ForgotPasswordModeType = "email" | "phoneNumber";
 
@@ -93,11 +92,6 @@ export interface IGoogleSignupForm {
   birthdayDate: Date | null;
   theme: THEME;
   deviceId: string | null;
-}
-
-export interface IFaceIdForm {
-  username: string | null;
-  faceDescriptor: number[] | null;
 }
 
 export interface IIsValidToken {

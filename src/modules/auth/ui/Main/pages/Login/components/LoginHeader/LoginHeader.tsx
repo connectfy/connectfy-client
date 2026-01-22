@@ -1,6 +1,6 @@
 import "./loginHeader.style.css";
 import { type FC } from "react";
-import { Badge, Phone, Email, Face } from "@mui/icons-material";
+import { Badge, Phone, Email } from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
 import { setLoginMode } from "../../../../../../api/api";
 import { IDENTIFIER_TYPE, RESOURCE } from "@/common/enums/enums";
@@ -17,7 +17,7 @@ const LoginHeader: FC<Props> = ({ formik }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { loginMode, LOADING_LOGIN } = useAppSelector(
-    (state) => state[RESOURCE.AUTH]
+    (state) => state[RESOURCE.AUTH],
   );
 
   const changeLoginMode = (mode: LoginModeType) => {
@@ -40,9 +40,6 @@ const LoginHeader: FC<Props> = ({ formik }) => {
         break;
       case "phoneNumber":
         formik.setFieldValue("identifierType", IDENTIFIER_TYPE.PHONE_NUMBER);
-        break;
-      case "faceDescriptor":
-        formik.setFieldValue("identifierType", IDENTIFIER_TYPE.FACE_DESCRIPTOR);
         break;
     }
 
@@ -74,14 +71,6 @@ const LoginHeader: FC<Props> = ({ formik }) => {
             onClick={() => changeLoginMode("phoneNumber")}
           >
             <Phone className="login-header-btn-icon" />
-          </div>
-        </Tooltip>
-        <Tooltip placement="top" title={t("common.login_with_faceId")}>
-          <div
-            className={`login-header-btn face-descriptor-btn ${loginMode === "faceDescriptor" ? "login-header-btn-active" : ""}`}
-            onClick={() => changeLoginMode("faceDescriptor")}
-          >
-            <Face className="login-header-btn-icon" />
           </div>
         </Tooltip>
       </div>
