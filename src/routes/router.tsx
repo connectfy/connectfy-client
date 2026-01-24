@@ -6,7 +6,7 @@ import {
 } from "@/components/routeGuard/RequireAuth";
 import { ROUTER } from "@/common/constants/routet";
 import { Navigate } from "react-router-dom";
-import Loader from "@/components/Loader/Loader";
+import Loader from "@/components/Loader/Main/Loader.tsx";
 
 // ======================= LAYOUT
 const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/AuthLayout")));

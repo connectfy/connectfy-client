@@ -4,7 +4,7 @@ import React, {
   type ComponentType,
   type LazyExoticComponent,
 } from "react";
-import Loading from "../Loading/Loading";
+import Loading from "../../Loading/Loading.tsx";
 
 type AnyComponent<P> = ComponentType<P> | LazyExoticComponent<ComponentType<P>>;
 
