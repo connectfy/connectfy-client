@@ -1,5 +1,5 @@
 .privacy-modal-content {
-  background: var(--card-bg);
+  background: var(--bg-color);
   border-radius: 16px;
   box-shadow: var(--card-shadow);
   width: 90%;
@@ -44,7 +44,8 @@
   transition: all 0.2s ease;
   margin-bottom: 12px;
   border: 2px solid transparent;
-  background: var(--secondary-color);
+  background: var(--bg-color);
+  box-shadow: var(--card-shadow);
 }
 
 .privacy-option:hover {

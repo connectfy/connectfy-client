@@ -29,8 +29,8 @@
 [data-theme="dark"] .sidebar {
   background: linear-gradient(
     180deg,
-    rgba(30, 30, 35, 0.98) 0%,
-    rgba(25, 25, 30, 0.95) 100%
+    #0A0F0D 0%,
+    #0A0F0D 100%
   );
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);

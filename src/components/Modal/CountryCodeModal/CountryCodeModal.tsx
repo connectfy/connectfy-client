@@ -2,7 +2,7 @@ import { type FC, useMemo, useState } from "react";
 import { Modal, Box, IconButton, Slide } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./countryCodeModal.style.css";
-import Input from "@/components/Input/Input";
+import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import { useTranslation } from "react-i18next";
 import { ICountry } from "@/common/interfaces/interfaces";
 import { COUNTRIES } from "@/common/constants/constants";
@@ -67,11 +67,10 @@ export const CountryCodeModal: FC<Props> = ({
 
             <div style={{ padding: "0 1rem 1rem 1rem" }}>
               <Input
-                label={t("common.search_country")}
+                title={t("common.search_country")}
                 value={query ?? ""}
                 inputSize="medium"
                 onChange={(e) => setQuery(e.target.value)}
-                fullWidth
               />
 
               <div className="country-list" role="list">

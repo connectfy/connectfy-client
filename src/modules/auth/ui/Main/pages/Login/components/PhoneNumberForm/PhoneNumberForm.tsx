@@ -1,7 +1,7 @@
 import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import "./phoneNumberForm.style.css";
-import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useTranslation } from "react-i18next";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import Button from "@/components/Buttons/Button/Button";
 import { FormikProps } from "formik";
 import { ILoginForm, IPhoneNumber } from "../../../../../../types/types";
@@ -32,7 +32,7 @@ const PhoneNumberForm: FC<Props> = ({ formik, isDisabled }) => {
         />
         <PasswordInput
           inputSize="medium"
-          label={t("common.password")}
+          title={t("common.password")}
           name="password"
           value={formik.values.password || ""}
           onChange={(e) => {

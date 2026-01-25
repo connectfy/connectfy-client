@@ -2,7 +2,7 @@ import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import "./phoneNumberForm.style.css";
 import { COUNTRIES } from "@/common/constants/constants";
 import { useTranslation } from "react-i18next";
-import Input from "@/components/Input/Input";
+import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import { Tooltip } from "@mui/material";
 import useBoolean from "@/hooks/useBoolean";
 import CountryCodeModal from "@/components/Modal/CountryCodeModal/CountryCodeModal";
@@ -32,7 +32,7 @@ const PhoneNumberForm: FC<Props> = ({
 
   const country = useMemo(
     () => COUNTRIES.find((c) => c.key === countryKey) || COUNTRIES[0],
-    [countryKey]
+    [countryKey],
   );
 
   const countryModal = useBoolean();
@@ -47,12 +47,12 @@ const PhoneNumberForm: FC<Props> = ({
         fullPhoneNumber: country.code + fieldValue,
       });
     else onChange(null);
-  }, [fieldValue, country.code]);
+  }, [fieldValue, country.code, onChange]);
 
   useEffect(() => {
     if (fieldValue?.length !== country.numberLength) setHasLengthError(true);
     else setHasLengthError(false);
-  }, [fieldValue]);
+  }, [fieldValue, country.numberLength]);
 
   useEffect(() => {
     if (value) {
@@ -80,7 +80,7 @@ const PhoneNumberForm: FC<Props> = ({
           <div className="phone-number">
             <Input
               inputSize="medium"
-              label={t("common.phoneNumber")}
+              title={t("common.phoneNumber")}
               name={name}
               value={fieldValue || ""}
               onChange={(e) => {
@@ -98,7 +98,8 @@ const PhoneNumberForm: FC<Props> = ({
               onBlur={onBlur}
               inputMode="numeric"
               onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : undefined)}
-              hasError={hasLengthError && blur}
+              isError={hasLengthError && blur}
+              // error={}
             />
           </div>
         </div>

@@ -1,8 +1,8 @@
 import "./signup.style.css";
-import Input from "@/components/Input/Input";
+import Input from "@/components/ui/CustomInput/Input/Input.tsx";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import { useTranslation } from "react-i18next";
 import GenderForm from "@/components/Form/GenderForm/GenderForm";
-import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Buttons/Button/Button";
 import { clearError, setSignupForm, signup } from "../../../../api/api";
@@ -42,7 +42,7 @@ const Signup = () => {
     validate: (values) => validateSignup(values, t),
     onSubmit: async (values, { resetForm }) => {
       const { confirm, ...rest } = values;
-
+      void confirm;
       rest.birthdayDate = rest.birthdayDate
         ? new Date(rest.birthdayDate)
         : null;
@@ -90,7 +90,7 @@ const Signup = () => {
     if (signupForm) {
       formik.setValues({ ...signupForm }, true);
     }
-  }, [signupForm]);
+  }, [formik, signupForm]);
 
   useEffect(() => {
     if (isDisabled) return;
@@ -106,14 +106,14 @@ const Signup = () => {
     return () => {
       document.removeEventListener("keydown", handleSubmitEnter);
     };
-  }, [isDisabled, formik.handleSubmit]);
+  }, [isDisabled, formik]);
 
   return (
     <div className="signup-form">
       <div className="signup-form-block">
         <Input
           inputSize="medium"
-          label={t("common.first_name")}
+          title={t("common.first_name")}
           name="firstName"
           value={formik.values.firstName || ""}
           onBlur={() => formik.setFieldTouched("firstName", true, false)}
@@ -124,81 +124,60 @@ const Signup = () => {
 
             formik.setFieldValue("firstName", value || null);
           }}
-          hasError={!!(formik.errors.firstName && formik.touched.firstName)}
+          isError={!!(formik.errors.firstName && formik.touched.firstName)}
+          error={formik.errors.firstName}
         />
-        {formik.errors.firstName && formik.touched.firstName && (
-          <h6>{formik.errors.firstName}</h6>
-        )}
         <Input
           inputSize="medium"
-          label={t("common.last_name")}
+          title={t("common.last_name")}
           name="lastName"
           value={formik.values.lastName || ""}
           onBlur={() => formik.setFieldTouched("lastName", true, false)}
-          onChange={(e) =>{
+          onChange={(e) => {
             const value = e.target.value || null;
 
             if (value && value.length > 50) return;
 
             formik.setFieldValue("lastName", value || null);
           }}
-          hasError={!!(formik.errors.lastName && formik.touched.lastName)}
+          isError={!!(formik.errors.lastName && formik.touched.lastName)}
+          error={formik.errors.lastName}
         />
-        {formik.errors.lastName && formik.touched.lastName && (
-          <h6>{formik.errors.lastName}</h6>
-        )}
       </div>
       <div className="signup-form-block">
         <Input
           inputSize="medium"
-          label={t("common.username")}
+          title={t("common.username")}
           name="username"
           value={formik.values.username || ""}
           onBlur={() => formik.setFieldTouched("username", true, false)}
-          onChange={(e) =>{
+          onChange={(e) => {
             const value = e.target.value || null;
 
             if (value && value.length > 30) return;
 
             formik.setFieldValue("username", value || null);
           }}
-          hasError={!!(formik.errors.username && formik.touched.username)}
+          isError={!!(formik.errors.username && formik.touched.username)}
+          error={formik.errors.username}
         />
-        {formik.errors.username && formik.touched.username && (
-          <h6>{formik.errors.username}</h6>
-        )}
         <Input
           inputSize="medium"
-          label={t("common.email")}
+          title={t("common.email")}
           name="email"
           value={formik.values.email || ""}
           onBlur={() => formik.setFieldTouched("email", true, false)}
-          onChange={(e) =>{
+          onChange={(e) => {
             const value = e.target.value || null;
 
             if (value && value.length > 254) return;
 
             formik.setFieldValue("email", value || null);
           }}
-          hasError={!!(formik.errors.email && formik.touched.email)}
+          isError={!!(formik.errors.email && formik.touched.email)}
+          error={formik.errors.email}
         />
-        {formik.errors.email && formik.touched.email && (
-          <h6>{formik.errors.email}</h6>
-        )}
       </div>
-      {/* <div className="signup-form-block">
-        <PhoneNumberForm
-          name="phoneNumber"
-          onBlur={() =>
-            formik.setFieldTouched("phoneNumber.number", true, false)
-          }
-          onChange={(value: IPhoneNumber | null) =>
-            formik.setFieldValue("phoneNumber", value)
-          }
-          blur={formik.touched.phoneNumber?.number ?? false}
-          value={formik.values.phoneNumber}
-        />
-      </div> */}
       <div className="signup-form-block">
         <div style={{ width: "100%" }}>
           <DatePicker
@@ -224,12 +203,12 @@ const Signup = () => {
       <div className="signup-form-block-password">
         <PasswordInput
           inputSize="medium"
-          label={t("common.password")}
-          showGenerateIcon
+          title={t("common.password")}
+          showGenerateButton
           name="password"
           value={formik.values.password || ""}
           onBlur={() => formik.setFieldTouched("password", true, false)}
-          onChange={(e) =>{
+          onChange={(e) => {
             const value = e.target.value || null;
 
             if (value && value.length > 30) return;
@@ -249,29 +228,25 @@ const Signup = () => {
             formik.setFieldValue("password", value);
             formik.setFieldValue("confirm", value);
           }}
-          hasError={!!(formik.errors.password && formik.touched.password)}
+          isError={!!(formik.errors.password && formik.touched.password)}
+          error={formik.errors.password}
         />
-        {formik.errors.password && formik.touched.password && (
-          <h6>{formik.errors.password}</h6>
-        )}
         <PasswordInput
           inputSize="medium"
-          label={t("common.confirm_password")}
+          title={t("common.confirm_password")}
           name="confirm"
           value={formik.values.confirm || ""}
           onBlur={() => formik.setFieldTouched("confirm", true, false)}
-          onChange={(e) =>{
+          onChange={(e) => {
             const value = e.target.value || null;
 
             if (value && value.length > 30) return;
 
             formik.setFieldValue("confirm", value || null);
           }}
-          hasError={!!(formik.errors.confirm && formik.touched.confirm)}
+          isError={!!(formik.errors.confirm && formik.touched.confirm)}
+          error={formik.errors.confirm}
         />
-        {formik.errors.confirm && formik.touched.confirm && (
-          <h6>{formik.errors.confirm}</h6>
-        )}
       </div>
 
       <div className="terms-conditions">

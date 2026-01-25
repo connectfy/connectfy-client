@@ -19,14 +19,14 @@
   --active-bg: rgba(46, 204, 113, 0.2);
   --active-bg-2: rgba(46, 204, 113, 0.08);
   --active-shadow: 0 6px 18px rgba(46, 204, 113, 0.3);
-  --input-bg: rgba(18, 20, 21, 0.35);
+  --input-bg: transparent;
   --shadow-color: rgba(46, 197, 94, 0.06);
 }
 
 [data-theme="dark"] {
   --secondary-color: #36393f;
   --text-color: #f0f0f0;
-  --bg-color: #202225;
+  --bg-color: #0A0F0D;
   --toggle-bg: #4a4a4a;
   --border-color: rgba(255, 255, 255, 0.6);
   --skeleton-color: #4a4a4a;
@@ -36,10 +36,10 @@
   /* ADDED vars */
   --muted-color: #9aa4b2;
   --card-bg: #25262a;
-  --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
   --active-bg: rgba(46, 204, 113, 0.12);
   --active-bg-2: rgba(46, 204, 113, 0.04);
   --active-shadow: 0 6px 18px rgba(46, 204, 113, 0.14);
-  --input-bg: rgba(18, 20, 21, 0.35);
+  --input-bg: transparent;
   --shadow-color: rgba(46, 197, 94, 0.06);
 }

@@ -50,7 +50,7 @@ const MainPage: FC = () => {
       localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH_PAGE, "login");
       dispatch(setAuthForm("login"));
     } else dispatch(setAuthForm(authMode as AuthFormType));
-  }, [authMode]);
+  }, [dispatch, authMode]);
 
   useEffect(() => {
     if (!token || !type) return;
@@ -72,7 +72,7 @@ const MainPage: FC = () => {
 
       navigate(ROUTER.AUTH.MAIN);
     })();
-  }, [token, type]);
+  }, [dispatch, navigate, t, token, type]);
 
   return (
     <section id="auth-page">

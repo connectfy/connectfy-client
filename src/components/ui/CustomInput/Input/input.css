@@ -1,0 +1,397 @@
+/* ===================================
+   INPUT WRAPPER
+   =================================== */
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===================================
+   INPUT CONTAINER
+   =================================== */
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+/* ===================================
+   INPUT ICON (left side)
+   =================================== */
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-color);
+  pointer-events: none;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.input-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Focus state - icon color change */
+.input-container:has(.input-field:focus) .input-icon {
+  color: var(--primary-color);
+}
+
+/* Error state - icon color change */
+.input-container.error .input-icon {
+  color: var(--error-color);
+}
+
+/* ===================================
+   STATIC LABEL (when isFloating = false)
+   =================================== */
+.static-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: color 0.2s ease;
+}
+
+/* ===================================
+   INPUT FIELD BASE STYLES
+   =================================== */
+.input-field {
+  width: 100%;
+  color: var(--text-color);
+  background-color: var(--input-bg, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   SIZE VARIANTS
+   Applied to .input-container
+   =================================== */
+
+/* Icon padding adjustments for all sizes */
+.input-container.has-icon .input-field {
+  padding-left: 2.75rem;
+}
+
+.input-container.has-icon .floating-label {
+  left: 2.75rem;
+}
+
+/* SMALL */
+.input-size-small .input-field {
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+}
+.input-size-small.has-icon .input-field {
+  padding-left: 2.5rem;
+}
+.input-size-small.has-icon .floating-label {
+  left: 2.5rem;
+}
+.input-size-small .input-icon {
+  left: 0.625rem;
+}
+.input-size-small .input-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+.input-size-small.floating .input-field {
+  padding-bottom: 0.625rem;
+}
+.input-size-large.has-icon.floating .input-field,
+.input-size-large:has(.input-icon).floating .input-field {
+  padding-left: 25px;
+}
+.input-size-small.has-icon .floating-label,
+.input-size-small:has(.input-icon) .floating-label {
+  left: 2.5rem;
+}
+.input-size-small .floating-label {
+  font-size: 0.875rem;
+  left: 0.75rem;
+}
+.input-size-small .floating-label.active {
+  font-size: 0.6875rem;
+}
+
+/* MEDIUM */
+.input-size-medium .input-field {
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+}
+.input-size-medium.has-icon .input-field {
+  padding-left: 2.75rem;
+}
+.input-size-medium.has-icon .floating-label {
+  left: 2.75rem;
+}
+.input-size-medium .input-icon {
+  left: 0.75rem;
+}
+.input-size-medium.floating .input-field {
+  padding-bottom: 0.85rem;
+}
+.input-size-medium.has-icon.floating .input-field,
+.input-size-medium:has(.input-icon).floating .input-field {
+  padding-left: 35px;
+}
+.input-size-medium.has-icon .floating-label,
+.input-size-medium:has(.input-icon) .floating-label {
+  left: 2.75rem;
+}
+.input-size-medium .floating-label {
+  font-size: 1rem;
+  left: 1rem;
+}
+.input-size-medium .floating-label.active {
+  font-size: 0.75rem;
+}
+
+/* LARGE */
+.input-size-large .input-field {
+  padding: 1rem 1.25rem;
+  font-size: 1.0625rem;
+}
+.input-size-large.has-icon .input-field {
+  padding-left: 3rem;
+}
+.input-size-large.has-icon .floating-label {
+  left: 3rem;
+}
+.input-size-large .input-icon {
+  left: 1rem;
+}
+.input-size-large .input-icon svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+.input-size-large.floating .input-field {
+  padding-bottom: 1rem;
+}
+.input-size-large.has-icon.floating .input-field,
+.input-size-large:has(.input-icon).floating .input-field {
+  padding-left: 45px;
+}
+.input-size-large.has-icon .floating-label,
+.input-size-large:has(.input-icon) .floating-label {
+  left: 3rem;
+}
+.input-size-large .floating-label {
+  font-size: 1.0625rem;
+  left: 1.45rem;
+}
+.input-size-large .floating-label.active {
+  font-size: 0.8125rem;
+}
+
+/* XLARGE */
+.input-size-xlarge .input-field {
+  padding: 1.125rem 1.5rem;
+  font-size: 1.125rem;
+}
+.input-size-xlarge.has-icon .input-field {
+  padding-left: 3.25rem;
+}
+.input-size-xlarge.has-icon .floating-label {
+  left: 3.25rem;
+}
+.input-size-xlarge .input-icon {
+  left: 1.125rem;
+}
+.input-size-xlarge .input-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.input-size-xlarge.floating .input-field {
+  padding-bottom: 1.125rem;
+}
+.input-size-xlarge.has-icon.floating .input-field,
+.input-size-xlarge:has(.input-icon).floating .input-field {
+  padding-left: 55px;
+}
+.input-size-xlarge.has-icon .floating-label,
+.input-size-xlarge:has(.input-icon) .floating-label {
+  left: 3.25rem;
+}
+.input-size-xlarge .floating-label {
+  font-size: 1.125rem;
+  left: 1.5rem;
+}
+.input-size-xlarge .floating-label.active {
+  font-size: 0.875rem;
+}
+
+/* ===================================
+   INPUT STATES
+   =================================== */
+
+/* Focus State */
+.input-field:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.input-container.has-icon .floating-label,
+.input-container:has(.input-icon) .floating-label {
+  left: 2.75rem;
+}
+
+/* Error State */
+.input-container.error .input-field {
+  border-color: var(--error-color);
+}
+
+.input-container.error .input-field:focus {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 1px var(--error-color);
+}
+
+/* Disabled State */
+.input-field:disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+}
+
+.input-field:disabled + .floating-label {
+  color: var(--disabled-text);
+}
+
+/* ===================================
+   FLOATING LABEL
+   =================================== */
+.floating-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-color);
+  background-color: transparent;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Floating Label Active State (floated up) */
+.floating-label.active {
+  top: 0;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  padding: 0 0.25rem;
+  background-color: var(--bg-color);
+  left: 1rem !important;
+}
+
+/* Error state label */
+.input-container.error .floating-label.active {
+  color: var(--error-color);
+}
+
+/* ===================================
+   ERROR WRAPPER (reserves space)
+   Prevents layout shift when error appears/disappears
+   =================================== */
+.error-wrapper {
+  min-height: 1.5rem; /* Reserve space for error - adjust as needed */
+  overflow: hidden;
+}
+
+/* ===================================
+   ERROR CONTAINER (accordion-style)
+   Uses max-height + opacity for smooth expand/collapse
+   =================================== */
+.error-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  transition:
+    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Error visible state - expands like accordion */
+.error-container.visible {
+  max-height: 100px; /* Adjust based on expected error message height */
+  opacity: 1;
+}
+
+.error-container svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem; /* Align icon with text baseline */
+}
+
+.error-text {
+  font-size: 0.75rem;
+  color: var(--error-color);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ===================================
+   PLACEHOLDER
+   =================================== */
+.input-container.floating .input-field::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.input-container.floating .input-field:focus::placeholder {
+  opacity: 0.5;
+}
+
+/* ===================================
+   AUTOFILL STYLES
+   =================================== */
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:hover,
+.input-field:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  -webkit-text-fill-color: var(--text-color);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+  /* Adjust sizes for mobile if needed */
+  .input-size-medium .input-field {
+    font-size: 0.9375rem;
+    padding: 0.75rem 0.875rem;
+  }
+
+  .input-size-medium.floating .input-field {
+    padding-bottom: 0.75rem;
+  }
+
+  .input-size-medium .floating-label {
+    font-size: 0.9375rem;
+  }
+
+  .input-size-medium .floating-label.active {
+    font-size: 0.6875rem;
+  }
+
+  .input-size-medium.has-icon .input-field {
+    padding-left: 2.5rem;
+  }
+
+  .input-size-medium.has-icon .floating-label {
+    left: 2.5rem;
+  }
+}

@@ -18,7 +18,7 @@
 }
 
 .profile-page-section {
-  background: var(--card-bg);
+  background: var(--bg-color);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 24px;

@@ -1,6 +1,6 @@
-import Input from "@/components/Input/Input";
+import Input from "@/components/ui/CustomInput/Input/Input.tsx";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import "./emailForm.style.css";
-import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/Buttons/Button/Button";
 import { FormikProps } from "formik";
@@ -24,7 +24,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
       <div className="email-login-form-inputs">
         <Input
           inputSize="medium"
-          label={t("common.email")}
+          title={t("common.email")}
           name="identifier"
           value={formik.values.identifier || ""}
           onChange={(e) =>{
@@ -35,11 +35,11 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("identifier", value || null)
           }}
           onBlur={() => formik.setFieldTouched("identifier", true, false)}
-          hasError={!!(formik.errors.identifier && formik.touched.identifier)}
+          isError={!!(formik.errors.identifier && formik.touched.identifier)}
         />
         <PasswordInput
           inputSize="medium"
-          label={t("common.password")}
+          title={t("common.password")}
           name="password"
           value={formik.values.password || ""}
           onChange={(e) =>{
@@ -50,7 +50,7 @@ const EmailForm: FC<Props> = ({ formik, isDisabled }) => {
             formik.setFieldValue("password", value || "")
           }}
           onBlur={() => formik.setFieldTouched("password", true, false)}
-          hasError={!!(formik.errors.password && formik.touched.password)}
+          isError={!!(formik.errors.password && formik.touched.password)}
         />
       </div>
       <div className="email-login-form-submit">
