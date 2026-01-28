@@ -1,5 +1,6 @@
-@import "variables.css";
-@import "typography.css";
+@import "tailwindcss";
+@import "./variables.css";
+@import "./typography.css";
 
 * {
   user-select: none;
@@ -19,11 +20,12 @@ body {
   transition:
     background-color 0.1s,
     color 0.1s;
-  font-family: Arial, sans-serif !important;
+  /*font-family: Arial, sans-serif !important;*/
   transition: background-color 0.3s ease-in-out;
   scrollbar-width: 3px;
   scrollbar-color: var(--primary-color) var(--bg-color);
   scrollbar-width: thin;
+  font-family: "Inter", sans-serif !important;
 }
 
 ::-webkit-scrollbar-track {

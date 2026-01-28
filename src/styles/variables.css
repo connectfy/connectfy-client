@@ -24,9 +24,10 @@
 }
 
 [data-theme="dark"] {
+  /*--primary-color: #16492c;*/
   --secondary-color: #36393f;
   --text-color: #f0f0f0;
-  --bg-color: #0A0F0D;
+  --bg-color: #0a0f0d;
   --toggle-bg: #4a4a4a;
   --border-color: rgba(255, 255, 255, 0.6);
   --skeleton-color: #4a4a4a;
