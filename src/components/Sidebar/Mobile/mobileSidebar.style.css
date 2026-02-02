@@ -62,7 +62,7 @@
 }
 
 .mobile-nav-item.active {
-  color: #2ecc71;
+  color: var(--third-color);
 }
 
 .mobile-nav-item.active .mobile-icon-wrapper {

@@ -10,7 +10,7 @@ import { updatePrivacySettings } from "@/modules/settings/PrivacySettings/api/ap
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
-import CloseButton from "@/components/Buttons/CloseButton/CloseButton";
+import CloseButton from "@/components/ui/CustomButton/CloseButton/CloseButton";
 
 interface Props {
   open: boolean;
@@ -28,7 +28,7 @@ const PrivacyIconModal: FC<Props> = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { data, LOADING_UPDATE } = useAppSelector(
-    (state) => state[RESOURCE.PRIVACY_SETTINGS]
+    (state) => state[RESOURCE.PRIVACY_SETTINGS],
   );
 
   const privacyOptions = [
@@ -65,7 +65,7 @@ const PrivacyIconModal: FC<Props> = ({
 
   const submitSelect = async () => {
     const actionResult = await dispatch(
-      updatePrivacySettings({ _id: data!._id, [fieldName]: privacy })
+      updatePrivacySettings({ _id: data!._id, [fieldName]: privacy }),
     );
     const res = unwrapResult(actionResult);
 

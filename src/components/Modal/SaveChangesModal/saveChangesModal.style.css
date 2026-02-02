@@ -99,7 +99,7 @@
 }
 
 .unsaved-btn-save {
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  background: linear-gradient(135deg, var(--third-color) 0%, #27ae60 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
 }

@@ -56,7 +56,7 @@ const AuthFooter = () => {
         <p className="auth-footer-other-links">
           {authForm === "login"
             ? t("common.do_not_have_account")
-            : t("common.already_have_accpount")}{" "}
+            : t("common.already_have_account")}{" "}
           <span
             className="auth-footer-other-link"
             onClick={() =>

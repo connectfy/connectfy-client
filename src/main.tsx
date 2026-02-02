@@ -6,7 +6,7 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@/context/ThemeContext.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { closeSnackbar, SnackbarProvider } from "notistack";
-import CloseButton from "./components/Buttons/CloseButton/CloseButton.tsx";
+import CloseButton from "./components/ui/CustomButton/CloseButton/CloseButton.tsx";
 import { history } from "@/common/helpers/history.ts";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 
@@ -30,5 +30,5 @@ createRoot(document.getElementById("root")!).render(
         </ThemeProvider>
       </HistoryRouter>
     </Provider>
-  </GoogleOAuthProvider>
+  </GoogleOAuthProvider>,
 );

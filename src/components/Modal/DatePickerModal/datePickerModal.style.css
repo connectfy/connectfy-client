@@ -1,0 +1,234 @@
+.date_picker_modal_content {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Modal içində calendar stillərini yenidən istifadə edirik */
+.date_picker_modal_content .calendar_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.date_picker_modal_content .nav_button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+  font-weight: 300;
+}
+
+.date_picker_modal_content .nav_button:hover {
+  background-color: var(--active-bg-2);
+  color: var(--primary-color);
+}
+
+.date_picker_modal_content .current_period {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.date_picker_modal_content .current_period:hover {
+  background-color: var(--active-bg-2);
+  color: var(--primary-color);
+}
+
+.date_picker_modal_content .week_days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.date_picker_modal_content .week_day {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted-color);
+  padding: 8px 4px;
+}
+
+.date_picker_modal_content .calendar_grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.date_picker_modal_content .calendar_day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+}
+
+.date_picker_modal_content .calendar_day:not(.empty):not(.other_month):hover {
+  background-color: var(--active-bg-2);
+  color: var(--primary-color);
+}
+
+.date_picker_modal_content .calendar_day.selected {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.date_picker_modal_content .calendar_day.today {
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.date_picker_modal_content .calendar_day.other_month {
+  color: var(--muted-color);
+  opacity: 0.4;
+}
+
+.date_picker_modal_content .calendar_day.empty {
+  cursor: default;
+}
+
+.date_picker_modal_content .months_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.date_picker_modal_content .calendar_month {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+}
+
+.date_picker_modal_content .calendar_month:hover {
+  background-color: var(--active-bg-2);
+  color: var(--primary-color);
+}
+
+.date_picker_modal_content .calendar_month.selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.date_picker_modal_content .years_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.date_picker_modal_content .calendar_year {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+}
+
+.date_picker_modal_content .calendar_year:hover {
+  background-color: var(--active-bg-2);
+  color: var(--primary-color);
+}
+
+.date_picker_modal_content .calendar_year.selected {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.date_picker_modal_content .calendar_footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--input-border);
+}
+
+.date_picker_modal_content .footer_button {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--input-border);
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+}
+
+.date_picker_modal_content .footer_button:hover {
+  background-color: var(--active-bg-2);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.date_picker_modal_content .today_button {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transition: all 0.5s ease;
+}
+
+.date_picker_modal_content .today_button:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--hover-bg);
+  color: white;
+}
+
+.date_picker_modal_content .nav_button.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.date_picker_modal_content .nav_button.disabled:hover {
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+.date_picker_modal_content .calendar_day.disabled,
+.date_picker_modal_content .calendar_month.disabled,
+.date_picker_modal_content .calendar_year.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  color: var(--muted-color);
+}
+
+.date_picker_modal_content .calendar_day.disabled:hover,
+.date_picker_modal_content .calendar_month.disabled:hover,
+.date_picker_modal_content .calendar_year.disabled:hover {
+  background-color: transparent;
+  color: var(--muted-color);
+}

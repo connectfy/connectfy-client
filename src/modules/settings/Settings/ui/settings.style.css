@@ -31,7 +31,7 @@
   width: 96px;
   height: 96px;
   margin: 0 auto 24px;
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  background: linear-gradient(135deg, var(--third-color) 0%, #27ae60 100%);
   border-radius: 24px;
   display: flex;
   align-items: center;
@@ -107,7 +107,7 @@
 .stat-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 .stat-icon {

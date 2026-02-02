@@ -56,12 +56,12 @@
 
 .unique-header-back-btn:hover {
   background: #e2e8f0;
-  color: #2ecc71;
+  color: var(--third-color);
 }
 
 [data-theme="dark"] .unique-header-back-btn:hover {
   background: rgba(255, 255, 255, 0.12);
-  color: #2ecc71;
+  color: var(--third-color);
 }
 
 /* .unique-header-back-btn:focus {
@@ -74,7 +74,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  background: linear-gradient(135deg, var(--third-color) 0%, #27ae60 100%);
   border: none;
   border-radius: 10px;
   color: white;

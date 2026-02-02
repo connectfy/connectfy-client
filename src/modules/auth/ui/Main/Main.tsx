@@ -1,37 +1,34 @@
-import "./main.style.css";
 import { Fragment, useCallback, useEffect, type FC } from "react";
-import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
-import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
-import LoginAndSignupHeader from "./components/MainHeader/MainHeader";
-import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
+import { RESOURCE } from "@/common/enums/enums";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { AuthFormType } from "../../types/types";
-import { restoreAccount, setAuthForm } from "../../api/api";
+import { restoreAccount } from "../../api/api";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import { useTranslation } from "react-i18next";
 import MainSpinner from "@/components/Loading/Loading";
+import MainFooter from "./components/MainFooter/MainFooter";
 
 const MainPage: FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { authForm, LOADING_RESTORE_ACCOUNT } = useAppSelector(
-    (state) => state[RESOURCE.AUTH]
+  const { LOADING_RESTORE_ACCOUNT } = useAppSelector(
+    (state) => state[RESOURCE.AUTH],
   );
-  const authMode = localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH_PAGE) || "login";
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const token = searchParams.get("token");
   const type = searchParams.get("type");
+  const authPage = searchParams.get("authPage");
 
   const renderAuthForm = useCallback(() => {
-    switch (authForm) {
+    switch (authPage) {
       case "login":
         return <Login />;
 
@@ -41,16 +38,15 @@ const MainPage: FC = () => {
       default:
         break;
     }
-  }, [authForm]);
+  }, [authPage]);
 
   useEffect(() => {
     const validAuthForms: AuthFormType[] = ["login", "signup"];
 
-    if (!validAuthForms.includes(authMode as AuthFormType)) {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH_PAGE, "login");
-      dispatch(setAuthForm("login"));
-    } else dispatch(setAuthForm(authMode as AuthFormType));
-  }, [dispatch, authMode]);
+    if (!validAuthForms.includes(authPage as AuthFormType) || !authPage) {
+      setSearchParams({ authPage: "login" }, { replace: true });
+    }
+  }, [authPage, setSearchParams]);
 
   useEffect(() => {
     if (!token || !type) return;
@@ -75,21 +71,13 @@ const MainPage: FC = () => {
   }, [dispatch, navigate, t, token, type]);
 
   return (
-    <section id="auth-page">
+    <section>
       {LOADING_RESTORE_ACCOUNT ? (
         <MainSpinner description={{ title: t("common.restoring_account") }} />
       ) : (
         <Fragment>
-          <AuthHeader />
-
-          <div className="auth-controls">
-            {(authForm === "login" || authForm === "signup") && (
-              <LoginAndSignupHeader />
-            )}
-            {renderAuthForm()}
-          </div>
-
-          <AuthFooter />
+          {renderAuthForm()}
+          <MainFooter />
         </Fragment>
       )}
     </section>

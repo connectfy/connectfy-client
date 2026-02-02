@@ -1,15 +1,17 @@
-import CloseIcon from "@mui/icons-material/Close";
 import { CSSProperties, FC } from "react";
+import Button from "../Button/Button";
 
 interface Props {
   onClick: () => void;
-  style?: CSSProperties
+  style?: CSSProperties;
+  className?: string;
 }
 
-const CloseButton: FC<Props> = ({ onClick }) => (
-  <button
+const CloseButton: FC<Props> = ({ onClick, style, className }) => (
+  <Button
     onClick={onClick}
     style={{
+      ...style,
       background: "none",
       border: "none",
       cursor: "pointer",
@@ -24,8 +26,8 @@ const CloseButton: FC<Props> = ({ onClick }) => (
     onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
     onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
   >
-    <CloseIcon style={{ fontSize: 18 }} />
-  </button>
+    <span className={`material-symbols-outlined ${className}`}>close</span>
+  </Button>
 );
 
 export default CloseButton;

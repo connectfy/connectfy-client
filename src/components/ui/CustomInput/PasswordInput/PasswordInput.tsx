@@ -1,16 +1,12 @@
-import "./passwordInput.css";
+import "./passwordInput.style.css";
 import Input, {
   CustomInputProps,
 } from "@/components/ui/CustomInput/Input/Input.tsx";
 import React, { FC, useState } from "react";
-import KeyIcon from "@/assets/icons/KeyIcon.tsx";
 import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@mui/material";
-import EyeIcon from "@/assets/icons/EyeIcon.tsx";
-import EyeCloseIcon from "@/assets/icons/EyeCloseIcon.tsx";
 import { snack } from "@/common/utils/snackManager.ts";
-import LockIcon from "@/assets/icons/LockIcon.tsx";
 
 interface Props extends CustomInputProps {
   showGenerateButton?: boolean;
@@ -40,6 +36,13 @@ const PasswordInput: FC<Props> = ({
     const generated = await generatePassword();
     if (onGenerate) {
       onGenerate(generated);
+      snack.info(t("user_messages.password_generated_message"), {
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "center",
+        },
+        autoHideDuration: 15000,
+      });
       return;
     }
     props.onChange?.({
@@ -60,14 +63,16 @@ const PasswordInput: FC<Props> = ({
         {...props}
         type={visible ? "text" : "password"}
         className="password-input"
-        icon={<LockIcon />}
+        icon={<span className="material-symbols-outlined">lock</span>}
       />
 
       <div className="password-input-icons">
         {showGenerateButton && (
           <Tooltip placement={"top"} title={t("common.generate_password")}>
             <IconButton size="small" onClick={handleGenerate}>
-              <KeyIcon />
+              <span className="material-symbols-outlined text-(--text-(--primary-color))">
+                key
+              </span>
             </IconButton>
           </Tooltip>
         )}
@@ -79,7 +84,15 @@ const PasswordInput: FC<Props> = ({
           }
         >
           <IconButton size="small" onClick={() => setVisible((v) => !v)}>
-            {visible ? <EyeIcon /> : <EyeCloseIcon />}
+            {visible ? (
+              <span className="material-symbols-outlined text-(--text-color)">
+                visibility_off
+              </span>
+            ) : (
+              <span className="material-symbols-outlined text-(--text-color)">
+                visibility
+              </span>
+            )}
           </IconButton>
         </Tooltip>
       </div>

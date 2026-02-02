@@ -19,7 +19,7 @@
 
 .custom-select:hover {
   background: #f1f5f9;
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 [data-theme="dark"] .custom-select:hover {
@@ -27,7 +27,7 @@
 }
 
 .custom-select:focus {
-  border-color: #2ecc71;
+  border-color: var(--third-color);
   background: white;
 }
 

@@ -1,14 +1,15 @@
-import "./input.css";
+import "./input.style.css";
 import React, { FC, useState, useId } from "react";
 import ErrorIcon from "@/assets/icons/ErrorIcon.tsx";
 
-export interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface CustomInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   isFloating?: boolean;
   isError?: boolean;
   error?: string;
   title?: string;
   inputSize?: "small" | "medium" | "large" | "xlarge";
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 }
 
 export const Input: FC<CustomInputProps> = ({
@@ -36,7 +37,7 @@ export const Input: FC<CustomInputProps> = ({
         {isFloating && title && (
           <label
             htmlFor={inputId}
-          className={`floating-label ${isLabelFloating ? "active" : ""}`}
+            className={`floating-label ${isLabelFloating ? "active" : ""}`}
           >
             {title}
           </label>
@@ -65,6 +66,7 @@ export const Input: FC<CustomInputProps> = ({
           }}
           aria-invalid={isError}
           aria-describedby={isError ? `${inputId}-error` : undefined}
+          autoComplete="off"
         />
       </div>
 

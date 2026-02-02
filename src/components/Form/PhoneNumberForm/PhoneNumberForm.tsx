@@ -47,7 +47,7 @@ const PhoneNumberForm: FC<Props> = ({
         fullPhoneNumber: country.code + fieldValue,
       });
     else onChange(null);
-  }, [fieldValue, country.code, onChange]);
+  }, [fieldValue, country.code]);
 
   useEffect(() => {
     if (fieldValue?.length !== country.numberLength) setHasLengthError(true);
@@ -79,7 +79,11 @@ const PhoneNumberForm: FC<Props> = ({
           </Tooltip>
           <div className="phone-number">
             <Input
-              inputSize="medium"
+              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+              style={{
+                backgroundColor: "var(--input-bg)",
+                border: "1px solid var(--input-border)",
+              }}
               title={t("common.phoneNumber")}
               name={name}
               value={fieldValue || ""}

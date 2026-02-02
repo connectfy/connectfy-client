@@ -6,7 +6,7 @@
 .auth-sidebar-logo-container {
   width: 48px;
   height: 48px;
-  background: #2ecc71;
+  background: var(--third-color);
   border-radius: 12px;
   display: flex;
   align-items: center;

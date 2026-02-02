@@ -63,9 +63,10 @@
   align-items: center;
   gap: 8px;
   min-height: 48px;
-  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
   justify-content: center;
-  border-radius: 15px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }

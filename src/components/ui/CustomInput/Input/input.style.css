@@ -82,9 +82,9 @@
   padding-left: 2.75rem;
 }
 
-.input-container.has-icon .floating-label {
+/* .input-container.has-icon .floating-label {
   left: 2.75rem;
-}
+} */
 
 /* SMALL */
 .input-size-small .input-field {
@@ -107,8 +107,8 @@
 .input-size-small.floating .input-field {
   padding-bottom: 0.625rem;
 }
-.input-size-large.has-icon.floating .input-field,
-.input-size-large:has(.input-icon).floating .input-field {
+.input-size-small.has-icon.floating .input-field,
+.input-size-small:has(.input-icon).floating .input-field {
   padding-left: 25px;
 }
 .input-size-small.has-icon .floating-label,
@@ -179,11 +179,11 @@
 }
 .input-size-large.has-icon.floating .input-field,
 .input-size-large:has(.input-icon).floating .input-field {
-  padding-left: 45px;
+  padding-left: 50px;
 }
 .input-size-large.has-icon .floating-label,
 .input-size-large:has(.input-icon) .floating-label {
-  left: 3rem;
+  left: 3.2rem;
 }
 .input-size-large .floating-label {
   font-size: 1.0625rem;
@@ -240,10 +240,10 @@
   box-shadow: 0 0 0 1px var(--primary-color);
 }
 
-.input-container.has-icon .floating-label,
+/* .input-container.has-icon .floating-label,
 .input-container:has(.input-icon) .floating-label {
   left: 2.75rem;
-}
+} */
 
 /* Error State */
 .input-container.error .input-field {

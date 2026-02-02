@@ -1,38 +1,23 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Modal,
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  IconButton,
-  useTheme,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Slide,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import Modal from "..";
+import CloseButton from "@/components/ui/CustomButton/CloseButton/CloseButton";
 
 interface LanguageModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const languages: { code: LANGUAGE; label: string; icon: string }[] = [
-  { code: LANGUAGE.EN, label: "English", icon: "fi fi-gb" },
-  { code: LANGUAGE.AZ, label: "Azərbaycan", icon: "fi fi-az" },
-  { code: LANGUAGE.TR, label: "Türkçe", icon: "fi fi-tr" },
-  { code: LANGUAGE.RU, label: "Русский", icon: "fi fi-ru" },
+const languages: { code: LANGUAGE; label: string }[] = [
+  { code: LANGUAGE.EN, label: "English (US)" },
+  { code: LANGUAGE.AZ, label: "Azərbaycan (AZ)" },
+  { code: LANGUAGE.TR, label: "Türkçe (TR)" },
+  { code: LANGUAGE.RU, label: "Русский (RU)" },
 ];
 
 const LanguageModal: React.FC<LanguageModalProps> = ({ open, onClose }) => {
   const { i18n, t } = useTranslation();
-  const theme = useTheme();
 
   const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG)
     ? (localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) as LANGUAGE)
@@ -45,122 +30,68 @@ const LanguageModal: React.FC<LanguageModalProps> = ({ open, onClose }) => {
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      closeAfterTransition
-      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-    >
-      <Slide direction="up" in={open}>
-        <Box
-          sx={{
-            backgroundColor: "var(--bg-color)",
-            color: "var(--text-color)",
-            borderRadius: "12px",
-            boxShadow: 24,
-            width: "100%",
-            maxWidth: "400px",
-            overflow: "hidden",
-            outline: "none",
-          }}
-        >
-          {/* Header */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              p: 2,
-              borderBottom: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              {t("common.select_lang")}
-            </Typography>
-            <IconButton
-              onClick={onClose}
-              sx={{
-                color: "var(--text-color)",
-                "&:hover": { color: "var(--primary-color)" },
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
+    <Modal open={open} onClose={onClose}>
+      <div className="bg-(--bg-color) text-(--text-color) rounded-xl w-full max-w-[400px] overflow-hidden outline-none animate-slide-up">
+        {/* Header */}
+        <div className="flex justify-between items-center px-3 py-4 border-b border-(--input-border)">
+          <h2 className="text-xl font-bold m-0 ml-2">
+            {t("common.select_lang")}
+          </h2>
+          <CloseButton onClick={onClose} />
+        </div>
 
-          {/* Language List */}
-          <RadioGroup
-            value={lang}
-            onChange={(e) => handleLanguageChange(e.target.value as LANGUAGE)}
-            sx={{ p: 0 }}
-          >
-            <List disablePadding>
-              {languages.map(({ code, label, icon }) => (
-                <ListItem
-                  key={code}
-                  disablePadding
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "var(--hover-bg)",
-                    },
-                  }}
+        {/* Language List */}
+        <div className="p-0">
+          {languages.map(({ code, label }) => (
+            <label
+              key={code}
+              className={`
+                flex items-center justify-between w-full px-5 py-4 cursor-pointer transition-all duration-200
+                ${
+                  lang === code
+                    ? "bg-(--primary-color) text-white"
+                    : "bg-transparent text-(--text-color) hover:bg-(--hover-bg) hover:text-white"
+                }
+              `}
+            >
+              <div className="flex items-center gap-3 flex-1">
+                <div className="min-w-[40px] flex items-center justify-center">
+                  <span className="material-symbols-outlined text-sm">
+                    globe
+                  </span>
+                </div>
+                <span
+                  className={`text-base ${
+                    lang === code ? "font-semibold" : "font-normal"
+                  }`}
                 >
-                  <FormControlLabel
-                    value={code}
-                    control={
-                      <Radio
-                        sx={{
-                          color: "var(--text-color)",
-                          "&.Mui-checked": {
-                            color: "var(--text-color)",
-                          },
-                        }}
-                      />
-                    }
-                    label={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          width: "100%",
-                        }}
-                      >
-                        <ListItemIcon
-                          sx={{ minWidth: "40px", color: "inherit" }}
-                        >
-                          <span className={icon} style={{ fontSize: "24px" }} />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={label}
-                          primaryTypographyProps={{
-                            fontWeight: lang === code ? 600 : 400,
-                          }}
-                        />
-                      </Box>
-                    }
-                    sx={{
-                      width: "100%",
-                      m: 0,
-                      px: 2,
-                      py: 1.5,
-                      backgroundColor:
-                        lang === code ? "var(--primary-color)" : "transparent",
-                      color: lang === code ? "#fff" : "var(--text-color)",
-                      "&:hover": {
-                        backgroundColor:
-                          lang === code
-                            ? "var(--primary-color)"
-                            : "var(--hover-bg)",
-                        color: lang === code ? "#fff" : "var(--text-color)",
-                      },
-                    }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </RadioGroup>
-        </Box>
-      </Slide>
+                  {label}
+                </span>
+              </div>
+
+              {/* Custom Radio Button */}
+              <input
+                type="radio"
+                name="language"
+                value={code}
+                checked={lang === code}
+                onChange={() => handleLanguageChange(code)}
+                className="sr-only"
+              />
+              <div
+                className={`
+                  w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                  ${lang === code ? "border-white" : "border-(--input-border)"}
+                `}
+              >
+                {lang === code && (
+                  <div className="w-2.5 h-2.5 rounded-full bg-white animate-scaleIn" />
+                )}
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
     </Modal>
   );
 };

@@ -1,26 +1,28 @@
-import "./signup.style.css";
 import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import { useTranslation } from "react-i18next";
-import GenderForm from "@/components/Form/GenderForm/GenderForm";
-import { useNavigate } from "react-router-dom";
-import Button from "@/components/Buttons/Button/Button";
+import { Link, useNavigate } from "react-router-dom";
 import { clearError, setSignupForm, signup } from "../../../../api/api";
-import DatePicker from "@/components/DatePicker/DatePicker";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { signupInitialState } from "../../../../constants/intialState";
 import { validateSignup } from "../../../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { LOCAL_STORAGE_KEYS, RESOURCE, THEME } from "@/common/enums/enums";
-import { useEffect, useState } from "react";
+import {
+  GENDER,
+  LOCAL_STORAGE_KEYS,
+  RESOURCE,
+  THEME,
+} from "@/common/enums/enums";
+import { Fragment, useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import Spinner from "@/components/Spinner/Spinner";
 import { ROUTER } from "@/common/constants/routet";
-import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { ISignupForm } from "@/modules/auth/types/types";
+import Checkbox from "@/components/ui/CustomCheckbox/Checkbox/Checkbox";
+import DatePicker from "@/components/ui/DatePicker/DatePicker";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const Signup = () => {
   const { t } = useTranslation();
@@ -28,10 +30,9 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const { ERROR_SIGNUP, LOADING_SIGNUP, signupForm } = useAppSelector(
-    (state) => state[RESOURCE.AUTH]
+    (state) => state[RESOURCE.AUTH],
   );
 
-  // const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [checked, setChecked] = useState<boolean>(false);
 
   const formik = useFormik({
@@ -47,12 +48,13 @@ const Signup = () => {
         ? new Date(rest.birthdayDate)
         : null;
 
-      rest.theme = (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) || THEME.LIGHT;
+      rest.theme =
+        (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
+        THEME.LIGHT;
 
       const actionResult = await dispatch(signup(rest));
       const res = unwrapResult(actionResult);
       if (res) {
-        // snack.success(t("user_messages.signup_successful"));
         dispatch(setSignupForm(values));
         navigate(ROUTER.AUTH.VERIFY_ACCOUNT);
         resetForm();
@@ -80,6 +82,14 @@ const Signup = () => {
       checked,
     ],
   });
+
+  const selectGender = (gender: GENDER) => {
+    if (formik.values.gender === gender) {
+      formik.setFieldValue("gender", null);
+    } else {
+      formik.setFieldValue("gender", gender);
+    }
+  };
 
   useToastError({
     error: ERROR_SIGNUP,
@@ -109,183 +119,171 @@ const Signup = () => {
   }, [isDisabled, formik]);
 
   return (
-    <div className="signup-form">
-      <div className="signup-form-block">
-        <Input
-          inputSize="medium"
-          title={t("common.first_name")}
-          name="firstName"
-          value={formik.values.firstName || ""}
-          onBlur={() => formik.setFieldTouched("firstName", true, false)}
-          onChange={(e) => {
-            const value = e.target.value || null;
-
-            if (value && value.length > 50) return;
-
-            formik.setFieldValue("firstName", value || null);
-          }}
-          isError={!!(formik.errors.firstName && formik.touched.firstName)}
-          error={formik.errors.firstName}
-        />
-        <Input
-          inputSize="medium"
-          title={t("common.last_name")}
-          name="lastName"
-          value={formik.values.lastName || ""}
-          onBlur={() => formik.setFieldTouched("lastName", true, false)}
-          onChange={(e) => {
-            const value = e.target.value || null;
-
-            if (value && value.length > 50) return;
-
-            formik.setFieldValue("lastName", value || null);
-          }}
-          isError={!!(formik.errors.lastName && formik.touched.lastName)}
-          error={formik.errors.lastName}
-        />
+    <Fragment>
+      <div className="space-y-2 mb-5">
+        <h2 className="text-3xl font-bold tracking-tight text-(--text-(--primary-color))">
+          {t("common.join_connectfy")}
+        </h2>
+        <p className="text-(--text-secondary) text-sm">
+          {t("common.join_connectfy_description")}
+        </p>
       </div>
-      <div className="signup-form-block">
-        <Input
-          inputSize="medium"
-          title={t("common.username")}
-          name="username"
-          value={formik.values.username || ""}
-          onBlur={() => formik.setFieldTouched("username", true, false)}
-          onChange={(e) => {
-            const value = e.target.value || null;
-
-            if (value && value.length > 30) return;
-
-            formik.setFieldValue("username", value || null);
-          }}
-          isError={!!(formik.errors.username && formik.touched.username)}
-          error={formik.errors.username}
-        />
-        <Input
-          inputSize="medium"
-          title={t("common.email")}
-          name="email"
-          value={formik.values.email || ""}
-          onBlur={() => formik.setFieldTouched("email", true, false)}
-          onChange={(e) => {
-            const value = e.target.value || null;
-
-            if (value && value.length > 254) return;
-
-            formik.setFieldValue("email", value || null);
-          }}
-          isError={!!(formik.errors.email && formik.touched.email)}
-          error={formik.errors.email}
-        />
-      </div>
-      <div className="signup-form-block">
-        <div style={{ width: "100%" }}>
+      <form className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Input
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#99c2aa]/30 focus:ring-2 focus:ring-primary outline-none"
+              type="text"
+              name="firstName"
+              title={t("common.first_name")}
+              isFloating
+              icon={<span className="material-symbols-outlined">person</span>}
+              value={formik.values.firstName || ""}
+              onChange={formik.handleChange}
+              error={formik.errors.firstName}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Input
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#99c2aa]/30 focus:ring-2 focus:ring-primary outline-none"
+              type="text"
+              name="lastName"
+              title={t("common.last_name")}
+              isFloating
+              icon={<span className="material-symbols-outlined">person</span>}
+              value={formik.values.lastName || ""}
+              onChange={formik.handleChange}
+              error={formik.errors.lastName}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Input
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#99c2aa]/30 focus:ring-2 focus:ring-primary outline-none"
+              type="text"
+              name="username"
+              title={t("common.username")}
+              isFloating
+              icon={<span className="material-symbols-outlined">person</span>}
+              value={formik.values.username || ""}
+              onChange={formik.handleChange}
+              error={formik.errors.username}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Input
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#99c2aa]/30 focus:ring-2 focus:ring-primary outline-none"
+              type="email"
+              name="email"
+              title={t("common.email")}
+              isFloating
+              icon={<span className="material-symbols-outlined">email</span>}
+              value={formik.values.email || ""}
+              onChange={formik.handleChange}
+              error={formik.errors.email}
+            />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          {/* <div className="relative"> */}
           <DatePicker
             value={formik.values.birthdayDate?.toString() || ""}
             onChange={(date) => formik.setFieldValue("birthdayDate", date)}
-            inputSize="small"
+            inputSize="large"
             placeholder={t("common.birthday")}
             hasError={
               !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
             }
           />
-          {formik.errors.birthdayDate && formik.touched.birthdayDate && (
-            <h6>{formik.errors.birthdayDate}</h6>
-          )}
+          {/* <Input
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
+              type="date"
+              title={t("common.birthday")}
+              name="birthdayDate"
+              isFloating
+              value={formik.values.birthdayDate?.toString() || ""}
+              onChange={formik.handleChange}
+              error={formik.errors.birthdayDate}
+            />
+            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+              calendar_month
+            </span> */}
+          {/* </div> */}
         </div>
-      </div>
-      <div className="signup-form-block">
-        <div style={{ width: "100%" }}>
-          <GenderForm formik={formik} formId="signup" />
-          {formik.errors.gender && <h6>{formik.errors.gender}</h6>}
+        <div className="grid grid-cols-3 gap-3">
+          {Object.keys(GENDER).map((gender) => (
+            <button
+              key={gender}
+              className={`cursor-pointer py-4 px-2 border border-(--input-border) rounded-lg text-sm font-medium hover:border-primary transition-colors text-(--text-secondary) duration-900 ${formik.values.gender === gender ? "bg-(--primary-color) text-white" : ""}`}
+              type="button"
+              onClick={() => selectGender(gender as GENDER)}
+            >
+              {t(`enum.${gender.toLowerCase()}`)}
+            </button>
+          ))}
         </div>
-      </div>
-      <div className="signup-form-block-password">
-        <PasswordInput
-          inputSize="medium"
-          title={t("common.password")}
-          showGenerateButton
-          name="password"
-          value={formik.values.password || ""}
-          onBlur={() => formik.setFieldTouched("password", true, false)}
-          onChange={(e) => {
-            const value = e.target.value || null;
-
-            if (value && value.length > 30) return;
-
-            formik.setFieldValue("password", value || null);
-          }}
-          onGenerate={(value?: string) => {
-            navigator.clipboard.writeText(value as string);
-            snack.info(t("user_messages.password_generated_message"), {
-              anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "center",
-              },
-              autoHideDuration: 10000,
-            });
-
-            formik.setFieldValue("password", value);
-            formik.setFieldValue("confirm", value);
-          }}
-          isError={!!(formik.errors.password && formik.touched.password)}
-          error={formik.errors.password}
-        />
-        <PasswordInput
-          inputSize="medium"
-          title={t("common.confirm_password")}
-          name="confirm"
-          value={formik.values.confirm || ""}
-          onBlur={() => formik.setFieldTouched("confirm", true, false)}
-          onChange={(e) => {
-            const value = e.target.value || null;
-
-            if (value && value.length > 30) return;
-
-            formik.setFieldValue("confirm", value || null);
-          }}
-          isError={!!(formik.errors.confirm && formik.touched.confirm)}
-          error={formik.errors.confirm}
-        />
-      </div>
-
-      <div className="terms-conditions">
-        <input
-          autoComplete="off"
-          type="checkbox"
-          id="terms"
-          name="terms"
-          className="custom-checkbox"
-          checked={checked}
-          onClick={() => setChecked(!checked)}
-          onChange={() => {}}
-        />
-        <label htmlFor="terms">
-          {t("common.terms_prefix")}{" "}
-          <span
-            onClick={() => navigate(ROUTER.TERMS_AND_CONDITIONS)}
-            className="terms-link"
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <div className="relative">
+              <PasswordInput
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
+                type="password"
+                title={t("common.password")}
+                isFloating
+                showGenerateButton
+                onGenerate={(value) => {
+                  formik.setFieldValue("password", value);
+                  formik.setFieldValue("confirm", value);
+                }}
+                name="password"
+                value={formik.values.password || ""}
+                onChange={formik.handleChange}
+                error={formik.errors.password}
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <div className="relative">
+              <PasswordInput
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
+                type="password"
+                title={t("common.confirm_password")}
+                isFloating
+                name="confirm"
+                value={formik.values.confirm || ""}
+                onChange={formik.handleChange}
+                error={formik.errors.confirm}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="py-1">
+          <Checkbox
+            id="terms"
+            checked={checked}
+            onChange={() => setChecked(!checked)}
           >
-            {t("common.terms_link")}
-          </span>{" "}
-          {t("common.terms_suffix")}
-        </label>
-      </div>
-
-      <Button
-        fillWidth
-        size="small"
-        hasAnimation
-        onClick={() => {
-          if (LOADING_SIGNUP) return;
-          formik.handleSubmit();
-        }}
-        disabled={isDisabled}
-        type="button"
-      >
-        {LOADING_SIGNUP ? <Spinner /> : t("common.signup")}
-      </Button>
-    </div>
+            {t("common.terms_prefix")}{" "}
+            <Link
+              to={ROUTER.TERMS_AND_CONDITIONS}
+              className="text-(--primary-color) underline cursor-pointer"
+              target="_blank"
+            >
+              {t("common.terms_link")}
+            </Link>{" "}
+            {t("common.terms_suffix")}
+          </Checkbox>
+        </div>
+        <Button
+          className="duration-400 w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+          type="submit"
+          disabled={isDisabled}
+          isLoading={LOADING_SIGNUP}
+          title={t("common.signup")}
+        />
+      </form>
+    </Fragment>
   );
 };
 

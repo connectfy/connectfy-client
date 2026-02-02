@@ -7,28 +7,24 @@ import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../../../constants/intialState";
 import { valdiateGoogleSignup } from "../../../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { LOCAL_STORAGE_KEYS, RESOURCE, THEME } from "@/common/enums/enums";
+import {
+  GENDER,
+  LOCAL_STORAGE_KEYS,
+  RESOURCE,
+  THEME,
+} from "@/common/enums/enums";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
-
-// MUI Components
-import { CircularProgress } from "@mui/material";
-
-// Custom Components
-import Input from "@/components/Input/Input";
-import DatePicker from "@/components/DatePicker/DatePicker";
-import Button from "@/components/Buttons/Button/Button";
-import Modal from "@/components/Modal";
-import GenderForm from "@/components/Form/GenderForm/GenderForm";
-
-// Utils
+import { checkDeviceId } from "@/common/utils/checkDevice";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
+import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 
-// Styles
-import "./signupModal.style.css";
-import { checkDeviceId } from "@/common/utils/checkDevice";
+// MUI Components (Sadece loading üçün)
+import Modal from "@/components/Modal";
+import Input from "@/components/ui/CustomInput/Input/Input";
+import CustomDatePicker from "@/components/ui/DatePicker/DatePicker";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -42,7 +38,7 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
   const navigate = useNavigate();
 
   const { ERROR_GOOGLE_SIGNUP, LOADING_GOOGLE_SIGNUP } = useAppSelector(
-    (state) => state[RESOURCE.AUTH]
+    (state) => state[RESOURCE.AUTH],
   );
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -59,7 +55,8 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
         : null;
 
       values.theme =
-        (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) || THEME.LIGHT;
+        (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
+        THEME.LIGHT;
       values.deviceId = checkDeviceId();
 
       const actionResult = await dispatch(googleSignup(values));
@@ -89,9 +86,12 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
     }
   };
 
-  const handleOnClose = () => {
-    formik.resetForm();
-    onClose();
+  const selectGender = (gender: GENDER) => {
+    if (formik.values.gender === gender) {
+      formik.setFieldValue("gender", null);
+    } else {
+      formik.setFieldValue("gender", gender);
+    }
   };
 
   useToastError({
@@ -119,157 +119,92 @@ const SignupModal = ({ idToken, isOpen, onClose }: SignupModalProps) => {
     setIsDisabled(shouldDisable);
   }, [formik.values, LOADING_GOOGLE_SIGNUP]);
 
+  if (!isOpen) return null;
+
   return (
-    <Modal open={isOpen} onClose={handleOnClose}>
+    <Modal open={isOpen} onClose={onClose}>
       <div
-        className="signup-modal-container"
+        className="relative w-full max-w-[480px] rounded-[32px] border border-(--input-border) bg-(--auth-main-bg) p-8 shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={onKeyDown}
       >
-        {/* Decorative Elements */}
-        <div className="signup-modal-decoration signup-modal-decoration-top"></div>
-        <div className="signup-modal-decoration signup-modal-decoration-bottom"></div>
+        {/* Glow Effects (Background Decorations) */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-(--primary-color)/10 blur-[60px] rounded-full pointer-events-none" />
 
-        {/* Header */}
-        <div className="signup-modal-header">
-          <div className="signup-modal-header-icon">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
+        {/* Header Section */}
+        <div className="relative z-10 flex flex-col items-center text-center mb-8">
+          <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-(--input-border) bg-(--auth-main-bg) text-(--primary-color) shadow-[0_0_30px_-5px_rgba(52,211,153,0.3)]">
+            <span className="material-symbols-outlined">how_to_reg</span>
           </div>
-          <h2 className="signup-modal-title">{t("common.complete_signup")}</h2>
-          <p className="signup-modal-subtitle">
+
+          <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
+            {t("common.complete_signup")}
+          </h2>
+          <p className="text-(--muted-color) text-sm max-w-[80%] leading-relaxed">
             {t("common.google_signup_description")}
           </p>
         </div>
 
-        {/* Content */}
-        <div className="signup-modal-content">
-          <form className="signup-modal-form">
-            {/* Username Field */}
-            <div className="signup-modal-field">
-              <Input
-                inputSize="large"
-                name="username"
-                value={formik.values.username || ""}
-                onChange={(e) => {
-                  const value = e.target.value || null;
-
-                  if (value && value.length > 30) return;
-
-                  formik.setFieldValue("username", value || null);
-                }}
-                onBlur={() => formik.setFieldTouched("username", true, false)}
-                onKeyDown={(e) => onKeyDown(e)}
-                hasError={!!(formik.errors.username && formik.touched.username)}
-                title={t("common.username")}
-                label={t("common.username")}
-              />
-              {formik.errors.username && formik.touched.username && (
-                <div className="signup-modal-error">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                  </svg>
-                  <span>{formik.errors.username}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Birthday Date Field */}
-            <div className="signup-modal-field">
-              <DatePicker
-                value={formik.values.birthdayDate}
-                onChange={(date) =>
-                  formik.setFieldValue(
-                    "birthdayDate",
-                    date ? new Date(date) : null
-                  )
-                }
-                inputSize="medium"
-                hasError={
-                  !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
-                }
-                placeholder={t("common.birthday")}
-                onKeyDown={(e) => onKeyDown(e)}
-              />
-              {formik.errors.birthdayDate && formik.touched.birthdayDate && (
-                <div className="signup-modal-error">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                  </svg>
-                  <span>{String(formik.errors.birthdayDate)}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Gender Field */}
-            <div className="signup-modal-field">
-              <label className="signup-modal-label">{t("common.gender")}</label>
-              <GenderForm formik={formik} formId="signup-modal" />
-              {formik.errors.gender && formik.touched.gender && (
-                <div className="signup-modal-error">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                  </svg>
-                  <span>{formik.errors.gender}</span>
-                </div>
-              )}
-            </div>
-          </form>
-        </div>
-
-        {/* Footer Actions */}
-        <div className="signup-modal-footer">
-          <Button
-            size="small"
-            onClick={handleOnClose}
-            disabled={LOADING_GOOGLE_SIGNUP}
-            style={{
-              backgroundColor: "var(--muted-color)",
-              flex: 1,
+        {/* Form Content */}
+        <form className="relative z-10 flex flex-col gap-5">
+          {/* Username Input */}
+          <Input
+            type="text"
+            name="username"
+            value={formik.values.username || ""}
+            onChange={(e) => {
+              const value = e.target.value || null;
+              if (value && value.length > 30) return;
+              formik.setFieldValue("username", value || null);
             }}
-          >
-            {t("common.cancel")}
-          </Button>
-          <Button
-            size="small"
-            onClick={() => {
-              if (LOADING_GOOGLE_SIGNUP) return;
-              formik.handleSubmit();
-            }}
-            disabled={isDisabled}
-            style={{ flex: 1 }}
-          >
-            {LOADING_GOOGLE_SIGNUP ? (
-              <CircularProgress size={20} color="inherit" />
-            ) : (
-              <span>{t("common.complete_signup")}</span>
-            )}
-          </Button>
-        </div>
+            onBlur={() => formik.setFieldTouched("username", true, false)}
+            title={t("common.username")}
+            icon={<span className="material-symbols-outlined">person</span>}
+          />
+
+          {/* Date Picker */}
+          <CustomDatePicker
+            value={formik.values.birthdayDate}
+            onChange={(date) => formik.setFieldValue("birthdayDate", date)}
+            placeholder={t("common.birthday") || "DOĞUM TARİXİ"}
+          />
+
+          {/* Gender Selector */}
+          <div className="grid grid-cols-3 gap-3">
+            {Object.keys(GENDER).map((gender) => (
+              <button
+                key={gender}
+                className={`cursor-pointer py-4 px-2 border border-(--input-border) rounded-lg text-sm font-medium hover:border-primary transition-colors text-(--text-secondary) duration-900 ${formik.values.gender === gender ? "bg-(--primary-color) text-white" : ""}`}
+                type="button"
+                onClick={() => selectGender(gender as GENDER)}
+              >
+                {t(`enum.${gender.toLowerCase()}`)}
+              </button>
+            ))}
+          </div>
+
+          {/* Footer Actions */}
+          <div className="mt-4 flex gap-3">
+            <Button
+              type="button"
+              onClick={onClose}
+              disabled={LOADING_GOOGLE_SIGNUP}
+              title={t("common.cancel")}
+              className="flex-1 rounded-xl bg-(--bg-color) px-6 py-4 text-sm font-semibold text-(--text-primary) transition-all active:scale-[0.98] duration-100"
+            />
+            <Button
+              onClick={() => {
+                if (LOADING_GOOGLE_SIGNUP) return;
+                formik.handleSubmit();
+              }}
+              disabled={isDisabled}
+              isLoading={LOADING_GOOGLE_SIGNUP}
+              title={t("common.complete_signup")}
+              type="submit"
+              className="flex-1 rounded-xl bg-(--primary-color) px-6 py-4 text-sm font-semibold text-[#050b08] shadow-[0_4px_20px_-5px_rgba(52,211,153,0.4)] transition-all duration-200 active:scale-[0.98]"
+            />
+          </div>
+        </form>
       </div>
     </Modal>
   );

@@ -1,38 +1,48 @@
-import "./login.style.css";
-import { Fragment, useCallback, useEffect } from "react";
-import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
-import UsernameForm from "./components/UsernameForm/UsernameForm";
-import EmailForm from "./components/EmailForm/EmailForm";
-import PhoneNumberForm from "./components/PhoneNumberForm/PhoneNumberForm";
-import LoginHeader from "./components/LoginHeader/LoginHeader";
+import { Fragment, useEffect } from "react";
+import {
+  IDENTIFIER_TYPE,
+  LOCAL_STORAGE_KEYS,
+  RESOURCE,
+} from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { loginInitialState } from "../../../../constants/intialState";
 import { validateLogin } from "../../../../constants/validation";
 import { useTranslation } from "react-i18next";
-import { clearError, login, setLoginMode } from "../../../../api/api";
+import { clearError, login } from "../../../../api/api";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { ILoginForm, LoginModeType } from "../../../../types/types";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { checkDeviceId } from "@/common/utils/checkDevice";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
+import Input from "@/components/ui/CustomInput/Input/Input";
+import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
+import Button from "@/components/ui/CustomButton/Button/Button";
+
+const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
 const Login = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { loginMode, ERROR_LOGIN, LOADING_LOGIN } = useAppSelector(
+  const rawLoginMode = searchParams.get("loginMode");
+
+  const loginMode: LoginModeType = LOGIN_MODES.includes(
+    rawLoginMode as LoginModeType,
+  )
+    ? (rawLoginMode as LoginModeType)
+    : "username";
+
+  const { ERROR_LOGIN, LOADING_LOGIN } = useAppSelector(
     (state) => state[RESOURCE.AUTH],
   );
-
-  const localLoginMode =
-    (localStorage.getItem(LOCAL_STORAGE_KEYS.LOGIN_MODE) as LoginModeType) ||
-    "username";
 
   const formik = useFormik({
     initialValues: loginInitialState,
@@ -70,21 +80,9 @@ const Login = () => {
     ],
   });
 
-  const renderLoginForm = useCallback(() => {
-    switch (loginMode) {
-      case "username":
-        return <UsernameForm formik={formik} isDisabled={isDisabled} />;
-
-      case "email":
-        return <EmailForm formik={formik} isDisabled={isDisabled} />;
-
-      case "phoneNumber":
-        return <PhoneNumberForm formik={formik} isDisabled={isDisabled} />;
-
-      default:
-        return null;
-    }
-  }, [loginMode, formik, isDisabled]);
+  const changeLoginMode = (mode: LoginModeType) => {
+    setSearchParams({ authPage: "login", loginMode: mode }, { replace: true });
+  };
 
   useToastError({
     error: ERROR_LOGIN,
@@ -92,17 +90,30 @@ const Login = () => {
   });
 
   useEffect(() => {
-    const loginModes: LoginModeType[] = ["username", "email", "phoneNumber"];
+    let identifierType: IDENTIFIER_TYPE;
 
-    const mode = localLoginMode as LoginModeType;
-
-    if (!loginModes.includes(mode)) {
-      dispatch(setLoginMode("username"));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.LOGIN_MODE, "username");
+    if (!rawLoginMode || !LOGIN_MODES.includes(rawLoginMode as LoginModeType)) {
+      setSearchParams(
+        { authPage: "login", loginMode: "username" },
+        { replace: true },
+      );
+      identifierType = IDENTIFIER_TYPE.USERNAME;
     } else {
-      dispatch(setLoginMode(mode));
+      switch (rawLoginMode) {
+        case "email":
+          identifierType = IDENTIFIER_TYPE.EMAIL;
+          break;
+        case "phoneNumber":
+          identifierType = IDENTIFIER_TYPE.PHONE_NUMBER;
+          break;
+        default:
+          identifierType = IDENTIFIER_TYPE.USERNAME;
+          break;
+      }
     }
-  }, [localLoginMode, dispatch]);
+
+    formik.setFieldValue("identifierType", identifierType);
+  }, [rawLoginMode]);
 
   useEffect(() => {
     if (isDisabled) return;
@@ -118,12 +129,149 @@ const Login = () => {
     return () => {
       document.removeEventListener("keydown", handleSubmitEnter);
     };
-  }, [isDisabled, loginMode, formik]);
+  }, [isDisabled, formik.handleSubmit]);
 
   return (
     <Fragment>
-      <LoginHeader formik={formik} />
-      <div className="login-form">{renderLoginForm()}</div>
+      {/* Form Header */}
+      <div className="space-y-2 mb-5">
+        <h2 className="text-3xl font-bold tracking-tight text-(--text-(--primary-color))">
+          {t("common.welcome_back")}
+        </h2>
+        <p className="text-(--text-secondary) text-sm">
+          {t("common.please_enter_your_details_to_sign_in_to_your_account")}
+        </p>
+      </div>
+
+      {/* Login Mode Tabs */}
+      <div className="flex border-b border-slate-100 my-4">
+        <Button
+          type="button"
+          className={`cursor-pointer px-4 py-2 w-full text-sm font-bold border-b-2 transition-colors ${
+            loginMode === "username"
+              ? "text-(--primary-color) border-primary"
+              : "text-slate-400 hover:text-slate-600 border-transparent"
+          }`}
+          onClick={() => changeLoginMode("username")}
+        >
+          {t("common.username")}
+        </Button>
+        <Button
+          type="button"
+          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+            loginMode === "email"
+              ? "text-(--primary-color) border-primary"
+              : "text-slate-400 hover:text-slate-600 border-transparent"
+          }`}
+          onClick={() => changeLoginMode("email")}
+        >
+          {t("common.email")}
+        </Button>
+        <Button
+          type="button"
+          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+            loginMode === "phoneNumber"
+              ? "text-(--primary-color) border-primary"
+              : "text-slate-400 hover:text-slate-600 border-transparent"
+          }`}
+          onClick={() => changeLoginMode("phoneNumber")}
+        >
+          {t("common.phoneNumber")}
+        </Button>
+      </div>
+
+      {/* Login Form */}
+      <form className="space-y-6" onSubmit={formik.handleSubmit}>
+        {/* Identifier Input */}
+        <div className="space-y-2">
+          {loginMode === "username" && (
+            <Input
+              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+              style={{
+                backgroundColor: "var(--input-bg)",
+                border: "1px solid var(--input-border)",
+              }}
+              title={t("common.username")}
+              type="text"
+              isFloating
+              icon={<span className="material-symbols-outlined">person</span>}
+              name="identifier"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.identifier || ""}
+              isError={
+                !!(formik.touched.identifier && formik.errors.identifier)
+              }
+              error={formik.errors.identifier}
+            />
+          )}
+
+          {loginMode === "email" && (
+            <Input
+              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+              style={{
+                backgroundColor: "var(--input-bg)",
+                border: "1px solid var(--input-border)",
+              }}
+              title={t("common.email")}
+              type="text"
+              isFloating
+              icon={<span className="material-symbols-outlined">email</span>}
+              name="identifier"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.identifier || ""}
+              isError={
+                !!(formik.touched.identifier && formik.errors.identifier)
+              }
+              error={formik.errors.identifier}
+            />
+          )}
+
+          {loginMode === "phoneNumber" && (
+            <PhoneNumber
+              name="phoneNumber"
+              onChange={(value) => formik.setFieldValue("identifier", value)}
+            />
+          )}
+        </div>
+
+        {/* Password Input */}
+        <div className="space-y-2">
+          <PasswordInput
+            className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+            style={{
+              backgroundColor: "var(--input-bg)",
+              border: "1px solid var(--input-border)",
+            }}
+            title={t("common.password")}
+            isFloating
+            name="password"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password || ""}
+            isError={!!(formik.touched.password && formik.errors.password)}
+            error={formik.errors.password}
+          />
+          <div className="flex justify-end items-center ml-1">
+            <Link
+              to={ROUTER.AUTH.FORGOT_PASSWORD}
+              className="text-xs font-bold text-[#34d399] hover:underline"
+            >
+              {t("common.forgot_password")}
+            </Link>
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <Button
+          className="duration-400 w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+          type="submit"
+          disabled={isDisabled}
+          isLoading={LOADING_LOGIN}
+          title={t("common.login")}
+        />
+      </form>
     </Fragment>
   );
 };

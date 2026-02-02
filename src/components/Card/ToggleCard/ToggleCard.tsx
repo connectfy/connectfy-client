@@ -6,7 +6,7 @@ import {
 } from "react";
 import "./toggleCard.style.css";
 import { LucideProps } from "lucide-react";
-import ToggleSlider from "@/components/ToggleSlider/ToggleSlider";
+import ToggleSlider from "@/components/ui/CustomCheckbox/ToggleSlider/ToggleSlider";
 
 interface Props {
   header?: {

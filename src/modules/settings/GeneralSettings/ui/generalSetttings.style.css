@@ -47,7 +47,7 @@
 
 .general-theme-option:hover {
   background: #f1f5f9;
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 [data-theme="dark"] .general-theme-option:hover {
@@ -56,7 +56,7 @@
 
 .general-theme-option.active {
   background: rgba(46, 204, 113, 0.1);
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 .general-theme-option-icon {
@@ -73,7 +73,7 @@
 }
 
 .general-theme-option.active .general-theme-option-icon {
-  color: #2ecc71;
+  color: var(--third-color);
 }
 
 .general-theme-option span {
@@ -87,7 +87,7 @@
 }
 
 .general-theme-option.active span {
-  color: #2ecc71;
+  color: var(--third-color);
 }
 
 .general-select-icon {
@@ -129,7 +129,7 @@
 
 .general-format-option:hover {
   background: #f1f5f9;
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 [data-theme="dark"] .general-format-option:hover {
@@ -138,8 +138,8 @@
 
 .general-format-option.active {
   background: rgba(46, 204, 113, 0.1);
-  border-color: #2ecc71;
-  color: #2ecc71;
+  border-color: var(--third-color);
+  color: var(--third-color);
 }
 
 .general-reset-button {

@@ -5,7 +5,7 @@ import { ROUTER } from "@/common/constants/routet";
 const Main = lazy(() => import("../ui/Main/Main"));
 const Verify = lazy(() => import("../ui/Verify/Verify"));
 const ForgotPassword = lazy(
-  () => import("../ui/ForgotPassword/ForgotPassword")
+  () => import("../ui/ForgotPassword/ForgotPassword"),
 );
 const ResetPassword = lazy(() => import("../ui/ResesPassword/ResetPassword"));
 

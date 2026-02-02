@@ -27,11 +27,7 @@
 }
 
 [data-theme="dark"] .sidebar {
-  background: linear-gradient(
-    180deg,
-    #0A0F0D 0%,
-    #0A0F0D 100%
-  );
+  background: linear-gradient(180deg, #0a0f0d 0%, #0a0f0d 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
 }
@@ -50,7 +46,7 @@
 .logo-container {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  background: linear-gradient(135deg, var(--third-color) 0%, #27ae60 100%);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -144,7 +140,7 @@
     rgba(46, 204, 113, 0.15) 0%,
     rgba(46, 204, 113, 0.08) 100%
   );
-  color: #2ecc71;
+  color: var(--third-color);
   box-shadow: 0 4px 16px rgba(46, 204, 113, 0.2);
 }
 
@@ -154,7 +150,7 @@
   left: -12px;
   width: 4px;
   height: 36px;
-  background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
+  background: linear-gradient(180deg, var(--third-color) 0%, #27ae60 100%);
   border-radius: 0 4px 4px 0;
   animation: slideIn 0.3s ease-out;
 }

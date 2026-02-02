@@ -103,7 +103,7 @@
 
 .general-notification-mode:hover {
   background: #f1f5f9;
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 [data-theme="dark"] .general-notification-mode:hover {
@@ -112,7 +112,7 @@
 
 .general-notification-mode.active {
   background: rgba(46, 204, 113, 0.1);
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 .general-mode-radio {
@@ -125,7 +125,7 @@
 }
 
 .general-notification-mode.active .general-mode-radio {
-  border-color: #2ecc71;
+  border-color: var(--third-color);
 }
 
 .general-mode-radio::after {
@@ -137,7 +137,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #2ecc71;
+  background: var(--third-color);
   transition: transform 0.2s ease;
 }
 

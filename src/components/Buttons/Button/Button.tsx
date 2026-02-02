@@ -20,7 +20,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function Button({
   children,
-  size = "medium",
+  size = "large",
   variant = "solid",
   isLoading = false,
   startIcon,

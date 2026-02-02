@@ -30,13 +30,10 @@ export const validateLogin = (
 
   if (!identifier || !checkEmptyString(identifier))
     errors.identifier = t(
-      `error_messages.${identifierType === IDENTIFIER_TYPE.FACE_DESCRIPTOR ? "username" : identifierType.toLowerCase()}_is_required`
+      `error_messages.${identifierType.toLowerCase()}_is_required`
     );
 
-  if (
-    identifierType !== IDENTIFIER_TYPE.FACE_DESCRIPTOR &&
-    (!password || !checkEmptyString(password))
-  )
+  if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
 
   return errors;
