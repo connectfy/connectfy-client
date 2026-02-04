@@ -1,6 +1,5 @@
 import { FC, memo } from "react";
 import { Outlet } from "react-router-dom";
-import "./authLayout.style.css";
 import AuthSidebar from "@/components/Sidebar/Auth/AuthSidebar";
 import MainIcon from "@/assets/icons/MainIcon";
 import AuthFooter from "@/modules/auth/ui/components/AuthFooter/AuthFooter";
@@ -13,7 +12,7 @@ const AuthLayout: FC = () => {
         fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
       }}
     >
-      <div className="flex lg:h-screen w-full flex-col lg:flex-row">
+      <div className="flex min-h-screen lg:h-screen w-full flex-col lg:flex-row">
         <AuthSidebar />
 
         <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-16 relative max-h-full">
@@ -35,7 +34,6 @@ const AuthLayout: FC = () => {
           </div>
 
           <div className="w-full max-w-[500px] space-y-10">
-            {/* 🔥 BÜTÜN AUTH PAGE-LƏR BURADA GƏLİR */}
             <Outlet />
 
             <AuthFooter />

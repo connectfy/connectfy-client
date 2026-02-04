@@ -1,24 +1,20 @@
-import Button from "@/components/Buttons/Button/Button";
-import OTPForm from "@/components/Form/OTPForm/OTPForm";
 import "./verify.style.css";
 import { useTranslation } from "react-i18next";
 import { RESOURCE } from "@/common/enums/enums";
-import { KeyboardBackspace } from "@mui/icons-material";
 import { clearError, setSignupForm, signupVerify } from "../../api/api";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
 import { validateVerifySignup } from "../../constants/validation";
-import { useNavigate } from "react-router-dom";
-import Spinner from "@/components/Spinner/Spinner";
+import { Link, useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
-import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
-import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
 import { snack } from "@/common/utils/snackManager";
 import { checkDeviceId } from "@/common/utils/checkDevice";
+import OTPForm from "@/components/Form/OTPForm/OTPForm";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
@@ -70,7 +66,7 @@ const VerifyAccount = () => {
         formik.setFieldValue("verifyCode", next);
       }
     },
-    [formik]
+    [formik],
   );
 
   const isDisabled =
@@ -85,67 +81,54 @@ const VerifyAccount = () => {
   });
 
   return (
-    <section id="auth-page">
-      <AuthHeader />
-
-      <div className="auth-controls">
-        <div className="verify-account">
-          <div className="verify-account-message">
-            <h3>{t("common.verify_account_heading")}</h3>
-            <p>
-              {t("common.verify_account_message_part_1")}{" "}
-              <span className="highlight-email">
-                {signupForm?.email ?? "example@gmail.com"}
-              </span>
-              . {t("common.verify_account_message_part_2")}
-            </p>
-          </div>
-
-          <div className="verify-account-form">
-            <OTPForm
-              length={6}
-              onChange={handleOtpChange}
-              name="verifyCode"
-              onKeyDown={(e) => onKeyDown(e)}
-            />
-
-            <div className="verify-account-buttons">
-              <Button
-                fillWidth
-                hasAnimation
-                onClick={() => formik.handleSubmit()}
-                disabled={isDisabled}
-                type="button"
-              >
-                {LOADING_SIGNUP_VERIFY ? <Spinner /> : t("common.verify")}
-              </Button>
-
-              <div
-                className="verify-account-button"
-                onClick={() => {
-                  if (LOADING_SIGNUP_VERIFY) return;
-                  navigate(ROUTER.AUTH.MAIN);
-                }}
-                onKeyDown={(e) =>
-                  onPressEsc(e, () => {
-                    if (LOADING_SIGNUP_VERIFY) return;
-                    navigate(ROUTER.AUTH.MAIN);
-                  })
-                }
-              >
-                <KeyboardBackspace
-                  fontSize="small"
-                  style={{ color: "var(--primary-color)" }}
-                />
-                <div>{t("common.back")}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="w-full">
+      <div className="mb-10 text-center md:text-left">
+        <h2 className="text-3xl font-bold mb-3 text-(--text-primary)">
+          {t("common.verify_account_heading")}
+        </h2>
+        <p className="text-(--text-primary)">
+          {t("common.verify_account_message_part_1")}{" "}
+          <span className="text-(--primary-color) font-bold">
+            {signupForm?.email ?? "example@gmail.com"}
+          </span>
+          . {t("common.verify_account_message_part_2")}
+        </p>
       </div>
-
-      <AuthFooter />
-    </section>
+      <form className="space-y-8" onSubmit={formik.handleSubmit}>
+        <OTPForm
+          name="verifyCode"
+          length={6}
+          onChange={handleOtpChange}
+          onKeyDown={onKeyDown}
+          onComplete={(code) => formik.setFieldValue("verifyCode", code)}
+        />
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {t("common.dont_receive_code")}{" "}
+            <a className="text-primary hover:underline font-medium" href="#">
+              {t("common.resend_code")}
+            </a>
+            <span className="text-slate-400 ml-1">(00:59)</span>
+          </p>
+          <Button
+            className="duration-400 h-[60px] w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+            type="submit"
+            disabled={isDisabled}
+            isLoading={LOADING_SIGNUP_VERIFY}
+            title={t("common.verify")}
+          />
+          <Link
+            className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mt-2"
+            to={`${ROUTER.AUTH.MAIN}?authPage=signup`}
+          >
+            <span className="material-symbols-outlined md:text-md text-lg">
+              arrow_back
+            </span>
+            {t("common.back")}
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 };
 

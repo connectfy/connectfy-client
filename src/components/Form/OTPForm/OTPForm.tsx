@@ -1,8 +1,7 @@
-import "./otpForm.style.css";
-import { Box } from "@mui/material";
-import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { ROUTER } from "@/common/constants/routet";
 import { useNavigate } from "react-router-dom";
+import Input from "@/components/ui/CustomInput/Input/Input";
 
 type OTPProps = {
   length: number;
@@ -62,7 +61,7 @@ export default function OTPForm({
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    idx: number
+    idx: number,
   ) => {
     const key = e.key;
     if (key === "ArrowLeft") {
@@ -101,7 +100,7 @@ export default function OTPForm({
 
   const handlePaste = (
     e: React.ClipboardEvent<HTMLInputElement>,
-    idx: number
+    idx: number,
   ) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text").replace(/\D/g, "");
@@ -124,29 +123,26 @@ export default function OTPForm({
   };
 
   return (
-    <Box className="otp-wrap">
-      <Box className="otp-row" role="group" aria-label="OTP code">
-        {Array.from({ length }).map((_, i) => (
-          <Fragment key={i}>
-            <input
-              aria-label={`digit-${i + 1}`}
-              className="otp-input"
-              ref={(el) => {
-                inputsRef.current[i] = el;
-              }}
-              value={values[i] ?? ""}
-              onChange={(e) => handleChange(e, i)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              onPaste={(e) => handlePaste(e, i)}
-              inputMode="numeric"
-              maxLength={1}
-              name={name}
-              autoComplete="off"
-            />
-            {i !== length - 1 && <div className="otp-sep">-</div>}
-          </Fragment>
-        ))}
-      </Box>
-    </Box>
+    <div className="flex justify-between gap-2 md:gap-3" id="otp-container">
+      {Array.from({ length }).map((_, i) => (
+        <Input
+          key={i}
+          className="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-2xl font-bold bg-slate-50 dark:bg-card-dark border border-slate-200 dark:border-emerald-900/30 rounded-xl focus:ring-primary focus:border-primary transition-all text-slate-900 dark:text-white"
+          maxLength={1}
+          type="text"
+          value={values[i] ?? ""}
+          onChange={(e) => handleChange(e, i)}
+          onKeyDown={(e) => handleKeyDown(e, i)}
+          onPaste={(e) => handlePaste(e, i)}
+          inputMode="numeric"
+          name={name}
+          aria-label={`digit-${i + 1}`}
+          autoComplete="off"
+          ref={(el) => {
+            inputsRef.current[i] = el;
+          }}
+        />
+      ))}
+    </div>
   );
 }

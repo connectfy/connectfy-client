@@ -171,3 +171,9 @@ export enum TIME_DIFFERENCE_TYPE {
   HOUR = "hours_ago",
   DAY = "days_ago",
 }
+
+export enum CHECK_UNIQUE_FIELD {
+  USERNAME = 'username',
+  EMAIL = 'email',
+  PHONE_NUMBER = 'phone_number',
+}

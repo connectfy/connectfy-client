@@ -1,20 +1,26 @@
 import { Fragment, useCallback, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@/hooks/useStore";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
 import { checkDeviceId } from "@/common/utils/checkDevice";
-import { googleLogin } from "@/modules/auth/api/api";
+import { checkUnique, googleLogin } from "@/modules/auth/api/api";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { ROUTER } from "@/common/constants/routet";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
+import { CHECK_UNIQUE_FIELD, RESOURCE } from "@/common/enums/enums";
+import { jwtDecode } from "jwt-decode";
 
 const MainFooter = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { LOADING_CHECK_UNIQUE } = useAppSelector(
+    (state) => state[RESOURCE.AUTH],
+  );
 
   const [searchParams, setSearchParams] = useSearchParams();
   const isModalOpen = useBoolean();
@@ -56,8 +62,22 @@ const MainFooter = () => {
           localStorage.removeItem("forgotPasswordMode");
         }
       } else {
-        setIdToken(idToken);
-        isModalOpen.onOpen();
+        const decoded = jwtDecode<{ email?: string }>(idToken);
+        const email = decoded.email;
+
+        if (!email) {
+          snack.error(t("error_messages.email_not_found"));
+          return;
+        }
+
+        const actionResult = await dispatch(
+          checkUnique({ field: CHECK_UNIQUE_FIELD.EMAIL, value: email }),
+        );
+        const res = unwrapResult(actionResult);
+        if (res) {
+          setIdToken(idToken);
+          isModalOpen.onOpen();
+        }
       }
     } catch (error: any) {
       snack.error(error);
@@ -142,6 +162,7 @@ const MainFooter = () => {
         isOpen={isModalOpen.open}
         onClose={isModalOpen.onClose}
         idToken={idToken}
+        isLoading={LOADING_CHECK_UNIQUE}
       />
     </Fragment>
   );

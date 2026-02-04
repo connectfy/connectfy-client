@@ -1,4 +1,5 @@
 import {
+  CHECK_UNIQUE_FIELD,
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   GENDER,
   IDENTIFIER_TYPE,
@@ -122,4 +123,9 @@ export interface IRestoreAccount {
 
 export interface IRestoreAccountResponse {
   access_token: string;
+}
+
+export interface ICheckUnique {
+  field: CHECK_UNIQUE_FIELD;
+  value: string;
 }

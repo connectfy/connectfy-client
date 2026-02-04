@@ -128,7 +128,7 @@ const Signup = () => {
           {t("common.join_connectfy_description")}
         </p>
       </div>
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={formik.handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Input
@@ -186,7 +186,6 @@ const Signup = () => {
           </div>
         </div>
         <div className="space-y-1.5">
-          {/* <div className="relative"> */}
           <DatePicker
             value={formik.values.birthdayDate?.toString() || ""}
             onChange={(date) => formik.setFieldValue("birthdayDate", date)}
@@ -196,20 +195,6 @@ const Signup = () => {
               !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
             }
           />
-          {/* <Input
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
-              type="date"
-              title={t("common.birthday")}
-              name="birthdayDate"
-              isFloating
-              value={formik.values.birthdayDate?.toString() || ""}
-              onChange={formik.handleChange}
-              error={formik.errors.birthdayDate}
-            />
-            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-              calendar_month
-            </span> */}
-          {/* </div> */}
         </div>
         <div className="grid grid-cols-3 gap-3">
           {Object.keys(GENDER).map((gender) => (
@@ -276,7 +261,7 @@ const Signup = () => {
           </Checkbox>
         </div>
         <Button
-          className="duration-400 w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+          className="duration-400 h-[60px] w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
           type="submit"
           disabled={isDisabled}
           isLoading={LOADING_SIGNUP}

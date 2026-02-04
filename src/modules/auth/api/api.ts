@@ -22,6 +22,7 @@ import {
   IAuthenticateUser,
   IRestoreAccountResponse,
   IRestoreAccount,
+  ICheckUnique,
 } from "../types/types";
 import { t } from "i18next";
 import { ApiErrorType } from "@/common/types/types";
@@ -55,6 +56,7 @@ export interface AuthState {
   LOADING_REFRESH: boolean;
   LOADING_AUTHENTICATE_USER: boolean;
   LOADING_RESTORE_ACCOUNT: boolean;
+  LOADING_CHECK_UNIQUE: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -68,6 +70,7 @@ export interface AuthState {
   ERROR_REFRESH: ApiErrorType;
   ERROR_AUTHENTICATE_USER: ApiErrorType;
   ERROR_RESTORE_ACCOUNT: ApiErrorType;
+  ERROR_CHECK_UNIQUE: ApiErrorType;
 }
 
 // ======================== LOGIN
@@ -267,6 +270,21 @@ export const restoreAccount = createAsyncThunk<
   }
 });
 
+// ======================== CHECK UNIQUE
+export const checkUnique = createAsyncThunk<
+  boolean,
+  ICheckUnique
+>(API_ENDPOINTS.USER.CHECK_UNIQUE, async (data, { rejectWithValue }) => {
+  try {
+    const res = await axios.post<boolean>(API_ENDPOINTS.USER.CHECK_UNIQUE, data);
+    return res.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data.message || t("error_messages.process_failed"),
+    );
+  }
+});
+
 const initialState: AuthState = {
   access_token: authTokenManager.getToken(),
   error: null,
@@ -289,6 +307,7 @@ const initialState: AuthState = {
   LOADING_REFRESH: false,
   LOADING_AUTHENTICATE_USER: false,
   LOADING_RESTORE_ACCOUNT: false,
+  LOADING_CHECK_UNIQUE: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -302,6 +321,7 @@ const initialState: AuthState = {
   ERROR_REFRESH: null,
   ERROR_AUTHENTICATE_USER: null,
   ERROR_RESTORE_ACCOUNT: null,
+  ERROR_CHECK_UNIQUE: null,
 };
 
 const authSlice = createSlice({
@@ -347,6 +367,7 @@ const authSlice = createSlice({
         | "forgotPassword"
         | "authenticateUser"
         | "restoreAccount"
+        | "checkUnique"
       >,
     ) => {
       switch (action.payload) {
@@ -372,6 +393,9 @@ const authSlice = createSlice({
           break;
         case "restoreAccount":
           state.ERROR_RESTORE_ACCOUNT = null;
+          break;
+        case "checkUnique":
+          state.ERROR_CHECK_UNIQUE = null;
           break;
         default:
           break;
@@ -534,6 +558,19 @@ const authSlice = createSlice({
       .addCase(restoreAccount.rejected, (state, action) => {
         state.LOADING_RESTORE_ACCOUNT = false;
         state.ERROR_RESTORE_ACCOUNT = action.payload as string | string[];
+      })
+
+      // =================== CHECK UNIQUE
+      .addCase(checkUnique.fulfilled, (state) => {
+        state.LOADING_CHECK_UNIQUE = false;
+        state.ERROR_CHECK_UNIQUE = null;
+      })
+      .addCase(checkUnique.pending, (state) => {
+        state.LOADING_CHECK_UNIQUE = true;
+      })
+      .addCase(checkUnique.rejected, (state, action) => {
+        state.LOADING_CHECK_UNIQUE = false;
+        state.ERROR_CHECK_UNIQUE = action.payload as string | string[];
       });
   },
 });

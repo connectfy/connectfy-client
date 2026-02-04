@@ -1,5 +1,4 @@
 import React from "react";
-import "./authSidebar.style.css";
 import MainIcon from "@/assets/icons/MainIcon.tsx";
 import { useTranslation } from "react-i18next";
 

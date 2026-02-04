@@ -231,7 +231,9 @@ const Login = () => {
           {loginMode === "phoneNumber" && (
             <PhoneNumber
               name="phoneNumber"
-              onChange={(value) => formik.setFieldValue("identifier", value)}
+              onChange={(value) =>
+                formik.setFieldValue("identifier", value?.fullPhoneNumber)
+              }
             />
           )}
         </div>
@@ -265,10 +267,9 @@ const Login = () => {
 
         {/* Submit Button */}
         <Button
-          className="duration-400 w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+          className="duration-400 h-[60px] w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
           type="submit"
           disabled={isDisabled}
-          isLoading={LOADING_LOGIN}
           title={t("common.login")}
         />
       </form>

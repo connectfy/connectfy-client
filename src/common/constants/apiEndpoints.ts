@@ -23,6 +23,7 @@ export const API_ENDPOINTS = {
     VERIFY_CHANGE_EMAIL: "/user/change-email/verify",
     CHANGE_PASSWORD: "/user/change-password",
     CHANGE_PHONE_NUMBER: "/user/change-phone-number",
+    CHECK_UNIQUE: "/user/check-unique",
   },
   ACCOUNT: {
     SETTINGS: {

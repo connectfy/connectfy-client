@@ -70,7 +70,7 @@ const PasswordInput: FC<Props> = ({
         {showGenerateButton && (
           <Tooltip placement={"top"} title={t("common.generate_password")}>
             <IconButton size="small" onClick={handleGenerate}>
-              <span className="material-symbols-outlined text-(--text-(--primary-color))">
+              <span className="material-symbols-outlined text-(--text-primary)">
                 key
               </span>
             </IconButton>
@@ -85,7 +85,7 @@ const PasswordInput: FC<Props> = ({
         >
           <IconButton size="small" onClick={() => setVisible((v) => !v)}>
             {visible ? (
-              <span className="material-symbols-outlined text-(--text-color)">
+              <span className="material-symbols-outlined text-(--text-primary)">
                 visibility_off
               </span>
             ) : (
