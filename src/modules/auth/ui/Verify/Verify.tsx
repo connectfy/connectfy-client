@@ -1,13 +1,18 @@
 import "./verify.style.css";
 import { useTranslation } from "react-i18next";
-import { RESOURCE } from "@/common/enums/enums";
-import { clearError, setSignupForm, signupVerify } from "../../api/api";
+import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
+import {
+  clearError,
+  resendSignupVerify,
+  setSignupForm,
+  signupVerify,
+} from "../../api/api";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
 import { validateVerifySignup } from "../../constants/validation";
 import { Link, useNavigate } from "react-router-dom";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useToastError } from "@/hooks/useToastError";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
@@ -15,13 +20,26 @@ import { snack } from "@/common/utils/snackManager";
 import { checkDeviceId } from "@/common/utils/checkDevice";
 import OTPForm from "@/components/Form/OTPForm/OTPForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { formatTimeToSeconds } from "@/common/utils/formatDate";
+import { unwrapResult } from "@reduxjs/toolkit";
+
+const TIMER_DURATION = 60;
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { signupForm, LOADING_SIGNUP_VERIFY, ERROR_SIGNUP_VERIFY } =
-    useAppSelector((state) => state[RESOURCE.AUTH]);
+
+  const {
+    signupForm,
+    LOADING_SIGNUP_VERIFY,
+    LOADING_RESEND_SIGNUP_VERIFY,
+    ERROR_RESEND_SIGNUP_VERIFY,
+    ERROR_SIGNUP_VERIFY,
+  } = useAppSelector((state) => state[RESOURCE.AUTH]);
+
+  const [timeLeft, setTimeLeft] = useState<number>(TIMER_DURATION);
+  const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
 
   const formik = useFormik({
     initialValues: verifySignupInitialState,
@@ -35,9 +53,7 @@ const VerifyAccount = () => {
       if (signupVerify.fulfilled.match(actionResult)) {
         snack.success(t("user_messages.verify_successful"));
         navigate(ROUTER.MESSENGER.MAIN);
-        localStorage.removeItem("authPage");
-        localStorage.removeItem("loginMode");
-        localStorage.removeItem("forgotPasswordMode");
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
         dispatch(setSignupForm(null));
         resetForm();
       }
@@ -75,10 +91,83 @@ const VerifyAccount = () => {
     formik.values.verifyCode.trim() === "" ||
     formik.values.verifyCode?.length !== 6;
 
+  const startTimer = () => {
+    const expiresAt = Date.now() + TIMER_DURATION * 1000;
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT,
+      expiresAt.toString(),
+    );
+    setTimeLeft(TIMER_DURATION);
+    setIsResendDisabled(true);
+  };
+
+  const handleResendCode = async () => {
+    if (isResendDisabled) return;
+
+    const actionResult = await dispatch(resendSignupVerify());
+    const res = unwrapResult(actionResult);
+    if (res) {
+      snack.success(t("user_messages.otp_resent"));
+      startTimer();
+    }
+  };
+
   useToastError({
-    error: ERROR_SIGNUP_VERIFY,
+    error: ERROR_SIGNUP_VERIFY || ERROR_RESEND_SIGNUP_VERIFY,
     clearErrorAction: () => clearError("verify"),
   });
+
+  useEffect(() => {
+    const storedExpiresAt = localStorage.getItem(
+      LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT,
+    );
+
+    if (!storedExpiresAt) {
+      startTimer();
+    } else {
+      const difference = Math.floor(
+        (parseInt(storedExpiresAt) - Date.now()) / 1000,
+      );
+
+      if (difference > 0) {
+        setTimeLeft(difference);
+        setIsResendDisabled(true);
+      } else {
+        setTimeLeft(0);
+        setIsResendDisabled(false);
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setIsResendDisabled(false);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const storedExpiresAt = localStorage.getItem(
+        LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT,
+      );
+      if (storedExpiresAt) {
+        const difference = Math.floor(
+          (parseInt(storedExpiresAt) - Date.now()) / 1000,
+        );
+
+        if (difference > 0) {
+          setTimeLeft(difference);
+        } else {
+          setTimeLeft(0);
+          setIsResendDisabled(false);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLeft]);
 
   return (
     <div className="w-full">
@@ -104,11 +193,24 @@ const VerifyAccount = () => {
         />
         <div className="flex flex-col items-center gap-4">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            {t("common.dont_receive_code")}{" "}
-            <a className="text-primary hover:underline font-medium" href="#">
-              {t("common.resend_code")}
-            </a>
-            <span className="text-slate-400 ml-1">(00:59)</span>
+            {t("common.do_not_receive_code")}{" "}
+            <Button
+              type="button"
+              onClick={handleResendCode}
+              disabled={isResendDisabled}
+              isLoading={LOADING_RESEND_SIGNUP_VERIFY}
+              className={`font-medium transition-all bg-transparent border-none ${
+                isResendDisabled
+                  ? "text-slate-400"
+                  : "text-(--primary-color) hover:underline"
+              }`}
+              title={t("common.resend_code")}
+            />
+            {isResendDisabled && (
+              <span className="text-slate-400 ml-2 font-mono">
+                ({formatTimeToSeconds(timeLeft)})
+              </span>
+            )}
           </p>
           <Button
             className="duration-400 h-[60px] w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"

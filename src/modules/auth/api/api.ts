@@ -57,6 +57,7 @@ export interface AuthState {
   LOADING_AUTHENTICATE_USER: boolean;
   LOADING_RESTORE_ACCOUNT: boolean;
   LOADING_CHECK_UNIQUE: boolean;
+  LOADING_RESEND_SIGNUP_VERIFY: boolean;
 
   ERROR_LOGIN: ApiErrorType;
   ERROR_SIGNUP: ApiErrorType;
@@ -71,6 +72,7 @@ export interface AuthState {
   ERROR_AUTHENTICATE_USER: ApiErrorType;
   ERROR_RESTORE_ACCOUNT: ApiErrorType;
   ERROR_CHECK_UNIQUE: ApiErrorType;
+  ERROR_RESEND_SIGNUP_VERIFY: ApiErrorType;
 }
 
 // ======================== LOGIN
@@ -285,6 +287,22 @@ export const checkUnique = createAsyncThunk<
   }
 });
 
+// ======================== RESEND SIGNUP VERIFY
+export const resendSignupVerify = createAsyncThunk<
+  ISignupVerifyResponse
+>(API_ENDPOINTS.AUTH.RESEND_SIGNUP_VERIFY, async (_, { rejectWithValue }) => {
+  try {
+    const res = await axios.post<ISignupVerifyResponse>(
+      API_ENDPOINTS.AUTH.RESEND_SIGNUP_VERIFY,
+    );
+    return res.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data.message || t("error_messages.process_failed"),
+    );
+  }
+});
+
 const initialState: AuthState = {
   access_token: authTokenManager.getToken(),
   error: null,
@@ -308,6 +326,7 @@ const initialState: AuthState = {
   LOADING_AUTHENTICATE_USER: false,
   LOADING_RESTORE_ACCOUNT: false,
   LOADING_CHECK_UNIQUE: false,
+  LOADING_RESEND_SIGNUP_VERIFY: false,
 
   ERROR_LOGIN: null,
   ERROR_SIGNUP: null,
@@ -322,6 +341,7 @@ const initialState: AuthState = {
   ERROR_AUTHENTICATE_USER: null,
   ERROR_RESTORE_ACCOUNT: null,
   ERROR_CHECK_UNIQUE: null,
+  ERROR_RESEND_SIGNUP_VERIFY: null,
 };
 
 const authSlice = createSlice({
@@ -381,6 +401,7 @@ const authSlice = createSlice({
           break;
         case "verify":
           state.ERROR_SIGNUP_VERIFY = null;
+          state.ERROR_RESEND_SIGNUP_VERIFY = null;
           break;
         case "resetPassword":
           state.ERROR_RESET_PASSWORD = null;
@@ -571,6 +592,19 @@ const authSlice = createSlice({
       .addCase(checkUnique.rejected, (state, action) => {
         state.LOADING_CHECK_UNIQUE = false;
         state.ERROR_CHECK_UNIQUE = action.payload as string | string[];
+      })
+
+      // =================== RESEND SIGNUP VERIFY
+      .addCase(resendSignupVerify.fulfilled, (state) => {
+        state.LOADING_RESEND_SIGNUP_VERIFY = false;
+        state.ERROR_RESEND_SIGNUP_VERIFY = null;
+      })
+      .addCase(resendSignupVerify.pending, (state) => {
+        state.LOADING_RESEND_SIGNUP_VERIFY = true;
+      })
+      .addCase(resendSignupVerify.rejected, (state, action) => {
+        state.LOADING_RESEND_SIGNUP_VERIFY = false;
+        state.ERROR_RESEND_SIGNUP_VERIFY = action.payload as string | string[];
       });
   },
 });

@@ -44,7 +44,7 @@
 
 /* Error state - icon color change */
 .input-container.error .input-icon {
-  color: var(--error-color);
+  color: var(--error-color) !important;
 }
 
 /* ===================================
@@ -284,7 +284,7 @@
 .floating-label.active {
   top: 0;
   transform: translateY(-50%);
-  color: var(--primary-color);
+  color: var(--text-primary);
   padding: 0 0.25rem;
   background-color: var(--bg-color);
   left: 1rem !important;

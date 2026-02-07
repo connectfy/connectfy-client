@@ -81,6 +81,7 @@ const Login = () => {
   });
 
   const changeLoginMode = (mode: LoginModeType) => {
+    formik.setFieldValue("identifier", "");
     setSearchParams({ authPage: "login", loginMode: mode }, { replace: true });
   };
 
@@ -116,12 +117,19 @@ const Login = () => {
   }, [rawLoginMode]);
 
   useEffect(() => {
-    if (isDisabled) return;
-
     const handleSubmitEnter = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && !isDisabled) {
         e.preventDefault();
         formik.handleSubmit();
+      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit1") {
+        e.preventDefault();
+        changeLoginMode("username");
+      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit2") {
+        e.preventDefault();
+        changeLoginMode("email");
+      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit3") {
+        e.preventDefault();
+        changeLoginMode("phoneNumber");
       }
     };
 

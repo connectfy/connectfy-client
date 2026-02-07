@@ -1,13 +1,10 @@
-import "./resetPassword.style.css";
 import { useTranslation } from "react-i18next";
-import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
-import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
-import Button from "@/components/Buttons/Button/Button";
-import PasswordInput from "@/components/PasswordInput/PasswordInput";
+import Button from "@/components/ui/CustomButton/Button/Button";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import { useFormik } from "formik";
 import { resetPasswordInitialState } from "../../constants/intialState";
 import { validateResetPassword } from "../../constants/validation";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { RESOURCE, TOKEN_TYPE } from "@/common/enums/enums";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -17,6 +14,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { IResetPasswordForm } from "../../types/types";
+import { ROUTER } from "@/common/constants/routet";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -68,7 +66,7 @@ const ResetPassword = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/auth");
+      navigate(ROUTER.AUTH.MAIN);
       return;
     }
 
@@ -77,13 +75,13 @@ const ResetPassword = () => {
         isValidToken({
           token,
           type: TOKEN_TYPE.PASSWORD_RESET,
-        })
+        }),
       );
 
       const isValid = unwrapResult(actionResult);
 
       if (!isValid || ERROR_IS_VALID_TOKEN) {
-        navigate("/auth");
+        navigate(ROUTER.AUTH.MAIN);
         return;
       }
     })();
@@ -107,94 +105,73 @@ const ResetPassword = () => {
     };
   }, [isDisabled, formik.handleSubmit]);
 
+  console.log(formik.errors);
+
   return (
-    <section id="auth-page">
-      <AuthHeader />
-
-      <div className="auth-controls">
-        <div className="reset-password">
-          <div className="reset-password__intro">
-            <h4 className="reset-password__title">
-              {t("common.reset_password_title")}
-            </h4>
-          </div>
-
-          <div className="reset-password-form">
-            <div>
-              <PasswordInput
-                inputSize="medium"
-                label={t("common.password")}
-                name="password"
-                showGenerateIcon
-                fullWidth
-                value={formik.values.password || ""}
-                onChange={(e) => {
-                  const value = e.target.value || null;
-
-                  if (value && value.length > 30) return;
-
-                  formik.setFieldValue("password", value || null);
-                }}
-                onBlur={() => formik.setFieldTouched("password", true, false)}
-                onGenerate={(value?: string) => {
-                  navigator.clipboard.writeText(value as string);
-                  snack.info(t("user_messages.password_generated_message"), {
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "center",
-                    },
-                    autoHideDuration: 10000,
-                  });
-
-                  formik.setFieldValue("password", value);
-                  formik.setFieldValue("confirmPassword", value);
-                }}
-              />
-              {formik.errors.password && formik.touched.password && (
-                <h6>{formik.errors.password}</h6>
-              )}
-            </div>
-            <div>
-              <PasswordInput
-                inputSize="medium"
-                label={t("common.confirm_password")}
-                name="confirmPassword"
-                fullWidth
-                value={formik.values.confirmPassword || ""}
-                onChange={(e) => {
-                  const value = e.target.value || null;
-
-                  if (value && value.length > 30) return;
-
-                  formik.setFieldValue("confirmPassword", value || null);
-                }}
-                onBlur={() =>
-                  formik.setFieldTouched("confirmPassword", true, false)
-                }
-              />
-              {formik.errors.confirmPassword &&
-                formik.touched.confirmPassword && (
-                  <h6>{formik.errors.confirmPassword}</h6>
-                )}
-            </div>
-          </div>
-
-          <div className="reset-password-buttons">
-            <Button
-              hasAnimation
-              fillWidth
-              size="small"
-              disabled={isDisabled}
-              onClick={() => formik.handleSubmit()}
-            >
-              {t("common.submit")}
-            </Button>
-          </div>
+    <Fragment>
+      <div className="w-full">
+        <div className="mb-10 text-center md:text-left">
+          <h2 className="text-3xl font-bold mb-3 text-(--text-primary)">
+            {t("common.reset_password_title")}
+          </h2>
         </div>
       </div>
 
-      <AuthFooter />
-    </section>
+      <form className="space-y-8" onSubmit={formik.handleSubmit}>
+        <div className="space-y-4">
+          <PasswordInput
+            title={t("common.password")}
+            name="password"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
+            showGenerateButton
+            isFloating
+            value={formik.values.password || ""}
+            onChange={(e) => {
+              const value = e.target.value || null;
+
+              if (value && value.length > 30) return;
+
+              formik.setFieldValue("password", value || null);
+            }}
+            onBlur={() => formik.setFieldTouched("password", true, false)}
+            onGenerate={(value) => {
+              formik.setFieldValue("password", value);
+              formik.setFieldValue("confirmPassword", value);
+            }}
+            isError={!!formik.errors.password}
+            error={formik.errors.password}
+          />
+          <PasswordInput
+            title={t("common.confirm_password")}
+            name="confirmPassword"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-input-border bg-white dark:bg-form-bg text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
+            value={formik.values.confirmPassword || ""}
+            isFloating
+            onChange={(e) => {
+              const value = e.target.value || null;
+
+              if (value && value.length > 30) return;
+
+              formik.setFieldValue("confirmPassword", value || null);
+            }}
+            onBlur={() =>
+              formik.setFieldTouched("confirmPassword", true, false)
+            }
+            isError={!!formik.errors.confirmPassword}
+            error={formik.errors.confirmPassword}
+          />
+        </div>
+        <div className="flex flex-col items-center gap-4">
+          <Button
+            className="duration-400 h-[60px] w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+            type="submit"
+            disabled={isDisabled}
+            isLoading={LOADING_RESET_PASSWORD}
+            title={t("common.submit")}
+          />
+        </div>
+      </form>
+    </Fragment>
   );
 };
 

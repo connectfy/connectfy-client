@@ -36,7 +36,7 @@ const Signup = () => {
   const [checked, setChecked] = useState<boolean>(false);
 
   const formik = useFormik({
-    initialValues: signupInitialState,
+    initialValues: signupForm || signupInitialState,
     validateOnBlur: false,
     validateOnChange: false,
     enableReinitialize: true,
@@ -56,8 +56,8 @@ const Signup = () => {
       const res = unwrapResult(actionResult);
       if (res) {
         dispatch(setSignupForm(values));
-        navigate(ROUTER.AUTH.VERIFY_ACCOUNT);
         resetForm();
+        await navigate(ROUTER.AUTH.VERIFY_ACCOUNT, { replace: true });
       }
     },
   });
@@ -97,12 +97,6 @@ const Signup = () => {
   });
 
   useEffect(() => {
-    if (signupForm) {
-      formik.setValues({ ...signupForm }, true);
-    }
-  }, [formik, signupForm]);
-
-  useEffect(() => {
     if (isDisabled) return;
 
     const handleSubmitEnter = (e: KeyboardEvent) => {
@@ -140,6 +134,7 @@ const Signup = () => {
               icon={<span className="material-symbols-outlined">person</span>}
               value={formik.values.firstName || ""}
               onChange={formik.handleChange}
+              isError={!!formik.errors.firstName}
               error={formik.errors.firstName}
             />
           </div>
@@ -153,6 +148,7 @@ const Signup = () => {
               icon={<span className="material-symbols-outlined">person</span>}
               value={formik.values.lastName || ""}
               onChange={formik.handleChange}
+              isError={!!formik.errors.lastName}
               error={formik.errors.lastName}
             />
           </div>
@@ -168,6 +164,7 @@ const Signup = () => {
               icon={<span className="material-symbols-outlined">person</span>}
               value={formik.values.username || ""}
               onChange={formik.handleChange}
+              isError={!!formik.errors.username}
               error={formik.errors.username}
             />
           </div>
@@ -181,6 +178,7 @@ const Signup = () => {
               icon={<span className="material-symbols-outlined">email</span>}
               value={formik.values.email || ""}
               onChange={formik.handleChange}
+              isError={!!formik.errors.email}
               error={formik.errors.email}
             />
           </div>
@@ -198,14 +196,13 @@ const Signup = () => {
         </div>
         <div className="grid grid-cols-3 gap-3">
           {Object.keys(GENDER).map((gender) => (
-            <button
+            <Button
               key={gender}
               className={`cursor-pointer py-4 px-2 border border-(--input-border) rounded-lg text-sm font-medium hover:border-primary transition-colors text-(--text-secondary) duration-900 ${formik.values.gender === gender ? "bg-(--primary-color) text-white" : ""}`}
               type="button"
               onClick={() => selectGender(gender as GENDER)}
-            >
-              {t(`enum.${gender.toLowerCase()}`)}
-            </button>
+              title={t(`enum.${gender.toLowerCase()}`)}
+            />
           ))}
         </div>
         <div className="space-y-4">
@@ -224,6 +221,7 @@ const Signup = () => {
                 name="password"
                 value={formik.values.password || ""}
                 onChange={formik.handleChange}
+                isError={!!formik.errors.password}
                 error={formik.errors.password}
               />
             </div>
@@ -238,6 +236,7 @@ const Signup = () => {
                 name="confirm"
                 value={formik.values.confirm || ""}
                 onChange={formik.handleChange}
+                isError={!!formik.errors.confirm}
                 error={formik.errors.confirm}
               />
             </div>

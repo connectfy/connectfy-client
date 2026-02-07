@@ -163,6 +163,7 @@ export enum LOCAL_STORAGE_KEYS {
   AUTH_PAGE = "auth-page",
   LOGIN_MODE = "login-mode",
   FORGOT_PASSWORD_MODE = "forgot-password-mode",
+  OTP_EXPIRES_AT = "otp_expires_at",
 }
 
 export enum TIME_DIFFERENCE_TYPE {

@@ -15,7 +15,7 @@ const AuthLayout: FC = () => {
       <div className="flex min-h-screen lg:h-screen w-full flex-col lg:flex-row">
         <AuthSidebar />
 
-        <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-16 relative max-h-full">
+        <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-16 relative overflow-y-auto">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
             <MainIcon
@@ -33,7 +33,7 @@ const AuthLayout: FC = () => {
             </h2>
           </div>
 
-          <div className="w-full max-w-[500px] space-y-10">
+          <div className="w-full max-w-[500px] space-y-10 min-h-0">
             <Outlet />
 
             <AuthFooter />

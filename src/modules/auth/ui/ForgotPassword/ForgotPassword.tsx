@@ -1,46 +1,47 @@
 import "./forgotPassword.style.css";
 import { useTranslation } from "react-i18next";
-import { KeyboardBackspace } from "@mui/icons-material";
-import {
-  clearError,
-  forgotPassword,
-  setForgotPasswordMode,
-  setLoginMode,
-} from "../../api/api";
-import ForgotPasswordHeader from "./components/ForgotPasswordHeader/ForgotPasswordHeader";
-import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
-import { useCallback, useEffect } from "react";
-import EmailForm from "./components/EmailForm/EmailForm";
-import PhoneNumberForm from "./components/PhoneNumberForm/PhoneNumberForm";
+import { clearError, forgotPassword } from "../../api/api";
+import { RESOURCE } from "@/common/enums/enums";
+import { Fragment, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import {
-  ForgotPasswordModeType,
-  IForgotPasswordForm,
-} from "../../types/types";
+import { ForgotPasswordModeType, IForgotPasswordForm } from "../../types/types";
 import { useFormik } from "formik";
 import { forgotPasswordInitialState } from "../../constants/intialState";
 import { validateForgotPassword } from "../../constants/validation";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { useToastError } from "@/hooks/useToastError";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
-import AuthHeader from "@/components/Header/AuthHeader/AuthHeader";
-import AuthFooter from "@/components/Footer/AuthFooter/AuthFooter";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
+import Button from "@/components/ui/CustomButton/Button/Button";
+import Input from "@/components/ui/CustomInput/Input/Input";
+import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
+
+const FORGOT_PASSWORD_MODES: ForgotPasswordModeType[] = [
+  "email",
+  "phoneNumber",
+];
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { forgotPasswordMode, LOADING_FORGOT_PASSWORD, ERROR_FORGOT_PASSWORD } =
-    useAppSelector((state) => state[RESOURCE.AUTH]);
+  const rawForgotPasswordMode = searchParams.get("mode");
 
-  const localForgotPasswordMode =
-    localStorage.getItem(LOCAL_STORAGE_KEYS.FORGOT_PASSWORD_MODE) || "email";
+  const forgotPasswordMode: ForgotPasswordModeType =
+    FORGOT_PASSWORD_MODES.includes(
+      rawForgotPasswordMode as ForgotPasswordModeType,
+    )
+      ? (rawForgotPasswordMode as ForgotPasswordModeType)
+      : "email";
+
+  const { LOADING_FORGOT_PASSWORD, ERROR_FORGOT_PASSWORD } = useAppSelector(
+    (state) => state[RESOURCE.AUTH],
+  );
 
   const formik = useFormik({
     initialValues: forgotPasswordInitialState,
@@ -54,7 +55,6 @@ const ForgotPassword = () => {
       if (res) {
         snack.success(t("user_messages.forgot_password_successful"));
         navigate(ROUTER.AUTH.MAIN);
-        dispatch(setLoginMode("username"));
         resetForm();
       }
     },
@@ -68,41 +68,9 @@ const ForgotPassword = () => {
     ],
   });
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    switch (e.key) {
-      case "Enter":
-        onPressEnter(e, () => {
-          if (isDisabled) return;
-          formik.handleSubmit();
-        });
-        break;
-
-      case "Escape":
-        onPressEsc(e, () => navigate(ROUTER.AUTH.MAIN));
-    }
+  const changeForgotPasswordMode = (mode: ForgotPasswordModeType) => {
+    setSearchParams({ mode }, { replace: true });
   };
-
-  const renderForm = useCallback(() => {
-    switch (forgotPasswordMode) {
-      case "phoneNumber":
-        return (
-          <PhoneNumberForm
-            formik={formik}
-            isDisabled={isDisabled}
-            onKeyDown={onKeyDown}
-          />
-        );
-
-      default:
-        return (
-          <EmailForm
-            formik={formik}
-            isDisabled={isDisabled}
-            onKeyDown={onKeyDown}
-          />
-        );
-    }
-  }, [forgotPasswordMode, formik]);
 
   useToastError({
     error: ERROR_FORGOT_PASSWORD,
@@ -110,74 +78,123 @@ const ForgotPassword = () => {
   });
 
   useEffect(() => {
-    const forgotPasswordModes: ForgotPasswordModeType[] = [
-      "email",
-      "phoneNumber",
-    ];
+    const handleSubmitKeyboard = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && !isDisabled) {
+        e.preventDefault();
+        formik.handleSubmit();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        navigate(ROUTER.AUTH.MAIN);
+      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit1") {
+        e.preventDefault();
+        changeForgotPasswordMode("email");
+      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit2") {
+        e.preventDefault();
+        changeForgotPasswordMode("phoneNumber");
+      }
+    };
 
-    if (
-      !forgotPasswordModes.includes(
-        localForgotPasswordMode as ForgotPasswordModeType
-      )
-    ) {
-      dispatch(setForgotPasswordMode("email"));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.FORGOT_PASSWORD_MODE, "email");
-    } else
-      dispatch(
-        setForgotPasswordMode(localForgotPasswordMode as ForgotPasswordModeType)
-      );
-  }, [localForgotPasswordMode]);
+    document.addEventListener("keydown", handleSubmitKeyboard);
+    return () => {
+      document.removeEventListener("keydown", handleSubmitKeyboard);
+    };
+  }, [isDisabled, formik.handleSubmit]);
 
   return (
-    <section id="auth-page">
-      <AuthHeader />
-
-      <div className="auth-controls">
-        <div className="forgot-password">
-          <div className="forgot-password__intro">
-            <h4 className="forgot-password__title">
-              {t("common.forgot_password_title", "Forgot Password?")}
-            </h4>
-            <p className="forgot-password__subtitle">
-              {t(
-                "common.forgot_password_subtitle",
-                "Select an identifier to find your account. We'll send a secure password-reset link to the account's registered email address."
-              )}
-            </p>
-          </div>
-
-          <ForgotPasswordHeader formik={formik} />
-
-          {renderForm()}
-
-          <div className="forgot-password-buttons">
-            <div
-              className="forgot-password-button"
-              onClick={() => {
-                if (LOADING_FORGOT_PASSWORD) return;
-                navigate(ROUTER.AUTH.MAIN);
-              }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) =>
-                onPressEsc(e, () => {
-                  if (LOADING_FORGOT_PASSWORD) return;
-                  navigate(ROUTER.AUTH.MAIN);
-                })
-              }
-            >
-              <KeyboardBackspace
-                fontSize="small"
-                style={{ color: "var(--primary-color)" }}
-              />
-              <div>{t("common.back", "Back")}</div>
-            </div>
-          </div>
-        </div>
+    <Fragment>
+      {/* Form Header */}
+      <div className="space-y-2 mb-5">
+        <h2 className="text-3xl font-bold tracking-tight text-(--text-(--primary-color))">
+          {t("common.forgot_password_title")}
+        </h2>
+        <p className="text-(--text-secondary) text-sm">
+          {t("common.forgot_password_subtitle")}
+        </p>
       </div>
 
-      <AuthFooter />
-    </section>
+      {/* Login Mode Tabs */}
+      <div className="flex border-b border-slate-100 my-4">
+        <Button
+          type="button"
+          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+            forgotPasswordMode === "email"
+              ? "text-(--primary-color) border-primary"
+              : "text-slate-400 hover:text-slate-600 border-transparent"
+          }`}
+          onClick={() => changeForgotPasswordMode("email")}
+        >
+          {t("common.email")}
+        </Button>
+        <Button
+          type="button"
+          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+            forgotPasswordMode === "phoneNumber"
+              ? "text-(--primary-color) border-primary"
+              : "text-slate-400 hover:text-slate-600 border-transparent"
+          }`}
+          onClick={() => changeForgotPasswordMode("phoneNumber")}
+        >
+          {t("common.phoneNumber")}
+        </Button>
+      </div>
+
+      {/* Login Form */}
+      <form className="space-y-6" onSubmit={formik.handleSubmit}>
+        {/* Identifier Input */}
+        <div className="space-y-2">
+          {forgotPasswordMode === "email" && (
+            <Input
+              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+              style={{
+                backgroundColor: "var(--input-bg)",
+                border: "1px solid var(--input-border)",
+              }}
+              title={t("common.email")}
+              type="text"
+              isFloating
+              icon={<span className="material-symbols-outlined">email</span>}
+              name="identifier"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.identifier || ""}
+              isError={
+                !!(formik.touched.identifier && formik.errors.identifier)
+              }
+              error={formik.errors.identifier}
+            />
+          )}
+
+          {forgotPasswordMode === "phoneNumber" && (
+            <PhoneNumber
+              name="phoneNumber"
+              onChange={(value) =>
+                formik.setFieldValue("identifier", value?.fullPhoneNumber)
+              }
+            />
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex flex-col items-center gap-4">
+          <Button
+            className="duration-400 h-[60px] w-full py-4 font-bold text-lg rounded-xl transition-all transform active:scale-[0.98] hover:brightness-110 shadow-[0_4px_14px_0_rgba(52,211,153,0.39)] bg-(--primary-color) text-[#020a06]"
+            type="submit"
+            disabled={isDisabled}
+            title={t("common.login")}
+            isLoading={LOADING_FORGOT_PASSWORD}
+          />
+          <p
+            className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mt-2 cursor-pointer"
+            onClick={() => navigate(-1)}
+          >
+            <span className="material-symbols-outlined md:text-md text-lg">
+              arrow_back
+            </span>
+            {t("common.back")}
+          </p>
+        </div>
+      </form>
+    </Fragment>
   );
 };
 

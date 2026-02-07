@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     DELETE_ACCOUNT: "/auth/delete-account",
     RESTORE_ACCOUNT: "/auth/restore-account",
     DEACTIVATE_ACCOUNT: "/auth/deactivate-account",
+    RESEND_SIGNUP_VERIFY: "/auth/signup/verify/resend",
   },
   USER: {
     ME: "/user/me",

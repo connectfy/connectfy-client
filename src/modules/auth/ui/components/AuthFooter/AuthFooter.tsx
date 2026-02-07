@@ -42,7 +42,7 @@ const AuthFooter = () => {
 
   return (
     <Fragment>
-      <div className="pt-8 flex items-center justify-between border-t border-(--input-border)">
+      <div className="pt-8 pb-0 md:pb-8 flex items-center justify-between border-t border-(--input-border)">
         <div className="flex gap-4">
           <Button
             type="button"
