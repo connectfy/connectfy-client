@@ -6,6 +6,8 @@ export interface ICountry {
   flag: string;
   code: string;
   numberLength: number;
+  format: string;
+  totalLength: number;
 }
 
 export interface IPagination {

@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from "react";
-import { IDENTIFIER_TYPE } from "@/common/enums/enums";
+import { IDENTIFIER_TYPE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { loginInitialState } from "../../../../constants/intialState";
 import { validateLogin } from "../../../../constants/validation";
@@ -55,6 +55,8 @@ const Login = () => {
             type: "accessToken",
             token: res.access_token,
           });
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
           navigate(ROUTER.MAIN);
           resetForm();
         }

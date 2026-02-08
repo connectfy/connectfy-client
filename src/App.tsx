@@ -32,7 +32,6 @@ function App() {
   useEffect(() => {
     if (userLang) {
       i18n.changeLanguage(userLang);
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
       return;
     }
 

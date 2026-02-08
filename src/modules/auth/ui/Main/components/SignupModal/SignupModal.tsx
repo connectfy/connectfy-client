@@ -67,6 +67,8 @@ const SignupModal = ({
             type: "accessToken",
             token: res.access_token,
           });
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
           navigate(ROUTER.MESSENGER.MAIN);
           resetForm();
           onClose();

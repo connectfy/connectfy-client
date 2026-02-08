@@ -7,7 +7,7 @@ import { checkDeviceId } from "@/common/utils/checkDevice";
 import { ROUTER } from "@/common/constants/routet";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
-import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";
+import { CHECK_UNIQUE_FIELD, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { jwtDecode } from "jwt-decode";
 import {
   useCheckUniqueMutation,
@@ -58,6 +58,8 @@ const MainFooter = () => {
           const deviceId = checkDeviceId();
           const res = await googleLogin({ idToken, deviceId }).unwrap();
           if (res) {
+            localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
+            localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
             snack.success(t("user_messages.login_successful"));
             navigate(ROUTER.MAIN);
           }

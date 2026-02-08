@@ -57,6 +57,8 @@ const VerifyAccount = () => {
             type: "accessToken",
             token: res.access_token,
           });
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
           resetForm();
@@ -98,9 +100,11 @@ const VerifyAccount = () => {
     loading: LOADING_SIGNUP_VERIFY,
     validationRules: [
       (values) =>
-        !values.verifyCode ||
-        values.verifyCode.length !== 6 ||
-        values.verifyCode.trim() === "",
+        !!(
+          values.verifyCode &&
+          values.verifyCode.length === 6 &&
+          values.verifyCode.trim() !== ""
+        ),
     ],
   });
 
@@ -210,7 +214,7 @@ const VerifyAccount = () => {
         />
         <div className="flex flex-col items-center gap-4">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            {t("common.do_not_receive_code")}{" "}
+            {t("common.did_not_receive_code")}{" "}
             <Button
               type="button"
               onClick={handleResendCode}

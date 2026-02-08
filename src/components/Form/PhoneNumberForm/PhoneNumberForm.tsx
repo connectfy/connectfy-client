@@ -38,6 +38,27 @@ const PhoneNumberForm: FC<Props> = ({
 
   const [fieldValue, setFieldValue] = useState<string | null>(null);
 
+  const formatPhoneNumber = (value: string, mask: string) => {
+    if (!value) return "";
+
+    let formatted = "";
+    let valueIndex = 0;
+
+    for (let i = 0; i < mask.length && valueIndex < value.length; i++) {
+      if (mask[i] === "0") {
+        formatted += value[valueIndex];
+        valueIndex++;
+      } else {
+        formatted += mask[i];
+      }
+    }
+    return formatted;
+  };
+
+  const displayValue = useMemo(() => {
+    return formatPhoneNumber(fieldValue || "", country.format || "");
+  }, [fieldValue, country]);
+
   useEffect(() => {
     if (fieldValue)
       onChange({
@@ -101,22 +122,21 @@ const PhoneNumberForm: FC<Props> = ({
               }}
               title={t("common.phoneNumber")}
               name={name}
-              value={fieldValue || ""}
+              value={displayValue}
               onChange={(e) => {
                 const val = e.target.value;
                 const numericValue = val.replace(/\D/g, "");
-                if (
-                  !country ||
-                  country.numberLength < String(numericValue).length
-                )
+
+                if (!country || numericValue.length > country.numberLength)
                   return;
+
                 setFieldValue(numericValue || null);
               }}
               onBlur={onBlur}
               inputMode="numeric"
               onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : undefined)}
               isError={hasLengthError && blur}
-              maxLength={country.numberLength}
+              maxLength={country.totalLength}
             />
           </div>
         </div>
