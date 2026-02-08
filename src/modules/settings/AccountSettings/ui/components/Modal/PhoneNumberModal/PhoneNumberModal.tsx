@@ -3,18 +3,18 @@ import "../UsernameModal/usernameModal.style.css";
 import { FC, useCallback, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { IUpdatePhoneNumber } from "../../../../types/types";
 import { useFormik } from "formik";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useToastError } from "@/hooks/useToastError";
-import { PHONE_NUMBER_ACTION, RESOURCE } from "@/common/enums/enums";
+import { PHONE_NUMBER_ACTION } from "@/common/enums/enums";
 import PhoneNumberForm from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { snack } from "@/common/utils/snackManager";
 import { COUNTRIES } from "@/common/constants/constants";
 import { ChevronRight, Pencil, Trash } from "lucide-react";
-import { clearError, updatePhoneNumber } from "@/modules/settings/AccountSettings/api/api";
+import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -28,25 +28,27 @@ enum ModalView {
 
 const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
-  const { LOADING_UPDATE_PHONE_NUMBER, ERROR_UPDATE_PHONE_NUMBER } =
-    useAppSelector((state) => state[RESOURCE.ACCOUNT_SETTINGS]);
-  const { authToken } = useAppSelector((state) => state[RESOURCE.AUTH]);
-  const { me } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const authToken = authTokenManager.getToken("authenticateToken");
+
+  const { data: me } = useGetMeQuery();
+  const [updatePhoneNumber, { isLoading: LOADING_UPDATE_PHONE_NUMBER }] =
+    useUpdatePhoneNumberMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const hasPhoneNumber = !!me?.user.phoneNumber;
   const [view, setView] = useState<ModalView>(
-    hasPhoneNumber ? ModalView.SELECTION : ModalView.FORM
+    hasPhoneNumber ? ModalView.SELECTION : ModalView.FORM,
   );
   const [_, setAction] = useState<PHONE_NUMBER_ACTION | null>(
-    me?.user.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE
+    me?.user.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
   );
 
   const initialState: IUpdatePhoneNumber = {
     action: me?.user.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
     phoneNumber: me?.user.phoneNumber || null,
-    token: authToken,
+    token: authToken as string,
   };
 
   const validate = ({
@@ -87,19 +89,22 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      if (values.action === PHONE_NUMBER_ACTION.REMOVE)
-        values.phoneNumber = null;
+      try {
+        if (values.action === PHONE_NUMBER_ACTION.REMOVE)
+          values.phoneNumber = null;
 
-      const actionResult = await dispatch(updatePhoneNumber(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        resetForm();
-        const message =
-          values.action === PHONE_NUMBER_ACTION.REMOVE
-            ? t("user_messages.phone_number_removed_successfully")
-            : t("user_messages.phone_number_changed_successfully");
-        snack.success(message);
-        handleModalClose();
+        const res = await updatePhoneNumber(values).unwrap();
+        if (res) {
+          resetForm();
+          const message =
+            values.action === PHONE_NUMBER_ACTION.REMOVE
+              ? t("user_messages.phone_number_removed_successfully")
+              : t("user_messages.phone_number_changed_successfully");
+          snack.success(message);
+          handleModalClose();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -188,13 +193,8 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
         formik.submitForm();
       }
     },
-    [open, view, LOADING_UPDATE_PHONE_NUMBER, formik, hasPhoneNumber]
+    [open, view, LOADING_UPDATE_PHONE_NUMBER, formik, hasPhoneNumber],
   );
-
-  useToastError({
-    error: ERROR_UPDATE_PHONE_NUMBER,
-    clearErrorAction: () => clearError("updatePhoneNumber"),
-  });
 
   useEffect(() => {
     if (!open) return;

@@ -26,12 +26,10 @@ import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
 import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import {
   DATE_FORMAT,
   LOCAL_STORAGE_KEYS,
   PROVIDER,
-  RESOURCE,
   TIME_FORMAT,
   TOKEN_TYPE,
 } from "@/common/enums/enums";
@@ -41,43 +39,37 @@ import ChangeEmailModal from "./components/Modal/EmailModal/ChangeEmailModal/Cha
 import PasswordModal from "./components/Modal/PasswordModal/PasswordModal";
 import { ChangeModalKey } from "../types/types";
 import { jwtDecode } from "jwt-decode";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import useBoolean from "@/hooks/useBoolean";
 import VerifyChangeEmailModal from "./components/Modal/EmailModal/VerifyChangeEmailModal/VerifyChangeEmailModal";
-import { useToastError } from "@/hooks/useToastError";
 import PhoneNumberModal from "./components/Modal/PhoneNumberModal/PhoneNumberModal";
 import { DDMMMMYYY, showDateWithHour } from "@/common/utils/formatDate";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
-import { clearMe } from "@/modules/profile/api/api";
-import {
-  clearError,
-  deactivateAccount,
-  logout,
-  verifyChangeEmail,
-} from "../api/api";
 import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useGetMeQuery } from "@/modules/profile/api/api";
+import {
+  useDeactivateAccountMutation,
+  useLogoutMutation,
+  useVerifyChangeEmailMutation,
+} from "../api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const AccountSettings: FC = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const authToken = authTokenManager.getToken("authenticateToken");
 
   const processedTokenRef = useRef<string | null>(null);
+  const { showResponseErrors } = useErrors();
 
-  const { LOADING_VERIFY_CHANGE_EMAIL, ERROR_VERIFY_CHANGE_EMAIL } =
-    useAppSelector((state) => state[RESOURCE.ACCOUNT_SETTINGS]);
-  const { me } = useAppSelector((state) => state[RESOURCE.PROFILE]);
-
-  const {
-    LOADING_LOGOUT,
-    ERROR_LOGOUT,
-    LOADING_DEACTIVATE_ACCOUNT,
-    ERROR_DEACTIVATE_ACCOUNT,
-  } = useAppSelector((state) => state[RESOURCE.ACCOUNT_SETTINGS]);
-  const { authToken } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const { data: me } = useGetMeQuery();
+  const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();
+  const [deactivateAccount, { isLoading: LOADING_DEACTIVATE_ACCOUNT }] =
+    useDeactivateAccountMutation();
+  const [verifyChangeEmail, { isLoading: LOADING_VERIFY_CHANGE_EMAIL }] =
+    useVerifyChangeEmailMutation();
 
   const { user } = me ?? {};
 
@@ -123,7 +115,7 @@ const AccountSettings: FC = () => {
 
       setAuthModal({ open: true, authType, next });
     },
-    [user?.provider, t]
+    [user?.provider, t],
   );
 
   const closeAuth = () =>
@@ -135,47 +127,53 @@ const AccountSettings: FC = () => {
     setOpenModal(next);
   };
 
-  const closeChangeModal = () => setOpenModal(null);
+  const closeChangeModal = () => {
+    setOpenModal(null);
+  };
 
   const handleLogout = async () => {
-    const actionResult = await dispatch(logout());
-    const res = unwrapResult(actionResult);
+    try {
+      const res = await logout().unwrap();
 
-    if (res) {
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.APP_THEME,
-        me!.settings.generalSettings.theme
-      );
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.LANG,
-        me!.settings.generalSettings.language
-      );
-      authTokenManager.clear();
-      navigate(ROUTER.AUTH.MAIN);
-      snack.success(t("user_messages.logout_successfull"));
-      dispatch(clearMe());
+      if (res) {
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.APP_THEME,
+          me!.settings.generalSettings.theme,
+        );
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.LANG,
+          me!.settings.generalSettings.language,
+        );
+        authTokenManager.clear("all");
+        navigate(ROUTER.AUTH.MAIN);
+        snack.success(t("user_messages.logout_successfull"));
+      }
+    } catch (error) {
+      showResponseErrors(error);
     }
   };
 
   const handleDeactivateAccount = async () => {
-    const actionResult = await dispatch(
-      deactivateAccount({ token: authToken })
-    );
-    const res = unwrapResult(actionResult);
+    try {
+      const res = await deactivateAccount({
+        token: authToken as string,
+      }).unwrap();
 
-    if (res) {
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.APP_THEME,
-        me!.settings.generalSettings.theme
-      );
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.LANG,
-        me!.settings.generalSettings.language
-      );
-      authTokenManager.clear();
-      navigate(ROUTER.AUTH.MAIN);
-      snack.success(t("user_messages.account_deactivated"));
-      dispatch(clearMe());
+      if (res) {
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.APP_THEME,
+          me!.settings.generalSettings.theme,
+        );
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.LANG,
+          me!.settings.generalSettings.language,
+        );
+        authTokenManager.clear("all");
+        navigate(ROUTER.AUTH.MAIN);
+        snack.success(t("user_messages.account_deactivated"));
+      }
+    } catch (error) {
+      showResponseErrors(error);
     }
   };
 
@@ -246,23 +244,8 @@ const AccountSettings: FC = () => {
         ),
       },
     ],
-    [user, t]
+    [user, t],
   );
-
-  useToastError({
-    error: ERROR_VERIFY_CHANGE_EMAIL,
-    clearErrorAction: () => clearError("verifyChangeEmail"),
-  });
-
-  useToastError({
-    error: ERROR_LOGOUT,
-    clearErrorAction: () => clearError("logout"),
-  });
-
-  useToastError({
-    error: ERROR_DEACTIVATE_ACCOUNT,
-    clearErrorAction: () => clearError("deactivateAccount"),
-  });
 
   useEffect(() => {
     const action = searchParams.get("action");
@@ -296,17 +279,18 @@ const AccountSettings: FC = () => {
       try {
         onVerifiedOpen();
 
-        const actionResult = await dispatch(verifyChangeEmail({ token }));
-        const res = unwrapResult(actionResult);
+        const res = await verifyChangeEmail({ token }).unwrap();
         if (res) {
           snack.success(t("user_messages.email_changed_successfully"));
         }
+      } catch (error) {
+        showResponseErrors(error);
       } finally {
         setSearchParams({});
         processedTokenRef.current = null;
       }
     })();
-  }, [searchParams, setSearchParams, navigate, dispatch, user, t]);
+  }, [searchParams, setSearchParams, navigate, user, t]);
 
   return (
     <Fragment>
@@ -355,7 +339,7 @@ const AccountSettings: FC = () => {
                         .dateFormat as DATE_FORMAT,
                       me?.settings.generalSettings.timeZone
                         .timeFormat as TIME_FORMAT,
-                      " - "
+                      " - ",
                     )}
                   </p>
                 </div>
@@ -379,7 +363,7 @@ const AccountSettings: FC = () => {
                   onClick={() =>
                     openAuthThen(
                       TOKEN_TYPE.DEACTIVATE_ACCOUNT,
-                      "deactivate_account"
+                      "deactivate_account",
                     )
                   }
                 >

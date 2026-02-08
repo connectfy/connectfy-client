@@ -2,18 +2,14 @@ import "../../UsernameModal/usernameModal.style.css";
 import { FC, useCallback, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { IUpdateEmail } from "../../../../../types/types";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useToastError } from "@/hooks/useToastError";
-import { RESOURCE } from "@/common/enums/enums";
+import { useUpdateEmailMutation } from "@/modules/settings/AccountSettings/api/api";
 import Input from "@/components/Input/Input";
-import {
-  clearError,
-  updateEmail,
-} from "@/modules/settings/AccountSettings/api/api";
+import { useGetMeQuery } from "@/modules/profile/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -22,20 +18,23 @@ interface Props {
 
 const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
+
+  const authToken = authTokenManager.getToken("authenticateToken");
+
+  const { showResponseErrors } = useErrors();
+
+  const { data: me } = useGetMeQuery();
+  const [
+    updateEmail,
+    { isLoading: LOADING_UPDATE_EMAIL, error: ERROR_UPDATE_EMAIL },
+  ] = useUpdateEmailMutation();
 
   const [success, setSuccess] = useState<boolean>(false);
   const [email, setEmail] = useState<string | null>(null);
 
-  const { LOADING_UPDATE_EMAIL, ERROR_UPDATE_EMAIL } = useAppSelector(
-    (state) => state[RESOURCE.ACCOUNT_SETTINGS]
-  );
-  const { me } = useAppSelector((state) => state[RESOURCE.PROFILE]);
-  const { authToken } = useAppSelector((state) => state[RESOURCE.AUTH]);
-
   const initialState: IUpdateEmail = {
     email: null,
-    token: authToken,
+    token: authToken as string,
   };
 
   const validate = ({ email }: IUpdateEmail): Record<string, any> => {
@@ -131,14 +130,17 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(updateEmail(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        resetForm();
-        setSuccess(true);
-        setEmail(values.email);
-        // snack.success(t("user_messages.email_changed_successfully"));
-        // onClose();
+      try {
+        const res = await updateEmail(values).unwrap();
+        if (res) {
+          resetForm();
+          setSuccess(true);
+          setEmail(values.email);
+          // snack.success(t("user_messages.email_changed_successfully"));
+          // onClose();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -184,13 +186,8 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
         onClose();
       }
     },
-    [open, LOADING_UPDATE_EMAIL, ERROR_UPDATE_EMAIL, formik, onClose]
+    [open, LOADING_UPDATE_EMAIL, ERROR_UPDATE_EMAIL, formik, onClose],
   );
-
-  useToastError({
-    error: ERROR_UPDATE_EMAIL,
-    clearErrorAction: () => clearError("updateEmail"),
-  });
 
   useEffect(() => {
     if (!open) return;

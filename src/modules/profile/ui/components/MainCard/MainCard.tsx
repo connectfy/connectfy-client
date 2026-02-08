@@ -1,12 +1,11 @@
 import { UserRoundX, Users } from "lucide-react";
 import "./mainCard.style.css";
-import { useAppSelector } from "@/hooks/useStore";
-import { RESOURCE } from "@/common/enums/enums";
 import { useTranslation } from "react-i18next";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 const MainCard = () => {
   const { t } = useTranslation();
-  const { me: profile } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const { data: profile } = useGetMeQuery();
 
   return (
     <section

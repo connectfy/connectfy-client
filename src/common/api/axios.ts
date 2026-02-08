@@ -1,12 +1,15 @@
-import { CustomAxiosRequestConfig, FailedRequest } from "@/common/interfaces/interfaces";
+import {
+  CustomAxiosRequestConfig,
+  FailedRequest,
+} from "@/common/interfaces/interfaces";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import axios, { AxiosError } from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import { checkDeviceId } from "../utils/checkDevice";
-import { authTokenManager } from "./authToken.manager"; // adjust path if needed
-import { securityEvents } from "./security.events";      // adjust path if needed
+import { authTokenManager } from "../helpers/authToken.manager";
+import { securityEvents } from "../helpers/security.events";
 
-const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api`;
+const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api/v1`;
 
 /**
  * Use a dedicated client for regular requests (has interceptors).
@@ -48,19 +51,20 @@ const processQueue = (error: any = null, token: string | null = null) => {
 api.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
     const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
-    const token = authTokenManager.getToken();
+    const token = authTokenManager.getToken("accessToken");
     const isRefreshEndpoint = config.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
 
+    // Authorization tənzimləməsi
     if (token && !isRefreshEndpoint) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    if (config.data) {
+    if ((config.method || "get").toLowerCase() === "get") {
+      config.params = { ...(config.params || {}), _lang };
+    } else {
       if (config.data instanceof FormData) {
         config.data.append("_lang", _lang);
-      } else if (typeof config.data === "object") {
-        (config.data as Record<string, any>)._lang = _lang;
       } else if (typeof config.data === "string") {
         try {
           const parsed = JSON.parse(config.data);
@@ -69,18 +73,14 @@ api.interceptors.request.use(
         } catch {
           config.data = `${config.data}&_lang=${_lang}`;
         }
-      }
-    } else {
-      if ((config.method || "get").toLowerCase() === "get") {
-        config.params = { ...(config.params || {}), _lang };
       } else {
-        config.data = { _lang };
+        config.data = { ...(config.data || {}), _lang };
       }
     }
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 /**
@@ -92,14 +92,18 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
-    const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
+    const originalRequest = error.config as
+      | CustomAxiosRequestConfig
+      | undefined;
     if (!originalRequest) return Promise.reject(error);
 
     const status =
       (error.response && (error.response.data as any)?.error?.statusCode) ||
       error.response?.status;
 
-    const isRefreshEndpoint = originalRequest.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
+    const isRefreshEndpoint = originalRequest.url?.includes(
+      API_ENDPOINTS.AUTH.REFRESH,
+    );
 
     if (status === 401 && !originalRequest._retry && !isRefreshEndpoint) {
       originalRequest._retry = true;
@@ -124,17 +128,25 @@ api.interceptors.response.use(
           ? API_ENDPOINTS.AUTH.REFRESH
           : `${BASE}${API_ENDPOINTS.AUTH.REFRESH}`;
 
-        const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
+        const _lang =
+          localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
         const deviceId = checkDeviceId();
 
-        const resp = await refreshClient.post(refreshUrl, { _lang, deviceId }, { withCredentials: true });
+        const resp = await refreshClient.post(
+          refreshUrl,
+          { _lang, deviceId },
+          { withCredentials: true },
+        );
 
         const newAccessToken = (resp.data as any)?.access_token;
         if (!newAccessToken) {
           throw new Error("No access token in refresh response");
         }
 
-        authTokenManager.setToken(newAccessToken);
+        authTokenManager.setToken({
+          token: newAccessToken,
+          type: "accessToken",
+        });
 
         processQueue(null, newAccessToken);
 
@@ -143,7 +155,7 @@ api.interceptors.response.use(
         return api.request(originalRequest);
       } catch (refreshErr) {
         processQueue(refreshErr, null);
-        authTokenManager.clear();
+        authTokenManager.clear("all");
 
         securityEvents.emit("FORCE_LOGOUT");
         return Promise.reject(refreshErr);
@@ -153,7 +165,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

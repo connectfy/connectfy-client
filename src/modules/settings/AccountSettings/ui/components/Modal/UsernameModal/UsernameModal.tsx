@@ -2,16 +2,15 @@ import "./usernameModal.style.css";
 import { FC, useCallback, useEffect } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { IUpdateUsername } from "../../../../types/types";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useToastError } from "@/hooks/useToastError";
-import { RESOURCE } from "@/common/enums/enums";
 import Input from "@/components/Input/Input";
 import { snack } from "@/common/utils/snackManager";
-import { clearError, updateUsername } from "@/modules/settings/AccountSettings/api/api";
+import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -20,17 +19,19 @@ interface Props {
 
 const UsernameModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
-  const { LOADING_UPDATE_USERNAME, ERROR_UPDATE_USERNAME } = useAppSelector(
-    (state) => state[RESOURCE.ACCOUNT_SETTINGS]
-  );
-  const { me } = useAppSelector((state) => state[RESOURCE.PROFILE]);
-  const { authToken } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const { data: me } = useGetMeQuery();
+  const [
+    updateUsername,
+    { isLoading: LOADING_UPDATE_USERNAME, error: ERROR_UPDATE_USERNAME },
+  ] = useUpdateUsernameMutation();
+
+  const authToken = authTokenManager.getToken("authenticateToken");
+  const { showResponseErrors } = useErrors();
 
   const initialState: IUpdateUsername = {
     username: null,
-    token: authToken,
+    token: authToken as string,
   };
 
   const validate = ({ username }: IUpdateUsername): Record<string, any> => {
@@ -42,7 +43,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     else if (!usernameRegex.test(username))
       errors.username = t("error_messages.invalid_username");
     else if (username.length < 3)
-      errors.username = t("error_messages.min_length", { length: 3 })
+      errors.username = t("error_messages.min_length", { length: 3 });
 
     return errors;
   };
@@ -54,12 +55,15 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(updateUsername(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        snack.success(t("user_messages.username_changed_successfully"));
-        resetForm();
-        onClose();
+      try {
+        const res = await updateUsername(values).unwrap();
+        if (res) {
+          snack.success(t("user_messages.username_changed_successfully"));
+          resetForm();
+          onClose();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -74,11 +78,6 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     e.preventDefault();
     formik.handleSubmit();
   };
-
-  useToastError({
-    error: ERROR_UPDATE_USERNAME,
-    clearErrorAction: () => clearError("updateUsername"),
-  });
 
   const globalKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -101,7 +100,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
         onClose();
       }
     },
-    [open, LOADING_UPDATE_USERNAME, ERROR_UPDATE_USERNAME, formik, onClose]
+    [open, LOADING_UPDATE_USERNAME, ERROR_UPDATE_USERNAME, formik, onClose],
   );
 
   useEffect(() => {
@@ -134,12 +133,12 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
               label={t("common.username")}
               value={formik.values.username || ""}
               onChange={(e) => {
-                  const value = e.target.value || null;
+                const value = e.target.value || null;
 
-                  if (value && value.length > 30) return;
+                if (value && value.length > 30) return;
 
-                  formik.setFieldValue("username", value);
-                }}
+                formik.setFieldValue("username", value);
+              }}
               onBlur={formik.handleBlur}
               hasError={!!formik.errors.username}
               disabled={LOADING_UPDATE_USERNAME}

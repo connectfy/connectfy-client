@@ -29,13 +29,16 @@ export const API_ENDPOINTS = {
   ACCOUNT: {
     SETTINGS: {
       GENERAL_SETTINGS: {
+        GET: "/account/settings/general-settings/get",
         UPDATE: "/account/settings/general-settings/update",
         RESET: "/account/settings/general-settings/reset",
       },
       NOTIFICATION_SETTINGS: {
+        GET: "/account/settings/notification-settings/get",
         UPDATE: "/account/settings/notification-settings/update",
       },
       PRIVACY_SETTINGS: {
+        GET: "/account/settings/privacy-settings/get",
         UPDATE: "/account/settings/privacy-settings/update",
       },
     },

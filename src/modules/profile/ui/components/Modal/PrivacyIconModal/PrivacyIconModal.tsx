@@ -2,15 +2,17 @@ import { FC, useState } from "react";
 import "./privacyIconModal.style.css";
 import Modal from "@/components/Modal";
 import { Globe, Users, Lock, Shield, Check } from "lucide-react";
-import { PRIVACY_SETTINGS_CHOICE, RESOURCE } from "@/common/enums/enums";
+import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import Button from "@/components/Buttons/Button/Button";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { updatePrivacySettings } from "@/modules/settings/PrivacySettings/api/api";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import CloseButton from "@/components/ui/CustomButton/CloseButton/CloseButton";
+import {
+  useEditPrivacySettingsMutation,
+  useGetPrivacySettingsQuery,
+} from "@/modules/settings/PrivacySettings/api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -26,10 +28,10 @@ const PrivacyIconModal: FC<Props> = ({
   fieldName,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const { data, LOADING_UPDATE } = useAppSelector(
-    (state) => state[RESOURCE.PRIVACY_SETTINGS],
-  );
+  const { data } = useGetPrivacySettingsQuery();
+  const [updatePrivacySettings, { isLoading: LOADING_UPDATE }] =
+    useEditPrivacySettingsMutation();
+  const { showResponseErrors } = useErrors();
 
   const privacyOptions = [
     {
@@ -64,14 +66,18 @@ const PrivacyIconModal: FC<Props> = ({
   };
 
   const submitSelect = async () => {
-    const actionResult = await dispatch(
-      updatePrivacySettings({ _id: data!._id, [fieldName]: privacy }),
-    );
-    const res = unwrapResult(actionResult);
+    try {
+      const res = await updatePrivacySettings({
+        _id: data!._id,
+        [fieldName]: privacy,
+      }).unwrap();
 
-    if (res) {
-      onClose();
-      snack.success(t("user_messages.information_updated"));
+      if (res) {
+        onClose();
+        snack.success(t("user_messages.information_updated"));
+      }
+    } catch (error) {
+      showResponseErrors(error);
     }
   };
 

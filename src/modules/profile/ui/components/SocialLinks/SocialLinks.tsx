@@ -10,11 +10,10 @@ import {
 import "./socialLinks.style.css";
 import { memo, useState } from "react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
-import { RESOURCE } from "@/common/enums/enums";
-import { useAppSelector } from "@/hooks/useStore";
 import { IMe, ISocialLink } from "@/modules/profile/types/types";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
@@ -108,13 +107,13 @@ const SocialLinkItem = memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 const SocialLinks = () => {
   const { t } = useTranslation();
 
-  const { me: profile } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const { data: profile } = useGetMeQuery();
   const { socialLinks, settings } = profile as IMe;
   const { privacySettings } = settings;
 

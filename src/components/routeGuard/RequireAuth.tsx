@@ -1,39 +1,23 @@
 import { ReactNode, useEffect } from "react";
-import { RESOURCE } from "@/common/enums/enums";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { me } from "@/modules/profile/api/api.ts";
-import { setData as setGeneralSettings } from "@/modules/settings/GeneralSettings/api/api.ts";
-import { setData as setPrivacySettings } from "@/modules/settings/PrivacySettings/api/api.ts";
-import { setData as setNotificationSettings } from "@/modules/settings/NotificationSettings/api/api.ts";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
 
 type AuthType = {
   children: ReactNode;
 };
 
 export function RequireAuth({ children }: AuthType) {
-  const dispatch = useAppDispatch();
   const location = useLocation();
 
   // ✅ Əvvəlcə bütün hooks-ları çağırın
-  const { access_token } = useAppSelector((state) => state[RESOURCE.AUTH]);
-  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
-
-  useEffect(() => {
-    if (access_token && !userData) {
-      dispatch(me());
-    }
-  }, [dispatch, userData, access_token]);
-
-  useEffect(() => {
-    if (userData?.settings?.generalSettings) {
-      dispatch(setGeneralSettings(userData.settings.generalSettings));
-      dispatch(setPrivacySettings(userData.settings.privacySettings));
-      dispatch(setNotificationSettings(userData.settings.notificationSettings));
-    }
-  }, [userData, dispatch]);
+  const access_token = authTokenManager.getToken("accessToken");
+  useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
 
   // ✅ Sonra conditional logic
   if (!access_token) {
@@ -46,27 +30,24 @@ export function RequireAuth({ children }: AuthType) {
 }
 
 export function InsideProfile({ children }: AuthType) {
-  const location = useLocation();
+  const access_token = authTokenManager.getToken("accessToken");
 
-  // ✅ Bütün hooks-lar birlikdə
-  const { access_token } = useAppSelector((state) => state[RESOURCE.AUTH]);
-  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
-  const { data: generalSettings } = useAppSelector(
-    (state) => state[RESOURCE.GENERAL_SETTINGS]
-  );
+  // Yalnız həqiqətən token varsa request at
+  const { data: userData, isSuccess: isMeSuccess } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
 
-  // ✅ Conditional logic sonunda
-  if (access_token && userData) {
+  const { data: generalSettings, isSuccess: isSettingsSuccess } =
+    useGetGeneralSettingsQuery(undefined, {
+      skip: !access_token,
+    });
+
+  // Hər iki data uğurla gəlibsə yönləndir
+  if (access_token && isMeSuccess && isSettingsSuccess) {
     const startup =
       userData?.settings?.generalSettings?.startupPage ??
       generalSettings?.startupPage;
-    return (
-      <Navigate
-        to={getHomeRouteByStartup(startup)}
-        state={{ from: location }}
-        replace
-      />
-    );
+    return <Navigate to={getHomeRouteByStartup(startup)} replace />;
   }
 
   return <>{children}</>;
@@ -74,31 +55,40 @@ export function InsideProfile({ children }: AuthType) {
 
 export function RedirectMain() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const access_token = authTokenManager.getToken("accessToken");
 
-  // ✅ Bütün hooks-lar birlikdə
-  const { access_token } = useAppSelector((state) => state[RESOURCE.AUTH]);
-  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
-  const { data: generalSettings } = useAppSelector(
-    (state) => state[RESOURCE.GENERAL_SETTINGS]
-  );
+  // Yalnız token varsa request atırıq
+  const { data: userData, isSuccess: userLoaded } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
+
+  const { data: generalSettings, isSuccess: settingsLoaded } =
+    useGetGeneralSettingsQuery(undefined, {
+      skip: !access_token,
+    });
 
   useEffect(() => {
+    // 1. Token yoxdursa, birbaşa auth-a göndər və dayandır
     if (!access_token) {
       navigate(ROUTER.AUTH.MAIN, { replace: true });
       return;
     }
 
-    if (!userData) {
-      dispatch(me());
-      return;
+    // 2. Token varsa, datanın gəlməsini gözlə, sonra yönləndir
+    if (userLoaded || settingsLoaded) {
+      const startup =
+        userData?.settings?.generalSettings?.startupPage ??
+        generalSettings?.startupPage;
+      navigate(getHomeRouteByStartup(startup), { replace: true });
     }
-
-    const startup =
-      userData?.settings?.generalSettings?.startupPage ??
-      generalSettings?.startupPage;
-    navigate(getHomeRouteByStartup(startup), { replace: true });
-  }, [access_token, userData, generalSettings, dispatch, navigate]);
+  }, [
+    access_token,
+    userLoaded,
+    settingsLoaded,
+    userData,
+    generalSettings,
+    navigate,
+  ]);
 
   return null;
 }

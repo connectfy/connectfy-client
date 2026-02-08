@@ -2,18 +2,17 @@ import { FC } from "react";
 import "./deleteAccountModal.style.css";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
-import { DELETE_REASON, RESOURCE } from "@/common/enums/enums";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { DELETE_REASON } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { TriangleAlert } from "lucide-react";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
-import { useToastError } from "@/hooks/useToastError";
 import { snack } from "@/common/utils/snackManager";
 import { IDeleteAccount } from "../../../../types/types";
-import { clearError, deleteAccount } from "@/modules/settings/AccountSettings/api/api";
+import { useDeleteAccountMutation } from "@/modules/settings/AccountSettings/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -22,16 +21,17 @@ interface Props {
 
 const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { LOADING_DELETE_ACCOUNT, ERROR_DELETE_ACCOUNT } = useAppSelector(
-    (state) => state[RESOURCE.ACCOUNT_SETTINGS]
-  );
-  const { authToken } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const authToken = authTokenManager.getToken("authenticateToken");
+
+  const { showResponseErrors } = useErrors();
+
+  const [deleteAccount, { isLoading: LOADING_DELETE_ACCOUNT }] =
+    useDeleteAccountMutation();
 
   const initialState: IDeleteAccount = {
-    token: authToken,
+    token: authToken as string,
     reason: DELETE_REASON.USER_REQUEST,
     otherReason: null,
   };
@@ -50,14 +50,17 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
     validateOnChange: false,
     enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(deleteAccount(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        resetForm();
-        onClose();
-        navigate(ROUTER.AUTH.MAIN);
-        localStorage.removeItem("access_token");
-        snack.success(t("user_messages.account_deleted"));
+      try {
+        const res = await deleteAccount(values).unwrap();
+        if (res) {
+          resetForm();
+          onClose();
+          navigate(ROUTER.AUTH.MAIN);
+          authTokenManager.clear("all");
+          snack.success(t("user_messages.account_deleted"));
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -82,11 +85,6 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
     },
     { value: "OTHER", label: t("common.other") },
   ];
-
-  useToastError({
-    error: ERROR_DELETE_ACCOUNT,
-    clearErrorAction: () => clearError("deleteAccount"),
-  });
 
   return (
     <Modal open={open} onClose={onClose}>

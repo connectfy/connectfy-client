@@ -3,7 +3,7 @@ import { CheckCircle, Shield, UserCheck } from "lucide-react";
 import { Fragment } from "react";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { useTranslation } from "react-i18next";
-import { PRIVACY_SETTINGS_CHOICE, RESOURCE } from "@/common/enums/enums";
+import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
 import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import ToggleCard from "@/components/Card/ToggleCard/ToggleCard";
@@ -16,26 +16,26 @@ import {
   validatePrivacySettings,
 } from "../constants/constant";
 import { useFormik } from "formik";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import {
-  clearError,
-  updatePrivacySettings,
-} from "../api/api";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
-import { useToastError } from "@/hooks/useToastError";
+import {
+  useGetPrivacySettingsQuery,
+  useEditPrivacySettingsMutation,
+} from "../api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const { data, LOADING_UPDATE, ERROR_UPDATE } = useAppSelector(
-    (state) => state[RESOURCE.PRIVACY_SETTINGS]
-  );
+  const { data } = useGetPrivacySettingsQuery();
+
+  const [editPrivacySettings, { isLoading: LOADING_UPDATE }] =
+    useEditPrivacySettingsMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
     initialValues: initialState(data!),
@@ -45,14 +45,13 @@ const PrivacySettings = () => {
     validate: (values) => validatePrivacySettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const actionResult = await dispatch(updatePrivacySettings(values));
-        const res = unwrapResult(actionResult);
+        const res = await editPrivacySettings(values).unwrap();
         if (res) {
           snack.success(t("user_messages.information_updated"));
           resetForm();
         }
-      } catch (err) {
-        snack.error((err as Error).message);
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -67,7 +66,7 @@ const PrivacySettings = () => {
 
   const createOptions = (
     activeKey: string,
-    onSelect: (value: PRIVACY_SETTINGS_CHOICE) => void
+    onSelect: (value: PRIVACY_SETTINGS_CHOICE) => void,
   ) => ({
     title: t("common.privacy_level"),
     activeKey,
@@ -97,11 +96,6 @@ const PrivacySettings = () => {
   const handleCancelModal = () => {
     cancel();
   };
-
-  useToastError({
-    error: ERROR_UPDATE,
-    clearErrorAction: clearError,
-  });
 
   return (
     <Fragment>
@@ -135,7 +129,7 @@ const PrivacySettings = () => {
                   onClick: () =>
                     formik.setFieldValue(
                       "readReceipts",
-                      !formik.values.readReceipts
+                      !formik.values.readReceipts,
                     ),
                 }}
               />
@@ -151,7 +145,7 @@ const PrivacySettings = () => {
                   onClick: () =>
                     formik.setFieldValue(
                       "friendshipRequest",
-                      !formik.values.friendshipRequest
+                      !formik.values.friendshipRequest,
                     ),
                 }}
               />
@@ -165,11 +159,11 @@ const PrivacySettings = () => {
               >
                 <CustomSelect
                   buttonTitle={getLabel(
-                    formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE
+                    formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
                   )}
                   options={createOptions(
                     formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
-                    (val) => formik.setFieldValue("messageRequest", val)
+                    (val) => formik.setFieldValue("messageRequest", val),
                   )}
                 />
               </SettingCard>
@@ -203,7 +197,7 @@ const PrivacySettings = () => {
                             buttonTitle={getLabel(activeValue)}
                             options={createOptions(
                               activeValue as string,
-                              (val) => formik.setFieldValue(item.field, val)
+                              (val) => formik.setFieldValue(item.field, val),
                             )}
                           />
                         </div>

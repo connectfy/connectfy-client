@@ -1,24 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { clearError, googleSignup } from "../../../../api/api";
 import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../../../constants/intialState";
 import { valdiateGoogleSignup } from "../../../../constants/validation";
-import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  GENDER,
-  LOCAL_STORAGE_KEYS,
-  RESOURCE,
-  THEME,
-} from "@/common/enums/enums";
-import { useToastError } from "@/hooks/useToastError";
+import { GENDER, LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { checkDeviceId } from "@/common/utils/checkDevice";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
+import { useGoogleSignupMutation } from "@/modules/auth/api/api";
 
 // MUI Components (Sadece loading üçün)
 import Modal from "@/components/Modal";
@@ -26,6 +18,7 @@ import Input from "@/components/ui/CustomInput/Input/Input";
 import CustomDatePicker from "@/components/ui/DatePicker/DatePicker";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Spinner from "@/components/Spinner/Spinner";
+import { useErrors } from "@/hooks/useErrors";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -41,14 +34,13 @@ const SignupModal = ({
   isLoading,
 }: SignupModalProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { ERROR_GOOGLE_SIGNUP, LOADING_GOOGLE_SIGNUP } = useAppSelector(
-    (state) => state[RESOURCE.AUTH],
-  );
-
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [googleSignup, { isLoading: LOADING_GOOGLE_SIGNUP }] =
+    useGoogleSignupMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
     initialValues: googleSignupInitialState,
@@ -57,25 +49,25 @@ const SignupModal = ({
     enableReinitialize: true,
     validate: (values) => valdiateGoogleSignup(values, t),
     onSubmit: async (values, { resetForm }) => {
-      values.birthdayDate = values.birthdayDate
-        ? new Date(values.birthdayDate)
-        : null;
+      try {
+        values.birthdayDate = values.birthdayDate
+          ? new Date(values.birthdayDate)
+          : null;
 
-      values.theme =
-        (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
-        THEME.LIGHT;
-      values.deviceId = checkDeviceId();
+        values.theme =
+          (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
+          THEME.LIGHT;
+        values.deviceId = checkDeviceId();
 
-      const actionResult = await dispatch(googleSignup(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        snack.success(t("user_messages.signup_successful"));
-        navigate(ROUTER.MESSENGER.MAIN);
-        localStorage.removeItem("authPage");
-        localStorage.removeItem("loginMode");
-        localStorage.removeItem("forgotPasswordMode");
-        resetForm();
-        onClose();
+        const res = await googleSignup(values).unwrap();
+        if (res) {
+          snack.success(t("user_messages.signup_successful"));
+          navigate(ROUTER.MESSENGER.MAIN);
+          resetForm();
+          onClose();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -102,11 +94,6 @@ const SignupModal = ({
       formik.setFieldValue("gender", gender);
     }
   };
-
-  useToastError({
-    error: ERROR_GOOGLE_SIGNUP,
-    clearErrorAction: () => clearError("signup"),
-  });
 
   useEffect(() => {
     formik.setFieldValue("idToken", idToken);

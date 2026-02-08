@@ -12,10 +12,9 @@ import "./desktopSidebar.style.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/hooks/useStore";
-import { RESOURCE } from "@/common/enums/enums";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { Avatar } from "@mui/material";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 const DesktopSidebar = () => {
   const { t } = useTranslation();
@@ -23,7 +22,7 @@ const DesktopSidebar = () => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
-  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const { data: userData } = useGetMeQuery();
 
   const menuItems = useMemo(
     () => [
@@ -68,13 +67,13 @@ const DesktopSidebar = () => {
         onClick: () => navigate(ROUTER.NOTIFICATIONS.MAIN),
       },
     ],
-    [t, navigate]
+    [t, navigate],
   );
 
   useEffect(() => {
     const currentPath = location.pathname || "/";
     const matched = menuItems.find((m) =>
-      currentPath === m.path ? true : currentPath.startsWith(m.path)
+      currentPath === m.path ? true : currentPath.startsWith(m.path),
     );
 
     if (matched) {

@@ -1,16 +1,10 @@
-import "./forgotPassword.style.css";
 import { useTranslation } from "react-i18next";
-import { clearError, forgotPassword } from "../../api/api";
-import { RESOURCE } from "@/common/enums/enums";
 import { Fragment, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { ForgotPasswordModeType, IForgotPasswordForm } from "../../types/types";
 import { useFormik } from "formik";
 import { forgotPasswordInitialState } from "../../constants/intialState";
 import { validateForgotPassword } from "../../constants/validation";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { useToastError } from "@/hooks/useToastError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
@@ -18,6 +12,8 @@ import useFormDisabled from "@/hooks/useFormDisabled";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Input from "@/components/ui/CustomInput/Input/Input";
 import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
+import { useForgotPasswordMutation } from "../../api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const FORGOT_PASSWORD_MODES: ForgotPasswordModeType[] = [
   "email",
@@ -26,7 +22,6 @@ const FORGOT_PASSWORD_MODES: ForgotPasswordModeType[] = [
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -39,9 +34,10 @@ const ForgotPassword = () => {
       ? (rawForgotPasswordMode as ForgotPasswordModeType)
       : "email";
 
-  const { LOADING_FORGOT_PASSWORD, ERROR_FORGOT_PASSWORD } = useAppSelector(
-    (state) => state[RESOURCE.AUTH],
-  );
+  const { showResponseErrors } = useErrors();
+
+  const [forgotPassword, { isLoading: LOADING_FORGOT_PASSWORD }] =
+    useForgotPasswordMutation();
 
   const formik = useFormik({
     initialValues: forgotPasswordInitialState,
@@ -50,12 +46,15 @@ const ForgotPassword = () => {
     enableReinitialize: true,
     validate: (values) => validateForgotPassword(values, t),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(forgotPassword(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        snack.success(t("user_messages.forgot_password_successful"));
-        navigate(ROUTER.AUTH.MAIN);
-        resetForm();
+      try {
+        const res = await forgotPassword(values).unwrap();
+        if (res) {
+          snack.success(t("user_messages.forgot_password_successful"));
+          navigate(ROUTER.AUTH.MAIN);
+          resetForm();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -71,11 +70,6 @@ const ForgotPassword = () => {
   const changeForgotPasswordMode = (mode: ForgotPasswordModeType) => {
     setSearchParams({ mode }, { replace: true });
   };
-
-  useToastError({
-    error: ERROR_FORGOT_PASSWORD,
-    clearErrorAction: () => clearError("forgotPassword"),
-  });
 
   useEffect(() => {
     const handleSubmitKeyboard = (e: KeyboardEvent) => {

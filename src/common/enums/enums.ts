@@ -164,6 +164,7 @@ export enum LOCAL_STORAGE_KEYS {
   LOGIN_MODE = "login-mode",
   FORGOT_PASSWORD_MODE = "forgot-password-mode",
   OTP_EXPIRES_AT = "otp_expires_at",
+  SIGNUP_FORM = "signup_form",
 }
 
 export enum TIME_DIFFERENCE_TYPE {
@@ -174,7 +175,7 @@ export enum TIME_DIFFERENCE_TYPE {
 }
 
 export enum CHECK_UNIQUE_FIELD {
-  USERNAME = 'username',
-  EMAIL = 'email',
-  PHONE_NUMBER = 'phone_number',
+  USERNAME = "username",
+  EMAIL = "email",
+  PHONE_NUMBER = "phone_number",
 }

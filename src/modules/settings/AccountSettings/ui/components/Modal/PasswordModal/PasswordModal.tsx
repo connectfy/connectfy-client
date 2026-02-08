@@ -2,19 +2,14 @@ import "../UsernameModal/usernameModal.style.css";
 import { FC, useCallback, useEffect } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { IUpdatePassword } from "../../../../types/types";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useToastError } from "@/hooks/useToastError";
-import { RESOURCE } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
-import {
-  clearError,
-  updatePassword,
-} from "@/modules/settings/AccountSettings/api/api";
+import { useUpdatePasswordMutation } from "@/modules/settings/AccountSettings/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -23,17 +18,20 @@ interface Props {
 
 const PasswordModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
-  const { LOADING_UPDATE_PASSWORD, ERROR_UPDATE_PASSWORD } = useAppSelector(
-    (state) => state[RESOURCE.ACCOUNT_SETTINGS]
-  );
-  const { authToken } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const authToken = authTokenManager.getToken("authenticateToken");
+
+  const [
+    updatePassword,
+    { isLoading: LOADING_UPDATE_PASSWORD, error: ERROR_UPDATE_PASSWORD },
+  ] = useUpdatePasswordMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const initialState: IUpdatePassword = {
     password: null,
     confirmPassword: null,
-    token: authToken,
+    token: authToken as string,
   };
 
   const validate = ({
@@ -63,12 +61,15 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(updatePassword(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        snack.success(t("user_messages.password_changed_successfully"));
-        resetForm();
-        onClose();
+      try {
+        const res = await updatePassword(values).unwrap();
+        if (res) {
+          snack.success(t("user_messages.password_changed_successfully"));
+          resetForm();
+          onClose();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -83,11 +84,6 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
     e.preventDefault();
     formik.handleSubmit();
   };
-
-  useToastError({
-    error: ERROR_UPDATE_PASSWORD,
-    clearErrorAction: () => clearError("updatePassword"),
-  });
 
   const globalKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -111,7 +107,7 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
         onClose();
       }
     },
-    [open, LOADING_UPDATE_PASSWORD, ERROR_UPDATE_PASSWORD, formik, onClose]
+    [open, LOADING_UPDATE_PASSWORD, ERROR_UPDATE_PASSWORD, formik, onClose],
   );
 
   useEffect(() => {

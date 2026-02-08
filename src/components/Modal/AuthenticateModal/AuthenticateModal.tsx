@@ -5,15 +5,14 @@ import "./authenticateModal.style.css";
 import PasswordInput from "@/components/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { PROVIDER, RESOURCE, TOKEN_TYPE } from "@/common/enums/enums";
-import { useToastError } from "@/hooks/useToastError";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { PROVIDER, TOKEN_TYPE } from "@/common/enums/enums";
 import Modal from "..";
 import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
 import { IAuthenticateUser } from "@/modules/auth/types/types";
-import { authenticateUser, clearError } from "@/modules/auth/api/api";
+import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
+import { useGetMeQuery } from "@/modules/profile/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 interface Props {
   open: boolean;
@@ -29,12 +28,12 @@ const AuthenticateModal: FC<Props> = ({
   authType,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
-  const { LOADING_AUTHENTICATE_USER, ERROR_AUTHENTICATE_USER } = useAppSelector(
-    (state) => state[RESOURCE.AUTH]
-  );
-  const { me } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const [
+    authenticateUser,
+    { isLoading: LOADING_AUTHENTICATE_USER, error: ERROR_AUTHENTICATE_USER },
+  ] = useAuthenticateUserMutation();
+  const { data: me } = useGetMeQuery();
 
   const isPasswordProvider = me?.user.provider === PROVIDER.PASSWORD;
 
@@ -70,9 +69,12 @@ const AuthenticateModal: FC<Props> = ({
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(authenticateUser(values));
-      const res = unwrapResult(actionResult);
+      const res = await authenticateUser(values).unwrap();
       if (res) {
+        authTokenManager.setToken({
+          token: res.token,
+          type: "accessToken",
+        });
         onAuthenticate();
         resetForm();
         onClose();
@@ -113,7 +115,7 @@ const AuthenticateModal: FC<Props> = ({
         onClose();
       }
     },
-    [open, isButtonsDisabled, formik, onClose]
+    [open, isButtonsDisabled, formik, onClose],
   );
 
   const handleGoogleSuccess = async (tokenResponse: any) => {
@@ -129,9 +131,12 @@ const AuthenticateModal: FC<Props> = ({
       idToken,
     };
 
-    const actionResult = await dispatch(authenticateUser(finalValues));
-    const res = unwrapResult(actionResult);
+    const res = await authenticateUser(finalValues).unwrap();
     if (res) {
+      authTokenManager.setToken({
+        token: res.token,
+        type: "accessToken",
+      });
       onAuthenticate();
       formik.resetForm();
       onClose();
@@ -146,11 +151,6 @@ const AuthenticateModal: FC<Props> = ({
       document.removeEventListener("keydown", globalKeyDown);
     };
   }, [open, globalKeyDown]);
-
-  useToastError({
-    error: ERROR_AUTHENTICATE_USER,
-    clearErrorAction: () => clearError("authenticateUser"),
-  });
 
   return (
     <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>

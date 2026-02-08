@@ -9,17 +9,16 @@ import {
   Minus,
 } from "lucide-react";
 import "./personalInformation.style.css";
-import { RESOURCE } from "@/common/enums/enums";
-import { useAppSelector } from "@/hooks/useStore";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { IMe } from "@/modules/profile/types/types";
 import { useTranslation } from "react-i18next";
 import { DDMMMMYYY } from "@/common/utils/formatDate";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
 
-  const { me: profile } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const { data: profile } = useGetMeQuery();
   const { user, account, settings } = profile as IMe;
   const { privacySettings } = settings;
 
@@ -58,7 +57,10 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <UserIcon size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.gender")}</span>
-              <PrivacyIcon privacy={privacySettings.gender} fieldName="gender" />
+              <PrivacyIcon
+                privacy={privacySettings.gender}
+                fieldName="gender"
+              />
             </div>
             <p className="profile-info-value">{account.gender}</p>
           </div>
@@ -67,7 +69,10 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <MapPin size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.location")}</span>
-              <PrivacyIcon privacy={privacySettings.location} fieldName="location" />
+              <PrivacyIcon
+                privacy={privacySettings.location}
+                fieldName="location"
+              />
             </div>
             <p className="profile-info-value">
               {account.location ?? <MapMinusIcon />}
@@ -78,7 +83,10 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Cake size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.birthday")}</span>
-              <PrivacyIcon privacy={privacySettings.birthdayDate} fieldName="birthdayDate" />
+              <PrivacyIcon
+                privacy={privacySettings.birthdayDate}
+                fieldName="birthdayDate"
+              />
             </div>
             <p className="profile-info-value">
               {DDMMMMYYY(account.birthdayDate)}
@@ -89,7 +97,10 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Phone size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.phone")}</span>
-              <PrivacyIcon privacy={privacySettings.phoneNumber} fieldName="phoneNumber" />
+              <PrivacyIcon
+                privacy={privacySettings.phoneNumber}
+                fieldName="phoneNumber"
+              />
             </div>
             <p className="profile-info-value">
               {user.phoneNumber ? user.phoneNumber.fullPhoneNumber : <Minus />}

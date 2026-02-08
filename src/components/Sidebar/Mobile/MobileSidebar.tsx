@@ -4,16 +4,15 @@ import "./mobileSidebar.style.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/hooks/useStore";
-import { RESOURCE } from "@/common/enums/enums";
 import { Avatar } from "@mui/material";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 const MobileSidebar = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { me: userData } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const { data: userData } = useGetMeQuery();
 
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
@@ -68,14 +67,14 @@ const MobileSidebar = () => {
       //   onClick: () => navigate(ROUTER.SETTINGS.MAIN),
       // },
     ],
-    [t, navigate]
+    [t, navigate],
   );
 
   useEffect(() => {
     const currentPath = location.pathname || "/";
 
     const matched = menuItems.find((m) =>
-      currentPath === m.path ? true : currentPath.startsWith(m.path)
+      currentPath === m.path ? true : currentPath.startsWith(m.path),
     );
 
     if (matched) {

@@ -1,19 +1,10 @@
-import "./verify.style.css";
 import { useTranslation } from "react-i18next";
-import { LOCAL_STORAGE_KEYS, RESOURCE } from "@/common/enums/enums";
-import {
-  clearError,
-  resendSignupVerify,
-  setSignupForm,
-  signupVerify,
-} from "../../api/api";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
 import { validateVerifySignup } from "../../constants/validation";
 import { Link, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import { useToastError } from "@/hooks/useToastError";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
@@ -21,22 +12,30 @@ import { checkDeviceId } from "@/common/utils/checkDevice";
 import OTPForm from "@/components/Form/OTPForm/OTPForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { formatTimeToSeconds } from "@/common/utils/formatDate";
-import { unwrapResult } from "@reduxjs/toolkit";
+import {
+  useResendSignupVerifyMutation,
+  useSignupVerifyMutation,
+} from "../../api/api";
+import { ISignupForm, ISignupVerifyForm } from "../../types/types";
+import useFormDisabled from "@/hooks/useFormDisabled";
+import { useErrors } from "@/hooks/useErrors";
 
 const TIMER_DURATION = 60;
 
 const VerifyAccount = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const {
-    signupForm,
-    LOADING_SIGNUP_VERIFY,
-    LOADING_RESEND_SIGNUP_VERIFY,
-    ERROR_RESEND_SIGNUP_VERIFY,
-    ERROR_SIGNUP_VERIFY,
-  } = useAppSelector((state) => state[RESOURCE.AUTH]);
+  const signupForm = JSON.parse(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM) || "{}",
+  ) as ISignupForm | null;
+
+  const [signupVerify, { isLoading: LOADING_SIGNUP_VERIFY }] =
+    useSignupVerifyMutation();
+  const [resendSignupVerify, { isLoading: LOADING_RESEND_SIGNUP_VERIFY }] =
+    useResendSignupVerifyMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const [timeLeft, setTimeLeft] = useState<number>(TIMER_DURATION);
   const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
@@ -48,14 +47,18 @@ const VerifyAccount = () => {
     enableReinitialize: true,
     validate: (values) => validateVerifySignup(values, t),
     onSubmit: async (values, { resetForm }) => {
-      values.deviceId = checkDeviceId();
-      const actionResult = await dispatch(signupVerify(values));
-      if (signupVerify.fulfilled.match(actionResult)) {
-        snack.success(t("user_messages.verify_successful"));
-        navigate(ROUTER.MESSENGER.MAIN);
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
-        dispatch(setSignupForm(null));
-        resetForm();
+      try {
+        values.deviceId = checkDeviceId();
+        const res = await signupVerify(values).unwrap();
+        if (res) {
+          snack.success(t("user_messages.verify_successful"));
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
+          resetForm();
+          navigate(ROUTER.MESSENGER.MAIN);
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -85,11 +88,22 @@ const VerifyAccount = () => {
     [formik],
   );
 
-  const isDisabled =
-    LOADING_SIGNUP_VERIFY ||
-    !formik.values.verifyCode ||
-    formik.values.verifyCode.trim() === "" ||
-    formik.values.verifyCode?.length !== 6;
+  const isDisabled = useFormDisabled<ISignupVerifyForm>({
+    formik,
+    loading: LOADING_SIGNUP_VERIFY,
+    validationRules: [
+      (values) =>
+        !values.verifyCode ||
+        values.verifyCode.length !== 6 ||
+        values.verifyCode.trim() === "",
+    ],
+  });
+
+  // const isDisabled =
+  //   LOADING_SIGNUP_VERIFY ||
+  //   !formik.values.verifyCode ||
+  //   formik.values.verifyCode.trim() === "" ||
+  //   formik.values.verifyCode?.length !== 6;
 
   const startTimer = () => {
     const expiresAt = Date.now() + TIMER_DURATION * 1000;
@@ -104,18 +118,16 @@ const VerifyAccount = () => {
   const handleResendCode = async () => {
     if (isResendDisabled) return;
 
-    const actionResult = await dispatch(resendSignupVerify());
-    const res = unwrapResult(actionResult);
-    if (res) {
-      snack.success(t("user_messages.otp_resent"));
-      startTimer();
+    try {
+      const res = await resendSignupVerify().unwrap();
+      if (res) {
+        snack.success(t("user_messages.otp_resent"));
+        startTimer();
+      }
+    } catch (error) {
+      showResponseErrors(error);
     }
   };
-
-  useToastError({
-    error: ERROR_SIGNUP_VERIFY || ERROR_RESEND_SIGNUP_VERIFY,
-    clearErrorAction: () => clearError("verify"),
-  });
 
   useEffect(() => {
     const storedExpiresAt = localStorage.getItem(

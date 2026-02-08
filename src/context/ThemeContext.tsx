@@ -1,6 +1,7 @@
-import { useAppSelector } from "@/hooks/useStore";
-import { LOCAL_STORAGE_KEYS, RESOURCE, THEME } from "@/common/enums/enums";
+import { LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 interface ThemeContextType {
   theme: THEME;
@@ -8,11 +9,15 @@ interface ThemeContextType {
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
+  const access_token = authTokenManager.getToken("accessToken");
+
+  const { data } = useGetGeneralSettingsQuery(undefined, {
+    skip: !access_token,
+  });
 
   const [theme, setTheme] = useState<THEME>(() => {
     const localTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME);
@@ -35,7 +40,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (theme !== THEME.DEVICE) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
       const deviceTheme = e.matches ? THEME.DARK : THEME.LIGHT;
       document.documentElement.setAttribute("data-theme", deviceTheme);
@@ -54,7 +59,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const actualTheme = theme === THEME.DEVICE ? getDeviceTheme() : theme;
-    
+
     document.documentElement.setAttribute("data-theme", actualTheme);
 
     if (data?.theme) {

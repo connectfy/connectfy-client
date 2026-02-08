@@ -2,20 +2,11 @@ import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { clearError, setSignupForm, signup } from "../../../../api/api";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { useFormik } from "formik";
 import { signupInitialState } from "../../../../constants/intialState";
 import { validateSignup } from "../../../../constants/validation";
-import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  GENDER,
-  LOCAL_STORAGE_KEYS,
-  RESOURCE,
-  THEME,
-} from "@/common/enums/enums";
+import { GENDER, LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import { Fragment, useEffect, useState } from "react";
-import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { ROUTER } from "@/common/constants/routet";
 import useFormDisabled from "@/hooks/useFormDisabled";
@@ -23,15 +14,19 @@ import { ISignupForm } from "@/modules/auth/types/types";
 import Checkbox from "@/components/ui/CustomCheckbox/Checkbox/Checkbox";
 import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useSignupMutation } from "@/modules/auth/api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const Signup = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { ERROR_SIGNUP, LOADING_SIGNUP, signupForm } = useAppSelector(
-    (state) => state[RESOURCE.AUTH],
-  );
+  const signupForm = JSON.parse(
+    localStorage.getItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM) || "{}",
+  ) as ISignupForm | null;
+  const [signup, { isLoading: LOADING_SIGNUP }] = useSignupMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const [checked, setChecked] = useState<boolean>(false);
 
@@ -42,22 +37,28 @@ const Signup = () => {
     enableReinitialize: true,
     validate: (values) => validateSignup(values, t),
     onSubmit: async (values, { resetForm }) => {
-      const { confirm, ...rest } = values;
-      void confirm;
-      rest.birthdayDate = rest.birthdayDate
-        ? new Date(rest.birthdayDate)
-        : null;
+      try {
+        const { confirm, ...rest } = values;
+        void confirm;
+        rest.birthdayDate = rest.birthdayDate
+          ? new Date(rest.birthdayDate)
+          : null;
 
-      rest.theme =
-        (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
-        THEME.LIGHT;
+        rest.theme =
+          (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
+          THEME.LIGHT;
 
-      const actionResult = await dispatch(signup(rest));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        dispatch(setSignupForm(values));
-        resetForm();
-        await navigate(ROUTER.AUTH.VERIFY_ACCOUNT, { replace: true });
+        const res = await signup(rest).unwrap();
+        if (res) {
+          resetForm();
+          localStorage.setItem(
+            LOCAL_STORAGE_KEYS.SIGNUP_FORM,
+            JSON.stringify(values),
+          );
+          await navigate(ROUTER.AUTH.VERIFY_ACCOUNT, { replace: true });
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -90,11 +91,6 @@ const Signup = () => {
       formik.setFieldValue("gender", gender);
     }
   };
-
-  useToastError({
-    error: ERROR_SIGNUP,
-    clearErrorAction: () => clearError("signup"),
-  });
 
   useEffect(() => {
     if (isDisabled) return;

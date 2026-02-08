@@ -1,26 +1,29 @@
 import { Fragment, useCallback, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
 import { checkDeviceId } from "@/common/utils/checkDevice";
-import { checkUnique, googleLogin } from "@/modules/auth/api/api";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { ROUTER } from "@/common/constants/routet";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
-import { CHECK_UNIQUE_FIELD, RESOURCE } from "@/common/enums/enums";
+import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";
 import { jwtDecode } from "jwt-decode";
+import {
+  useCheckUniqueMutation,
+  useGoogleLoginMutation,
+} from "@/modules/auth/api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const MainFooter = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { LOADING_CHECK_UNIQUE } = useAppSelector(
-    (state) => state[RESOURCE.AUTH],
-  );
+  const [checkUnique, { isLoading: LOADING_CHECK_UNIQUE }] =
+    useCheckUniqueMutation();
+  const [googleLogin] = useGoogleLoginMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const isModalOpen = useBoolean();
@@ -51,32 +54,36 @@ const MainFooter = () => {
       }
 
       if (authPage === "login") {
-        const deviceId = checkDeviceId();
-        const actionResult = await dispatch(googleLogin({ idToken, deviceId }));
-        const res = unwrapResult(actionResult);
-        if (res) {
-          snack.success(t("user_messages.login_successful"));
-          navigate(ROUTER.MAIN);
-          localStorage.removeItem("authPage");
-          localStorage.removeItem("loginMode");
-          localStorage.removeItem("forgotPasswordMode");
+        try {
+          const deviceId = checkDeviceId();
+          const res = await googleLogin({ idToken, deviceId }).unwrap();
+          if (res) {
+            snack.success(t("user_messages.login_successful"));
+            navigate(ROUTER.MAIN);
+          }
+        } catch (error) {
+          showResponseErrors(error);
         }
       } else {
-        const decoded = jwtDecode<{ email?: string }>(idToken);
-        const email = decoded.email;
+        try {
+          const decoded = jwtDecode<{ email?: string }>(idToken);
+          const email = decoded.email;
 
-        if (!email) {
-          snack.error(t("error_messages.email_not_found"));
-          return;
-        }
+          if (!email) {
+            snack.error(t("error_messages.email_not_found"));
+            return;
+          }
 
-        const actionResult = await dispatch(
-          checkUnique({ field: CHECK_UNIQUE_FIELD.EMAIL, value: email }),
-        );
-        const res = unwrapResult(actionResult);
-        if (res) {
-          setIdToken(idToken);
-          isModalOpen.onOpen();
+          const res = await checkUnique({
+            field: CHECK_UNIQUE_FIELD.EMAIL,
+            value: email,
+          }).unwrap();
+          if (res) {
+            setIdToken(idToken);
+            isModalOpen.onOpen();
+          }
+        } catch (error) {
+          showResponseErrors(error);
         }
       }
     } catch (error: any) {

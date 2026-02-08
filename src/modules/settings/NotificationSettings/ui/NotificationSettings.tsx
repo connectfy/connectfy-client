@@ -15,27 +15,25 @@ import {
   validateNotificationSettings,
 } from "../constants/constant";
 import { useFormik } from "formik";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { RESOURCE } from "@/common/enums/enums";
-import {
-  clearError,
-  updateNotificationSettings,
-} from "../api/api";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { snack } from "@/common/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
-import { useToastError } from "@/hooks/useToastError";
+import {
+  useEditNotificationSettingsMutation,
+  useGetNotificationSettingsQuery,
+} from "../api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const { data, LOADING_UPDATE, ERROR_UPDATE } = useAppSelector(
-    (state) => state[RESOURCE.NOTIFICATION_SETTINGS]
-  );
+  const { data } = useGetNotificationSettingsQuery();
+  const [editNotificationSettings, { isLoading: LOADING_UPDATE }] =
+    useEditNotificationSettingsMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
     initialValues: initialState(data!),
@@ -45,14 +43,13 @@ const NotificationSettings = () => {
     validate: (values) => validateNotificationSettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const actionResult = await dispatch(updateNotificationSettings(values));
-        const res = unwrapResult(actionResult);
+        const res = await editNotificationSettings(values).unwrap();
         if (res) {
           snack.success(t("user_messages.information_updated"));
           resetForm();
         }
-      } catch (err) {
-        snack.error((err as Error).message);
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -79,11 +76,6 @@ const NotificationSettings = () => {
   const notificationFields = NOTIFICATION_FIELDS(t);
 
   const onClickBack = () => navigate(ROUTER.SETTINGS.MAIN);
-
-  useToastError({
-    error: ERROR_UPDATE,
-    clearErrorAction: clearError,
-  });
 
   return (
     <Fragment>
@@ -126,7 +118,7 @@ const NotificationSettings = () => {
                         onClick={() =>
                           formik.setFieldValue(
                             "notificationSoundMode",
-                            option.key
+                            option.key,
                           )
                         }
                       >
@@ -161,7 +153,7 @@ const NotificationSettings = () => {
                         onClick={() =>
                           formik.setFieldValue(
                             "notificationContentMode",
-                            option.key
+                            option.key,
                           )
                         }
                       >
@@ -203,7 +195,7 @@ const NotificationSettings = () => {
                           field.field,
                           !formik.values[
                             field.field as keyof typeof formik.values
-                          ]
+                          ],
                         ),
                     }}
                   />
@@ -237,7 +229,7 @@ const NotificationSettings = () => {
                           field.field,
                           !formik.values[
                             field.field as keyof typeof formik.values
-                          ]
+                          ],
                         ),
                     }}
                   />
@@ -271,7 +263,7 @@ const NotificationSettings = () => {
                           field.field,
                           !formik.values[
                             field.field as keyof typeof formik.values
-                          ]
+                          ],
                         ),
                     }}
                   />

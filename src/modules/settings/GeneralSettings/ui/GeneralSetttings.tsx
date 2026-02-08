@@ -24,36 +24,33 @@ import {
   validateGenerateSettings,
 } from "../constants/contant";
 import { useFormik } from "formik";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import {
-  DATE_FORMAT,
-  RESOURCE,
-  THEME,
-  TIME_FORMAT,
-} from "@/common/enums/enums";
+import { DATE_FORMAT, THEME, TIME_FORMAT } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
-import { clearError, resetSettings, updateGeneralSettings } from "../api/api";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
-import { useToastError } from "@/hooks/useToastError";
 import useBoolean from "@/hooks/useBoolean";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
+import {
+  useEditGeneralSettingsMutation,
+  useGetGeneralSettingsQuery,
+  useResetSettingsMutation,
+} from "../api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const GeneralSettings = () => {
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const {
-    data,
-    LOADING_UPDATE,
-    ERROR_UPDATE,
-    LOADING_RESET_SETTINGS,
-    ERROR_RESET_SETTINGS,
-  } = useAppSelector((state) => state[RESOURCE.GENERAL_SETTINGS]);
   const [selectedTheme, setSelectedTheme] = useState(theme);
+
+  const { data } = useGetGeneralSettingsQuery();
+  const [updateGeneralSettings, { isLoading: LOADING_UPDATE }] =
+    useEditGeneralSettingsMutation();
+  const [resetSettings, { isLoading: LOADING_RESET_SETTINGS }] =
+    useResetSettingsMutation();
+
+  const { showResponseErrors } = useErrors();
 
   const resetSettingsModal = useBoolean();
 
@@ -64,11 +61,14 @@ const GeneralSettings = () => {
     enableReinitialize: true,
     validate: (values) => validateGenerateSettings(values, t),
     onSubmit: async (values, { resetForm }) => {
-      const actionResult = await dispatch(updateGeneralSettings(values));
-      const res = unwrapResult(actionResult);
-      if (res) {
-        snack.success(t("user_messages.information_updated"));
-        resetForm();
+      try {
+        const res = await updateGeneralSettings(values).unwrap();
+        if (res) {
+          snack.success(t("user_messages.information_updated"));
+          resetForm();
+        }
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -116,25 +116,23 @@ const GeneralSettings = () => {
   };
 
   const handleResetSettings = async () => {
-    const actionResult = await dispatch(resetSettings());
-    const res = unwrapResult(actionResult);
-    if (res) {
-      snack.success(t("user_messages.information_updated"));
+    try {
+      const res = await resetSettings().unwrap();
+      if (res) {
+        snack.success(t("user_messages.information_updated"));
 
-      if (formik.values.theme !== data?.theme) {
-        formik.setFieldValue("theme", data?.theme);
-        toggleTheme(data?.theme as THEME);
+        if (formik.values.theme !== data?.theme) {
+          formik.setFieldValue("theme", data?.theme);
+          toggleTheme(data?.theme as THEME);
+        }
+
+        formik.resetForm();
+        resetSettingsModal.onClose();
       }
-
-      formik.resetForm();
-      resetSettingsModal.onClose();
+    } catch (error) {
+      showResponseErrors(error);
     }
   };
-
-  useToastError({
-    error: ERROR_UPDATE || ERROR_RESET_SETTINGS,
-    clearErrorAction: clearError,
-  });
 
   return (
     <Fragment>
@@ -244,7 +242,7 @@ const GeneralSettings = () => {
                       onClick={() =>
                         formik.setFieldValue(
                           "timeZone.timeFormat",
-                          TIME_FORMAT.H24
+                          TIME_FORMAT.H24,
                         )
                       }
                     >
@@ -259,7 +257,7 @@ const GeneralSettings = () => {
                       onClick={() =>
                         formik.setFieldValue(
                           "timeZone.timeFormat",
-                          TIME_FORMAT.H12
+                          TIME_FORMAT.H12,
                         )
                       }
                     >
@@ -290,7 +288,7 @@ const GeneralSettings = () => {
                       onClick={() =>
                         formik.setFieldValue(
                           "timeZone.dateFormat",
-                          DATE_FORMAT.DDMMYYYY
+                          DATE_FORMAT.DDMMYYYY,
                         )
                       }
                     >
@@ -306,7 +304,7 @@ const GeneralSettings = () => {
                       onClick={() =>
                         formik.setFieldValue(
                           "timeZone.dateFormat",
-                          DATE_FORMAT.MMDDYYYY
+                          DATE_FORMAT.MMDDYYYY,
                         )
                       }
                     >

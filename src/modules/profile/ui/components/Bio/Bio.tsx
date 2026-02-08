@@ -1,15 +1,14 @@
 import "./bio.style.css";
 import { Edit2, MinusIcon } from "lucide-react";
-import { useAppSelector } from "@/hooks/useStore";
-import { RESOURCE } from "@/common/enums/enums";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
 import { IMe } from "@/modules/profile/types/types";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 const Bio = () => {
   const { t } = useTranslation();
 
-  const { me: profile } = useAppSelector((state) => state[RESOURCE.PROFILE]);
+  const { data: profile } = useGetMeQuery();
   const { account, settings } = profile as IMe;
   const { privacySettings } = settings;
 

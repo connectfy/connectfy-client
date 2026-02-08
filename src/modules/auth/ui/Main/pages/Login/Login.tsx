@@ -1,17 +1,9 @@
 import { Fragment, useEffect } from "react";
-import {
-  IDENTIFIER_TYPE,
-  LOCAL_STORAGE_KEYS,
-  RESOURCE,
-} from "@/common/enums/enums";
+import { IDENTIFIER_TYPE } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { loginInitialState } from "../../../../constants/intialState";
 import { validateLogin } from "../../../../constants/validation";
 import { useTranslation } from "react-i18next";
-import { clearError, login } from "../../../../api/api";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
-import { useToastError } from "@/hooks/useToastError";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { ILoginForm, LoginModeType } from "../../../../types/types";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -23,14 +15,16 @@ import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInp
 import Input from "@/components/ui/CustomInput/Input/Input";
 import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useLoginMutation } from "@/modules/auth/api/api";
+import { useErrors } from "@/hooks/useErrors";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
 const Login = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { showResponseErrors } = useErrors();
 
   const rawLoginMode = searchParams.get("loginMode");
 
@@ -40,9 +34,7 @@ const Login = () => {
     ? (rawLoginMode as LoginModeType)
     : "username";
 
-  const { ERROR_LOGIN, LOADING_LOGIN } = useAppSelector(
-    (state) => state[RESOURCE.AUTH],
-  );
+  const [login, { isLoading: LOADING_LOGIN }] = useLoginMutation();
 
   const formik = useFormik({
     initialValues: loginInitialState,
@@ -53,18 +45,15 @@ const Login = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         values.deviceId = checkDeviceId();
-        const actionResult = await dispatch(login(values));
-        const res = unwrapResult(actionResult);
+        const res = await login(values).unwrap();
+
         if (res) {
           snack.success(t("user_messages.login_successful"));
           navigate(ROUTER.MAIN);
-          localStorage.removeItem("authPage");
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.LOGIN_MODE);
-          localStorage.removeItem("forgotPasswordMode");
           resetForm();
         }
       } catch (err) {
-        snack.error((err as Error).message);
+        showResponseErrors(err);
       }
     },
   });
@@ -84,11 +73,6 @@ const Login = () => {
     formik.setFieldValue("identifier", "");
     setSearchParams({ authPage: "login", loginMode: mode }, { replace: true });
   };
-
-  useToastError({
-    error: ERROR_LOGIN,
-    clearErrorAction: () => clearError("login"),
-  });
 
   useEffect(() => {
     let identifierType: IDENTIFIER_TYPE;
