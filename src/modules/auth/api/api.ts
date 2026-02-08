@@ -147,9 +147,10 @@ export const authApi = createApi({
       IAuthenticateUserResponse,
       IAuthenticateUser
     >({
-      query: () => ({
+      query: (data) => ({
         url: API_ENDPOINTS.AUTH.AUTHENTICATE_USER,
         method: "POST",
+        body: data,
       }),
       invalidatesTags: ["Auth"],
     }),

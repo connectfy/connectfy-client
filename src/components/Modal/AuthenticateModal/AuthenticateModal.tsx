@@ -73,7 +73,7 @@ const AuthenticateModal: FC<Props> = ({
       if (res) {
         authTokenManager.setToken({
           token: res.token,
-          type: "accessToken",
+          type: "authenticateToken",
         });
         onAuthenticate();
         resetForm();
