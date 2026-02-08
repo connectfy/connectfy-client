@@ -24,12 +24,13 @@ import {
   useGetNotificationSettingsQuery,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data } = useGetNotificationSettingsQuery();
+  const { data, isLoading: LOADING_GET } = useGetNotificationSettingsQuery();
   const [editNotificationSettings, { isLoading: LOADING_UPDATE }] =
     useEditNotificationSettingsMutation();
 
@@ -87,200 +88,207 @@ const NotificationSettings = () => {
             onClickBack={onClickBack}
             onClickSave={formik.handleSubmit}
             showChangesButton
-            isChangesDisasbled={!formik.dirty || LOADING_UPDATE}
+            isChangesDisasbled={!formik.dirty || LOADING_UPDATE || LOADING_GET}
             isLoading={LOADING_UPDATE}
           />
 
-          <div className="notification-settings-content">
-            {/* GENERAL NOTIFICATION SETTINGS */}
-            <div className="notification-privacy-section">
-              <h2 className="notification-section-title">
-                {t("common.general_notification_title")}
-              </h2>
+          {LOADING_GET ? (
+            <SettingsSpinner />
+          ) : (
+            <Fragment>
+              <div className="notification-settings-content">
+                {/* GENERAL NOTIFICATION SETTINGS */}
+                <div className="notification-privacy-section">
+                  <h2 className="notification-section-title">
+                    {t("common.general_notification_title")}
+                  </h2>
 
-              <SettingCard
-                header={{
-                  icon: Bell,
-                  title: t("common.notification_mode"),
-                  subtitle: t("common.select_default_notification"),
-                }}
-              >
-                <div className="general-notification-modes">
-                  {NOTIFICATION_MODE_OPTIONS.map((option) => {
+                  <SettingCard
+                    header={{
+                      icon: Bell,
+                      title: t("common.notification_mode"),
+                      subtitle: t("common.select_default_notification"),
+                    }}
+                  >
+                    <div className="general-notification-modes">
+                      {NOTIFICATION_MODE_OPTIONS.map((option) => {
+                        return (
+                          <div
+                            key={option.key}
+                            className={`general-notification-mode ${
+                              formik.values.notificationSoundMode === option.key
+                                ? "active"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              formik.setFieldValue(
+                                "notificationSoundMode",
+                                option.key,
+                              )
+                            }
+                          >
+                            <div className="general-mode-radio"></div>
+                            <div className="general-mode-content">
+                              <h4>{option.name}</h4>
+                              <p>{option.description}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </SettingCard>
+
+                  <SettingCard
+                    header={{
+                      icon: Bell,
+                      title: t("common.notification_content"),
+                      subtitle: t("common.select_default_content"),
+                    }}
+                  >
+                    <div className="general-notification-modes">
+                      {NOTIFICATION_CONTENT_OPTIONS.map((option) => {
+                        return (
+                          <div
+                            key={option.key}
+                            className={`general-notification-mode ${
+                              formik.values.notificationContentMode ===
+                              option.key
+                                ? "active"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              formik.setFieldValue(
+                                "notificationContentMode",
+                                option.key,
+                              )
+                            }
+                          >
+                            <div className="general-mode-radio"></div>
+                            <div className="general-mode-content">
+                              <h4>{option.name}</h4>
+                              <p>{option.description}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </SettingCard>
+                </div>
+
+                {/* MESSAGE SOUND SETTINGS */}
+                <div className="notification-privacy-section">
+                  <h2 className="notification-section-title">
+                    {t("common.message_sound_section_title")}
+                  </h2>
+
+                  {notificationFields.messageSounds.map((field) => {
+                    const Icon = field.icon;
                     return (
-                      <div
-                        key={option.key}
-                        className={`general-notification-mode ${
-                          formik.values.notificationSoundMode === option.key
-                            ? "active"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          formik.setFieldValue(
-                            "notificationSoundMode",
-                            option.key,
-                          )
-                        }
-                      >
-                        <div className="general-mode-radio"></div>
-                        <div className="general-mode-content">
-                          <h4>{option.name}</h4>
-                          <p>{option.description}</p>
-                        </div>
-                      </div>
+                      <ToggleCard
+                        key={field.field}
+                        header={{
+                          icon: Icon,
+                          title: field.title,
+                          subtitle: field.desc,
+                        }}
+                        slider={{
+                          checked:
+                            !!formik.values[
+                              field.field as keyof typeof formik.values
+                            ],
+                          onClick: () =>
+                            formik.setFieldValue(
+                              field.field,
+                              !formik.values[
+                                field.field as keyof typeof formik.values
+                              ],
+                            ),
+                        }}
+                      />
                     );
                   })}
                 </div>
-              </SettingCard>
 
-              <SettingCard
-                header={{
-                  icon: Bell,
-                  title: t("common.notification_content"),
-                  subtitle: t("common.select_default_content"),
-                }}
-              >
-                <div className="general-notification-modes">
-                  {NOTIFICATION_CONTENT_OPTIONS.map((option) => {
+                {/* NOTIFICATION SOUND SETTINGS */}
+                <div className="notification-privacy-section">
+                  <h2 className="notification-section-title">
+                    {t("common.sound_section_title")}
+                  </h2>
+
+                  {notificationFields.notificationSounds.map((field) => {
+                    const Icon = field.icon;
                     return (
-                      <div
-                        key={option.key}
-                        className={`general-notification-mode ${
-                          formik.values.notificationContentMode === option.key
-                            ? "active"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          formik.setFieldValue(
-                            "notificationContentMode",
-                            option.key,
-                          )
-                        }
-                      >
-                        <div className="general-mode-radio"></div>
-                        <div className="general-mode-content">
-                          <h4>{option.name}</h4>
-                          <p>{option.description}</p>
-                        </div>
-                      </div>
+                      <ToggleCard
+                        key={field.field}
+                        header={{
+                          icon: Icon,
+                          title: field.title,
+                          subtitle: field.desc,
+                        }}
+                        slider={{
+                          checked:
+                            !!formik.values[
+                              field.field as keyof typeof formik.values
+                            ],
+                          onClick: () =>
+                            formik.setFieldValue(
+                              field.field,
+                              !formik.values[
+                                field.field as keyof typeof formik.values
+                              ],
+                            ),
+                        }}
+                      />
                     );
                   })}
                 </div>
-              </SettingCard>
-            </div>
 
-            {/* MESSAGE SOUND SETTINGS */}
-            <div className="notification-privacy-section">
-              <h2 className="notification-section-title">
-                {t("common.message_sound_section_title")}
-              </h2>
+                {/* NOTIFICATION BANNER SETTINGS */}
+                <div className="notification-privacy-section">
+                  <h2 className="notification-section-title">
+                    {t("common.banner_section_title")}
+                  </h2>
 
-              {notificationFields.messageSounds.map((field) => {
-                const Icon = field.icon;
-                return (
-                  <ToggleCard
-                    key={field.field}
-                    header={{
-                      icon: Icon,
-                      title: field.title,
-                      subtitle: field.desc,
-                    }}
-                    slider={{
-                      checked:
-                        !!formik.values[
-                          field.field as keyof typeof formik.values
-                        ],
-                      onClick: () =>
-                        formik.setFieldValue(
-                          field.field,
-                          !formik.values[
-                            field.field as keyof typeof formik.values
-                          ],
-                        ),
-                    }}
-                  />
-                );
-              })}
-            </div>
-
-            {/* NOTIFICATION SOUND SETTINGS */}
-            <div className="notification-privacy-section">
-              <h2 className="notification-section-title">
-                {t("common.sound_section_title")}
-              </h2>
-
-              {notificationFields.notificationSounds.map((field) => {
-                const Icon = field.icon;
-                return (
-                  <ToggleCard
-                    key={field.field}
-                    header={{
-                      icon: Icon,
-                      title: field.title,
-                      subtitle: field.desc,
-                    }}
-                    slider={{
-                      checked:
-                        !!formik.values[
-                          field.field as keyof typeof formik.values
-                        ],
-                      onClick: () =>
-                        formik.setFieldValue(
-                          field.field,
-                          !formik.values[
-                            field.field as keyof typeof formik.values
-                          ],
-                        ),
-                    }}
-                  />
-                );
-              })}
-            </div>
-
-            {/* NOTIFICATION BANNER SETTINGS */}
-            <div className="notification-privacy-section">
-              <h2 className="notification-section-title">
-                {t("common.banner_section_title")}
-              </h2>
-
-              {notificationFields.notificationBanners.map((field) => {
-                const Icon = field.icon;
-                return (
-                  <ToggleCard
-                    key={field.field}
-                    header={{
-                      icon: Icon,
-                      title: field.title,
-                      subtitle: field.desc,
-                    }}
-                    slider={{
-                      checked:
-                        !!formik.values[
-                          field.field as keyof typeof formik.values
-                        ],
-                      onClick: () =>
-                        formik.setFieldValue(
-                          field.field,
-                          !formik.values[
-                            field.field as keyof typeof formik.values
-                          ],
-                        ),
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
+                  {notificationFields.notificationBanners.map((field) => {
+                    const Icon = field.icon;
+                    return (
+                      <ToggleCard
+                        key={field.field}
+                        header={{
+                          icon: Icon,
+                          title: field.title,
+                          subtitle: field.desc,
+                        }}
+                        slider={{
+                          checked:
+                            !!formik.values[
+                              field.field as keyof typeof formik.values
+                            ],
+                          onClick: () =>
+                            formik.setFieldValue(
+                              field.field,
+                              !formik.values[
+                                field.field as keyof typeof formik.values
+                              ],
+                            ),
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </Fragment>
+          )}
         </div>
-      </section>
 
-      <SaveChangesModal
-        open={!!pending}
-        handleSave={handleSaveAndLeave}
-        handleCancel={handleCancelModal}
-        handleDiscardChanges={handleDiscardChanges}
-        isLoading={LOADING_UPDATE}
-      />
+        <SaveChangesModal
+          open={!!pending}
+          handleSave={handleSaveAndLeave}
+          handleCancel={handleCancelModal}
+          handleDiscardChanges={handleDiscardChanges}
+          isLoading={LOADING_UPDATE}
+        />
+      </section>
     </Fragment>
   );
 };

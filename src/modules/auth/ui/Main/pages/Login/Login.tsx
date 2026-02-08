@@ -17,6 +17,7 @@ import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
@@ -49,6 +50,10 @@ const Login = () => {
 
         if (res) {
           snack.success(t("user_messages.login_successful"));
+          authTokenManager.setToken({
+            type: "accessToken",
+            token: res.access_token,
+          });
           navigate(ROUTER.MAIN);
           resetForm();
         }

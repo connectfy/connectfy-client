@@ -25,12 +25,13 @@ import {
   useEditPrivacySettingsMutation,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data } = useGetPrivacySettingsQuery();
+  const { data, isLoading: LOADING_GET } = useGetPrivacySettingsQuery();
 
   const [editPrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();
@@ -111,103 +112,112 @@ const PrivacySettings = () => {
             isLoading={LOADING_UPDATE}
           />
 
-          <div className="privacy-settings-content">
-            {/* ACTION PRIVACY */}
-            <div className="privacy-section">
-              <h2 className="privacy-section-title">
-                {t("common.activity_privacy")}
-              </h2>
+          {LOADING_GET ? (
+            <SettingsSpinner />
+          ) : (
+            <Fragment>
+              <div className="privacy-settings-content">
+                {/* ACTION PRIVACY */}
+                <div className="privacy-section">
+                  <h2 className="privacy-section-title">
+                    {t("common.activity_privacy")}
+                  </h2>
 
-              <ToggleCard
-                header={{
-                  icon: CheckCircle,
-                  title: t("common.read_receipts"),
-                  subtitle: t("common.read_receipts_desc"),
-                }}
-                slider={{
-                  checked: !!formik.values.readReceipts,
-                  onClick: () =>
-                    formik.setFieldValue(
-                      "readReceipts",
-                      !formik.values.readReceipts,
-                    ),
-                }}
-              />
+                  <ToggleCard
+                    header={{
+                      icon: CheckCircle,
+                      title: t("common.read_receipts"),
+                      subtitle: t("common.read_receipts_desc"),
+                    }}
+                    slider={{
+                      checked: !!formik.values.readReceipts,
+                      onClick: () =>
+                        formik.setFieldValue(
+                          "readReceipts",
+                          !formik.values.readReceipts,
+                        ),
+                    }}
+                  />
 
-              <ToggleCard
-                header={{
-                  icon: UserCheck,
-                  title: t("common.friend_requests"),
-                  subtitle: t("common.friend_requests_desc"),
-                }}
-                slider={{
-                  checked: !!formik.values.friendshipRequest,
-                  onClick: () =>
-                    formik.setFieldValue(
-                      "friendshipRequest",
-                      !formik.values.friendshipRequest,
-                    ),
-                }}
-              />
+                  <ToggleCard
+                    header={{
+                      icon: UserCheck,
+                      title: t("common.friend_requests"),
+                      subtitle: t("common.friend_requests_desc"),
+                    }}
+                    slider={{
+                      checked: !!formik.values.friendshipRequest,
+                      onClick: () =>
+                        formik.setFieldValue(
+                          "friendshipRequest",
+                          !formik.values.friendshipRequest,
+                        ),
+                    }}
+                  />
 
-              <SettingCard
-                header={{
-                  icon: Shield,
-                  title: t("common.message_privacy"),
-                  subtitle: t("common.message_privacy_desc"),
-                }}
-              >
-                <CustomSelect
-                  buttonTitle={getLabel(
-                    formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
-                  )}
-                  options={createOptions(
-                    formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
-                    (val) => formik.setFieldValue("messageRequest", val),
-                  )}
-                />
-              </SettingCard>
-            </div>
+                  <SettingCard
+                    header={{
+                      icon: Shield,
+                      title: t("common.message_privacy"),
+                      subtitle: t("common.message_privacy_desc"),
+                    }}
+                  >
+                    <CustomSelect
+                      buttonTitle={getLabel(
+                        formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
+                      )}
+                      options={createOptions(
+                        formik.values.messageRequest as PRIVACY_SETTINGS_CHOICE,
+                        (val) => formik.setFieldValue("messageRequest", val),
+                      )}
+                    />
+                  </SettingCard>
+                </div>
 
-            {/* DATA PRIVACY */}
-            <div className="privacy-section">
-              <h2 className="privacy-section-title">
-                {t("common.data_privacy")}
-              </h2>
+                {/* DATA PRIVACY */}
+                <div className="privacy-section">
+                  <h2 className="privacy-section-title">
+                    {t("common.data_privacy")}
+                  </h2>
 
-              <SettingCard
-                cardStyle={{
-                  padding: "5px 16px 20px 16px",
-                }}
-              >
-                <Fragment>
-                  {privacyFields.map((item, idx) => {
-                    const activeValue = formik.values[
-                      item.field as keyof typeof formik.values
-                    ] as string | undefined;
-                    return (
-                      <div
-                        className="privacy-row"
-                        key={item.field}
-                        style={idx > 0 ? { marginTop: "12px" } : {}}
-                      >
-                        <span className="privacy-row-label">{item.label}</span>
-                        <div className="privacy-row-select">
-                          <CustomSelect
-                            buttonTitle={getLabel(activeValue)}
-                            options={createOptions(
-                              activeValue as string,
-                              (val) => formik.setFieldValue(item.field, val),
-                            )}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </Fragment>
-              </SettingCard>
-            </div>
-          </div>
+                  <SettingCard
+                    cardStyle={{
+                      padding: "5px 16px 20px 16px",
+                    }}
+                  >
+                    <Fragment>
+                      {privacyFields.map((item, idx) => {
+                        const activeValue = formik.values[
+                          item.field as keyof typeof formik.values
+                        ] as string | undefined;
+                        return (
+                          <div
+                            className="privacy-row"
+                            key={item.field}
+                            style={idx > 0 ? { marginTop: "12px" } : {}}
+                          >
+                            <span className="privacy-row-label">
+                              {item.label}
+                            </span>
+                            <div className="privacy-row-select">
+                              <CustomSelect
+                                buttonTitle={getLabel(activeValue)}
+                                options={createOptions(
+                                  activeValue as string,
+                                  (val) =>
+                                    formik.setFieldValue(item.field, val),
+                                )}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </Fragment>
+                  </SettingCard>
+                </div>
+              </div>
+            </Fragment>
+          )}
         </div>
       </section>
 

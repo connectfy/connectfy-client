@@ -37,6 +37,7 @@ import {
   useResetSettingsMutation,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ const GeneralSettings = () => {
   const { theme, toggleTheme } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
-  const { data } = useGetGeneralSettingsQuery();
+  const { data, isLoading: LOADING_GET } = useGetGeneralSettingsQuery();
   const [updateGeneralSettings, { isLoading: LOADING_UPDATE }] =
     useEditGeneralSettingsMutation();
   const [resetSettings, { isLoading: LOADING_RESET_SETTINGS }] =
@@ -148,189 +149,197 @@ const GeneralSettings = () => {
             isLoading={LOADING_UPDATE}
           />
 
-          <div className="general-settings-content">
-            <SettingCard
-              header={{
-                icon: Sun,
-                title: t("common.app_theme"),
-                subtitle: t("common.choose_light_dark_system"),
-              }}
-            >
-              <div className="general-theme-options">
-                <div
-                  className={`general-theme-option ${isActiveTheme(THEME.LIGHT) ? "active" : ""}`}
-                  onClick={() => changeAppTheme(THEME.LIGHT)}
+          {LOADING_GET ? (
+            <SettingsSpinner />
+          ) : (
+            <Fragment>
+              <div className="general-settings-content">
+                <SettingCard
+                  header={{
+                    icon: Sun,
+                    title: t("common.app_theme"),
+                    subtitle: t("common.choose_light_dark_system"),
+                  }}
                 >
-                  <div className="general-theme-option-icon">
-                    <Sun size={24} />
+                  <div className="general-theme-options">
+                    <div
+                      className={`general-theme-option ${isActiveTheme(THEME.LIGHT) ? "active" : ""}`}
+                      onClick={() => changeAppTheme(THEME.LIGHT)}
+                    >
+                      <div className="general-theme-option-icon">
+                        <Sun size={24} />
+                      </div>
+                      <span>{t("common.light")}</span>
+                    </div>
+                    <div
+                      className={`general-theme-option ${isActiveTheme(THEME.DARK) ? "active" : ""}`}
+                      onClick={() => changeAppTheme(THEME.DARK)}
+                    >
+                      <div className="general-theme-option-icon">
+                        <Moon size={24} />
+                      </div>
+                      <span>{t("common.dark")}</span>
+                    </div>
+                    <div
+                      className={`general-theme-option ${isActiveTheme(THEME.DEVICE) ? "active" : ""}`}
+                      onClick={() => changeAppTheme(THEME.DEVICE)}
+                    >
+                      <div className="general-theme-option-icon">
+                        <MonitorSmartphone size={24} />
+                      </div>
+                      <span>{t("common.device")}</span>
+                    </div>
                   </div>
-                  <span>{t("common.light")}</span>
-                </div>
-                <div
-                  className={`general-theme-option ${isActiveTheme(THEME.DARK) ? "active" : ""}`}
-                  onClick={() => changeAppTheme(THEME.DARK)}
+                </SettingCard>
+
+                <SettingCard
+                  header={{
+                    icon: Globe,
+                    title: t("common.language"),
+                    subtitle: t("common.language"),
+                  }}
                 >
-                  <div className="general-theme-option-icon">
-                    <Moon size={24} />
-                  </div>
-                  <span>{t("common.dark")}</span>
-                </div>
-                <div
-                  className={`general-theme-option ${isActiveTheme(THEME.DEVICE) ? "active" : ""}`}
-                  onClick={() => changeAppTheme(THEME.DEVICE)}
+                  <CustomSelect
+                    buttonTitle={getLabel(LANGUAGE_OPTIONS)}
+                    options={LANGUAGE_OPTIONS}
+                  />
+                </SettingCard>
+
+                <SettingCard
+                  header={{
+                    icon: Home,
+                    title: t("common.startup_page"),
+                    subtitle: t("common.which_page_on_start"),
+                  }}
                 >
-                  <div className="general-theme-option-icon">
-                    <MonitorSmartphone size={24} />
-                  </div>
-                  <span>{t("common.device")}</span>
-                </div>
+                  <CustomSelect
+                    buttonTitle={getLabel(HOMEPAGE_OPTIONS)}
+                    options={HOMEPAGE_OPTIONS}
+                  />
+                </SettingCard>
+
+                <SettingCard
+                  header={{
+                    icon: Clock,
+                    title: t("common.timezone_and_format"),
+                    subtitle: t("common.select_time_display_format"),
+                  }}
+                >
+                  <Fragment>
+                    <div style={{ marginBottom: "12px" }}>
+                      <p
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          color: "#64748b",
+                          margin: "0 0 8px 0",
+                        }}
+                      >
+                        {t("common.time_format")}
+                      </p>
+                      <div className="general-time-format-options">
+                        <div
+                          className={`general-format-option ${
+                            formik.values.timeZone?.timeFormat ===
+                            TIME_FORMAT.H24
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              "timeZone.timeFormat",
+                              TIME_FORMAT.H24,
+                            )
+                          }
+                        >
+                          {t("common.format_24_hour_example")}
+                        </div>
+                        <div
+                          className={`general-format-option ${
+                            formik.values.timeZone?.timeFormat ===
+                            TIME_FORMAT.H12
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              "timeZone.timeFormat",
+                              TIME_FORMAT.H12,
+                            )
+                          }
+                        >
+                          {t("common.format_12_hour_example")}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          color: "#64748b",
+                          margin: "0 0 8px 0",
+                        }}
+                      >
+                        {t("common.date_format")}
+                      </p>
+                      <div className="general-time-format-options">
+                        <div
+                          className={`general-format-option ${
+                            formik.values.timeZone?.dateFormat ===
+                            DATE_FORMAT.DDMMYYYY
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              "timeZone.dateFormat",
+                              DATE_FORMAT.DDMMYYYY,
+                            )
+                          }
+                        >
+                          {t("common.date_dd_mm_yyyy")}
+                        </div>
+                        <div
+                          className={`general-format-option ${
+                            formik.values.timeZone?.dateFormat ===
+                            DATE_FORMAT.MMDDYYYY
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            formik.setFieldValue(
+                              "timeZone.dateFormat",
+                              DATE_FORMAT.MMDDYYYY,
+                            )
+                          }
+                        >
+                          {t("common.date_mm_dd_yyyy")}
+                        </div>
+                      </div>
+                    </div>
+                  </Fragment>
+                </SettingCard>
+
+                <SettingCard
+                  header={{
+                    icon: RefreshCw,
+                    title: t("common.reset_to_defaults"),
+                    subtitle: t("common.reset_all_general_settings"),
+                  }}
+                >
+                  <button
+                    className="general-reset-button"
+                    onClick={resetSettingsModal.onOpen}
+                  >
+                    <RefreshCw size={18} />
+                    {t("common.reset_settings")}
+                  </button>
+                </SettingCard>
               </div>
-            </SettingCard>
-
-            <SettingCard
-              header={{
-                icon: Globe,
-                title: t("common.language"),
-                subtitle: t("common.language"),
-              }}
-            >
-              <CustomSelect
-                buttonTitle={getLabel(LANGUAGE_OPTIONS)}
-                options={LANGUAGE_OPTIONS}
-              />
-            </SettingCard>
-
-            <SettingCard
-              header={{
-                icon: Home,
-                title: t("common.startup_page"),
-                subtitle: t("common.which_page_on_start"),
-              }}
-            >
-              <CustomSelect
-                buttonTitle={getLabel(HOMEPAGE_OPTIONS)}
-                options={HOMEPAGE_OPTIONS}
-              />
-            </SettingCard>
-
-            <SettingCard
-              header={{
-                icon: Clock,
-                title: t("common.timezone_and_format"),
-                subtitle: t("common.select_time_display_format"),
-              }}
-            >
-              <Fragment>
-                <div style={{ marginBottom: "12px" }}>
-                  <p
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      color: "#64748b",
-                      margin: "0 0 8px 0",
-                    }}
-                  >
-                    {t("common.time_format")}
-                  </p>
-                  <div className="general-time-format-options">
-                    <div
-                      className={`general-format-option ${
-                        formik.values.timeZone?.timeFormat === TIME_FORMAT.H24
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        formik.setFieldValue(
-                          "timeZone.timeFormat",
-                          TIME_FORMAT.H24,
-                        )
-                      }
-                    >
-                      {t("common.format_24_hour_example")}
-                    </div>
-                    <div
-                      className={`general-format-option ${
-                        formik.values.timeZone?.timeFormat === TIME_FORMAT.H12
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        formik.setFieldValue(
-                          "timeZone.timeFormat",
-                          TIME_FORMAT.H12,
-                        )
-                      }
-                    >
-                      {t("common.format_12_hour_example")}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <p
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      color: "#64748b",
-                      margin: "0 0 8px 0",
-                    }}
-                  >
-                    {t("common.date_format")}
-                  </p>
-                  <div className="general-time-format-options">
-                    <div
-                      className={`general-format-option ${
-                        formik.values.timeZone?.dateFormat ===
-                        DATE_FORMAT.DDMMYYYY
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        formik.setFieldValue(
-                          "timeZone.dateFormat",
-                          DATE_FORMAT.DDMMYYYY,
-                        )
-                      }
-                    >
-                      {t("common.date_dd_mm_yyyy")}
-                    </div>
-                    <div
-                      className={`general-format-option ${
-                        formik.values.timeZone?.dateFormat ===
-                        DATE_FORMAT.MMDDYYYY
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        formik.setFieldValue(
-                          "timeZone.dateFormat",
-                          DATE_FORMAT.MMDDYYYY,
-                        )
-                      }
-                    >
-                      {t("common.date_mm_dd_yyyy")}
-                    </div>
-                  </div>
-                </div>
-              </Fragment>
-            </SettingCard>
-
-            <SettingCard
-              header={{
-                icon: RefreshCw,
-                title: t("common.reset_to_defaults"),
-                subtitle: t("common.reset_all_general_settings"),
-              }}
-            >
-              <button
-                className="general-reset-button"
-                onClick={resetSettingsModal.onOpen}
-              >
-                <RefreshCw size={18} />
-                {t("common.reset_settings")}
-              </button>
-            </SettingCard>
-          </div>
+            </Fragment>
+          )}
         </div>
       </section>
 

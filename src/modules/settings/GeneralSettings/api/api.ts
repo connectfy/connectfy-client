@@ -28,7 +28,7 @@ export const generalSettingsApi = createApi({
     >({
       query: (data) => ({
         url: API_ENDPOINTS.ACCOUNT.SETTINGS.GENERAL_SETTINGS.UPDATE,
-        method: "POST",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["GeneralSettings"],
@@ -37,7 +37,7 @@ export const generalSettingsApi = createApi({
     resetSettings: builder.mutation<IResetSettings, void>({
       query: () => ({
         url: API_ENDPOINTS.ACCOUNT.SETTINGS.GENERAL_SETTINGS.RESET,
-        method: "POST",
+        method: "PATCH",
       }),
       invalidatesTags: ["GeneralSettings"],
     }),

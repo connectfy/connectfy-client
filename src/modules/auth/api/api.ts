@@ -72,8 +72,8 @@ export const authApi = createApi({
     checkUnique: builder.mutation<boolean, ICheckUnique>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.CHECK_UNIQUE,
-        method: "GET",
-        params: data,
+        method: "POST",
+        body: data,
       }),
       invalidatesTags: ["Auth"],
     }),

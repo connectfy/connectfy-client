@@ -8,6 +8,8 @@ import "flag-icons/css/flag-icons.min.css";
 import { checkDeviceId } from "./common/utils/checkDevice";
 import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
 import { authTokenManager } from "./common/helpers/authToken.manager";
+import { useGetPrivacySettingsQuery } from "./modules/settings/PrivacySettings/api/api";
+import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
 
 function App() {
   const { i18n } = useTranslation();
@@ -17,6 +19,12 @@ function App() {
   const access_token = authTokenManager.getToken("accessToken");
 
   const { data } = useGetGeneralSettingsQuery(undefined, {
+    skip: !access_token,
+  });
+  useGetPrivacySettingsQuery(undefined, {
+    skip: !access_token,
+  });
+  useGetNotificationSettingsQuery(undefined, {
     skip: !access_token,
   });
   const userLang = data?.language;

@@ -19,6 +19,7 @@ import {
 import { ISignupForm, ISignupVerifyForm } from "../../types/types";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { useErrors } from "@/hooks/useErrors";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 const TIMER_DURATION = 60;
 
@@ -52,6 +53,10 @@ const VerifyAccount = () => {
         const res = await signupVerify(values).unwrap();
         if (res) {
           snack.success(t("user_messages.verify_successful"));
+          authTokenManager.setToken({
+            type: "accessToken",
+            token: res.access_token,
+          });
           localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
           localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
           resetForm();

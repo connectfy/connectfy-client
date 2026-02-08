@@ -24,7 +24,7 @@ export const privacySettingsApi = createApi({
     >({
       query: (data) => ({
         url: API_ENDPOINTS.ACCOUNT.SETTINGS.PRIVACY_SETTINGS.UPDATE,
-        method: "POST",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["PrivacySettings"],

@@ -23,12 +23,12 @@ export enum LANGUAGE {
 
 export enum RESOURCE {
   AUTH = "auth",
-  GENERAL_SETTINGS = "general_settings",
-  PRIVACY_SETTINGS = "privacy_settings",
-  NOTIFICATION_SETTINGS = "notification_settings",
+  GENERAL_SETTINGS = "general-settings",
+  PRIVACY_SETTINGS = "privacy-settings",
+  NOTIFICATION_SETTINGS = "notification-settings",
   USER = "user",
   PROFILE = "profile",
-  ACCOUNT_SETTINGS = "account_settings",
+  ACCOUNT_SETTINGS = "account-settings",
 }
 
 export enum ROLE {

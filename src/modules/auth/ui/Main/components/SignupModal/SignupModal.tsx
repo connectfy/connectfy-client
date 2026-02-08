@@ -19,6 +19,7 @@ import CustomDatePicker from "@/components/ui/DatePicker/DatePicker";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Spinner from "@/components/Spinner/Spinner";
 import { useErrors } from "@/hooks/useErrors";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -62,6 +63,10 @@ const SignupModal = ({
         const res = await googleSignup(values).unwrap();
         if (res) {
           snack.success(t("user_messages.signup_successful"));
+          authTokenManager.setToken({
+            type: "accessToken",
+            token: res.access_token,
+          });
           navigate(ROUTER.MESSENGER.MAIN);
           resetForm();
           onClose();

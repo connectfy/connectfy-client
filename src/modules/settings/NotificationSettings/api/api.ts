@@ -27,7 +27,7 @@ export const notificationSettingsApi = createApi({
     >({
       query: (data) => ({
         url: API_ENDPOINTS.ACCOUNT.SETTINGS.NOTIFICATION_SETTINGS.UPDATE,
-        method: "POST",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["NotificationSettings"],
