@@ -69,7 +69,6 @@ const AuthenticateModal: FC<Props> = ({
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       const res = await authenticateUser(values).unwrap();
       if (res) {
         authTokenManager.setToken({
