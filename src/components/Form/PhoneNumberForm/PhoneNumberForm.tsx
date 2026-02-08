@@ -1,12 +1,11 @@
 import { FC, Fragment, useEffect, useMemo, useState } from "react";
-import "./phoneNumberForm.style.css";
 import { COUNTRIES } from "@/common/constants/constants";
 import { useTranslation } from "react-i18next";
 import Input from "@/components/ui/CustomInput/Input/Input.tsx";
-import { Tooltip } from "@mui/material";
 import useBoolean from "@/hooks/useBoolean";
 import CountryCodeModal from "@/components/Modal/CountryCodeModal/CountryCodeModal";
 import { IPhoneNumber } from "@/modules/auth/types/types";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface Props {
   name: string;
@@ -69,17 +68,33 @@ const PhoneNumberForm: FC<Props> = ({
 
   return (
     <Fragment>
-      <div id="phone-number-form">
-        <div className="phone-number-form">
-          <Tooltip placement="top" title={t("common.select_country")}>
-            <div className="country-code" onClick={countryModal.onOpen}>
-              <span className={country.flag}></span>
-              <span>{country.code}</span>
-            </div>
-          </Tooltip>
-          <div className="phone-number">
+      <div id="phone-number-form" className="flex flex-col w-full">
+        {/* Ana konteyner: CSS-dəki .phone-number-form */}
+        <div className="flex w-full gap-3 items-start">
+          {/* Ölkə kodu hissəsi: CSS-dəki .country-code (30%) */}
+
+          <Button
+            type="button"
+            tooltip={t("common.select_country")}
+            onClick={countryModal.onOpen}
+            // Tailwind ilə bütün stillər bura keçirildi
+            className={`
+                  flex items-center justify-center gap-2
+                  md:w-[130px] w-[105px] h-[58px] rounded-lg border transition-all duration-300
+                  bg-(--input-bg) border-(--input-border)
+                  hover:border-(--primary-color)
+                `}
+          >
+            <span className={`${country.flag} scale-125`}></span>
+            <span className="text-(--text-primary) font-medium">
+              {country.code}
+            </span>
+          </Button>
+
+          {/* Telefon nömrəsi hissəsi: CSS-dəki .phone-number (70%) */}
+          <div className="w-full">
             <Input
-              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+              className="w-full px-5 py-4 h-[58px] rounded-xl text-(--text-primary) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
               style={{
                 backgroundColor: "var(--input-bg)",
                 border: "1px solid var(--input-border)",
@@ -90,25 +105,27 @@ const PhoneNumberForm: FC<Props> = ({
               onChange={(e) => {
                 const val = e.target.value;
                 const numericValue = val.replace(/\D/g, "");
-
                 if (
                   !country ||
                   country.numberLength < String(numericValue).length
                 )
                   return;
-
                 setFieldValue(numericValue || null);
               }}
               onBlur={onBlur}
               inputMode="numeric"
               onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : undefined)}
               isError={hasLengthError && blur}
-              // error={}
+              maxLength={country.numberLength}
             />
           </div>
         </div>
+
+        {/* Xəta mesajı */}
         {hasLengthError && blur && (
-          <h6>{t("error_messages.invalid_phone_number_length")}</h6>
+          <h6 className="mt-2 text-red-500 text-sm font-medium">
+            {t("error_messages.invalid_phone_number_length")}
+          </h6>
         )}
       </div>
 

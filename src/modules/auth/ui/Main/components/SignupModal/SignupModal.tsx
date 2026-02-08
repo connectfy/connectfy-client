@@ -173,6 +173,7 @@ const SignupModal = ({
               onBlur={() => formik.setFieldTouched("username", true, false)}
               title={t("common.username")}
               icon={<span className="material-symbols-outlined">person</span>}
+              maxLength={30}
             />
 
             {/* Date Picker */}

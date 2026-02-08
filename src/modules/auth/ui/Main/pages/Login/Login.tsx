@@ -18,6 +18,7 @@ import Button from "@/components/ui/CustomButton/Button/Button";
 import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
@@ -110,15 +111,26 @@ const Login = () => {
       if (e.key === "Enter" && !isDisabled) {
         e.preventDefault();
         formik.handleSubmit();
-      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit1") {
-        e.preventDefault();
-        changeLoginMode("username");
-      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit2") {
-        e.preventDefault();
-        changeLoginMode("email");
-      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit3") {
-        e.preventDefault();
-        changeLoginMode("phoneNumber");
+        return;
+      }
+
+      const modifierPressed = e.shiftKey && e.altKey;
+
+      if (modifierPressed) {
+        switch (e.code) {
+          case "Digit1":
+            e.preventDefault();
+            changeLoginMode("username");
+            break;
+          case "Digit2":
+            e.preventDefault();
+            changeLoginMode("email");
+            break;
+          case "Digit3":
+            e.preventDefault();
+            changeLoginMode("phoneNumber");
+            break;
+        }
       }
     };
 
@@ -142,39 +154,45 @@ const Login = () => {
 
       {/* Login Mode Tabs */}
       <div className="flex border-b border-slate-100 my-4">
-        <Button
-          type="button"
-          className={`cursor-pointer px-4 py-2 w-full text-sm font-bold border-b-2 transition-colors ${
-            loginMode === "username"
-              ? "text-(--primary-color) border-primary"
-              : "text-slate-400 hover:text-slate-600 border-transparent"
-          }`}
-          onClick={() => changeLoginMode("username")}
-        >
-          {t("common.username")}
-        </Button>
-        <Button
-          type="button"
-          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
-            loginMode === "email"
-              ? "text-(--primary-color) border-primary"
-              : "text-slate-400 hover:text-slate-600 border-transparent"
-          }`}
-          onClick={() => changeLoginMode("email")}
-        >
-          {t("common.email")}
-        </Button>
-        <Button
-          type="button"
-          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
-            loginMode === "phoneNumber"
-              ? "text-(--primary-color) border-primary"
-              : "text-slate-400 hover:text-slate-600 border-transparent"
-          }`}
-          onClick={() => changeLoginMode("phoneNumber")}
-        >
-          {t("common.phoneNumber")}
-        </Button>
+        <ShortcutTooltip keys={["Shift", "Alt", "1"]}>
+          <Button
+            type="button"
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-bold border-b-2 transition-colors ${
+              loginMode === "username"
+                ? "text-(--primary-color) border-primary"
+                : "text-slate-400 hover:text-slate-600 border-transparent"
+            }`}
+            onClick={() => changeLoginMode("username")}
+          >
+            {t("common.username")}
+          </Button>
+        </ShortcutTooltip>
+        <ShortcutTooltip keys={["Shift", "Alt", "2"]}>
+          <Button
+            type="button"
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+              loginMode === "email"
+                ? "text-(--primary-color) border-primary"
+                : "text-slate-400 hover:text-slate-600 border-transparent"
+            }`}
+            onClick={() => changeLoginMode("email")}
+          >
+            {t("common.email")}
+          </Button>
+        </ShortcutTooltip>
+        <ShortcutTooltip keys={["Shift", "Alt", "3"]}>
+          <Button
+            type="button"
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+              loginMode === "phoneNumber"
+                ? "text-(--primary-color) border-primary"
+                : "text-slate-400 hover:text-slate-600 border-transparent"
+            }`}
+            onClick={() => changeLoginMode("phoneNumber")}
+          >
+            {t("common.phoneNumber")}
+          </Button>
+        </ShortcutTooltip>
       </div>
 
       {/* Login Form */}
@@ -200,6 +218,7 @@ const Login = () => {
                 !!(formik.touched.identifier && formik.errors.identifier)
               }
               error={formik.errors.identifier}
+              maxLength={30}
             />
           )}
 
@@ -222,6 +241,7 @@ const Login = () => {
                 !!(formik.touched.identifier && formik.errors.identifier)
               }
               error={formik.errors.identifier}
+              maxLength={254}
             />
           )}
 
@@ -251,6 +271,7 @@ const Login = () => {
             value={formik.values.password || ""}
             isError={!!(formik.touched.password && formik.errors.password)}
             error={formik.errors.password}
+            maxLength={30}
           />
           <div className="flex justify-end items-center ml-1">
             <Link

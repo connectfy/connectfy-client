@@ -150,6 +150,7 @@ const ResetPassword = () => {
                 }}
                 isError={!!formik.errors.password}
                 error={formik.errors.password}
+                maxLength={30}
               />
               <PasswordInput
                 title={t("common.confirm_password")}
@@ -169,6 +170,7 @@ const ResetPassword = () => {
                 }
                 isError={!!formik.errors.confirmPassword}
                 error={formik.errors.confirmPassword}
+                maxLength={30}
               />
             </div>
             <div className="flex flex-col items-center gap-4">

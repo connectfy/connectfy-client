@@ -14,6 +14,7 @@ import Input from "@/components/ui/CustomInput/Input/Input";
 import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import { useForgotPasswordMutation } from "../../api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 
 const FORGOT_PASSWORD_MODES: ForgotPasswordModeType[] = [
   "email",
@@ -79,10 +80,10 @@ const ForgotPassword = () => {
       } else if (e.key === "Escape") {
         e.preventDefault();
         navigate(ROUTER.AUTH.MAIN);
-      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit1") {
+      } else if (e.shiftKey && e.altKey && e.code === "Digit1") {
         e.preventDefault();
         changeForgotPasswordMode("email");
-      } else if (e.shiftKey && e.ctrlKey && e.code === "Digit2") {
+      } else if (e.shiftKey && e.altKey && e.code === "Digit2") {
         e.preventDefault();
         changeForgotPasswordMode("phoneNumber");
       }
@@ -108,28 +109,32 @@ const ForgotPassword = () => {
 
       {/* Login Mode Tabs */}
       <div className="flex border-b border-slate-100 my-4">
-        <Button
-          type="button"
-          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
-            forgotPasswordMode === "email"
-              ? "text-(--primary-color) border-primary"
-              : "text-slate-400 hover:text-slate-600 border-transparent"
-          }`}
-          onClick={() => changeForgotPasswordMode("email")}
-        >
-          {t("common.email")}
-        </Button>
-        <Button
-          type="button"
-          className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
-            forgotPasswordMode === "phoneNumber"
-              ? "text-(--primary-color) border-primary"
-              : "text-slate-400 hover:text-slate-600 border-transparent"
-          }`}
-          onClick={() => changeForgotPasswordMode("phoneNumber")}
-        >
-          {t("common.phoneNumber")}
-        </Button>
+        <ShortcutTooltip keys={["Shift", "Alt", "1"]}>
+          <Button
+            type="button"
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+              forgotPasswordMode === "email"
+                ? "text-(--primary-color) border-primary"
+                : "text-slate-400 hover:text-slate-600 border-transparent"
+            }`}
+            onClick={() => changeForgotPasswordMode("email")}
+          >
+            {t("common.email")}
+          </Button>
+        </ShortcutTooltip>
+        <ShortcutTooltip keys={["Shift", "Alt", "2"]}>
+          <Button
+            type="button"
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+              forgotPasswordMode === "phoneNumber"
+                ? "text-(--primary-color) border-primary"
+                : "text-slate-400 hover:text-slate-600 border-transparent"
+            }`}
+            onClick={() => changeForgotPasswordMode("phoneNumber")}
+          >
+            {t("common.phoneNumber")}
+          </Button>
+        </ShortcutTooltip>
       </div>
 
       {/* Login Form */}
@@ -155,6 +160,7 @@ const ForgotPassword = () => {
                 !!(formik.touched.identifier && formik.errors.identifier)
               }
               error={formik.errors.identifier}
+              maxLength={254}
             />
           )}
 

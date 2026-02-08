@@ -132,6 +132,7 @@ const Signup = () => {
               onChange={formik.handleChange}
               isError={!!formik.errors.firstName}
               error={formik.errors.firstName}
+              maxLength={50}
             />
           </div>
           <div className="space-y-1.5">
@@ -146,6 +147,7 @@ const Signup = () => {
               onChange={formik.handleChange}
               isError={!!formik.errors.lastName}
               error={formik.errors.lastName}
+              maxLength={50}
             />
           </div>
         </div>
@@ -162,6 +164,7 @@ const Signup = () => {
               onChange={formik.handleChange}
               isError={!!formik.errors.username}
               error={formik.errors.username}
+              maxLength={30}
             />
           </div>
           <div className="space-y-1.5">
@@ -176,6 +179,7 @@ const Signup = () => {
               onChange={formik.handleChange}
               isError={!!formik.errors.email}
               error={formik.errors.email}
+              maxLength={254}
             />
           </div>
         </div>
@@ -219,6 +223,7 @@ const Signup = () => {
                 onChange={formik.handleChange}
                 isError={!!formik.errors.password}
                 error={formik.errors.password}
+                maxLength={30}
               />
             </div>
           </div>
@@ -234,6 +239,7 @@ const Signup = () => {
                 onChange={formik.handleChange}
                 isError={!!formik.errors.confirm}
                 error={formik.errors.confirm}
+                maxLength={30}
               />
             </div>
           </div>

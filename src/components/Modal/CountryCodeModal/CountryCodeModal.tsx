@@ -30,7 +30,7 @@ export const CountryCodeModal: FC<Props> = ({
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.code.toLowerCase().includes(q) ||
-        c.key.toLowerCase().includes(q)
+        c.key.toLowerCase().includes(q),
     );
   }, [query]);
 
@@ -47,10 +47,7 @@ export const CountryCodeModal: FC<Props> = ({
       closeAfterTransition
     >
       <Slide direction="up" in={open}>
-        <Box
-          className="country-modal-backdrop"
-          onClick={onClose}
-        >
+        <Box className="country-modal-backdrop" onClick={onClose}>
           <Box
             className="country-modal-paper"
             role="dialog"
@@ -89,7 +86,9 @@ export const CountryCodeModal: FC<Props> = ({
                         aria-hidden="true"
                       />
                       <div className="country-meta">
-                        <div className="country-name">{t(`countries.${c.name}`)}</div>
+                        <div className="country-name">
+                          {t(`countries.${c.name}`)}
+                        </div>
                         <div className="country-code">{c.code}</div>
                       </div>
                     </button>

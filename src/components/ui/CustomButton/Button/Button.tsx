@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/material";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 import React, { FC, ReactNode } from "react";
 
 export interface CustomButtonProps
@@ -9,6 +9,7 @@ export interface CustomButtonProps
   loadingText?: string;
   tooltip?: string;
   children?: ReactNode;
+  tooltipPosition?: "top" | "bottom" | "left" | "right";
 }
 
 const Button: FC<CustomButtonProps> = ({
@@ -20,6 +21,7 @@ const Button: FC<CustomButtonProps> = ({
   disabled,
   className = "",
   children,
+  tooltipPosition,
   ...props
 }) => {
   const content = children ? (
@@ -75,9 +77,9 @@ const Button: FC<CustomButtonProps> = ({
   }
 
   return (
-    <Tooltip title={tooltip} placement="top">
+    <TextTooltip text={tooltip} position={tooltipPosition}>
       <span className="inline-flex">{buttonElement}</span>
-    </Tooltip>
+    </TextTooltip>
   );
 };
 
