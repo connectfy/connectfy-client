@@ -14,6 +14,7 @@ import {
   useGoogleLoginMutation,
 } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { authTokenManager } from "@/common/helpers/authToken.manager";
 
 const MainFooter = () => {
   const { t } = useTranslation();
@@ -60,6 +61,10 @@ const MainFooter = () => {
           if (res) {
             localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
             localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
+            authTokenManager.setToken({
+              type: "accessToken",
+              token: res.access_token,
+            });
             snack.success(t("user_messages.login_successful"));
             navigate(ROUTER.MAIN);
           }
