@@ -7,7 +7,7 @@ import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 export const profileApi = createApi({
   reducerPath: RESOURCE.PROFILE,
   baseQuery: baseQuery,
-  tagTypes: ["Profile"],
+  tagTypes: ["User"],
   endpoints: (builder) => ({
     // ====================== GET ME
     getMe: builder.query<IMe, void>({
@@ -15,7 +15,10 @@ export const profileApi = createApi({
         url: API_ENDPOINTS.USER.ME,
         method: "POST",
       }),
-      providesTags: ["Profile"],
+      providesTags: (result) =>
+        result && result.user && result.user._id
+          ? [{ type: "User", id: result.user._id }]
+          : [{ type: "User", id: "LIST" }],
     }),
   }),
 });

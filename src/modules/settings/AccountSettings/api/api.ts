@@ -19,11 +19,14 @@ import {
   IVerifyChangeEmailResponse,
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
+import { profileApi } from "@/modules/profile/api/api";
+import { snack } from "@/common/utils/snackManager";
+import { t } from "i18next";
 
 export const accountSettingsApi = createApi({
   reducerPath: RESOURCE.ACCOUNT_SETTINGS,
   baseQuery: baseQuery,
-  tagTypes: ["AccountSettings"],
+  tagTypes: ["User", "AccountSettings"],
   endpoints: (builder) => ({
     // ====================== UPDATE USERNAME
     updateUsername: builder.mutation<IUpdateUsernameResponse, IUpdateUsername>({
@@ -32,8 +35,39 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+      /**
+       * Optimistic update: instantly update profileApi.getMe cache.
+       * We patch getMe (undefined arg) because getMe takes void in your code.
+       * Rollback on failure.
+       */
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        // apply optimistic change to getMe
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
+            // guard: draft.user might be undefined in some cases
+            if (draft?.user) {
+              draft.user.username = arg.username;
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          // rollback if API fails
+          patchResult.undo();
+        }
+      },
+      /**
+       * Invalidate the User tag so other subscribers (if any) refetch.
+       * If the response includes the updated user id, return it; otherwise fallback to LIST.
+       */
+      invalidatesTags: (result) =>
+        result && result._id
+          ? [{ type: "User", id: result._id }]
+          : [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== UPDATE EMAIL
     updateEmail: builder.mutation<IUpdateEmailResponse, IUpdateEmail>({
       query: (data) => ({
@@ -41,8 +75,9 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== UPDATE PASSWORD
     updatePassword: builder.mutation<IUpdatePasswordResponse, IUpdatePassword>({
       query: (data) => ({
@@ -50,8 +85,9 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== VERIFY CHANGE EMAIL
     verifyChangeEmail: builder.mutation<
       IVerifyChangeEmailResponse,
@@ -62,8 +98,31 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          dispatch(
+            profileApi.util.updateQueryData(
+              "getMe",
+              undefined,
+              (draft: any) => {
+                if (draft?.user) {
+                  draft.user.email = data.email;
+                  draft.user.updatedAt = data.updatedAt;
+                }
+              },
+            ),
+          );
+        } catch {
+          snack.error(t("error_messages.process_failed"));
+        }
+      },
+
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== UPDATE PHONE NUMBER
     updatePhoneNumber: builder.mutation<
       IUpdatePhoneNumberResponse,
@@ -74,16 +133,35 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
+            if (draft?.user) {
+              draft.user.phoneNumber = arg.phoneNumber;
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== LOGOUT
     logout: builder.mutation<ILogoutResponse, void>({
       query: () => ({
         url: API_ENDPOINTS.AUTH.LOGOUT,
         method: "POST",
       }),
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== DELETE ACCOUNT
     deleteAccount: builder.mutation<IDeleteAccountResponse, IDeleteAccount>({
       query: (data) => ({
@@ -91,8 +169,9 @@ export const accountSettingsApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
     // ====================== DEACTIVATE ACCOUNT
     deactivateAccount: builder.mutation<
       IDeactivateAccountResponse,
@@ -103,7 +182,7 @@ export const accountSettingsApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
   }),
 });
