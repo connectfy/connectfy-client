@@ -6,7 +6,6 @@ import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import axios, { AxiosError } from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import { checkDeviceId } from "../utils/checkDevice";
-import { authTokenManager } from "../helpers/authToken.manager";
 import { securityEvents } from "../helpers/security.events";
 
 const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api/v1`;
@@ -45,13 +44,13 @@ const processQueue = (error: any = null, token: string | null = null) => {
 
 /**
  * Request interceptor:
- * - inject Authorization from authTokenManager
  * - attach _lang param consistently (handles JSON, FormData, and GET params)
  */
 api.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
     const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
-    const token = authTokenManager.getToken("accessToken");
+    const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+
     const isRefreshEndpoint = config.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
 
     // Authorization tənzimləməsi
@@ -143,10 +142,7 @@ api.interceptors.response.use(
           throw new Error("No access token in refresh response");
         }
 
-        authTokenManager.setToken({
-          token: newAccessToken,
-          type: "accessToken",
-        });
+        localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, newAccessToken);
 
         processQueue(null, newAccessToken);
 
@@ -155,7 +151,7 @@ api.interceptors.response.use(
         return api.request(originalRequest);
       } catch (refreshErr) {
         processQueue(refreshErr, null);
-        authTokenManager.clear("all");
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
 
         securityEvents.emit("FORCE_LOGOUT");
         return Promise.reject(refreshErr);

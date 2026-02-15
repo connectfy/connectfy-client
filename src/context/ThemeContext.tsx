@@ -1,7 +1,7 @@
 import { LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 interface ThemeContextType {
   theme: THEME;
@@ -13,7 +13,8 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const access_token = authTokenManager.getToken("accessToken");
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
 
   const { data } = useGetGeneralSettingsQuery(undefined, {
     skip: !access_token,

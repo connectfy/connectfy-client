@@ -13,7 +13,7 @@ import { COUNTRIES } from "@/common/constants/constants";
 import { ChevronRight, Pencil, Trash } from "lucide-react";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -29,7 +29,8 @@ enum ModalView {
 const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const authToken = authTokenManager.getToken("authenticateToken");
+  const { getToken } = useAuthTokenManager();
+  const authToken = getToken("authenticateToken");
 
   const { data: me } = useGetMeQuery();
   const [updatePhoneNumber, { isLoading: LOADING_UPDATE_PHONE_NUMBER }] =

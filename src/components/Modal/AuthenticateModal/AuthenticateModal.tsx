@@ -12,7 +12,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { IAuthenticateUser } from "@/modules/auth/types/types";
 import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
 import { useGetMeQuery } from "@/modules/profile/api/api";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 interface Props {
   open: boolean;
@@ -27,6 +27,7 @@ const AuthenticateModal: FC<Props> = ({
   onAuthenticate,
   authType,
 }) => {
+  const { setToken } = useAuthTokenManager();
   const { t } = useTranslation();
 
   const [
@@ -71,7 +72,7 @@ const AuthenticateModal: FC<Props> = ({
     onSubmit: async (values, { resetForm }) => {
       const res = await authenticateUser(values).unwrap();
       if (res) {
-        authTokenManager.setToken({
+        setToken({
           token: res.token,
           type: "authenticateToken",
         });
@@ -133,7 +134,7 @@ const AuthenticateModal: FC<Props> = ({
 
     const res = await authenticateUser(finalValues).unwrap();
     if (res) {
-      authTokenManager.setToken({
+      setToken({
         token: res.token,
         type: "accessToken",
       });

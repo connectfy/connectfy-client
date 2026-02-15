@@ -11,7 +11,7 @@ import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { IDeleteAccount } from "../../../../types/types";
 import { useDeleteAccountMutation } from "@/modules/settings/AccountSettings/api/api";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -22,8 +22,9 @@ interface Props {
 const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { getToken, clear } = useAuthTokenManager();
 
-  const authToken = authTokenManager.getToken("authenticateToken");
+  const authToken = getToken("authenticateToken");
 
   const { showResponseErrors } = useErrors();
 
@@ -56,7 +57,7 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
           resetForm();
           onClose();
           navigate(ROUTER.AUTH.MAIN);
-          authTokenManager.clear("all");
+          clear("all");
           snack.success(t("user_messages.account_deleted"));
         }
       } catch (error) {

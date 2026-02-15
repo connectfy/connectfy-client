@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { useUpdateEmailMutation } from "@/modules/settings/AccountSettings/api/api";
 import Input from "@/components/Input/Input";
 import { useGetMeQuery } from "@/modules/profile/api/api";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -19,7 +19,8 @@ interface Props {
 const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const authToken = authTokenManager.getToken("authenticateToken");
+  const { getToken } = useAuthTokenManager();
+  const authToken = getToken("authenticateToken");
 
   const { showResponseErrors } = useErrors();
 

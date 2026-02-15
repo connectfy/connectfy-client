@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from "react";
-import { IDENTIFIER_TYPE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import { IDENTIFIER_TYPE } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { loginInitialState } from "../../../../constants/intialState";
 import { validateLogin } from "../../../../constants/validation";
@@ -17,7 +17,7 @@ import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
@@ -25,6 +25,7 @@ const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { setToken } = useAuthTokenManager();
   const [searchParams, setSearchParams] = useSearchParams();
   const { showResponseErrors } = useErrors();
 
@@ -51,12 +52,10 @@ const Login = () => {
 
         if (res) {
           snack.success(t("user_messages.login_successful"));
-          authTokenManager.setToken({
+          setToken({
             type: "accessToken",
             token: res.access_token,
           });
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
           navigate(ROUTER.MAIN);
           resetForm();
         }

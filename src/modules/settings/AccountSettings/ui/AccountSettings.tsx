@@ -46,7 +46,7 @@ import PhoneNumberModal from "./components/Modal/PhoneNumberModal/PhoneNumberMod
 import { DDMMMMYYY, showDateWithHour } from "@/common/utils/formatDate";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import {
   useDeactivateAccountMutation,
@@ -54,15 +54,18 @@ import {
   useVerifyChangeEmailMutation,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { useTheme } from "@/context/ThemeContext";
 
 const AccountSettings: FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { getToken, clear } = useAuthTokenManager();
   const [searchParams, setSearchParams] = useSearchParams();
-  const authToken = authTokenManager.getToken("authenticateToken");
+  const authToken = getToken("authenticateToken");
 
   const processedTokenRef = useRef<string | null>(null);
   const { showResponseErrors } = useErrors();
+  const { theme } = useTheme();
 
   const { data: me } = useGetMeQuery();
   const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();
@@ -136,15 +139,9 @@ const AccountSettings: FC = () => {
       const res = await logout().unwrap();
 
       if (res) {
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.APP_THEME,
-          me!.settings.generalSettings.theme,
-        );
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.LANG,
-          me!.settings.generalSettings.language,
-        );
-        authTokenManager.clear("all");
+        clear("all");
+        localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
         navigate(ROUTER.AUTH.MAIN);
         snack.success(t("user_messages.logout_successfull"));
       }
@@ -168,7 +165,7 @@ const AccountSettings: FC = () => {
           LOCAL_STORAGE_KEYS.LANG,
           me!.settings.generalSettings.language,
         );
-        authTokenManager.clear("all");
+        clear("all");
         navigate(ROUTER.AUTH.MAIN);
         snack.success(t("user_messages.account_deactivated"));
       }

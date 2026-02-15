@@ -7,16 +7,19 @@ import "@/styles/index.css";
 import "flag-icons/css/flag-icons.min.css";
 import { checkDeviceId } from "./common/utils/checkDevice";
 import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
-import { authTokenManager } from "./common/helpers/authToken.manager";
+import { useAuthTokenManager } from "./common/helpers/authToken.manager";
 import { useGetPrivacySettingsQuery } from "./modules/settings/PrivacySettings/api/api";
 import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
+import { useTheme } from "./context/ThemeContext";
 
 function App() {
   const { i18n } = useTranslation();
   const content = useRoutes(routes);
+  const { toggleTheme } = useTheme();
   const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
   const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
-  const access_token = authTokenManager.getToken("accessToken");
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
 
   const { data } = useGetGeneralSettingsQuery(undefined, {
     skip: !access_token,
@@ -28,23 +31,38 @@ function App() {
     skip: !access_token,
   });
   const userLang = data?.language;
+  const userTheme = data?.theme;
+
+  console.log("data: ", data);
 
   useEffect(() => {
-    if (userLang) {
-      i18n.changeLanguage(userLang);
+    if (!access_token) {
+      const availableLangs = Object.values(LANGUAGE);
+      const validLang =
+        lang && availableLangs.includes(lang as LANGUAGE)
+          ? (lang as LANGUAGE)
+          : LANGUAGE.EN;
+
+      i18n.changeLanguage(validLang);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, validLang);
       return;
     }
 
-    const availableLangs = Object.values(LANGUAGE);
+    console.log("userLang && access_token: ", userLang && access_token);
 
-    const validLang =
-      lang && availableLangs.includes(lang as LANGUAGE)
-        ? (lang as LANGUAGE)
-        : LANGUAGE.EN;
+    if (userLang && access_token) {
+      console.log("access_token: ", access_token);
+      i18n.changeLanguage(userLang);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
+    }
+  }, [lang, i18n, userLang, access_token]);
 
-    i18n.changeLanguage(validLang);
-    localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, validLang);
-  }, [lang, i18n, userLang]);
+  useEffect(() => {
+    if (userTheme) {
+      toggleTheme(userTheme);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
+    }
+  }, [userTheme]);
 
   useEffect(() => {
     checkDeviceId();

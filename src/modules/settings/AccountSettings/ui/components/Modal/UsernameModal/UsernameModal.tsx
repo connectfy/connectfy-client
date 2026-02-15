@@ -9,7 +9,7 @@ import Input from "@/components/Input/Input";
 import { snack } from "@/common/utils/snackManager";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -26,7 +26,8 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     { isLoading: LOADING_UPDATE_USERNAME, error: ERROR_UPDATE_USERNAME },
   ] = useUpdateUsernameMutation();
 
-  const authToken = authTokenManager.getToken("authenticateToken");
+  const { getToken } = useAuthTokenManager();
+  const authToken = getToken("authenticateToken");
   const { showResponseErrors } = useErrors();
 
   const initialState: IUpdateUsername = {

@@ -7,18 +7,19 @@ import { checkDeviceId } from "@/common/utils/checkDevice";
 import { ROUTER } from "@/common/constants/routet";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
-import { CHECK_UNIQUE_FIELD, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";
 import { jwtDecode } from "jwt-decode";
 import {
   useCheckUniqueMutation,
   useGoogleLoginMutation,
 } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { authTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const MainFooter = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { setToken } = useAuthTokenManager();
 
   const [checkUnique, { isLoading: LOADING_CHECK_UNIQUE }] =
     useCheckUniqueMutation();
@@ -59,9 +60,7 @@ const MainFooter = () => {
           const deviceId = checkDeviceId();
           const res = await googleLogin({ idToken, deviceId }).unwrap();
           if (res) {
-            localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
-            localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
-            authTokenManager.setToken({
+            setToken({
               type: "accessToken",
               token: res.access_token,
             });
