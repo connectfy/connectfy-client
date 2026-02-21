@@ -27,7 +27,7 @@ const Button: FC<CustomButtonProps> = ({
   const content = children ? (
     children
   ) : (
-    <div className={`flex items-center justify-center gap-2`}>
+    <div className="flex items-center justify-center gap-2">
       {isLoading ? (
         <>
           <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -45,18 +45,17 @@ const Button: FC<CustomButtonProps> = ({
               d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
             />
           </svg>
-
           {loadingText && <span>{loadingText}</span>}
         </>
-      ) : (
+      ) : icon ? (
         <>
-          {icon && (
-            <span aria-hidden="true" className="mt-1.5">
-              {icon}
-            </span>
-          )}
-          {title && <span>{title}</span>}
+          <span aria-hidden="true" className="mt-1.5">
+            {icon}
+          </span>
+          {title && <span className="hidden sm:inline">{title}</span>}
         </>
+      ) : (
+        <>{title && <span>{title}</span>}</>
       )}
     </div>
   );
@@ -66,7 +65,13 @@ const Button: FC<CustomButtonProps> = ({
       {...props}
       disabled={disabled || isLoading}
       aria-busy={isLoading}
-      className={`${className} ${disabled || isLoading ? "opacity-70" : ""} ${isLoading ? "cursor-wait" : disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+      className={`${className} ${disabled || isLoading ? "opacity-70" : ""} ${
+        isLoading
+          ? "cursor-wait"
+          : disabled
+            ? "cursor-not-allowed"
+            : "cursor-pointer"
+      }`}
     >
       {content}
     </button>

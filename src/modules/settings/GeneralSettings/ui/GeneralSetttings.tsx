@@ -152,9 +152,9 @@ const GeneralSettings = () => {
             headerTitle={t("common.general_settings")}
             headerSubtitle={t("common.configure_app_settings")}
             onClickBack={onClickBack}
-            onClickSave={formik.handleSubmit}
-            showChangesButton
-            isChangesDisasbled={!formik.dirty || LOADING_UPDATE}
+            onHeaderButtonClick={formik.handleSubmit}
+            showHeaderButton
+            isHeaderButtonDisabled={!formik.dirty || LOADING_UPDATE}
             isLoading={LOADING_UPDATE}
           />
 

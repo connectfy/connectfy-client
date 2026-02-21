@@ -303,7 +303,7 @@ const AccountSettings: FC = () => {
             headerTitle={t("common.account_settings")}
             headerSubtitle={t("common.manage_account_info")}
             onClickBack={onClickBack}
-            isChangesDisasbled={false}
+            isHeaderButtonDisabled={false}
           />
 
           <div className="account-settings-content">

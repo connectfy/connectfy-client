@@ -95,9 +95,11 @@ const NotificationSettings = () => {
             headerTitle={t("common.notification_header")}
             headerSubtitle={t("common.notification_subheader")}
             onClickBack={onClickBack}
-            onClickSave={formik.handleSubmit}
-            showChangesButton
-            isChangesDisasbled={!formik.dirty || LOADING_UPDATE || LOADING_GET}
+            onHeaderButtonClick={formik.handleSubmit}
+            showHeaderButton
+            isHeaderButtonDisabled={
+              !formik.dirty || LOADING_UPDATE || LOADING_GET
+            }
             isLoading={LOADING_UPDATE}
           />
 

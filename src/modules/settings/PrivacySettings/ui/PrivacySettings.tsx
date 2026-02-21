@@ -115,9 +115,9 @@ const PrivacySettings = () => {
             headerTitle={t("common.privacy_header")}
             headerSubtitle={t("common.privacy_description")}
             onClickBack={onClickBack}
-            onClickSave={formik.handleSubmit}
-            showChangesButton
-            isChangesDisasbled={!formik.dirty || LOADING_UPDATE}
+            onHeaderButtonClick={formik.handleSubmit}
+            showHeaderButton
+            isHeaderButtonDisabled={!formik.dirty || LOADING_UPDATE}
             isLoading={LOADING_UPDATE}
           />
 
