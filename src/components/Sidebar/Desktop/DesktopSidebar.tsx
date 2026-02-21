@@ -15,6 +15,8 @@ import { useTranslation } from "react-i18next";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { Avatar } from "@mui/material";
 import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const DesktopSidebar = () => {
   const { t } = useTranslation();
@@ -22,7 +24,16 @@ const DesktopSidebar = () => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
-  const { data: userData } = useGetMeQuery();
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: settingsData, isLoading: settingsLoading } =
+    useGetGeneralSettingsQuery(undefined, {
+      skip: !access_token,
+    });
 
   const menuItems = useMemo(
     () => [
@@ -96,8 +107,8 @@ const DesktopSidebar = () => {
             <div
               className="logo-container"
               onClick={() => {
-                const startup =
-                  userData?.settings?.generalSettings?.startupPage;
+                if (settingsLoading) return;
+                const startup = settingsData?.startupPage;
                 navigate(getHomeRouteByStartup(startup));
               }}
             >
@@ -155,11 +166,8 @@ const DesktopSidebar = () => {
               }}
             >
               <div className="avatar">
-                {userData?.account.avatar ? (
-                  <Avatar
-                    src={userData?.account.avatar}
-                    sx={{ borderRadius: "50%" }}
-                  />
+                {user?.avatar ? (
+                  <Avatar src={user?.avatar} sx={{ borderRadius: "50%" }} />
                 ) : (
                   <div className="default-avatar">
                     <User size={20} />

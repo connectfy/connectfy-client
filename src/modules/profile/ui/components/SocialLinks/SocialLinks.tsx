@@ -10,10 +10,11 @@ import {
 import "./socialLinks.style.css";
 import { memo, useState } from "react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
-import { IMe, ISocialLink } from "@/modules/profile/types/types";
+import { ISocialLink } from "@/modules/profile/types/types";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
@@ -113,9 +114,13 @@ const SocialLinkItem = memo(
 const SocialLinks = () => {
   const { t } = useTranslation();
 
-  const { data: profile } = useGetMeQuery();
-  const { socialLinks, settings } = profile as IMe;
-  const { privacySettings } = settings;
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const socialLinks: ISocialLink[] = [];
+  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
+    skip: !access_token,
+  });
 
   const handleSocialAction = (action: string, link: ISocialLink) => {
     switch (action) {
@@ -145,7 +150,7 @@ const SocialLinks = () => {
         </h2>
         <div className="profile-page-section-actions">
           <PrivacyIcon
-            privacy={privacySettings.socialLinks}
+            privacy={privacySettings!.socialLinks}
             fieldName="socialLinks"
           />
           <button

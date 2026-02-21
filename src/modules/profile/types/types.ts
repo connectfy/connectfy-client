@@ -1,8 +1,11 @@
-import { GENDER, PROVIDER, ROLE, SOCIAL_LINK_PLATFORM } from "@/common/enums/enums";
+import {
+  GENDER,
+  LANGUAGE,
+  PROVIDER,
+  ROLE,
+  SOCIAL_LINK_PLATFORM,
+} from "@/common/enums/enums";
 import { IPhoneNumber } from "@/modules/auth/types/types";
-import { IGeneralSettings } from "@/modules/settings/GeneralSettings/types/types";
-import { INotificationSettings } from "@/modules/settings/NotificationSettings/types/types";
-import { IPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 
 export interface IAccount {
   _id: string;
@@ -28,17 +31,10 @@ export interface IUser {
   updatedAt: Date;
 }
 
-export interface IMe {
-  user: IUser;
-  account: IAccount;
-  settings: {
-    generalSettings: IGeneralSettings;
-    notificationSettings: INotificationSettings;
-    privacySettings: IPrivacySettings;
-  };
-  socialLinks: ISocialLink[];
+export interface IMe extends IUser {
+  avatar: string | null;
+  language: LANGUAGE;
 }
-
 
 export interface ISocialLink {
   _id: string;

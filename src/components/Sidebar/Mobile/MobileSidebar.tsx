@@ -6,13 +6,19 @@ import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/material";
 import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const MobileSidebar = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data: userData } = useGetMeQuery();
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data: userData } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
 
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
@@ -104,9 +110,9 @@ const MobileSidebar = () => {
             >
               <div className="mobile-icon-wrapper">
                 {item.key === "profile" ? (
-                  userData?.account.avatar ? (
+                  userData?.avatar ? (
                     <Avatar
-                      src={userData?.account.avatar}
+                      src={userData?.avatar}
                       sx={{
                         borderRadius: "50%",
                         width: "25px",

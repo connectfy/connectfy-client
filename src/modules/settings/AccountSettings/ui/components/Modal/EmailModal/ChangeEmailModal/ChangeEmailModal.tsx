@@ -20,11 +20,15 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
   const { getToken } = useAuthTokenManager();
-  const authToken = getToken("authenticateToken");
+  const { accessToken: access_token, authenticateToken: authToken } = getToken(
+    "all",
+  ) as { accessToken: string; authenticateToken: string };
 
   const { showResponseErrors } = useErrors();
 
-  const { data: me } = useGetMeQuery();
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
   const [
     updateEmail,
     { isLoading: LOADING_UPDATE_EMAIL, error: ERROR_UPDATE_EMAIL },
@@ -316,7 +320,7 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
                 disabled={
                   LOADING_UPDATE_EMAIL ||
                   !formik.values.email ||
-                  me?.user.email === formik.values.email
+                  user?.email === formik.values.email
                 }
               >
                 {LOADING_UPDATE_EMAIL ? (

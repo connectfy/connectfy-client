@@ -47,7 +47,7 @@ import { DDMMMMYYY, showDateWithHour } from "@/common/utils/formatDate";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
 import {
   useDeactivateAccountMutation,
   useLogoutMutation,
@@ -55,26 +55,38 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
+import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
 
 const AccountSettings: FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { getToken, clear } = useAuthTokenManager();
   const [searchParams, setSearchParams] = useSearchParams();
-  const authToken = getToken("authenticateToken");
+  const { accessToken: access_token, authenticateToken: authToken } = getToken(
+    "all",
+  ) as { accessToken: string; authenticateToken: string };
 
   const processedTokenRef = useRef<string | null>(null);
   const { showResponseErrors } = useErrors();
   const { theme } = useTheme();
 
-  const { data: me } = useGetMeQuery();
+  const { data: me } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: account } = useGetAccountQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: generalSettings } = useGetGeneralSettingsQuery(undefined, {
+    skip: !access_token,
+  });
+
   const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();
   const [deactivateAccount, { isLoading: LOADING_DEACTIVATE_ACCOUNT }] =
     useDeactivateAccountMutation();
   const [verifyChangeEmail, { isLoading: LOADING_VERIFY_CHANGE_EMAIL }] =
     useVerifyChangeEmailMutation();
 
-  const { user } = me ?? {};
+  const user = me;
 
   const [authModal, setAuthModal] = useState<{
     open: boolean;
@@ -157,14 +169,8 @@ const AccountSettings: FC = () => {
       }).unwrap();
 
       if (res) {
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.APP_THEME,
-          me!.settings.generalSettings.theme,
-        );
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.LANG,
-          me!.settings.generalSettings.language,
-        );
+        localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
         clear("all");
         navigate(ROUTER.AUTH.MAIN);
         snack.success(t("user_messages.account_deactivated"));
@@ -331,11 +337,9 @@ const AccountSettings: FC = () => {
                   <p className="account-info-item-value">
                     <Clock size={16} className="account-info-item-icon" />
                     {showDateWithHour(
-                      me?.account.lastSeen as Date,
-                      me?.settings.generalSettings.timeZone
-                        .dateFormat as DATE_FORMAT,
-                      me?.settings.generalSettings.timeZone
-                        .timeFormat as TIME_FORMAT,
+                      account?.lastSeen as Date,
+                      generalSettings?.timeZone.dateFormat as DATE_FORMAT,
+                      generalSettings?.timeZone.timeFormat as TIME_FORMAT,
                       " - ",
                     )}
                   </p>

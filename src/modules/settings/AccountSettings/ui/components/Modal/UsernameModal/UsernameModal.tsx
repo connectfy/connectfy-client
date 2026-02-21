@@ -20,14 +20,18 @@ interface Props {
 const UsernameModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const { data: me } = useGetMeQuery();
+  const { getToken } = useAuthTokenManager();
+  const { accessToken: access_token, authenticateToken: authToken } = getToken(
+    "all",
+  ) as { accessToken: string; authenticateToken: string };
+
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
   const [
     updateUsername,
     { isLoading: LOADING_UPDATE_USERNAME, error: ERROR_UPDATE_USERNAME },
   ] = useUpdateUsernameMutation();
-
-  const { getToken } = useAuthTokenManager();
-  const authToken = getToken("authenticateToken");
   const { showResponseErrors } = useErrors();
 
   const initialState: IUpdateUsername = {
@@ -169,7 +173,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
               disabled={
                 LOADING_UPDATE_USERNAME ||
                 !formik.values.username ||
-                me?.user.username === formik.values.username
+                user?.username === formik.values.username
               }
             >
               {LOADING_UPDATE_USERNAME ? (

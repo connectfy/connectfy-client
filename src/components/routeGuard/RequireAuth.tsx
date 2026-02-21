@@ -13,14 +13,14 @@ type AuthType = {
 export function RequireAuth({ children }: AuthType) {
   const location = useLocation();
 
-  // ✅ Əvvəlcə bütün hooks-ları çağırın
+  //  Əvvəlcə bütün hooks-ları çağırın
   const { getToken } = useAuthTokenManager();
   const access_token = getToken("accessToken");
   useGetMeQuery(undefined, {
     skip: !access_token,
   });
 
-  // ✅ Sonra conditional logic
+  // Sonra conditional logic
   if (!access_token) {
     return (
       <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
@@ -35,7 +35,7 @@ export function InsideProfile({ children }: AuthType) {
   const access_token = getToken("accessToken");
 
   // Yalnız həqiqətən token varsa request at
-  const { data: userData, isSuccess: isMeSuccess } = useGetMeQuery(undefined, {
+  const { isSuccess: isMeSuccess } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
 
@@ -46,9 +46,7 @@ export function InsideProfile({ children }: AuthType) {
 
   // Hər iki data uğurla gəlibsə yönləndir
   if (access_token && isMeSuccess && isSettingsSuccess) {
-    const startup =
-      userData?.settings?.generalSettings?.startupPage ??
-      generalSettings?.startupPage;
+    const startup = generalSettings?.startupPage;
     return <Navigate to={getHomeRouteByStartup(startup)} replace />;
   }
 
@@ -61,7 +59,7 @@ export function RedirectMain() {
   const access_token = getToken("accessToken");
 
   // Yalnız token varsa request atırıq
-  const { data: userData, isSuccess: userLoaded } = useGetMeQuery(undefined, {
+  const { isSuccess: userLoaded } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
 
@@ -79,19 +77,10 @@ export function RedirectMain() {
 
     // 2. Token varsa, datanın gəlməsini gözlə, sonra yönləndir
     if (userLoaded || settingsLoaded) {
-      const startup =
-        userData?.settings?.generalSettings?.startupPage ??
-        generalSettings?.startupPage;
+      const startup = generalSettings?.startupPage;
       navigate(getHomeRouteByStartup(startup), { replace: true });
     }
-  }, [
-    access_token,
-    userLoaded,
-    settingsLoaded,
-    userData,
-    generalSettings,
-    navigate,
-  ]);
+  }, [access_token, userLoaded, settingsLoaded, generalSettings, navigate]);
 
   return null;
 }

@@ -10,10 +10,6 @@ import { securityEvents } from "../helpers/security.events";
 
 const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api/v1`;
 
-/**
- * Use a dedicated client for regular requests (has interceptors).
- * Keep a separate client for refresh requests to avoid interceptor loops.
- */
 export const api = axios.create({
   baseURL: BASE,
   withCredentials: true,
@@ -26,11 +22,6 @@ export const refreshClient = axios.create({
   timeout: 15_000,
 });
 
-/**
- * Queue item type (resolve receives the new token).
- * We keep using your project's FailedRequest shape (imported above). If it differs,
- * ensure it contains resolve: (token: string) => void and reject: (err: any) => void.
- */
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 
@@ -42,23 +33,24 @@ const processQueue = (error: any = null, token: string | null = null) => {
   failedQueue = [];
 };
 
-/**
- * Request interceptor:
- * - attach _lang param consistently (handles JSON, FormData, and GET params)
- */
+const handleForceLogout = () => {
+  localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+  securityEvents.emit("FORCE_LOGOUT");
+};
+
+// --- REQUEST INTERCEPTOR ---
 api.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
     const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-
     const isRefreshEndpoint = config.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
 
-    // Authorization tənzimləməsi
     if (token && !isRefreshEndpoint) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // Attach _lang logic...
     if ((config.method || "get").toLowerCase() === "get") {
       config.params = { ...(config.params || {}), _lang };
     } else {
@@ -82,28 +74,33 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-/**
- * Response interceptor:
- * - When 401 occurs, try to refresh once (only one refresh in-flight).
- * - Queue concurrent requests while refreshing and retry them after refresh completes.
- * - Use securityEvents to notify the app instead of forcing a redirect here.
- */
+// --- RESPONSE INTERCEPTOR ---
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
-    const originalRequest = error.config as
-      | CustomAxiosRequestConfig
-      | undefined;
+    const originalRequest = error.config as CustomAxiosRequestConfig;
     if (!originalRequest) return Promise.reject(error);
 
-    const status =
-      (error.response && (error.response.data as any)?.error?.statusCode) ||
-      error.response?.status;
+    const errorData = error.response?.data as any;
+    const status = errorData?.error?.statusCode || error.response?.status;
+
+    // Check if backend explicitly instructed a navigation (force logout)
+    // Note: Adjust the exact path based on how your BaseException serializes in NestJS
+    const navigate =
+      errorData?.navigate ||
+      errorData?.error?.data?.navigate ||
+      errorData?.data?.navigate;
+
+    if (navigate) {
+      handleForceLogout();
+      return Promise.reject(error);
+    }
 
     const isRefreshEndpoint = originalRequest.url?.includes(
       API_ENDPOINTS.AUTH.REFRESH,
     );
 
+    // If 401, not a forced navigate, and not already retried
     if (status === 401 && !originalRequest._retry && !isRefreshEndpoint) {
       originalRequest._retry = true;
 
@@ -138,22 +135,21 @@ api.interceptors.response.use(
         );
 
         const newAccessToken = (resp.data as any)?.access_token;
-        if (!newAccessToken) {
-          throw new Error("No access token in refresh response");
-        }
+        if (!newAccessToken) throw new Error("No access token provided");
 
         localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, newAccessToken);
 
+        // Resolve queued requests
         processQueue(null, newAccessToken);
 
+        // Retry original request
         originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api.request(originalRequest);
-      } catch (refreshErr) {
+      } catch (refreshErr: any) {
+        // If the refresh request itself fails (or returns navigate: true)
         processQueue(refreshErr, null);
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-
-        securityEvents.emit("FORCE_LOGOUT");
+        handleForceLogout();
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;

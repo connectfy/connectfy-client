@@ -27,6 +27,7 @@ export const API_ENDPOINTS = {
     CHECK_UNIQUE: "/user/check-unique",
   },
   ACCOUNT: {
+    GET_ACCOUNT: "/account/profile/get",
     SETTINGS: {
       GENERAL_SETTINGS: {
         GET: "/account/settings/general-settings/get",

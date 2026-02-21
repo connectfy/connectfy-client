@@ -25,12 +25,21 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data, isLoading: LOADING_GET } = useGetNotificationSettingsQuery();
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data, isLoading: LOADING_GET } = useGetNotificationSettingsQuery(
+    undefined,
+    {
+      skip: !access_token,
+    },
+  );
   const [editNotificationSettings, { isLoading: LOADING_UPDATE }] =
     useEditNotificationSettingsMutation();
 

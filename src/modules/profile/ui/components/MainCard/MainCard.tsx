@@ -1,11 +1,21 @@
 import { UserRoundX, Users } from "lucide-react";
 import "./mainCard.style.css";
 import { useTranslation } from "react-i18next";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const MainCard = () => {
   const { t } = useTranslation();
-  const { data: profile } = useGetMeQuery();
+
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: profile } = useGetAccountQuery(undefined, {
+    skip: !access_token,
+  });
 
   return (
     <section
@@ -14,8 +24,8 @@ const MainCard = () => {
     >
       <div className="profile-avatar-wrapper">
         <img
-          src={profile?.account.avatar ?? ""}
-          alt={`Profile picture of ${profile?.account.firstName} ${profile?.account.lastName}`}
+          src={profile?.avatar ?? ""}
+          alt={`Profile picture of ${profile?.firstName} ${profile?.lastName}`}
           className="profile-avatar"
           loading="lazy"
           width={140}
@@ -25,12 +35,12 @@ const MainCard = () => {
 
       <div className="profile-identity">
         <h1 id="profile-main-heading" className="profile-fullname">
-          {profile?.account.firstName} {profile?.account.lastName}
+          {profile?.firstName} {profile?.lastName}
         </h1>
-        <p className="profile-username">@{profile?.user.username}</p>
+        <p className="profile-username">@{user?.username}</p>
         <p className="profile-last-seen">
           {t("common.lastSeen")}:{" "}
-          {new Date(profile?.account.lastSeen as Date).toLocaleDateString()}
+          {new Date(profile?.lastSeen as Date).toLocaleDateString()}
         </p>
       </div>
 

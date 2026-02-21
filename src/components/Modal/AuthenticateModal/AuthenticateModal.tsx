@@ -30,13 +30,17 @@ const AuthenticateModal: FC<Props> = ({
   const { setToken } = useAuthTokenManager();
   const { t } = useTranslation();
 
+  const { getToken } = useAuthTokenManager();
+
   const [
     authenticateUser,
     { isLoading: LOADING_AUTHENTICATE_USER, error: ERROR_AUTHENTICATE_USER },
   ] = useAuthenticateUserMutation();
-  const { data: me } = useGetMeQuery();
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !getToken("accessToken"),
+  });
 
-  const isPasswordProvider = me?.user.provider === PROVIDER.PASSWORD;
+  const isPasswordProvider = user?.provider === PROVIDER.PASSWORD;
 
   const initialState: IAuthenticateUser = {
     password: null,
@@ -55,7 +59,7 @@ const AuthenticateModal: FC<Props> = ({
     }
 
     if (
-      me?.user.provider === PROVIDER.GOOGLE &&
+      user?.provider === PROVIDER.GOOGLE &&
       (!idToken || !checkEmptyString(idToken))
     )
       errors.idToken = t("error_messages.this_field_required");

@@ -38,6 +38,7 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -45,7 +46,15 @@ const GeneralSettings = () => {
   const { theme, toggleTheme } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
-  const { data, isLoading: LOADING_GET } = useGetGeneralSettingsQuery();
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data, isLoading: LOADING_GET } = useGetGeneralSettingsQuery(
+    undefined,
+    {
+      skip: !access_token,
+    },
+  );
   const [updateGeneralSettings, { isLoading: LOADING_UPDATE }] =
     useEditGeneralSettingsMutation();
   const [resetSettings, { isLoading: LOADING_RESET_SETTINGS }] =

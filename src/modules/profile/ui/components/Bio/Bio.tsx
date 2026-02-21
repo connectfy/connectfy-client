@@ -2,15 +2,21 @@ import "./bio.style.css";
 import { Edit2, MinusIcon } from "lucide-react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
-import { IMe } from "@/modules/profile/types/types";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGetAccountQuery } from "@/modules/profile/api/api";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 
 const Bio = () => {
   const { t } = useTranslation();
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
 
-  const { data: profile } = useGetMeQuery();
-  const { account, settings } = profile as IMe;
-  const { privacySettings } = settings;
+  const { data: account } = useGetAccountQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
+    skip: !access_token,
+  });
 
   return (
     <section className="profile-page-section" aria-labelledby="bio-heading">
@@ -20,7 +26,7 @@ const Bio = () => {
         </h2>
 
         <div className="profile-page-section-actions">
-          <PrivacyIcon privacy={privacySettings.bio} fieldName="bio" />
+          <PrivacyIcon privacy={privacySettings!.bio} fieldName="bio" />
           <button
             className="profile-edit-button"
             aria-label="Edit personal information"
@@ -30,7 +36,7 @@ const Bio = () => {
           </button>
         </div>
       </div>
-      <p className="profile-bio">{account.bio ?? <MinusIcon />}</p>
+      <p className="profile-bio">{account?.bio ?? <MinusIcon />}</p>
     </section>
   );
 };

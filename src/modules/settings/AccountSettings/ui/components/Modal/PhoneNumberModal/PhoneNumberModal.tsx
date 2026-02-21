@@ -30,25 +30,29 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
   const { getToken } = useAuthTokenManager();
-  const authToken = getToken("authenticateToken");
+  const { accessToken: access_token, authenticateToken: authToken } = getToken(
+    "all",
+  ) as { accessToken: string; authenticateToken: string };
 
-  const { data: me } = useGetMeQuery();
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
   const [updatePhoneNumber, { isLoading: LOADING_UPDATE_PHONE_NUMBER }] =
     useUpdatePhoneNumberMutation();
 
   const { showResponseErrors } = useErrors();
 
-  const hasPhoneNumber = !!me?.user.phoneNumber;
+  const hasPhoneNumber = !!user?.phoneNumber;
   const [view, setView] = useState<ModalView>(
     hasPhoneNumber ? ModalView.SELECTION : ModalView.FORM,
   );
   const [_, setAction] = useState<PHONE_NUMBER_ACTION | null>(
-    me?.user.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
+    user?.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
   );
 
   const initialState: IUpdatePhoneNumber = {
-    action: me?.user.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
-    phoneNumber: me?.user.phoneNumber || null,
+    action: user?.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
+    phoneNumber: user?.phoneNumber || null,
     token: authToken as string,
   };
 
@@ -143,7 +147,7 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
     setView(ModalView.SELECTION);
     setAction(null);
     formik.setFieldValue("action", null);
-    formik.setFieldValue("phoneNumber", me?.user.phoneNumber || null);
+    formik.setFieldValue("phoneNumber", user?.phoneNumber || null);
     formik.setTouched({});
   };
 
@@ -161,7 +165,7 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   };
 
   const isPhoneNumberChanged = () => {
-    const currentPhone = me?.user.phoneNumber;
+    const currentPhone = user?.phoneNumber;
     const newPhone = formik.values.phoneNumber;
 
     if (!currentPhone || !newPhone) return true;

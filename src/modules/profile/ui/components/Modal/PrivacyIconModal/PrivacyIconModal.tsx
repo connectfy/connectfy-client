@@ -13,6 +13,7 @@ import {
   useGetPrivacySettingsQuery,
 } from "@/modules/settings/PrivacySettings/api/api";
 import { useErrors } from "@/hooks/useErrors";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 interface Props {
   open: boolean;
@@ -28,7 +29,13 @@ const PrivacyIconModal: FC<Props> = ({
   fieldName,
 }) => {
   const { t } = useTranslation();
-  const { data } = useGetPrivacySettingsQuery();
+
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
+    skip: !access_token,
+  });
   const [updatePrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();
   const { showResponseErrors } = useErrors();
@@ -68,7 +75,7 @@ const PrivacyIconModal: FC<Props> = ({
   const submitSelect = async () => {
     try {
       const res = await updatePrivacySettings({
-        _id: data!._id,
+        _id: privacySettings!._id,
         [fieldName]: privacy,
       }).unwrap();
 

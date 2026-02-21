@@ -10,17 +10,27 @@ import {
 } from "lucide-react";
 import "./personalInformation.style.css";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
-import { IMe } from "@/modules/profile/types/types";
 import { useTranslation } from "react-i18next";
 import { DDMMMMYYY } from "@/common/utils/formatDate";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
 
-  const { data: profile } = useGetMeQuery();
-  const { user, account, settings } = profile as IMe;
-  const { privacySettings } = settings;
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data: user } = useGetMeQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: profile } = useGetAccountQuery(undefined, {
+    skip: !access_token,
+  });
+  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
+    skip: !access_token,
+  });
 
   return (
     <div>
@@ -48,9 +58,9 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Mail size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.email")}</span>
-              <PrivacyIcon privacy={privacySettings.email} fieldName="email" />
+              <PrivacyIcon privacy={privacySettings!.email} fieldName="email" />
             </div>
-            <p className="profile-info-value">{user.email}</p>
+            <p className="profile-info-value">{user?.email}</p>
           </div>
 
           <div className="profile-info-card">
@@ -58,11 +68,11 @@ const PersonalInformation = () => {
               <UserIcon size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.gender")}</span>
               <PrivacyIcon
-                privacy={privacySettings.gender}
+                privacy={privacySettings!.gender}
                 fieldName="gender"
               />
             </div>
-            <p className="profile-info-value">{account.gender}</p>
+            <p className="profile-info-value">{profile?.gender}</p>
           </div>
 
           <div className="profile-info-card">
@@ -70,12 +80,12 @@ const PersonalInformation = () => {
               <MapPin size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.location")}</span>
               <PrivacyIcon
-                privacy={privacySettings.location}
+                privacy={privacySettings!.location}
                 fieldName="location"
               />
             </div>
             <p className="profile-info-value">
-              {account.location ?? <MapMinusIcon />}
+              {profile?.location ?? <MapMinusIcon />}
             </p>
           </div>
 
@@ -84,12 +94,12 @@ const PersonalInformation = () => {
               <Cake size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.birthday")}</span>
               <PrivacyIcon
-                privacy={privacySettings.birthdayDate}
+                privacy={privacySettings!.birthdayDate}
                 fieldName="birthdayDate"
               />
             </div>
             <p className="profile-info-value">
-              {DDMMMMYYY(account.birthdayDate)}
+              {DDMMMMYYY(profile!.birthdayDate)}
             </p>
           </div>
 
@@ -98,12 +108,16 @@ const PersonalInformation = () => {
               <Phone size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.phone")}</span>
               <PrivacyIcon
-                privacy={privacySettings.phoneNumber}
+                privacy={privacySettings!.phoneNumber}
                 fieldName="phoneNumber"
               />
             </div>
             <p className="profile-info-value">
-              {user.phoneNumber ? user.phoneNumber.fullPhoneNumber : <Minus />}
+              {user!.phoneNumber ? (
+                user!.phoneNumber.fullPhoneNumber
+              ) : (
+                <Minus />
+              )}
             </p>
           </div>
         </div>

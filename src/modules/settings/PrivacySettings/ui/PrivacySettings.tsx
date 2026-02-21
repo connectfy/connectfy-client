@@ -26,12 +26,21 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
+import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data, isLoading: LOADING_GET } = useGetPrivacySettingsQuery();
+  const { getToken } = useAuthTokenManager();
+  const access_token = getToken("accessToken");
+
+  const { data, isLoading: LOADING_GET } = useGetPrivacySettingsQuery(
+    undefined,
+    {
+      skip: !access_token,
+    },
+  );
 
   const [editPrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();

@@ -8,7 +8,6 @@ import "flag-icons/css/flag-icons.min.css";
 import { checkDeviceId } from "./common/utils/checkDevice";
 import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
 import { useAuthTokenManager } from "./common/helpers/authToken.manager";
-import { useGetPrivacySettingsQuery } from "./modules/settings/PrivacySettings/api/api";
 import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
 import { useTheme } from "./context/ThemeContext";
 
@@ -24,16 +23,11 @@ function App() {
   const { data } = useGetGeneralSettingsQuery(undefined, {
     skip: !access_token,
   });
-  useGetPrivacySettingsQuery(undefined, {
-    skip: !access_token,
-  });
   useGetNotificationSettingsQuery(undefined, {
     skip: !access_token,
   });
   const userLang = data?.language;
   const userTheme = data?.theme;
-
-  console.log("data: ", data);
 
   useEffect(() => {
     if (!access_token) {
@@ -48,10 +42,7 @@ function App() {
       return;
     }
 
-    console.log("userLang && access_token: ", userLang && access_token);
-
     if (userLang && access_token) {
-      console.log("access_token: ", access_token);
       i18n.changeLanguage(userLang);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
     }
