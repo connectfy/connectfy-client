@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useGetAccountQuery } from "@/modules/profile/api/api";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
+import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 
 const Bio = () => {
   const { t } = useTranslation();
@@ -26,7 +27,10 @@ const Bio = () => {
         </h2>
 
         <div className="profile-page-section-actions">
-          <PrivacyIcon privacy={privacySettings!.bio} fieldName="bio" />
+          <PrivacyIcon
+            privacy={privacySettings?.bio || PRIVACY_SETTINGS_CHOICE.EVERYONE}
+            fieldName="bio"
+          />
           <button
             className="profile-edit-button"
             aria-label="Edit personal information"

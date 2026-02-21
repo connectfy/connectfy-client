@@ -15,6 +15,7 @@ import { DDMMMMYYY } from "@/common/utils/formatDate";
 import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
+import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
@@ -58,7 +59,12 @@ const PersonalInformation = () => {
             <div className="profile-info-header">
               <Mail size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.email")}</span>
-              <PrivacyIcon privacy={privacySettings!.email} fieldName="email" />
+              <PrivacyIcon
+                privacy={
+                  privacySettings?.email || PRIVACY_SETTINGS_CHOICE.EVERYONE
+                }
+                fieldName="email"
+              />
             </div>
             <p className="profile-info-value">{user?.email}</p>
           </div>
@@ -68,7 +74,9 @@ const PersonalInformation = () => {
               <UserIcon size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.gender")}</span>
               <PrivacyIcon
-                privacy={privacySettings!.gender}
+                privacy={
+                  privacySettings?.gender || PRIVACY_SETTINGS_CHOICE.EVERYONE
+                }
                 fieldName="gender"
               />
             </div>
@@ -80,7 +88,9 @@ const PersonalInformation = () => {
               <MapPin size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.location")}</span>
               <PrivacyIcon
-                privacy={privacySettings!.location}
+                privacy={
+                  privacySettings?.location || PRIVACY_SETTINGS_CHOICE.EVERYONE
+                }
                 fieldName="location"
               />
             </div>
@@ -94,12 +104,17 @@ const PersonalInformation = () => {
               <Cake size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.birthday")}</span>
               <PrivacyIcon
-                privacy={privacySettings!.birthdayDate}
+                privacy={
+                  privacySettings?.birthdayDate ||
+                  PRIVACY_SETTINGS_CHOICE.EVERYONE
+                }
                 fieldName="birthdayDate"
               />
             </div>
             <p className="profile-info-value">
-              {DDMMMMYYY(profile!.birthdayDate)}
+              {DDMMMMYYY(
+                profile?.birthdayDate || PRIVACY_SETTINGS_CHOICE.EVERYONE,
+              )}
             </p>
           </div>
 
@@ -108,16 +123,15 @@ const PersonalInformation = () => {
               <Phone size={16} aria-hidden="true" />
               <span className="profile-info-label">{t("common.phone")}</span>
               <PrivacyIcon
-                privacy={privacySettings!.phoneNumber}
+                privacy={
+                  privacySettings?.phoneNumber ||
+                  PRIVACY_SETTINGS_CHOICE.EVERYONE
+                }
                 fieldName="phoneNumber"
               />
             </div>
             <p className="profile-info-value">
-              {user!.phoneNumber ? (
-                user!.phoneNumber.fullPhoneNumber
-              ) : (
-                <Minus />
-              )}
+              {user?.phoneNumber?.fullPhoneNumber || <Minus />}
             </p>
           </div>
         </div>

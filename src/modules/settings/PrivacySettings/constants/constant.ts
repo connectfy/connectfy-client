@@ -1,10 +1,7 @@
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import { TFunction } from "i18next";
 import { Eye, UserCheck, Lock } from "lucide-react";
-import {
-  IEditPrivacySettings,
-  IPrivacySettings,
-} from "../types/types";
+import { IEditPrivacySettings, IPrivacySettings } from "../types/types";
 import { snack } from "@/common/utils/snackManager";
 
 export const privacyOptions = (t: TFunction) => {
@@ -59,45 +56,65 @@ export const PRIVACY_FIELDS = (t: TFunction) => [
   },
 ];
 
-export const initialState = (data: IPrivacySettings): IEditPrivacySettings => {
-  const {
-    _id,
-    email,
-    bio,
-    gender,
-    location,
-    socialLinks,
-    lastSeen,
-    avatar,
-    messageRequest,
-    birthdayDate,
-    friendshipRequest,
-    readReceipts,
-    phoneNumber,
-  } = data;
+export const initialState = (data?: IPrivacySettings): IEditPrivacySettings => {
+  let initialSale: IEditPrivacySettings;
 
-  const initialState = {
-    _id,
-    email,
-    bio,
-    gender,
-    location,
-    socialLinks,
-    lastSeen,
-    avatar,
-    messageRequest,
-    birthdayDate,
-    friendshipRequest,
-    readReceipts,
-    phoneNumber,
-  };
+  if (data) {
+    const {
+      _id,
+      email,
+      bio,
+      gender,
+      location,
+      socialLinks,
+      lastSeen,
+      avatar,
+      messageRequest,
+      birthdayDate,
+      friendshipRequest,
+      readReceipts,
+      phoneNumber,
+    } = data;
 
-  return initialState;
+    initialSale = {
+      _id,
+      email,
+      bio,
+      gender,
+      location,
+      socialLinks,
+      lastSeen,
+      avatar,
+      messageRequest,
+      birthdayDate,
+      friendshipRequest,
+      readReceipts,
+      phoneNumber,
+    };
+  } else {
+    initialSale = {
+      _id: undefined,
+      email: undefined,
+      bio: undefined,
+      gender: undefined,
+      location: undefined,
+      socialLinks: undefined,
+      lastSeen: undefined,
+      avatar: undefined,
+      messageRequest: undefined,
+      birthdayDate: undefined,
+      friendshipRequest: undefined,
+      readReceipts: undefined,
+      phoneNumber: undefined,
+    };
+  }
+
+  return initialSale;
 };
 
 export const validatePrivacySettings = (
   values: IEditPrivacySettings,
-  t: TFunction
+  t: TFunction,
 ): void => {
   const {
     email,

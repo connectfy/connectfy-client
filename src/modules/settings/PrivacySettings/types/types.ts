@@ -18,6 +18,4 @@ export interface IPrivacySettings {
 }
 
 export interface IEditPrivacySettings
-  extends Partial<Omit<IPrivacySettings, "userId">> {
-  _id: string;
-}
+  extends Partial<Omit<IPrivacySettings, "userId">> {}

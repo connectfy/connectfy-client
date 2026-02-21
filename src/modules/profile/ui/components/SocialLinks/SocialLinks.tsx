@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
+import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
@@ -150,7 +151,9 @@ const SocialLinks = () => {
         </h2>
         <div className="profile-page-section-actions">
           <PrivacyIcon
-            privacy={privacySettings!.socialLinks}
+            privacy={
+              privacySettings?.socialLinks || PRIVACY_SETTINGS_CHOICE.EVERYONE
+            }
             fieldName="socialLinks"
           />
           <button

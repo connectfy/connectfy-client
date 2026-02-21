@@ -48,7 +48,7 @@ const PrivacySettings = () => {
   const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
-    initialValues: initialState(data!),
+    initialValues: initialState(data),
     validateOnBlur: false,
     validateOnChange: false,
     enableReinitialize: true,
