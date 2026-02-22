@@ -21,6 +21,8 @@ const Signup = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const { showFormikErrors } = useErrors();
+
   const signupForm = JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM) || "{}",
   ) as ISignupForm | null;
@@ -92,13 +94,23 @@ const Signup = () => {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors = await formik.validateForm();
+    if (Object.keys(errors).length > 0) {
+      showFormikErrors(errors);
+      return;
+    }
+    formik.handleSubmit(e as any);
+  };
+
   useEffect(() => {
     if (isDisabled) return;
 
     const handleSubmitEnter = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        formik.handleSubmit();
+        handleSubmit(e as any);
       }
     };
 
@@ -118,7 +130,7 @@ const Signup = () => {
           {t("common.join_connectfy_description")}
         </p>
       </div>
-      <form className="space-y-4" onSubmit={formik.handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Input
@@ -131,7 +143,6 @@ const Signup = () => {
               value={formik.values.firstName || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.firstName}
-              error={formik.errors.firstName}
               maxLength={50}
             />
           </div>
@@ -146,7 +157,6 @@ const Signup = () => {
               value={formik.values.lastName || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.lastName}
-              error={formik.errors.lastName}
               maxLength={50}
             />
           </div>
@@ -163,7 +173,6 @@ const Signup = () => {
               value={formik.values.username || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.username}
-              error={formik.errors.username}
               maxLength={30}
             />
           </div>
@@ -178,7 +187,6 @@ const Signup = () => {
               value={formik.values.email || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.email}
-              error={formik.errors.email}
               maxLength={254}
             />
           </div>
@@ -222,7 +230,6 @@ const Signup = () => {
                 value={formik.values.password || ""}
                 onChange={formik.handleChange}
                 isError={!!formik.errors.password}
-                error={formik.errors.password}
                 maxLength={30}
               />
             </div>
@@ -238,7 +245,6 @@ const Signup = () => {
                 value={formik.values.confirm || ""}
                 onChange={formik.handleChange}
                 isError={!!formik.errors.confirm}
-                error={formik.errors.confirm}
                 maxLength={30}
               />
             </div>

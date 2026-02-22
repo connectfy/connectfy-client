@@ -23,6 +23,8 @@ const ResetPassword = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const { showFormikErrors } = useErrors();
+
   const [resetPassword, { isLoading: LOADING_RESET_PASSWORD }] =
     useResetPasswordMutation();
   const [isValidToken, { isLoading: LOADING_IS_VALID_TOKEN }] =
@@ -64,6 +66,16 @@ const ResetPassword = () => {
     ],
   });
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errors = await formik.validateForm();
+    if (Object.keys(errors).length > 0) {
+      showFormikErrors(errors);
+      return;
+    }
+    formik.handleSubmit(e as any);
+  };
+
   useEffect(() => {
     if (!token) {
       navigate(ROUTER.AUTH.MAIN);
@@ -95,7 +107,7 @@ const ResetPassword = () => {
     const handleSubmitEnter = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        formik.handleSubmit();
+        handleSubmit(e as any);
       }
     };
 
@@ -127,7 +139,7 @@ const ResetPassword = () => {
             </div>
           </div>
 
-          <form className="space-y-8" onSubmit={formik.handleSubmit}>
+          <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <PasswordInput
                 title={t("common.password")}
@@ -149,7 +161,6 @@ const ResetPassword = () => {
                   formik.setFieldValue("confirmPassword", value);
                 }}
                 isError={!!formik.errors.password}
-                error={formik.errors.password}
                 maxLength={30}
               />
               <PasswordInput
@@ -169,7 +180,6 @@ const ResetPassword = () => {
                   formik.setFieldTouched("confirmPassword", true, false)
                 }
                 isError={!!formik.errors.confirmPassword}
-                error={formik.errors.confirmPassword}
                 maxLength={30}
               />
             </div>
