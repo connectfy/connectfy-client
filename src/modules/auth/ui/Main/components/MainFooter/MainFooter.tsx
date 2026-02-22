@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
 import { checkDeviceId } from "@/common/utils/checkDevice";
-import { ROUTER } from "@/common/constants/routet";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
 import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";
@@ -15,10 +14,12 @@ import {
 } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useTheme } from "@/context/ThemeContext";
 
 const MainFooter = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { toggleTheme } = useTheme();
   const { setToken } = useAuthTokenManager();
 
   const [checkUnique, { isLoading: LOADING_CHECK_UNIQUE }] =
@@ -64,8 +65,11 @@ const MainFooter = () => {
               type: "accessToken",
               token: res.access_token,
             });
-            snack.success(t("user_messages.login_successful"));
-            navigate(ROUTER.MAIN);
+            snack.success(
+              t("user_messages.login_successful", { lng: res.language }),
+            );
+            navigate(res.startupPage);
+            toggleTheme(res.theme);
           }
         } catch (error) {
           showResponseErrors(error);

@@ -19,12 +19,14 @@ import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
+import { useTheme } from "@/context/ThemeContext";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { toggleTheme } = useTheme();
   const { setToken } = useAuthTokenManager();
   const [searchParams, setSearchParams] = useSearchParams();
   const { showResponseErrors } = useErrors();
@@ -51,12 +53,15 @@ const Login = () => {
         const res = await login(values).unwrap();
 
         if (res) {
-          snack.success(t("user_messages.login_successful"));
           setToken({
             type: "accessToken",
             token: res.access_token,
           });
-          navigate(ROUTER.MAIN);
+          snack.success(
+            t("user_messages.login_successful", { lng: res.language }),
+          );
+          navigate(res.startupPage);
+          toggleTheme(res.theme);
           resetForm();
         }
       } catch (err) {

@@ -3,21 +3,23 @@ import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
   GENDER,
   IDENTIFIER_TYPE,
+  LANGUAGE,
+  STARTUP_PAGE,
   THEME,
   TOKEN_TYPE,
 } from "@/common/enums/enums";
 
 export type AuthFormType = "login" | "signup";
 
-export type LoginModeType =
-  | "email"
-  | "username"
-  | "phoneNumber"
+export type LoginModeType = "email" | "username" | "phoneNumber";
 
 export type ForgotPasswordModeType = "email" | "phoneNumber";
 
 export interface ILoginResponse {
   access_token: string;
+  language: LANGUAGE;
+  theme: THEME;
+  startupPage: STARTUP_PAGE;
 }
 
 export interface ISignupResponse {
