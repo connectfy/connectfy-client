@@ -35,13 +35,16 @@ export function InsideProfile({ children }: AuthType) {
   const access_token = getToken("accessToken");
 
   // Yalnız həqiqətən token varsa request at
-  const { isSuccess: isMeSuccess } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
+  const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
+    undefined,
+    {
+      skip: !access_token,
+    },
+  );
 
   const { data: generalSettings, isSuccess: isSettingsSuccess } =
     useGetGeneralSettingsQuery(undefined, {
-      skip: !access_token || !isMeSuccess,
+      skip: !access_token || !isMeSuccess || isMeError,
     });
 
   // Hər iki data uğurla gəlibsə yönləndir
@@ -68,7 +71,7 @@ export function RedirectMain() {
 
   const { data: generalSettings, isSuccess: settingsLoaded } =
     useGetGeneralSettingsQuery(undefined, {
-      skip: !userLoaded,
+      skip: !userLoaded || userError,
     });
 
   useEffect(() => {

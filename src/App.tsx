@@ -10,6 +10,7 @@ import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/a
 import { useAuthTokenManager } from "./common/helpers/authToken.manager";
 import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
 import { useTheme } from "./context/ThemeContext";
+import { useGetMeQuery } from "./modules/profile/api/api";
 
 function App() {
   const { i18n } = useTranslation();
@@ -20,17 +21,24 @@ function App() {
   const { getToken } = useAuthTokenManager();
   const access_token = getToken("accessToken");
 
+  const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
+    undefined,
+    {
+      skip: !access_token,
+    },
+  );
+
   const { data } = useGetGeneralSettingsQuery(undefined, {
-    skip: !access_token,
+    skip: !access_token || !isMeSuccess || isMeError,
   });
   useGetNotificationSettingsQuery(undefined, {
-    skip: !access_token,
+    skip: !access_token || !isMeSuccess || isMeError,
   });
   const userLang = data?.language;
   const userTheme = data?.theme;
 
   useEffect(() => {
-    if (!access_token) {
+    if (!access_token || !isMeSuccess || isMeError) {
       const availableLangs = Object.values(LANGUAGE);
       const validLang =
         lang && availableLangs.includes(lang as LANGUAGE)
