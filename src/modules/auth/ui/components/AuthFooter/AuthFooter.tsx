@@ -3,13 +3,15 @@ import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTheme } from "@/context/ThemeContext";
 import useBoolean from "@/hooks/useBoolean";
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 const AuthFooter = () => {
   const { t } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
 
+  const screenWidth = window.innerWidth;
+
+  const { theme, toggleTheme } = useTheme();
   const { open, onOpen, onClose } = useBoolean();
 
   const getButtonClass = (isActive: boolean) =>
@@ -23,22 +25,38 @@ const AuthFooter = () => {
 
   const languageList = [
     {
+      key: "US",
       label: "English (US)",
       value: "en",
     },
     {
+      key: "AZ",
       label: "Azərbaycan (AZ)",
       value: "az",
     },
     {
+      key: "RU",
       label: "Русский (RU)",
       value: "ru",
     },
     {
+      key: "TR",
       label: "Türkçe (TR)",
       value: "tr",
     },
   ];
+
+  const renderCurrentLanguage = useCallback(() => {
+    const currentLanguage = languageList.find(
+      (lang) => lang.value === language,
+    );
+
+    if (screenWidth < 1024) {
+      return currentLanguage?.key;
+    }
+
+    return currentLanguage?.label;
+  }, [language, screenWidth]);
 
   return (
     <Fragment>
@@ -52,7 +70,7 @@ const AuthFooter = () => {
             icon={
               <span className="material-symbols-outlined text-sm">globe</span>
             }
-            title={languageList.find((lang) => lang.value === language)?.label}
+            title={renderCurrentLanguage()}
           />
         </div>
         <div className="flex gap-3 items-center">

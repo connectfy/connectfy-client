@@ -1,5 +1,5 @@
 import TextTooltip from "@/components/Tooltip/TextTooltip";
-import React, { FC, ReactNode } from "react";
+import React, { FC, Fragment, ReactNode } from "react";
 
 export interface CustomButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,6 +10,7 @@ export interface CustomButtonProps
   tooltip?: string;
   children?: ReactNode;
   tooltipPosition?: "top" | "bottom" | "left" | "right";
+  showTitleInMobile?: boolean;
 }
 
 const Button: FC<CustomButtonProps> = ({
@@ -22,14 +23,17 @@ const Button: FC<CustomButtonProps> = ({
   className = "",
   children,
   tooltipPosition,
+  showTitleInMobile = true,
   ...props
 }) => {
+  const titleClassName = showTitleInMobile ? "" : "hidden sm:inline";
+
   const content = children ? (
     children
   ) : (
     <div className="flex items-center justify-center gap-2">
       {isLoading ? (
-        <>
+        <Fragment>
           <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
             <circle
               className="opacity-25"
@@ -46,16 +50,18 @@ const Button: FC<CustomButtonProps> = ({
             />
           </svg>
           {loadingText && <span>{loadingText}</span>}
-        </>
+        </Fragment>
       ) : icon ? (
-        <>
+        <Fragment>
           <span aria-hidden="true" className="mt-1.5">
             {icon}
           </span>
-          {title && <span className="hidden sm:inline">{title}</span>}
-        </>
+          {title && <span className={titleClassName}>{title}</span>}
+        </Fragment>
       ) : (
-        <>{title && <span>{title}</span>}</>
+        <Fragment>
+          {title && <span className={titleClassName}>{title}</span>}
+        </Fragment>
       )}
     </div>
   );

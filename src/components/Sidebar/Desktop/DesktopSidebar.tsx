@@ -167,7 +167,14 @@ const DesktopSidebar = () => {
             >
               <div className="avatar">
                 {user?.avatar ? (
-                  <Avatar src={user?.avatar} sx={{ borderRadius: "50%" }} />
+                  <Avatar
+                    src={user?.avatar}
+                    sx={{
+                      borderRadius: "50%",
+                      borderWidth: "2px",
+                      borderColor: "var(--primary-color)",
+                    }}
+                  />
                 ) : (
                   <div className="default-avatar">
                     <User size={20} />

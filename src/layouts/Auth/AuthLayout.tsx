@@ -33,7 +33,7 @@ const AuthLayout: FC = () => {
             </h2>
           </div>
 
-          <div className="w-full max-w-[500px] space-y-10 min-h-0">
+          <div className="w-full max-w-[500px] space-y-10 min-h-0 contain-layout">
             <Outlet />
 
             <AuthFooter />

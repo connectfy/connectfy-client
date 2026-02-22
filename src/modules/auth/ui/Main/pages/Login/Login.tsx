@@ -158,7 +158,7 @@ const Login = () => {
         <ShortcutTooltip keys={["Shift", "Alt", "1"]}>
           <Button
             type="button"
-            className={`cursor-pointer px-4 py-2 w-full text-sm font-bold border-b-2 transition-colors ${
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-bold border-b-0 md:border-b-2 transition-colors ${
               loginMode === "username"
                 ? "text-(--primary-color) border-primary"
                 : "text-slate-400 hover:text-slate-600 border-transparent"
@@ -171,7 +171,7 @@ const Login = () => {
         <ShortcutTooltip keys={["Shift", "Alt", "2"]}>
           <Button
             type="button"
-            className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
+            className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-0 md:border-b-2 transition-colors ${
               loginMode === "email"
                 ? "text-(--primary-color) border-primary"
                 : "text-slate-400 hover:text-slate-600 border-transparent"

@@ -13,7 +13,7 @@ const BaseLayout: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 886);
+      setIsMobile(window.innerWidth < 1025);
     };
 
     checkMobile();

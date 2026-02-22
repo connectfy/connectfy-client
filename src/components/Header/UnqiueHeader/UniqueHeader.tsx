@@ -87,6 +87,7 @@ const UniqueHeader: FC<Props> = ({
               [&>span]:inline-block [&>span]:whitespace-nowrap
               max-[640px]:[&>span]:hidden h-[40px]
             "
+            showTitleInMobile={false}
           />
         )}
       </div>

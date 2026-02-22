@@ -117,6 +117,8 @@ const MobileSidebar = () => {
                         borderRadius: "50%",
                         width: "25px",
                         height: "25px",
+                        borderWidth: "2px",
+                        borderColor: "var(--primary-color)",
                       }}
                     />
                   ) : (
