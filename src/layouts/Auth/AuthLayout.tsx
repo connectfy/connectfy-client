@@ -1,10 +1,27 @@
-import { FC, memo } from "react";
-import { Outlet } from "react-router-dom";
+import { FC, memo, useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import AuthSidebar from "@/components/Sidebar/Auth/AuthSidebar";
 import MainIcon from "@/assets/icons/MainIcon";
 import AuthFooter from "@/modules/auth/ui/components/AuthFooter/AuthFooter";
+import { ROUTER } from "@/common/constants/routet";
 
 const AuthLayout: FC = () => {
+  const location = useLocation();
+
+  const [isSignupPage, setIsSignupPage] = useState<boolean>(false);
+  const isMobile = window.innerWidth < 1024;
+
+  useEffect(() => {
+    if (
+      location.pathname === ROUTER.AUTH.MAIN &&
+      location.search === "?authPage=signup"
+    ) {
+      setIsSignupPage(true);
+    } else {
+      setIsSignupPage(false);
+    }
+  }, [location]);
+
   return (
     <div
       className="min-h-screen w-full font-sans antialiased text-(--text-(--primary-color)) bg-(--auth-main-bg)"
@@ -15,7 +32,9 @@ const AuthLayout: FC = () => {
       <div className="flex min-h-screen lg:h-screen w-full flex-col lg:flex-row">
         <AuthSidebar />
 
-        <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-16 relative overflow-y-auto">
+        <div
+          className={`flex flex-1 flex-col items-center justify-center px-6 ${isSignupPage && !isMobile ? "py-5" : "py-12"} lg:px-16 relative overflow-y-auto`}
+        >
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
             <MainIcon
