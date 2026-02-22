@@ -41,7 +41,7 @@ export function InsideProfile({ children }: AuthType) {
 
   const { data: generalSettings, isSuccess: isSettingsSuccess } =
     useGetGeneralSettingsQuery(undefined, {
-      skip: !access_token,
+      skip: !access_token || !isMeSuccess,
     });
 
   // Hər iki data uğurla gəlibsə yönləndir
@@ -58,29 +58,32 @@ export function RedirectMain() {
   const { getToken } = useAuthTokenManager();
   const access_token = getToken("accessToken");
 
-  // Yalnız token varsa request atırıq
-  const { isSuccess: userLoaded } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
+  // Send request if there is a token
+  const { isSuccess: userLoaded, isError: userError } = useGetMeQuery(
+    undefined,
+    {
+      skip: !access_token,
+    },
+  );
 
   const { data: generalSettings, isSuccess: settingsLoaded } =
     useGetGeneralSettingsQuery(undefined, {
-      skip: !access_token,
+      skip: !userLoaded,
     });
 
   useEffect(() => {
-    // 1. Token yoxdursa, birbaşa auth-a göndər və dayandır
-    if (!access_token) {
+    // If no token, or the user request failed (invalid token), go to login
+    if (!access_token || userError) {
       navigate(ROUTER.AUTH.MAIN, { replace: true });
       return;
     }
 
-    // 2. Token varsa, datanın gəlməsini gözlə, sonra yönləndir
-    if (userLoaded || settingsLoaded) {
-      const startup = generalSettings?.startupPage;
-      navigate(getHomeRouteByStartup(startup), { replace: true });
+    // Only navigate once the settings (which contain the startupPage) are ready
+    if (settingsLoaded) {
+      const path = getHomeRouteByStartup(generalSettings?.startupPage);
+      navigate(path, { replace: true });
     }
-  }, [access_token, userLoaded, settingsLoaded, generalSettings, navigate]);
+  }, [access_token, userError, settingsLoaded, generalSettings, navigate]);
 
   return null;
 }

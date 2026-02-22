@@ -27,12 +27,12 @@ const DesktopSidebar = () => {
   const { getToken } = useAuthTokenManager();
   const access_token = getToken("accessToken");
 
-  const { data: user } = useGetMeQuery(undefined, {
+  const { data: user, isSuccess: isUserSuccess } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
   const { data: settingsData, isLoading: settingsLoading } =
     useGetGeneralSettingsQuery(undefined, {
-      skip: !access_token,
+      skip: !access_token || !isUserSuccess,
     });
 
   const menuItems = useMemo(

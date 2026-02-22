@@ -23,14 +23,14 @@ const PersonalInformation = () => {
   const { getToken } = useAuthTokenManager();
   const access_token = getToken("accessToken");
 
-  const { data: user } = useGetMeQuery(undefined, {
+  const { data: user, isSuccess: isUserSuccess } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
   const { data: profile } = useGetAccountQuery(undefined, {
-    skip: !access_token,
+    skip: !access_token || !isUserSuccess,
   });
   const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
-    skip: !access_token,
+    skip: !access_token || !isUserSuccess,
   });
 
   return (

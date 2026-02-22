@@ -70,14 +70,14 @@ const AccountSettings: FC = () => {
   const { showResponseErrors } = useErrors();
   const { theme } = useTheme();
 
-  const { data: me } = useGetMeQuery(undefined, {
+  const { data: me, isSuccess: isUserSuccess } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
   const { data: account } = useGetAccountQuery(undefined, {
-    skip: !access_token,
+    skip: !access_token || !isUserSuccess,
   });
   const { data: generalSettings } = useGetGeneralSettingsQuery(undefined, {
-    skip: !access_token,
+    skip: !access_token || !isUserSuccess,
   });
 
   const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();

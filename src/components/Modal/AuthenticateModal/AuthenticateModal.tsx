@@ -36,6 +36,7 @@ const AuthenticateModal: FC<Props> = ({
     authenticateUser,
     { isLoading: LOADING_AUTHENTICATE_USER, error: ERROR_AUTHENTICATE_USER },
   ] = useAuthenticateUserMutation();
+
   const { data: user } = useGetMeQuery(undefined, {
     skip: !getToken("accessToken"),
   });
