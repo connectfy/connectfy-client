@@ -157,11 +157,7 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                 onGenerate={(value?: string) => {
                   navigator.clipboard.writeText(value as string);
                   snack.info(t("user_messages.password_generated_message"), {
-                    anchorOrigin: {
-                      vertical: "top",
-                      horizontal: "center",
-                    },
-                    autoHideDuration: 15000,
+                    duration: 15000,
                   });
 
                   formik.setFieldValue("password", value);

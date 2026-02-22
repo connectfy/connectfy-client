@@ -48,7 +48,10 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     else if (!usernameRegex.test(username))
       errors.username = t("error_messages.invalid_username");
     else if (username.length < 3)
-      errors.username = t("error_messages.min_length", { length: 3 });
+      errors.username = t("error_messages.min_length", {
+        field: t("common.username"),
+        length: 3,
+      });
 
     return errors;
   };

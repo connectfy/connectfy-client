@@ -37,11 +37,7 @@ const PasswordInput: FC<Props> = ({
     if (onGenerate) {
       onGenerate(generated);
       snack.info(t("user_messages.password_generated_message"), {
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-        autoHideDuration: 15000,
+        duration: 15000,
       });
       return;
     }
@@ -49,11 +45,7 @@ const PasswordInput: FC<Props> = ({
       target: { value: generated },
     } as React.ChangeEvent<HTMLInputElement>);
     snack.info(t("user_messages.password_generated_message"), {
-      anchorOrigin: {
-        vertical: "top",
-        horizontal: "center",
-      },
-      autoHideDuration: 15000,
+      duration: 15000,
     });
   }
 

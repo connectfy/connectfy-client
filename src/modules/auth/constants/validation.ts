@@ -17,7 +17,7 @@ import { TFunction } from "i18next";
 // =======================> LOGIN
 export const validateLogin = (
   values: ILoginForm,
-  t: TFunction
+  t: TFunction,
 ): Record<string, any> => {
   const { identifier, identifierType, password } = values;
   const errors: Record<string, any> = {};
@@ -30,7 +30,7 @@ export const validateLogin = (
 
   if (!identifier || !checkEmptyString(identifier))
     errors.identifier = t(
-      `error_messages.${identifierType.toLowerCase()}_is_required`
+      `error_messages.${identifierType.toLowerCase()}_is_required`,
     );
 
   if (!password || !checkEmptyString(password))
@@ -42,7 +42,7 @@ export const validateLogin = (
 // =======================> SIGNUP
 export const validateSignup = (
   values: ISignupForm,
-  t: TFunction
+  t: TFunction,
 ): Record<string, any> => {
   const {
     firstName,
@@ -74,13 +74,18 @@ export const validateSignup = (
   else if (!usernameRegex.test(username))
     errors.username = t("error_messages.invalid_username");
   else if (username.length < 3)
-    errors.username = t("error_messages.min_length", { length: 3 })
+    errors.username = t("error_messages.min_length", {
+      field: t("common.username"),
+      length: 3,
+    });
   else if (username.length > 30)
-    errors.username = t("error_message.max_length", { length: 30 }) 
+    errors.username = t("error_message.max_length", {
+      field: t("common.username"),
+      length: 30,
+    });
 
   if (!email || !checkEmptyString(email))
     errors.email = t("error_messages.email_name_is_required");
-  
   else if (!email.includes("@"))
     errors.email = t("error_messages.invalid_email");
 
@@ -110,7 +115,11 @@ export const validateSignup = (
 
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
-  else if (password.length < 8 || password.length > 30 || !passwordComplexityRegex.test(password))
+  else if (
+    password.length < 8 ||
+    password.length > 30 ||
+    !passwordComplexityRegex.test(password)
+  )
     errors.password = t("error_messages.password_rule");
 
   if (confirm !== password)
@@ -122,7 +131,7 @@ export const validateSignup = (
 // =======================> VERIFY SIGNUP
 export const validateVerifySignup = (
   values: ISignupVerifyForm,
-  t: TFunction
+  t: TFunction,
 ): Record<string, any> => {
   const { verifyCode } = values;
   const errors: Record<string, any> = {};
@@ -139,7 +148,7 @@ export const validateVerifySignup = (
 // =======================> FORGOT PASSWORD
 export const validateForgotPassword = (
   values: IForgotPasswordForm,
-  t: TFunction
+  t: TFunction,
 ): Record<string, any> => {
   const { identifierType, identifier } = values;
   const errors: Record<string, any> = {};
@@ -152,7 +161,7 @@ export const validateForgotPassword = (
 
   if (!identifier || !checkEmptyString(identifier))
     errors.identifier = t(
-      `error_messages.${identifierType.toLowerCase()}_is_required`
+      `error_messages.${identifierType.toLowerCase()}_is_required`,
     );
 
   return errors;
@@ -161,7 +170,7 @@ export const validateForgotPassword = (
 // =======================> RESET PASSWORD
 export const validateResetPassword = (
   values: IResetPasswordForm,
-  t: TFunction
+  t: TFunction,
 ): Record<string, any> => {
   const { password, confirmPassword } = values;
   const errors: Record<string, any> = {};
@@ -171,7 +180,11 @@ export const validateResetPassword = (
 
   if (!password || !checkEmptyString(password))
     errors.password = t("error_messages.password_is_required");
-  else if (password.length < 8 || password.length > 30 || !passwordComplexityRegex.test(password))
+  else if (
+    password.length < 8 ||
+    password.length > 30 ||
+    !passwordComplexityRegex.test(password)
+  )
     errors.password = t("error_messages.password_rule");
 
   if (confirmPassword !== password)
@@ -183,10 +196,9 @@ export const validateResetPassword = (
 // =======================> GOOGLE SIGNUP
 export const valdiateGoogleSignup = (
   values: IGoogleSignupForm,
-  t: TFunction
+  t: TFunction,
 ): Record<string, any> => {
-  const { username, gender, birthdayDate } =
-    values;
+  const { username, gender, birthdayDate } = values;
   const errors: Record<string, any> = {};
 
   // const { countryCode, number, fullPhoneNumber } = phoneNumber;
@@ -198,9 +210,9 @@ export const valdiateGoogleSignup = (
   else if (!usernameRegex.test(username))
     errors.username = t("error_messages.invalid_username");
   else if (username.length < 3)
-    errors.username = t("error_messages.min_length", { length: 3 })
+    errors.username = t("error_messages.min_length", { length: 3 });
   else if (username.length > 30)
-    errors.username = t("error_message.max_length", { length: 30 }) 
+    errors.username = t("error_message.max_length", { length: 30 });
 
   if (!gender || !Object.values(GENDER).includes(gender))
     errors.gender = t("error_messages.gender_is_required");
