@@ -38,6 +38,9 @@
 
   --checkbox-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   --checkbox-active-shadow: 0 0 0 4px rgba(52, 211, 153, 0.15);
+
+  --skeleton-base: #e2e8f0;
+  --skeleton-highlight: #f8fafc;
 }
 
 [data-theme="dark"] {
@@ -77,4 +80,7 @@
 
   --checkbox-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   --checkbox-active-shadow: 0 0 0 4px rgba(52, 211, 153, 0.1);
+
+  --skeleton-base: rgba(255, 255, 255, 0.05);
+  --skeleton-highlight: rgba(255, 255, 255, 0.1);
 }

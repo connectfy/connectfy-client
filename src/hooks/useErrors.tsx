@@ -9,10 +9,10 @@ export const useErrors = () => {
     if (error.message) {
       if (Array.isArray(error.message)) {
         error.message.forEach((err: string) => {
-          snack.error(err, { autoHideDuration: 5000 });
+          snack.error(err, { duration: 5000 });
         });
       } else {
-        snack.error(error.message, { autoHideDuration: 5000 });
+        snack.error(error.message, { duration: 5000 });
       }
     }
   };
@@ -24,7 +24,7 @@ export const useErrors = () => {
     if (!obj) return;
 
     if (typeof obj === "string") {
-      snack.warning(obj, { autoHideDuration: 5000, size: "large" });
+      snack.warning(obj, { duration: 5000 });
       return;
     }
 

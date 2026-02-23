@@ -27,6 +27,8 @@
     "dayjs": "^1.11.18",
     "face-api.js": "^0.22.2",
     "flag-icons": "^7.5.0",
+    "flowbite": "^4.0.1",
+    "flowbite-react": "^0.12.17",
     "formik": "^2.4.6",
     "history": "^5.3.0",
     "i18next": "^25.5.3",

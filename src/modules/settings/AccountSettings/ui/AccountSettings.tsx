@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import {
   User,
@@ -56,6 +57,7 @@ import {
 import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
 import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
+import { Skeleton } from "@/components/Skeleton/Skeleton";
 
 const AccountSettings: FC = () => {
   const { t, i18n } = useTranslation();
@@ -71,26 +73,29 @@ const AccountSettings: FC = () => {
   const { theme } = useTheme();
 
   const {
-    data: me,
+    data: user,
     isSuccess: isUserSuccess,
     isError: isUserError,
+    isLoading: LOADING_USER,
   } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
-  const { data: account } = useGetAccountQuery(undefined, {
-    skip: !access_token || !isUserSuccess || isUserError,
-  });
-  const { data: generalSettings } = useGetGeneralSettingsQuery(undefined, {
-    skip: !access_token || !isUserSuccess || isUserError,
-  });
+  const { data: account, isLoading: LOADING_ACCOUNT } = useGetAccountQuery(
+    undefined,
+    {
+      skip: !access_token || !isUserSuccess || isUserError,
+    },
+  );
+  const { data: generalSettings, isLoading: LOADING_GENERAL_SETTINGS } =
+    useGetGeneralSettingsQuery(undefined, {
+      skip: !access_token || !isUserSuccess || isUserError,
+    });
 
   const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();
   const [deactivateAccount, { isLoading: LOADING_DEACTIVATE_ACCOUNT }] =
     useDeactivateAccountMutation();
   const [verifyChangeEmail, { isLoading: LOADING_VERIFY_CHANGE_EMAIL }] =
     useVerifyChangeEmailMutation();
-
-  const user = me;
 
   const [authModal, setAuthModal] = useState<{
     open: boolean;
@@ -99,6 +104,15 @@ const AccountSettings: FC = () => {
   }>({ open: false, authType: undefined, next: null });
 
   const [openModal, setOpenModal] = useState<ChangeModalKey>(null);
+
+  const height = useSyncExternalStore(
+    (callback) => {
+      window.addEventListener("resize", callback);
+      return () => window.removeEventListener("resize", callback);
+    },
+    () => window.innerHeight,
+    () => window.innerHeight,
+  );
 
   const {
     open: verifiedModalOpen,
@@ -126,8 +140,7 @@ const AccountSettings: FC = () => {
         sensitiveForPasswordOnly.includes(authType)
       ) {
         snack.error(t("user_messages.google_login_error"), {
-          autoHideDuration: 3000,
-          anchorOrigin: { horizontal: "center", vertical: "bottom" },
+          duration: 3000,
         });
         return;
       }
@@ -310,99 +323,134 @@ const AccountSettings: FC = () => {
             isHeaderButtonDisabled={false}
           />
 
-          <div className="account-settings-content">
-            {items.map((it) => (
-              <SettingCard key={it.id} header={it.header}>
-                {it.renderContent()}
+          {LOADING_USER || LOADING_ACCOUNT || LOADING_GENERAL_SETTINGS ? (
+            <div className="account-settings-content">
+              <Skeleton
+                variant="rect"
+                height={height / 7}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 7}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 7}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 7}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 7}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 7}
+                ariaLabel={t("common.loading_settings")}
+              />
+            </div>
+          ) : (
+            <div className="account-settings-content">
+              {items.map((it) => (
+                <SettingCard key={it.id} header={it.header}>
+                  {it.renderContent()}
+                </SettingCard>
+              ))}
+
+              <SettingCard
+                header={{
+                  icon: Calendar,
+                  title: t("common.account_info"),
+                  subtitle: t("common.account_creation_login"),
+                }}
+              >
+                <div className="account-info-grid">
+                  <div className="account-info-item">
+                    <p className="account-info-item-label">
+                      {t("common.created_date")}
+                    </p>
+                    <p className="account-info-item-value">
+                      <Calendar size={16} className="account-info-item-icon" />
+                      {user?.createdAt ? DDMMMMYYY(user.createdAt) : "-"}
+                    </p>
+                  </div>
+                  <div className="account-info-item">
+                    <p className="account-info-item-label">
+                      {t("common.last_login")}
+                    </p>
+                    <p className="account-info-item-value">
+                      <Clock size={16} className="account-info-item-icon" />
+                      {showDateWithHour(
+                        account?.lastSeen as Date,
+                        generalSettings?.timeZone.dateFormat as DATE_FORMAT,
+                        generalSettings?.timeZone.timeFormat as TIME_FORMAT,
+                        " - ",
+                      )}
+                    </p>
+                  </div>
+                </div>
               </SettingCard>
-            ))}
 
-            <SettingCard
-              header={{
-                icon: Calendar,
-                title: t("common.account_info"),
-                subtitle: t("common.account_creation_login"),
-              }}
-            >
-              <div className="account-info-grid">
-                <div className="account-info-item">
-                  <p className="account-info-item-label">
-                    {t("common.created_date")}
-                  </p>
-                  <p className="account-info-item-value">
-                    <Calendar size={16} className="account-info-item-icon" />
-                    {user?.createdAt ? DDMMMMYYY(user.createdAt) : "-"}
-                  </p>
+              <SettingCard
+                header={{
+                  icon: AlertTriangle,
+                  title: t("common.danger_zone"),
+                  subtitle: t("common.deactivate_or_delete"),
+                  iconStyle: {
+                    background:
+                      "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                  },
+                }}
+              >
+                <div className="account-danger-actions">
+                  <button
+                    className="account-danger-button deactivate"
+                    onClick={() =>
+                      openAuthThen(
+                        TOKEN_TYPE.DEACTIVATE_ACCOUNT,
+                        "deactivate_account",
+                      )
+                    }
+                  >
+                    <span>
+                      <LogOutIcon size={18} />
+                      {t("common.deactivate_account")}
+                    </span>
+                    <ChevronRight size={18} />
+                  </button>
+                  <button
+                    className="account-danger-button delete"
+                    onClick={() =>
+                      openAuthThen(TOKEN_TYPE.DELETE_ACCOUNT, "delete_account")
+                    }
+                  >
+                    <span>
+                      <Trash2 size={18} />
+                      {t("common.delete_account")}
+                    </span>
+                    <ChevronRight size={18} />
+                  </button>
+                  <button
+                    className="account-danger-button delete"
+                    onClick={onLogoutOpen}
+                  >
+                    <span>
+                      <LogOutIcon size={18} />
+                      {t("common.logout_account")}
+                    </span>
+                    <ChevronRight size={18} />
+                  </button>
                 </div>
-                <div className="account-info-item">
-                  <p className="account-info-item-label">
-                    {t("common.last_login")}
-                  </p>
-                  <p className="account-info-item-value">
-                    <Clock size={16} className="account-info-item-icon" />
-                    {showDateWithHour(
-                      account?.lastSeen as Date,
-                      generalSettings?.timeZone.dateFormat as DATE_FORMAT,
-                      generalSettings?.timeZone.timeFormat as TIME_FORMAT,
-                      " - ",
-                    )}
-                  </p>
-                </div>
-              </div>
-            </SettingCard>
-
-            <SettingCard
-              header={{
-                icon: AlertTriangle,
-                title: t("common.danger_zone"),
-                subtitle: t("common.deactivate_or_delete"),
-                iconStyle: {
-                  background:
-                    "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-                },
-              }}
-            >
-              <div className="account-danger-actions">
-                <button
-                  className="account-danger-button deactivate"
-                  onClick={() =>
-                    openAuthThen(
-                      TOKEN_TYPE.DEACTIVATE_ACCOUNT,
-                      "deactivate_account",
-                    )
-                  }
-                >
-                  <span>
-                    <LogOutIcon size={18} />
-                    {t("common.deactivate_account")}
-                  </span>
-                  <ChevronRight size={18} />
-                </button>
-                <button
-                  className="account-danger-button delete"
-                  onClick={() =>
-                    openAuthThen(TOKEN_TYPE.DELETE_ACCOUNT, "delete_account")
-                  }
-                >
-                  <span>
-                    <Trash2 size={18} />
-                    {t("common.delete_account")}
-                  </span>
-                  <ChevronRight size={18} />
-                </button>
-                <button
-                  className="account-danger-button delete"
-                  onClick={onLogoutOpen}
-                >
-                  <span>
-                    <LogOutIcon size={18} />
-                    {t("common.logout_account")}
-                  </span>
-                  <ChevronRight size={18} />
-                </button>
-              </div>
-            </SettingCard>
-          </div>
+              </SettingCard>
+            </div>
+          )}
         </div>
       </section>
 

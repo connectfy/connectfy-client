@@ -1,16 +1,17 @@
-import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
-import routes from "@/routes/router";
-import { useRoutes } from "react-router-dom";
 import "@/styles/index.css";
+import { useEffect } from "react";
+import routes from "@/routes/router";
+import { initFlowbite } from "flowbite";
 import "flag-icons/css/flag-icons.min.css";
-import { checkDeviceId } from "./common/utils/checkDevice";
-import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
-import { useAuthTokenManager } from "./common/helpers/authToken.manager";
-import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
+import { useRoutes } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "./context/ThemeContext";
 import { useGetMeQuery } from "./modules/profile/api/api";
+import { checkDeviceId } from "./common/utils/checkDevice";
+import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import { useAuthTokenManager } from "./common/helpers/authToken.manager";
+import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
+import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
 
 function App() {
   const { i18n } = useTranslation();
@@ -66,6 +67,10 @@ function App() {
   useEffect(() => {
     checkDeviceId();
   }, [deviceId]);
+
+  useEffect(() => {
+    initFlowbite();
+  }, []);
 
   return <>{content}</>;
 }

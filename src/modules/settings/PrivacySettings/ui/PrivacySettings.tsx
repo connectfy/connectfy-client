@@ -1,6 +1,6 @@
 import "./privacySettings.style.css";
 import { CheckCircle, Shield, UserCheck } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, useSyncExternalStore } from "react";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { useTranslation } from "react-i18next";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
@@ -25,8 +25,8 @@ import {
   useEditPrivacySettingsMutation,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { Skeleton } from "@/common/utils/skeleton";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
@@ -46,6 +46,15 @@ const PrivacySettings = () => {
     useEditPrivacySettingsMutation();
 
   const { showResponseErrors } = useErrors();
+
+  const height = useSyncExternalStore(
+    (callback) => {
+      window.addEventListener("resize", callback);
+      return () => window.removeEventListener("resize", callback);
+    },
+    () => window.innerHeight,
+    () => window.innerHeight,
+  );
 
   const formik = useFormik({
     initialValues: initialState(data),
@@ -122,7 +131,28 @@ const PrivacySettings = () => {
           />
 
           {LOADING_GET ? (
-            <SettingsSpinner />
+            <div className="privacy-settings-content">
+              <Skeleton
+                variant="rect"
+                height={height / 6}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 6}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 6}
+                ariaLabel={t("common.loading_settings")}
+              />
+              <Skeleton
+                variant="rect"
+                height={height / 3}
+                ariaLabel={t("common.loading_settings")}
+              />
+            </div>
           ) : (
             <Fragment>
               <div className="privacy-settings-content">

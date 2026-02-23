@@ -12,7 +12,10 @@ import {
   Users,
   Volume2,
 } from "lucide-react";
-import { IEditNotificationSettings, INotificationSettings } from "../types/types";
+import {
+  IEditNotificationSettings,
+  INotificationSettings,
+} from "../types/types";
 
 export const notificationModeOptions = (t: TFunction) => {
   return [
@@ -130,7 +133,7 @@ export const NOTIFICATION_FIELDS = (t: TFunction) => ({
 });
 
 export const initialState = (
-  data: INotificationSettings
+  data: INotificationSettings,
 ): IEditNotificationSettings => {
   const {
     _id,
@@ -169,7 +172,7 @@ export const initialState = (
 
 export const validateNotificationSettings = (
   values: IEditNotificationSettings,
-  t: TFunction
+  t: TFunction,
 ): void => {
   const { notificationSoundMode, notificationContentMode } = values;
 
@@ -177,9 +180,7 @@ export const validateNotificationSettings = (
     notificationSoundMode &&
     !Object.values(NOTIFICATION_SOUND_MODE).includes(notificationSoundMode)
   ) {
-    snack.error(t("error_messages.invalid_choice"), {
-      anchorOrigin: { vertical: "top", horizontal: "center" },
-    });
+    snack.error(t("error_messages.invalid_choice"));
     return;
   }
 
@@ -187,9 +188,7 @@ export const validateNotificationSettings = (
     notificationContentMode &&
     !Object.values(NOTIFICATION_CONTENT_MODE).includes(notificationContentMode)
   ) {
-    snack.error(t("error_messages.invalid_choice"), {
-      anchorOrigin: { vertical: "top", horizontal: "center" },
-    });
+    snack.error(t("error_messages.invalid_choice"));
     return;
   }
 };

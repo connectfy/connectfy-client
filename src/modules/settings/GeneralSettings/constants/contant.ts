@@ -21,7 +21,7 @@ import { IEditGeneralSettings, IGeneralSettings } from "../types/types";
 
 export const languageOptions = (
   t: TFunction,
-  formik: FormikProps<IEditGeneralSettings>
+  formik: FormikProps<IEditGeneralSettings>,
 ) => {
   const handleLanguageChange = (code: LANGUAGE) => {
     formik.setFieldValue("language", code);
@@ -61,7 +61,7 @@ export const languageOptions = (
 
 export const homepageOptions = (
   t: TFunction,
-  formik: FormikProps<IEditGeneralSettings>
+  formik: FormikProps<IEditGeneralSettings>,
 ) => {
   return {
     title: t("common.homepage"),
@@ -133,40 +133,30 @@ export const initialState = (data: IGeneralSettings): IEditGeneralSettings => {
 
 export const validateGenerateSettings = (
   values: IEditGeneralSettings,
-  t: TFunction
+  t: TFunction,
 ): void => {
   const { theme, language, startupPage, timeZone } = values;
 
   if (theme && !Object.values(THEME).includes(theme))
-    snack.error(t("error_messages.invalid_choice"), {
-      anchorOrigin: { vertical: "top", horizontal: "center" },
-    });
+    snack.error(t("error_messages.invalid_choice"));
 
   if (language && !Object.values(LANGUAGE).includes(language))
-    snack.error(t("error_messages.invalid_choice"), {
-      anchorOrigin: { vertical: "top", horizontal: "center" },
-    });
+    snack.error(t("error_messages.invalid_choice"));
 
   if (startupPage && !Object.values(STARTUP_PAGE).includes(startupPage))
-    snack.error(t("error_messages.invalid_choice"), {
-      anchorOrigin: { vertical: "top", horizontal: "center" },
-    });
+    snack.error(t("error_messages.invalid_choice"));
 
   if (timeZone) {
     if (
       timeZone.dateFormat &&
       !Object.values(DATE_FORMAT).includes(timeZone.dateFormat)
     )
-      snack.error(t("error_messages.invalid_choice"), {
-        anchorOrigin: { vertical: "top", horizontal: "center" },
-      });
+      snack.error(t("error_messages.invalid_choice"));
 
     if (
       timeZone.timeFormat &&
       !Object.values(TIME_FORMAT).includes(timeZone.timeFormat)
     )
-      snack.error(t("error_messages.invalid_choice"), {
-        anchorOrigin: { vertical: "top", horizontal: "center" },
-      });
+      snack.error(t("error_messages.invalid_choice"));
   }
 };
