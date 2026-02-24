@@ -3,7 +3,7 @@ import "./privacyIconModal.style.css";
 import Modal from "@/components/Modal";
 import { Globe, Users, Lock, Shield, Check } from "lucide-react";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
-import Button from "@/components/Buttons/Button/Button";
+import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTranslation } from "react-i18next";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 import { snack } from "@/common/utils/snackManager";
@@ -138,7 +138,6 @@ const PrivacyIconModal: FC<Props> = ({
 
           <Button
             onClick={submitSelect}
-            fillWidth
             style={{ marginTop: "10px" }}
             disabled={currentPrivacy === privacy || LOADING_UPDATE}
             isLoading={LOADING_UPDATE}

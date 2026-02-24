@@ -6,7 +6,7 @@ import { IUpdatePassword } from "../../../../types/types";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
 import { snack } from "@/common/utils/snackManager";
-import PasswordInput from "@/components/PasswordInput/PasswordInput";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import { useUpdatePasswordMutation } from "@/modules/settings/AccountSettings/api/api";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useErrors } from "@/hooks/useErrors";
@@ -136,10 +136,10 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
           <div className="account-settings-modal-field">
             <div style={{ marginBottom: "5px" }}>
               <PasswordInput
-                size="medium"
+                inputSize="medium"
                 id="password"
                 name="password"
-                label={t("common.password")}
+                title={t("common.password")}
                 value={formik.values.password || ""}
                 onChange={(e) => {
                   const value = e.target.value || null;
@@ -149,11 +149,11 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                   formik.setFieldValue("password", value);
                 }}
                 onBlur={formik.handleBlur}
-                hasError={!!formik.errors.password}
+                isError={!!formik.errors.password}
                 disabled={LOADING_UPDATE_PASSWORD}
                 autoFocus
                 autoComplete="off"
-                showGenerateIcon
+                showGenerateButton
                 onGenerate={(value?: string) => {
                   navigator.clipboard.writeText(value as string);
                   snack.info(t("user_messages.password_generated_message"), {
@@ -172,10 +172,10 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
             </div>
             <div>
               <PasswordInput
-                size="medium"
+                inputSize="medium"
                 id="confirmPassword"
                 name="confirmPassword"
-                label={t("common.confirm_password")}
+                title={t("common.confirm_password")}
                 value={formik.values.confirmPassword || ""}
                 onChange={(e) => {
                   const value = e.target.value || null;
@@ -185,7 +185,7 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                   formik.setFieldValue("confirmPassword", value);
                 }}
                 onBlur={formik.handleBlur}
-                hasError={!!formik.errors.confirmPassword}
+                isError={!!formik.errors.confirmPassword}
                 disabled={LOADING_UPDATE_PASSWORD}
                 autoComplete="off"
               />

@@ -252,7 +252,7 @@
   color: #cbd5e1;
 }
 
-@media (min-width: 885px) and (max-width: 1000px) {
+@media (min-width: 1024px) and (max-width: 1000px) {
   .settings-main-container {
     padding: 20px 0;
   }

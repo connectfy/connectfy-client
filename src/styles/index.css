@@ -51,7 +51,7 @@ body {
   border-radius: 3px;
 }
 
-@media (max-width: 885px) {
+@media (max-width: 1024px) {
   body {
     scrollbar-width: none !important;
   }

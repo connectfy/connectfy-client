@@ -73,7 +73,7 @@
   min-width: 160px;
 }
 
-@media (max-width: 886px) {
+@media (max-width: 1024px) {
   .privacy-settings-container {
     height: 100%;
   }

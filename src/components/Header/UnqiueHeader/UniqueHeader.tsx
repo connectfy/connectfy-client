@@ -55,7 +55,7 @@ const UniqueHeader: FC<Props> = ({
             className="
               text-[28px] font-extrabold text-(--text-primary)
               m-0 whitespace-nowrap overflow-hidden text-ellipsis
-              max-[886px]:text-2xl max-[480px]:text-[22px]
+              max-[1024px]:text-2xl max-[480px]:text-[22px]
             "
           >
             {headerTitle}

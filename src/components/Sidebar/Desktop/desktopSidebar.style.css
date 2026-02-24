@@ -319,7 +319,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-@media (max-width: 884px) {
+@media (max-width: 1024) {
   .default-avatar {
     width: 25px;
     height: 25px;

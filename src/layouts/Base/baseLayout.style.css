@@ -52,7 +52,7 @@
   }
 }
 
-@media (min-width: 887px) {
+@media (min-width: 1024px) {
   .layout-sidebar-box {
     position: fixed;
     left: 0;
@@ -79,7 +79,7 @@
   }
 }
 
-@media (max-width: 886px) {
+@media (max-width: 1024px) {
   #layout {
     flex-direction: column;
   }

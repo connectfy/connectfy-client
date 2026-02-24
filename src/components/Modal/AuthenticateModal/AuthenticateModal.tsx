@@ -2,7 +2,7 @@ import { FC, Fragment, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
 import "./authenticateModal.style.css";
-import PasswordInput from "@/components/PasswordInput/PasswordInput";
+import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { PROVIDER, TOKEN_TYPE } from "@/common/enums/enums";
@@ -176,16 +176,15 @@ const AuthenticateModal: FC<Props> = ({
           <Fragment>
             <div className="authenticate-input-container">
               <PasswordInput
-                size="medium"
-                label={t("common.password")}
-                value={formik.values.password}
+                inputSize="medium"
+                title={t("common.password")}
+                value={formik.values.password || ""}
                 onChange={(e) => {
                   formik.setFieldValue("password", e.target.value || null);
                 }}
                 disabled={LOADING_AUTHENTICATE_USER}
                 autoFocus
-                fullWidth
-                hasError={formik.errors.password ? true : false}
+                isError={formik.errors.password ? true : false}
               />
             </div>
 

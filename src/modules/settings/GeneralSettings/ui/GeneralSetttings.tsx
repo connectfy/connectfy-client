@@ -9,7 +9,7 @@ import {
   MonitorSmartphone,
 } from "lucide-react";
 import "./generalSetttings.style.css";
-import { Fragment, useEffect, useState, useSyncExternalStore } from "react";
+import { Fragment, useEffect, useState } from "react";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -38,7 +38,7 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
-import { Skeleton } from "@/common/utils/skeleton";
+import { SettingsSkeleton } from "@/common/utils/skeleton";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -63,15 +63,6 @@ const GeneralSettings = () => {
   const { showResponseErrors } = useErrors();
 
   const resetSettingsModal = useBoolean();
-
-  const height = useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("resize", callback);
-      return () => window.removeEventListener("resize", callback);
-    },
-    () => window.innerHeight,
-    () => window.innerHeight,
-  );
 
   const formik = useFormik({
     initialValues: initialState(data!),
@@ -168,33 +159,7 @@ const GeneralSettings = () => {
           />
 
           {LOADING_GET ? (
-            <div className="general-settings-content">
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-            </div>
+            <SettingsSkeleton count={5} />
           ) : (
             <Fragment>
               <div className="general-settings-content">

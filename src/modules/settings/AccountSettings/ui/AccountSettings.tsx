@@ -6,7 +6,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import {
   User,
@@ -57,7 +56,7 @@ import {
 import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
 import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
-import { Skeleton } from "@/components/Skeleton/Skeleton";
+import { SettingsSkeleton } from "@/common/utils/skeleton";
 
 const AccountSettings: FC = () => {
   const { t, i18n } = useTranslation();
@@ -104,15 +103,6 @@ const AccountSettings: FC = () => {
   }>({ open: false, authType: undefined, next: null });
 
   const [openModal, setOpenModal] = useState<ChangeModalKey>(null);
-
-  const height = useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("resize", callback);
-      return () => window.removeEventListener("resize", callback);
-    },
-    () => window.innerHeight,
-    () => window.innerHeight,
-  );
 
   const {
     open: verifiedModalOpen,
@@ -324,38 +314,7 @@ const AccountSettings: FC = () => {
           />
 
           {LOADING_USER || LOADING_ACCOUNT || LOADING_GENERAL_SETTINGS ? (
-            <div className="account-settings-content">
-              <Skeleton
-                variant="rect"
-                height={height / 7}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 7}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 7}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 7}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 7}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 7}
-                ariaLabel={t("common.loading_settings")}
-              />
-            </div>
+            <SettingsSkeleton count={6} />
           ) : (
             <div className="account-settings-content">
               {items.map((it) => (

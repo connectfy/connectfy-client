@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import { Fragment, useSyncExternalStore } from "react";
+import { Fragment } from "react";
 import "./notificationSettings.style.css";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
@@ -25,7 +25,7 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
-import { Skeleton } from "@/common/utils/skeleton";
+import { SettingsSkeleton } from "@/common/utils/skeleton";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
@@ -44,15 +44,6 @@ const NotificationSettings = () => {
     useEditNotificationSettingsMutation();
 
   const { showResponseErrors } = useErrors();
-
-  const height = useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("resize", callback);
-      return () => window.removeEventListener("resize", callback);
-    },
-    () => window.innerHeight,
-    () => window.innerHeight,
-  );
 
   const formik = useFormik({
     initialValues: initialState(data!),
@@ -113,33 +104,7 @@ const NotificationSettings = () => {
           />
 
           {LOADING_GET ? (
-            <div className="notification-settings-content">
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-              <Skeleton
-                variant="rect"
-                height={height / 6}
-                ariaLabel={t("common.loading_settings")}
-              />
-            </div>
+            <SettingsSkeleton count={8} />
           ) : (
             <Fragment>
               <div className="notification-settings-content">

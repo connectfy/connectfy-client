@@ -20,7 +20,7 @@
 .settings-layout__content {
   flex: 1 1 auto;
   width: 100%;
-  height: 100vh;    /* content-ə tam görünən hündürlük ver */
+  height: 100vh; /* content-ə tam görünən hündürlük ver */
   overflow: hidden; /* əsas konteynerdə scroll yox — iç bloklara verəcəyik */
   box-sizing: border-box;
 }
@@ -49,7 +49,7 @@
   margin: 0 auto;
 }
 
-@media (min-width: 886px) and (max-width: 1000px) {
+@media (min-width: 1024px) and (max-width: 1000px) {
   .settings-layout.desktop {
     padding: 16px 5px;
   }
@@ -65,7 +65,7 @@
   }
 }
 
-@media (max-width: 886px) {
+@media (max-width: 1024px) {
   .settings-layout.desktop {
     display: none;
   }

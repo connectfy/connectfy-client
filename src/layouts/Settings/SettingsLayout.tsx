@@ -79,7 +79,7 @@ const SettingsLayout: FC<Props> = ({ children }) => {
   ];
 
   const [isMobile, setIsMobile] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.innerWidth < 886 : false,
+    typeof window !== "undefined" ? window.innerWidth < 1024 : false,
   );
 
   useEffect(() => {

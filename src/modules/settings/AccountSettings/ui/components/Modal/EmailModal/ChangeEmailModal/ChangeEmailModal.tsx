@@ -6,7 +6,7 @@ import { IUpdateEmail } from "../../../../../types/types";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
 import { useUpdateEmailMutation } from "@/modules/settings/AccountSettings/api/api";
-import Input from "@/components/Input/Input";
+import Input from "@/components/ui/CustomInput/Input/Input";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { useErrors } from "@/hooks/useErrors";
@@ -278,11 +278,11 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
           <div className="account-settings-modal-form">
             <div className="account-settings-modal-field">
               <Input
-                size="medium"
+                inputSize="medium"
                 id="email"
                 type="email"
                 name="email"
-                label={t("common.email")}
+                title={t("common.email")}
                 value={formik.values.email || ""}
                 onChange={(e) => {
                   const value = e.target.value || null;
@@ -292,7 +292,7 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
                   formik.setFieldValue("email", value);
                 }}
                 onBlur={formik.handleBlur}
-                hasError={!!formik.errors.email}
+                isError={!!formik.errors.email}
                 disabled={LOADING_UPDATE_EMAIL}
                 autoFocus
                 autoComplete="off"

@@ -193,7 +193,7 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 886px) {
+@media (max-width: 1024px) {
   .general-settings-container {
     height: 100%;
   }

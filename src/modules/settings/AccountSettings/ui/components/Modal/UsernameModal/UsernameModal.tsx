@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { IUpdateUsername } from "../../../../types/types";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
-import Input from "@/components/Input/Input";
+import Input from "@/components/ui/CustomInput/Input/Input";
 import { snack } from "@/common/utils/snackManager";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
@@ -135,10 +135,10 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
         <div className="account-settings-modal-form">
           <div className="account-settings-modal-field">
             <Input
-              size="medium"
+              inputSize="medium"
               id="username"
               name="username"
-              label={t("common.username")}
+              title={t("common.username")}
               value={formik.values.username || ""}
               onChange={(e) => {
                 const value = e.target.value || null;
@@ -148,7 +148,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
                 formik.setFieldValue("username", value);
               }}
               onBlur={formik.handleBlur}
-              hasError={!!formik.errors.username}
+              isError={!!formik.errors.username}
               disabled={LOADING_UPDATE_USERNAME}
               autoFocus
               autoComplete="off"
