@@ -39,7 +39,7 @@ export const ShortcutTooltip: React.FC<ShortcutTooltipProps> = ({
           {displayKeys.map((key, index) => (
             <React.Fragment key={index}>
               {index > 0 && <span className="text-slate-400 mx-0.5">+</span>}
-              <kbd className="px-2 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-300 rounded shadow-sm flex items-center justify-center min-w-[24px]">
+              <kbd className="px-2 py-1.5 text-xs font-semibold text-heading bg-neutral-tertiary border border-default-medium rounded-md">
                 {key}
               </kbd>
             </React.Fragment>
