@@ -2,7 +2,7 @@ import { FC, ForwardRefExoticComponent, Fragment, RefAttributes } from "react";
 import "./customSelect.style.css";
 import { ChevronRight, LucideProps } from "lucide-react";
 import useBoolean from "@/hooks/useBoolean";
-import SelectionModal from "../Modal/SelectionModal/SelectionModal";
+import SelectionModal from "@/components/Modal/SelectionModal/SelectionModal";
 
 interface Selections {
   name: string;

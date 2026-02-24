@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import "./generalSetttings.style.css";
 import { Fragment, useEffect, useState } from "react";
-import CustomSelect from "@/components/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/ui/CustomSelect/CustomSelect";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
@@ -74,7 +74,9 @@ const GeneralSettings = () => {
       try {
         const res = await updateGeneralSettings(values).unwrap();
         if (res) {
-          snack.success(t("user_messages.information_updated"));
+          snack.success(
+            t("user_messages.information_updated", { lng: res.language }),
+          );
           resetForm();
         }
       } catch (error) {
@@ -204,8 +206,8 @@ const GeneralSettings = () => {
                 <SettingCard
                   header={{
                     icon: Globe,
-                    title: t("common.language"),
-                    subtitle: t("common.language"),
+                    title: t("common.app_language"),
+                    subtitle: t("common.select_app_language"),
                   }}
                 >
                   <CustomSelect
