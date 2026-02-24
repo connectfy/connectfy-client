@@ -98,16 +98,14 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
         if (values.action === PHONE_NUMBER_ACTION.REMOVE)
           values.phoneNumber = null;
 
-        const res = await updatePhoneNumber(values).unwrap();
-        if (res) {
-          resetForm();
-          const message =
-            values.action === PHONE_NUMBER_ACTION.REMOVE
-              ? t("user_messages.phone_number_removed_successfully")
-              : t("user_messages.phone_number_changed_successfully");
-          snack.success(message);
-          handleModalClose();
-        }
+        await updatePhoneNumber(values).unwrap();
+        resetForm();
+        const message =
+          values.action === PHONE_NUMBER_ACTION.REMOVE
+            ? t("user_messages.phone_number_removed_successfully")
+            : t("user_messages.phone_number_changed_successfully");
+        snack.success(message);
+        handleModalClose();
       } catch (error) {
         showResponseErrors(error);
       }

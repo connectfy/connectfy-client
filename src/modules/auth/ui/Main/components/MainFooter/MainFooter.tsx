@@ -60,17 +60,16 @@ const MainFooter = () => {
         try {
           const deviceId = checkDeviceId();
           const res = await googleLogin({ idToken, deviceId }).unwrap();
-          if (res) {
-            setToken({
-              type: "accessToken",
-              token: res.access_token,
-            });
-            snack.success(
-              t("user_messages.login_successful", { lng: res.language }),
-            );
-            navigate(res.startupPage);
-            toggleTheme(res.theme);
-          }
+
+          setToken({
+            type: "accessToken",
+            token: res.access_token,
+          });
+          snack.success(
+            t("user_messages.login_successful", { lng: res.language }),
+          );
+          navigate(res.startupPage);
+          toggleTheme(res.theme);
         } catch (error) {
           showResponseErrors(error);
         }
@@ -84,14 +83,12 @@ const MainFooter = () => {
             return;
           }
 
-          const res = await checkUnique({
+          await checkUnique({
             field: CHECK_UNIQUE_FIELD.EMAIL,
             value: email,
           }).unwrap();
-          if (res) {
-            setIdToken(idToken);
-            isModalOpen.onOpen();
-          }
+          setIdToken(idToken);
+          isModalOpen.onOpen();
         } catch (error) {
           showResponseErrors(error);
         }

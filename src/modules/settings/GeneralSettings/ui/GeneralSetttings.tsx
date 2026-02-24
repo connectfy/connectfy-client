@@ -39,6 +39,8 @@ import {
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
+import { getChangedData } from "@/common/utils/getDirtyValues";
+import { IEditGeneralSettings } from "../types/types";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -72,13 +74,16 @@ const GeneralSettings = () => {
     validate: (values) => validateGenerateSettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
+        const changedData = getChangedData<IEditGeneralSettings>(data!, values);
+        values = {
+          _id: data!._id,
+          ...changedData,
+        };
         const res = await updateGeneralSettings(values).unwrap();
-        if (res) {
-          snack.success(
-            t("user_messages.information_updated", { lng: res.language }),
-          );
-          resetForm();
-        }
+        snack.success(
+          t("user_messages.information_updated", { lng: res.language }),
+        );
+        resetForm();
       } catch (error) {
         showResponseErrors(error);
       }
@@ -129,18 +134,16 @@ const GeneralSettings = () => {
 
   const handleResetSettings = async () => {
     try {
-      const res = await resetSettings().unwrap();
-      if (res) {
-        snack.success(t("user_messages.information_updated"));
+      await resetSettings().unwrap();
+      snack.success(t("user_messages.information_updated"));
 
-        if (formik.values.theme !== data?.theme) {
-          formik.setFieldValue("theme", data?.theme);
-          toggleTheme(data?.theme as THEME);
-        }
-
-        formik.resetForm();
-        resetSettingsModal.onClose();
+      if (formik.values.theme !== data?.theme) {
+        formik.setFieldValue("theme", data?.theme);
+        toggleTheme(data?.theme as THEME);
       }
+
+      formik.resetForm();
+      resetSettingsModal.onClose();
     } catch (error) {
       showResponseErrors(error);
     }

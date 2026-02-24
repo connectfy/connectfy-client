@@ -74,15 +74,13 @@ const PrivacyIconModal: FC<Props> = ({
 
   const submitSelect = async () => {
     try {
-      const res = await updatePrivacySettings({
+      await updatePrivacySettings({
         _id: privacySettings!._id,
         [fieldName]: privacy,
       }).unwrap();
 
-      if (res) {
-        onClose();
-        snack.success(t("user_messages.information_updated"));
-      }
+      onClose();
+      snack.success(t("user_messages.information_updated"));
     } catch (error) {
       showResponseErrors(error);
     }

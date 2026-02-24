@@ -63,16 +63,14 @@ const SignupModal = ({
         values.deviceId = checkDeviceId();
 
         const res = await googleSignup(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.signup_successful"));
-          setToken({
-            type: "accessToken",
-            token: res.access_token,
-          });
-          navigate(ROUTER.MESSENGER.MAIN);
-          resetForm();
-          onClose();
-        }
+        snack.success(t("user_messages.signup_successful"));
+        setToken({
+          type: "accessToken",
+          token: res.access_token,
+        });
+        navigate(ROUTER.MESSENGER.MAIN);
+        resetForm();
+        onClose();
       } catch (error) {
         showResponseErrors(error);
       }

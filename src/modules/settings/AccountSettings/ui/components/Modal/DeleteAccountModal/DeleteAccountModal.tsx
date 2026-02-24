@@ -52,14 +52,12 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
     enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await deleteAccount(values).unwrap();
-        if (res) {
-          resetForm();
-          onClose();
-          navigate(ROUTER.AUTH.MAIN);
-          clear("all");
-          snack.success(t("user_messages.account_deleted"));
-        }
+        await deleteAccount(values).unwrap();
+        resetForm();
+        onClose();
+        navigate(ROUTER.AUTH.MAIN);
+        clear("all");
+        snack.success(t("user_messages.account_deleted"));
       } catch (error) {
         showResponseErrors(error);
       }

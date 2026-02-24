@@ -48,12 +48,10 @@ const ForgotPassword = () => {
     validate: (values) => validateForgotPassword(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await forgotPassword(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.forgot_password_successful"));
-          navigate(ROUTER.AUTH.MAIN);
-          resetForm();
-        }
+        await forgotPassword(values).unwrap();
+        snack.success(t("user_messages.forgot_password_successful"));
+        navigate(ROUTER.AUTH.MAIN);
+        resetForm();
       } catch (error) {
         showResponseErrors(error);
       }

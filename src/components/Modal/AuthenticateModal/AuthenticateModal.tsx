@@ -13,6 +13,7 @@ import { IAuthenticateUser } from "@/modules/auth/types/types";
 import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
   open: boolean;
@@ -31,6 +32,7 @@ const AuthenticateModal: FC<Props> = ({
   const { t } = useTranslation();
 
   const { getToken } = useAuthTokenManager();
+  const { showResponseErrors } = useErrors();
 
   const [
     authenticateUser,
@@ -75,8 +77,8 @@ const AuthenticateModal: FC<Props> = ({
     enableReinitialize: true,
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
-      const res = await authenticateUser(values).unwrap();
-      if (res) {
+      try {
+        const res = await authenticateUser(values).unwrap();
         setToken({
           token: res.token,
           type: "authenticateToken",
@@ -84,6 +86,8 @@ const AuthenticateModal: FC<Props> = ({
         onAuthenticate();
         resetForm();
         onClose();
+      } catch (error) {
+        showResponseErrors(error);
       }
     },
   });
@@ -125,20 +129,20 @@ const AuthenticateModal: FC<Props> = ({
   );
 
   const handleGoogleSuccess = async (tokenResponse: any) => {
-    const idToken = tokenResponse.credential;
+    try {
+      const idToken = tokenResponse.credential;
 
-    if (!idToken) {
-      snack.error(t("error_messages.process_failed"));
-      return;
-    }
+      if (!idToken) {
+        snack.error(t("error_messages.process_failed"));
+        return;
+      }
 
-    const finalValues = {
-      ...formik.values,
-      idToken,
-    };
+      const finalValues = {
+        ...formik.values,
+        idToken,
+      };
 
-    const res = await authenticateUser(finalValues).unwrap();
-    if (res) {
+      const res = await authenticateUser(finalValues).unwrap();
       setToken({
         token: res.token,
         type: "accessToken",
@@ -146,6 +150,8 @@ const AuthenticateModal: FC<Props> = ({
       onAuthenticate();
       formik.resetForm();
       onClose();
+    } catch (error) {
+      showResponseErrors(error);
     }
   };
 

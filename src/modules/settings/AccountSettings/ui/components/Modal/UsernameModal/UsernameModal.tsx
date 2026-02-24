@@ -64,12 +64,10 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await updateUsername(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.username_changed_successfully"));
-          resetForm();
-          onClose();
-        }
+        await updateUsername(values).unwrap();
+        snack.success(t("user_messages.username_changed_successfully"));
+        resetForm();
+        onClose();
       } catch (error) {
         showResponseErrors(error);
       }

@@ -136,14 +136,10 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await updateEmail(values).unwrap();
-        if (res) {
-          resetForm();
-          setSuccess(true);
-          setEmail(values.email);
-          // snack.success(t("user_messages.email_changed_successfully"));
-          // onClose();
-        }
+        await updateEmail(values).unwrap();
+        resetForm();
+        setSuccess(true);
+        setEmail(values.email);
       } catch (error) {
         showResponseErrors(error);
       }

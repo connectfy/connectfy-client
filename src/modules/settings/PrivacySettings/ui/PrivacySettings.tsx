@@ -27,6 +27,8 @@ import {
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
+import { getChangedData } from "@/common/utils/getDirtyValues";
+import { IEditPrivacySettings } from "../types/types";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
@@ -55,11 +57,14 @@ const PrivacySettings = () => {
     validate: (values) => validatePrivacySettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await editPrivacySettings(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.information_updated"));
-          resetForm();
-        }
+        const changedData = getChangedData<IEditPrivacySettings>(data!, values);
+        values = {
+          _id: data!._id,
+          ...changedData,
+        };
+        await editPrivacySettings(values).unwrap();
+        snack.success(t("user_messages.information_updated"));
+        resetForm();
       } catch (error) {
         showResponseErrors(error);
       }

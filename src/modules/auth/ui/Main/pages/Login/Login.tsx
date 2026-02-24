@@ -52,18 +52,16 @@ const Login = () => {
         values.deviceId = checkDeviceId();
         const res = await login(values).unwrap();
 
-        if (res) {
-          setToken({
-            type: "accessToken",
-            token: res.access_token,
-          });
-          snack.success(
-            t("user_messages.login_successful", { lng: res.language }),
-          );
-          navigate(res.startupPage);
-          toggleTheme(res.theme);
-          resetForm();
-        }
+        setToken({
+          type: "accessToken",
+          token: res.access_token,
+        });
+        snack.success(
+          t("user_messages.login_successful", { lng: res.language }),
+        );
+        navigate(res.startupPage);
+        toggleTheme(res.theme);
+        resetForm();
       } catch (err) {
         showResponseErrors(err);
       }

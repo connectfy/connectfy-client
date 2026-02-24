@@ -26,6 +26,8 @@ import {
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
+import { getChangedData } from "@/common/utils/getDirtyValues";
+import { IEditNotificationSettings } from "../types/types";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
@@ -53,11 +55,17 @@ const NotificationSettings = () => {
     validate: (values) => validateNotificationSettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await editNotificationSettings(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.information_updated"));
-          resetForm();
-        }
+        const changedData = getChangedData<IEditNotificationSettings>(
+          data!,
+          values,
+        );
+        values = {
+          _id: data!._id,
+          ...changedData,
+        };
+        await editNotificationSettings(values).unwrap();
+        snack.success(t("user_messages.information_updated"));
+        resetForm();
       } catch (error) {
         showResponseErrors(error);
       }

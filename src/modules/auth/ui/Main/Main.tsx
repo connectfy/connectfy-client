@@ -56,14 +56,9 @@ const MainPage: FC = () => {
 
     (async () => {
       try {
-        const res = await restoreAccount({ token }).unwrap();
-
-        if (res) {
-          navigate(ROUTER.MAIN);
-          snack.success(t("user_messages.restore_account_successful"));
-          return;
-        }
-        navigate(ROUTER.AUTH.MAIN);
+        await restoreAccount({ token }).unwrap();
+        navigate(ROUTER.MAIN);
+        snack.success(t("user_messages.restore_account_successful"));
       } catch (error) {
         showResponseErrors(error);
         navigate(ROUTER.AUTH.MAIN);

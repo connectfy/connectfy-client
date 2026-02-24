@@ -50,15 +50,13 @@ const Signup = () => {
           (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
           THEME.LIGHT;
 
-        const res = await signup(rest).unwrap();
-        if (res) {
-          resetForm();
-          localStorage.setItem(
-            LOCAL_STORAGE_KEYS.SIGNUP_FORM,
-            JSON.stringify(values),
-          );
-          await navigate(ROUTER.AUTH.VERIFY_ACCOUNT, { replace: true });
-        }
+        await signup(rest).unwrap();
+        resetForm();
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.SIGNUP_FORM,
+          JSON.stringify(values),
+        );
+        await navigate(ROUTER.AUTH.VERIFY_ACCOUNT, { replace: true });
       } catch (error) {
         showResponseErrors(error);
       }

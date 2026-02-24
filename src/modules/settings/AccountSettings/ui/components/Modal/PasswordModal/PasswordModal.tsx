@@ -63,12 +63,10 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
     validate: (values) => validate(values),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await updatePassword(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.password_changed_successfully"));
-          resetForm();
-          onClose();
-        }
+        await updatePassword(values).unwrap();
+        snack.success(t("user_messages.password_changed_successfully"));
+        resetForm();
+        onClose();
       } catch (error) {
         showResponseErrors(error);
       }

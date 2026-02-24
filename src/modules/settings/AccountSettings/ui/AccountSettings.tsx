@@ -155,15 +155,13 @@ const AccountSettings: FC = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await logout().unwrap();
+      await logout().unwrap();
+      clear("all");
 
-      if (res) {
-        clear("all");
-        localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
-        localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
-        navigate(ROUTER.AUTH.MAIN);
-        snack.success(t("user_messages.logout_successfull"));
-      }
+      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
+      navigate(ROUTER.AUTH.MAIN);
+      snack.success(t("user_messages.logout_successfull"));
     } catch (error) {
       showResponseErrors(error);
     }
@@ -171,17 +169,15 @@ const AccountSettings: FC = () => {
 
   const handleDeactivateAccount = async () => {
     try {
-      const res = await deactivateAccount({
+      await deactivateAccount({
         token: authToken as string,
       }).unwrap();
 
-      if (res) {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
-        localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
-        clear("all");
-        navigate(ROUTER.AUTH.MAIN);
-        snack.success(t("user_messages.account_deactivated"));
-      }
+      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
+      clear("all");
+      navigate(ROUTER.AUTH.MAIN);
+      snack.success(t("user_messages.account_deactivated"));
     } catch (error) {
       showResponseErrors(error);
     }
@@ -289,10 +285,8 @@ const AccountSettings: FC = () => {
       try {
         onVerifiedOpen();
 
-        const res = await verifyChangeEmail({ token }).unwrap();
-        if (res) {
-          snack.success(t("user_messages.email_changed_successfully"));
-        }
+        await verifyChangeEmail({ token }).unwrap();
+        snack.success(t("user_messages.email_changed_successfully"));
       } catch (error) {
         showResponseErrors(error);
       } finally {

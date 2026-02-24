@@ -43,12 +43,10 @@ const ResetPassword = () => {
     validate: (values) => validateResetPassword(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const res = await resetPassword(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.reset_password_successfull"));
-          navigate("/auth");
-          resetForm();
-        }
+        await resetPassword(values).unwrap();
+        snack.success(t("user_messages.reset_password_successfull"));
+        navigate("/auth");
+        resetForm();
       } catch (error) {
         showResponseErrors(error);
       }

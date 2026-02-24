@@ -49,14 +49,12 @@ const VerifyAccount = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         values.deviceId = checkDeviceId();
-        const res = await signupVerify(values).unwrap();
-        if (res) {
-          snack.success(t("user_messages.verify_successful"));
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
-          localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
-          resetForm();
-          navigate(ROUTER.MESSENGER.MAIN);
-        }
+        await signupVerify(values).unwrap();
+        snack.success(t("user_messages.verify_successful"));
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
+        resetForm();
+        navigate(ROUTER.MESSENGER.MAIN);
       } catch (error) {
         showResponseErrors(error);
       }
@@ -121,11 +119,9 @@ const VerifyAccount = () => {
     if (isResendDisabled) return;
 
     try {
-      const res = await resendSignupVerify().unwrap();
-      if (res) {
-        snack.success(t("user_messages.otp_resent"));
-        startTimer();
-      }
+      await resendSignupVerify().unwrap();
+      snack.success(t("user_messages.otp_resent"));
+      startTimer();
     } catch (error) {
       showResponseErrors(error);
     }
