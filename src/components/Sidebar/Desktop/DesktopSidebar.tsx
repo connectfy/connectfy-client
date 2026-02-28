@@ -16,7 +16,7 @@ import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { Avatar } from "@mui/material";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 const DesktopSidebar = () => {
   const { t } = useTranslation();
@@ -24,8 +24,7 @@ const DesktopSidebar = () => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const {
     data: user,

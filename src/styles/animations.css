@@ -2,6 +2,7 @@
   --animate-slide-up: slideUp 0.3s ease-in-out;
   --animate-scale-in: scaleIn 0.3s ease-in-out;
   --animate-fade-in: fadeIn 0.5s ease;
+  --animate-bounce-custom: bounceCustom 0.5s ease-in-out;
 
   @keyframes slideUp {
     from {
@@ -31,6 +32,16 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes bounceCustom {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
     }
   }
 }

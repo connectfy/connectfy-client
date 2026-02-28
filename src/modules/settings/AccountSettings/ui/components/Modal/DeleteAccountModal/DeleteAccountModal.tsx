@@ -11,7 +11,7 @@ import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { IDeleteAccount } from "../../../../types/types";
 import { useDeleteAccountMutation } from "@/modules/settings/AccountSettings/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -22,9 +22,7 @@ interface Props {
 const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { getToken, clear } = useAuthTokenManager();
-
-  const authToken = getToken("authenticateToken");
+  const { authenticateToken, clear } = useAuthStore();
 
   const { showResponseErrors } = useErrors();
 
@@ -32,7 +30,7 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
     useDeleteAccountMutation();
 
   const initialState: IDeleteAccount = {
-    token: authToken as string,
+    token: authenticateToken as string,
     reason: DELETE_REASON.USER_REQUEST,
     otherReason: null,
   };

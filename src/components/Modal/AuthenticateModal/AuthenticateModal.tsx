@@ -1,7 +1,6 @@
 import { FC, Fragment, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ShieldCheck } from "lucide-react";
-import "./authenticateModal.style.css";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
@@ -12,8 +11,9 @@ import { GoogleLogin } from "@react-oauth/google";
 import { IAuthenticateUser } from "@/modules/auth/types/types";
 import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
 import { useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface Props {
   open: boolean;
@@ -28,10 +28,8 @@ const AuthenticateModal: FC<Props> = ({
   onAuthenticate,
   authType,
 }) => {
-  const { setToken } = useAuthTokenManager();
+  const { access_token, setToken } = useAuthStore();
   const { t } = useTranslation();
-
-  const { getToken } = useAuthTokenManager();
   const { showResponseErrors } = useErrors();
 
   const [
@@ -40,7 +38,7 @@ const AuthenticateModal: FC<Props> = ({
   ] = useAuthenticateUserMutation();
 
   const { data: user } = useGetMeQuery(undefined, {
-    skip: !getToken("accessToken"),
+    skip: !access_token,
   });
 
   const isPasswordProvider = user?.provider === PROVIDER.PASSWORD;
@@ -102,7 +100,6 @@ const AuthenticateModal: FC<Props> = ({
   const handleSubmit = () => {
     if (isPasswordProvider) {
       formik.submitForm();
-      return;
     }
   };
 
@@ -145,7 +142,7 @@ const AuthenticateModal: FC<Props> = ({
       const res = await authenticateUser(finalValues).unwrap();
       setToken({
         token: res.token,
-        type: "accessToken",
+        type: "authenticateToken",
       });
       onAuthenticate();
       formik.resetForm();
@@ -166,13 +163,16 @@ const AuthenticateModal: FC<Props> = ({
 
   return (
     <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>
-      <div className="authenticate-modal">
-        <div className="authenticate-icon">
-          <ShieldCheck size={50} color="var(--primary-color)" />
+      <div className="bg-(--auth-main-bg) rounded-2xl p-6 sm:p-8 max-w-[440px] w-[90%] shadow-(--card-shadow) animate-fade-in mx-auto">
+        <div className="flex justify-center mb-4 animate-bounce-custom">
+          <ShieldCheck size={50} className="text-(--primary-color)" />
         </div>
-        <h2>{t("common.authentication_required")}</h2>
 
-        <p>
+        <h2 className="text-2xl font-bold text-(--text-primary) mb-3 text-center">
+          {t("common.authentication_required")}
+        </h2>
+
+        <p className="text-[15px] text-(--text-secondary)] mb-6 text-center leading-relaxed">
           {isPasswordProvider
             ? t("common.enter_password_to_continue")
             : t("common.verify_identity_to_continue")}
@@ -180,9 +180,9 @@ const AuthenticateModal: FC<Props> = ({
 
         {isPasswordProvider && (
           <Fragment>
-            <div className="authenticate-input-container">
+            <div className="relative mb-2">
               <PasswordInput
-                inputSize="medium"
+                inputSize="large"
                 title={t("common.password")}
                 value={formik.values.password || ""}
                 onChange={(e) => {
@@ -190,68 +190,57 @@ const AuthenticateModal: FC<Props> = ({
                 }}
                 disabled={LOADING_AUTHENTICATE_USER}
                 autoFocus
-                isError={formik.errors.password ? true : false}
+                isError={!!formik.errors.password}
               />
             </div>
 
             {formik.errors.password && (
-              <div className="authenticate-error-message">
-                {formik.errors.password}
+              <div className="text-(--error-color) text-[13px] font-medium mb-4 text-left px-1">
+                {formik.errors.password as string}
               </div>
             )}
           </Fragment>
         )}
 
         {isPasswordProvider ? (
-          <div className="authenticate-actions">
-            <button
-              className="authenticate-btn authenticate-btn-cancel"
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+            <Button
+              className="flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border)"
               onClick={onClose}
               disabled={LOADING_AUTHENTICATE_USER}
-            >
-              {t("common.cancel")}
-            </button>
+              title={t("common.cancel")}
+            />
 
-            <button
-              className="authenticate-btn authenticate-btn-submit"
+            <Button
+              className="flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-linear-to-br from-(--third-color) to-(--hover-bg) text-white shadow-(--shadow-color) hover:from-(--hover-bg) hover:to-[#229954] hover:shadow-(--active-shadow) hover:-translate-y-px disabled:hover:translate-y-0"
               onClick={handleSubmit}
               disabled={
                 LOADING_AUTHENTICATE_USER ||
                 (isPasswordProvider && !formik.values.password)
               }
-            >
-              {LOADING_AUTHENTICATE_USER ? (
-                <div className="authenticate-spinner" />
-              ) : (
-                t("common.submit")
-              )}
-            </button>
+              isLoading={LOADING_AUTHENTICATE_USER}
+              title={t("common.submit")}
+            />
           </div>
         ) : (
-          // Google Provider 时的布局
-          <div className="authenticate-actions google-provider-layout">
-            <button
-              className="authenticate-btn authenticate-btn-cancel"
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-6">
+            <Button
+              className="w-full sm:flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border) disabled:hover:translate-y-0"
               onClick={onClose}
               disabled={LOADING_AUTHENTICATE_USER}
-            >
-              {t("common.cancel")}
-            </button>
+              title={t("common.cancel")}
+            />
 
-            <div className="authenticate-google-wrapper">
-              <button
-                className="authenticate-btn authenticate-btn-submit"
+            <div className="relative w-full sm:flex-[1.3] min-w-0">
+              <Button
+                className="w-full h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-linear-to-br from-(--third-color) to-(--hover-bg) text-white shadow-(--shadow-color) hover:from-(--hover-bg) hover:to-[#229954] hover:shadow-(--active-shadow) hover:-translate-y-px disabled:hover:translate-y-0"
                 onClick={handleSubmit}
                 disabled={LOADING_AUTHENTICATE_USER}
-              >
-                {LOADING_AUTHENTICATE_USER ? (
-                  <div className="authenticate-spinner" />
-                ) : (
-                  t("common.authenticate")
-                )}
-              </button>
+                title={t("common.authenticate")}
+                isLoading={LOADING_AUTHENTICATE_USER}
+              />
 
-              <div className="google-button-overlay">
+              <div className="absolute inset-0 opacity-0 z-10 overflow-hidden rounded-[10px] [&_div]:w-full! [&_div]:h-full! [&_div]:min-w-full! [&_div]:min-h-full! [&_iframe]:w-full! [&_iframe]:h-full! [&_iframe]:min-w-full! [&_iframe]:min-h-full! [&_iframe]:opacity-0">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() =>

@@ -13,14 +13,14 @@ import {
   useGoogleLoginMutation,
 } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useTheme } from "@/context/ThemeContext";
 
 const MainFooter = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
-  const { setToken } = useAuthTokenManager();
+  const { setToken } = useAuthStore();
 
   const [checkUnique, { isLoading: LOADING_CHECK_UNIQUE }] =
     useCheckUniqueMutation();
@@ -62,7 +62,7 @@ const MainFooter = () => {
           const res = await googleLogin({ idToken, deviceId }).unwrap();
 
           setToken({
-            type: "accessToken",
+            type: "access_token",
             token: res.access_token,
           });
           snack.success(

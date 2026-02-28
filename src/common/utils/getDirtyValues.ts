@@ -8,7 +8,6 @@ export function getChangedData<T extends Record<string, any>>(
   Object.keys(current).forEach((key) => {
     const k = key as keyof T;
     // Strict equality check (adjust for deep comparison if you have nested objects)
-    console.log(`${key}: ${original[k]} !== ${current[k]}`);
     if (original[k] !== current[k]) {
       changes[k] = current[k];
     }

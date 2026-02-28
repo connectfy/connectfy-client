@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
 
@@ -14,8 +14,7 @@ export function RequireAuth({ children }: AuthType) {
   const location = useLocation();
 
   //  Əvvəlcə bütün hooks-ları çağırın
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
   useGetMeQuery(undefined, {
     skip: !access_token,
   });
@@ -31,8 +30,7 @@ export function RequireAuth({ children }: AuthType) {
 }
 
 export function InsideProfile({ children }: AuthType) {
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   // Yalnız həqiqətən token varsa request at
   const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
@@ -58,8 +56,7 @@ export function InsideProfile({ children }: AuthType) {
 
 export function RedirectMain() {
   const navigate = useNavigate();
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   // Send request if there is a token
   const { isSuccess: userLoaded, isError: userError } = useGetMeQuery(

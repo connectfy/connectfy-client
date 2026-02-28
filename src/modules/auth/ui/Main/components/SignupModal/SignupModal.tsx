@@ -18,8 +18,10 @@ import Input from "@/components/ui/CustomInput/Input/Input";
 import CustomDatePicker from "@/components/ui/DatePicker/DatePicker";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Spinner from "@/components/Spinner/Spinner";
+
+// Hooks
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -37,7 +39,7 @@ const SignupModal = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { setToken } = useAuthTokenManager();
+  const { setToken } = useAuthStore();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [googleSignup, { isLoading: LOADING_GOOGLE_SIGNUP }] =
@@ -65,7 +67,7 @@ const SignupModal = ({
         const res = await googleSignup(values).unwrap();
         snack.success(t("user_messages.signup_successful"));
         setToken({
-          type: "accessToken",
+          type: "access_token",
           token: res.access_token,
         });
         navigate(ROUTER.MESSENGER.MAIN);

@@ -13,7 +13,7 @@ import { COUNTRIES } from "@/common/constants/constants";
 import { ChevronRight, Pencil, Trash } from "lucide-react";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -29,10 +29,7 @@ enum ModalView {
 const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const { getToken } = useAuthTokenManager();
-  const { accessToken: access_token, authenticateToken: authToken } = getToken(
-    "all",
-  ) as { accessToken: string; authenticateToken: string };
+  const { authenticateToken, access_token } = useAuthStore();
 
   const { data: user } = useGetMeQuery(undefined, {
     skip: !access_token,
@@ -53,7 +50,7 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const initialState: IUpdatePhoneNumber = {
     action: user?.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
     phoneNumber: user?.phoneNumber || null,
-    token: authToken as string,
+    token: authenticateToken as string,
   };
 
   const validate = ({
@@ -97,6 +94,8 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
       try {
         if (values.action === PHONE_NUMBER_ACTION.REMOVE)
           values.phoneNumber = null;
+
+        values.token = authenticateToken as string;
 
         await updatePhoneNumber(values).unwrap();
         resetForm();

@@ -3,14 +3,13 @@ import { Edit2, MinusIcon } from "lucide-react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
 import { useGetAccountQuery } from "@/modules/profile/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 
 const Bio = () => {
   const { t } = useTranslation();
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const { data: account } = useGetAccountQuery(undefined, {
     skip: !access_token,

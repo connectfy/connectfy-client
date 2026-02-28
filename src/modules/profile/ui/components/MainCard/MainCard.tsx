@@ -2,13 +2,12 @@ import { UserRoundX, Users } from "lucide-react";
 import "./mainCard.style.css";
 import { useTranslation } from "react-i18next";
 import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 const MainCard = () => {
   const { t } = useTranslation();
 
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const {
     data: user,

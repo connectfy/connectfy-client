@@ -13,7 +13,7 @@ import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { ISocialLink } from "@/modules/profile/types/types";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 
@@ -115,8 +115,7 @@ const SocialLinkItem = memo(
 const SocialLinks = () => {
   const { t } = useTranslation();
 
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const socialLinks: ISocialLink[] = [];
   const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {

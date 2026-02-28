@@ -74,11 +74,11 @@ const UniqueHeader: FC<Props> = ({
             icon={<span className="material-symbols-outlined">save</span>}
             className="
               flex items-center gap-2 px-5 py-[5px] shrink-0
-              bg-linear-to-br from-(--third-color) to-[#27ae60]
+              bg-linear-to-br from-(--third-color) to-(--hover-bg)
               border-none rounded-[10px] text-white text-sm font-bold
               shadow-[0_4px_12px_rgba(46,204,113,0.25)]
               transition-all duration-2000 ease-in-out
-              hover:from-[#27ae60] hover:to-[#229954]
+              hover:from-(--hover-bg) hover:to-[#229954]
               hover:shadow-[0_6px_20px_rgba(46,204,113,0.35)]
               active:translate-y-0 active:shadow-[0_2px_8px_rgba(46,204,113,0.25)]
               disabled:opacity-55 disabled:shadow-none disabled:transform-none

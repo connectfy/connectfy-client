@@ -25,7 +25,7 @@ import {
   useEditPrivacySettingsMutation,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditPrivacySettings } from "../types/types";
@@ -34,8 +34,7 @@ const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const { data, isLoading: LOADING_GET } = useGetPrivacySettingsQuery(
     undefined,

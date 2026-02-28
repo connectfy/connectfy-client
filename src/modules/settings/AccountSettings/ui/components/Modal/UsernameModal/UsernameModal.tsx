@@ -9,7 +9,7 @@ import Input from "@/components/ui/CustomInput/Input/Input";
 import { snack } from "@/common/utils/snackManager";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -20,10 +20,7 @@ interface Props {
 const UsernameModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const { getToken } = useAuthTokenManager();
-  const { accessToken: access_token, authenticateToken: authToken } = getToken(
-    "all",
-  ) as { accessToken: string; authenticateToken: string };
+  const { authenticateToken, access_token } = useAuthStore();
 
   const { data: user } = useGetMeQuery(undefined, {
     skip: !access_token,
@@ -36,7 +33,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
 
   const initialState: IUpdateUsername = {
     username: null,
-    token: authToken as string,
+    token: authenticateToken as string,
   };
 
   const validate = ({ username }: IUpdateUsername): Record<string, any> => {

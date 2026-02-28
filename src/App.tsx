@@ -9,7 +9,7 @@ import { useTheme } from "./context/ThemeContext";
 import { useGetMeQuery } from "./modules/profile/api/api";
 import { checkDeviceId } from "./common/utils/checkDevice";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
-import { useAuthTokenManager } from "./common/helpers/authToken.manager";
+import { useAuthStore } from "./hooks/useAuthStore";
 import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
 import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
 
@@ -19,8 +19,7 @@ function App() {
   const { toggleTheme } = useTheme();
   const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
   const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
     undefined,

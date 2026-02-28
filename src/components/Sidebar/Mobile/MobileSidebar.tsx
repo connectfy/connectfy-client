@@ -6,15 +6,14 @@ import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/material";
 import { useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 const MobileSidebar = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const { data: userData } = useGetMeQuery(undefined, {
     skip: !access_token,

@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { useUpdateEmailMutation } from "@/modules/settings/AccountSettings/api/api";
 import Input from "@/components/ui/CustomInput/Input/Input";
 import { useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 
 interface Props {
@@ -19,10 +19,7 @@ interface Props {
 const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const { getToken } = useAuthTokenManager();
-  const { accessToken: access_token, authenticateToken: authToken } = getToken(
-    "all",
-  ) as { accessToken: string; authenticateToken: string };
+  const { access_token, authenticateToken } = useAuthStore();
 
   const { showResponseErrors } = useErrors();
 
@@ -39,7 +36,7 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
 
   const initialState: IUpdateEmail = {
     email: null,
-    token: authToken as string,
+    token: authenticateToken as string,
   };
 
   const validate = ({ email }: IUpdateEmail): Record<string, any> => {

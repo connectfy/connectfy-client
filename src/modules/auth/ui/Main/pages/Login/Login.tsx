@@ -17,7 +17,7 @@ import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -27,7 +27,7 @@ const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
-  const { setToken } = useAuthTokenManager();
+  const { setToken } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { showResponseErrors } = useErrors();
 
@@ -53,7 +53,7 @@ const Login = () => {
         const res = await login(values).unwrap();
 
         setToken({
-          type: "accessToken",
+          type: "access_token",
           token: res.access_token,
         });
         snack.success(

@@ -1,7 +1,7 @@
 import { LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 
 interface ThemeContextType {
@@ -14,8 +14,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
   const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
     undefined,
     {

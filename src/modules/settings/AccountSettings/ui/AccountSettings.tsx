@@ -46,7 +46,7 @@ import PhoneNumberModal from "./components/Modal/PhoneNumberModal/PhoneNumberMod
 import { DDMMMMYYY, showDateWithHour } from "@/common/utils/formatDate";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
 import {
   useDeactivateAccountMutation,
@@ -57,15 +57,15 @@ import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
 import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
+import { useDispatch } from "react-redux";
 
 const AccountSettings: FC = () => {
-  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { getToken, clear } = useAuthTokenManager();
+  const dispatch = useDispatch();
+  const { t, i18n } = useTranslation();
+  const { clear } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { accessToken: access_token, authenticateToken: authToken } = getToken(
-    "all",
-  ) as { accessToken: string; authenticateToken: string };
+  const { access_token, authenticateToken } = useAuthStore();
 
   const processedTokenRef = useRef<string | null>(null);
   const { showResponseErrors } = useErrors();
@@ -157,7 +157,8 @@ const AccountSettings: FC = () => {
     try {
       await logout().unwrap();
       clear("all");
-
+      dispatch({ type: "RESET" });
+      localStorage.clear();
       localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
       localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
       navigate(ROUTER.AUTH.MAIN);
@@ -170,7 +171,7 @@ const AccountSettings: FC = () => {
   const handleDeactivateAccount = async () => {
     try {
       await deactivateAccount({
-        token: authToken as string,
+        token: authenticateToken as string,
       }).unwrap();
 
       localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);

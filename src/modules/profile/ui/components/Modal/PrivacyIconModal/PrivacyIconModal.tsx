@@ -13,7 +13,7 @@ import {
   useGetPrivacySettingsQuery,
 } from "@/modules/settings/PrivacySettings/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthTokenManager } from "@/common/helpers/authToken.manager";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 interface Props {
   open: boolean;
@@ -30,8 +30,7 @@ const PrivacyIconModal: FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { getToken } = useAuthTokenManager();
-  const access_token = getToken("accessToken");
+  const { access_token } = useAuthStore();
 
   const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
     skip: !access_token,
