@@ -7,10 +7,21 @@ interface Props {
   open: boolean;
   onClose: () => void;
   isLoading: boolean;
+  isFailed: boolean;
 }
 
-const VerifyChangeEmailModal: FC<Props> = ({ open, onClose, isLoading }) => {
+const VerifyChangeEmailModal: FC<Props> = ({
+  open,
+  onClose,
+  isLoading,
+  isFailed,
+}) => {
   const { t } = useTranslation();
+
+  if (!isLoading && isFailed) {
+    onClose();
+    return;
+  }
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -73,34 +84,38 @@ const VerifyChangeEmailModal: FC<Props> = ({ open, onClose, isLoading }) => {
           ) : (
             <Fragment>
               {/* Success Illustration */}
-              <div
-                className="w-20 h-20 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] rounded-full flex items-center justify-center mb-6 animate-bounce-custom"
-                aria-hidden
-              >
-                <span
-                  className="material-symbols-outlined text-(--primary-color)"
-                  style={{ fontSize: "40px" }}
-                >
-                  check_circle
-                </span>
-              </div>
+              {!isFailed && (
+                <Fragment>
+                  <div
+                    className="w-20 h-20 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] rounded-full flex items-center justify-center mb-6 animate-bounce-custom"
+                    aria-hidden
+                  >
+                    <span
+                      className="material-symbols-outlined text-(--primary-color)"
+                      style={{ fontSize: "40px" }}
+                    >
+                      check_circle
+                    </span>
+                  </div>
 
-              {/* Texts */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-(--text-primary) m-0">
-                  {t("user_messages.email_changed_successfully")}
-                </h3>
-              </div>
+                  {/* Texts */}
+                  <div className="mb-8">
+                    <h3 className="text-xl font-bold text-(--text-primary) m-0">
+                      {t("user_messages.email_changed_successfully")}
+                    </h3>
+                  </div>
 
-              {/* Actions */}
-              <div className="w-full flex justify-center">
-                <Button
-                  type="button"
-                  onClick={onClose}
-                  className="w-full sm:w-2/3 px-6 py-3 rounded-xl text-[15px] font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border)"
-                  title={t("common.close")}
-                />
-              </div>
+                  {/* Actions */}
+                  <div className="w-full flex justify-center">
+                    <Button
+                      type="button"
+                      onClick={onClose}
+                      className="w-full sm:w-2/3 px-6 py-3 rounded-xl text-[15px] font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border)"
+                      title={t("common.close")}
+                    />
+                  </div>
+                </Fragment>
+              )}
             </Fragment>
           )}
         </div>

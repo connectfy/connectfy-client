@@ -14,7 +14,6 @@ import {
   Phone,
   Calendar,
   Trash2,
-  ChevronRight,
   Clock,
   AlertTriangle,
   LogOutIcon,
@@ -63,6 +62,7 @@ import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { useDispatch } from "react-redux";
 import { COUNTRIES } from "@/common/constants/constants";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const AccountSettings: FC = () => {
   const navigate = useNavigate();
@@ -98,8 +98,13 @@ const AccountSettings: FC = () => {
   const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();
   const [deactivateAccount, { isLoading: LOADING_DEACTIVATE_ACCOUNT }] =
     useDeactivateAccountMutation();
-  const [verifyChangeEmail, { isLoading: LOADING_VERIFY_CHANGE_EMAIL }] =
-    useVerifyChangeEmailMutation();
+  const [
+    verifyChangeEmail,
+    {
+      isLoading: LOADING_VERIFY_CHANGE_EMAIL,
+      isError: isVerifyChangeEmailFailed,
+    },
+  ] = useVerifyChangeEmailMutation();
 
   const [authModal, setAuthModal] = useState<{
     open: boolean;
@@ -307,8 +312,6 @@ const AccountSettings: FC = () => {
 
         await verifyChangeEmail({ token }).unwrap();
         snack.success(t("user_messages.email_changed_successfully"));
-      } catch (error) {
-        showResponseErrors(error);
       } finally {
         setSearchParams({});
         processedTokenRef.current = null;
@@ -383,7 +386,7 @@ const AccountSettings: FC = () => {
                 }}
               >
                 <div className="account-danger-actions">
-                  <button
+                  <Button
                     className="account-danger-button deactivate"
                     onClick={() =>
                       openAuthThen(
@@ -396,9 +399,11 @@ const AccountSettings: FC = () => {
                       <LogOutIcon size={18} />
                       {t("common.deactivate_account")}
                     </span>
-                    <ChevronRight size={18} />
-                  </button>
-                  <button
+                    <span className="material-symbols-outlined">
+                      chevron_forward
+                    </span>
+                  </Button>
+                  <Button
                     className="account-danger-button delete"
                     onClick={() =>
                       openAuthThen(TOKEN_TYPE.DELETE_ACCOUNT, "delete_account")
@@ -408,9 +413,11 @@ const AccountSettings: FC = () => {
                       <Trash2 size={18} />
                       {t("common.delete_account")}
                     </span>
-                    <ChevronRight size={18} />
-                  </button>
-                  <button
+                    <span className="material-symbols-outlined">
+                      chevron_forward
+                    </span>
+                  </Button>
+                  <Button
                     className="account-danger-button delete"
                     onClick={onLogoutOpen}
                   >
@@ -418,8 +425,10 @@ const AccountSettings: FC = () => {
                       <LogOutIcon size={18} />
                       {t("common.logout_account")}
                     </span>
-                    <ChevronRight size={18} />
-                  </button>
+                    <span className="material-symbols-outlined">
+                      chevron_forward
+                    </span>
+                  </Button>
                 </div>
               </SettingCard>
             </div>
@@ -454,6 +463,7 @@ const AccountSettings: FC = () => {
           open
           onClose={onVerifiedModalClose}
           isLoading={LOADING_VERIFY_CHANGE_EMAIL}
+          isFailed={isVerifyChangeEmailFailed}
         />
       )}
 
@@ -518,14 +528,17 @@ const AccountActionButton: FC<{
   right?: React.ReactNode;
   children?: React.ReactNode;
 }> = ({ onClick, disabled, right, children }) => (
-  <button
+  <Button
     className="account-action-button"
     onClick={onClick}
     disabled={disabled}
+    type="button"
   >
     <span>{children}</span>
-    {right ?? <ChevronRight size={18} className="chevron" />}
-  </button>
+    {right ?? (
+      <span className="material-symbols-outlined chevron">chevron_forward</span>
+    )}
+  </Button>
 );
 
 export default AccountSettings;

@@ -20,8 +20,6 @@ import {
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { profileApi } from "@/modules/profile/api/api";
-import { snack } from "@/common/utils/snackManager";
-import { t } from "i18next";
 
 export const accountSettingsApi = createApi({
   reducerPath: RESOURCE.ACCOUNT_SETTINGS,
@@ -96,27 +94,19 @@ export const accountSettingsApi = createApi({
       }),
 
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
+        const { data } = await queryFulfilled;
 
-          dispatch(
-            profileApi.util.updateQueryData(
-              "getMe",
-              undefined,
-              (draft: any) => {
-                if (draft?.user) {
-                  draft.user.email = data.email;
-                  draft.user.updatedAt = data.updatedAt;
-                }
-              },
-            ),
-          );
-        } catch {
-          snack.error(t("error_messages.process_failed"));
-        }
+        dispatch(
+          profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
+            if (draft) {
+              draft.email = data.email;
+              draft.updatedAt = data.updatedAt;
+            }
+          }),
+        );
       },
 
-      invalidatesTags: [{ type: "User", id: "LIST" }],
+      invalidatesTags: ["AccountSettings"],
     }),
 
     // ====================== UPDATE PHONE NUMBER
