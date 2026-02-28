@@ -2,15 +2,18 @@ import { useTranslation } from "react-i18next";
 import "./settings.style.css";
 import {
   Settings as SettingsIcon,
-  Zap,
   KeyRound,
-  Shield,
   Paintbrush,
   UserCog,
+  Bell,
+  Keyboard,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTER } from "@/common/constants/routet";
 
 const Settings = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className="settings-main-container">
@@ -28,7 +31,12 @@ const Settings = () => {
 
         {/* Quick Stats */}
         <div className="settings-stats-grid">
-          <div className="stat-card" role="button" tabIndex={0}>
+          <div
+            className="stat-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(ROUTER.SETTINGS.GENERAL)}
+          >
             <div className="stat-icon general">
               <SettingsIcon size={24} />
             </div>
@@ -38,7 +46,27 @@ const Settings = () => {
             </div>
           </div>
 
-          <div className="stat-card" role="button" tabIndex={0}>
+          <div
+            className="stat-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(ROUTER.SETTINGS.ACCOUNT)}
+          >
+            <div className="stat-icon account">
+              <UserCog size={24} />
+            </div>
+            <div className="stat-info">
+              <h3>{t("common.account")}</h3>
+              <p>{t("common.account_description")}</p>
+            </div>
+          </div>
+
+          <div
+            className="stat-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(ROUTER.SETTINGS.PRIVACY)}
+          >
             <div className="stat-icon privacy">
               <KeyRound size={24} />
             </div>
@@ -48,7 +76,27 @@ const Settings = () => {
             </div>
           </div>
 
-          <div className="stat-card" role="button" tabIndex={0}>
+          <div
+            className="stat-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(ROUTER.SETTINGS.NOTIFICATION)}
+          >
+            <div className="stat-icon notification">
+              <Bell size={24} />
+            </div>
+            <div className="stat-info">
+              <h3>{t("common.notifications")}</h3>
+              <p>{t("common.notifications_description")}</p>
+            </div>
+          </div>
+
+          <div
+            className="stat-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(ROUTER.SETTINGS.BACKGROUND)}
+          >
             <div className="stat-icon theme">
               <Paintbrush size={24} />
             </div>
@@ -58,37 +106,19 @@ const Settings = () => {
             </div>
           </div>
 
-          <div className="stat-card" role="button" tabIndex={0}>
-            <div className="stat-icon account">
-              <UserCog size={24} />
+          <div
+            className="stat-card"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(ROUTER.SETTINGS.SHORTCUT)}
+          >
+            <div className="stat-icon shortcut">
+              <Keyboard size={24} />
             </div>
             <div className="stat-info">
-              <h3>{t("common.account")}</h3>
-              <p>{t("common.account_description")}</p>
+              <h3>{t("common.keyboard_shortcuts")}</h3>
+              <p>{t("common.keyboard_shortcuts_description")}</p>
             </div>
-          </div>
-        </div>
-
-        {/* Info Cards */}
-        <div className="settings-info-section">
-          <div className="info-card primary">
-            <div className="info-card-header">
-              <div className="info-card-icon">
-                <Zap size={20} />
-              </div>
-              <h3>{t("common.quick_start")}</h3>
-            </div>
-            <p>{t("common.quick_start_description")}</p>
-          </div>
-
-          <div className="info-card secondary">
-            <div className="info-card-header">
-              <div className="info-card-icon">
-                <Shield size={20} />
-              </div>
-              <h3>{t("common.security_tip")}</h3>
-            </div>
-            <p>{t("common.security_tip_description")}</p>
           </div>
         </div>
       </div>
