@@ -75,7 +75,7 @@ const Button: FC<CustomButtonProps> = ({
         isLoading
           ? "cursor-wait"
           : disabled
-            ? "cursor-not-allowed"
+            ? "cursor-not-allowed shadow-none!"
             : "cursor-pointer"
       }`}
     >

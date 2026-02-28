@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
-import { checkDeviceId } from "@/common/utils/checkDevice";
+import { checkDeviceId } from "@/common/utils/checkValues";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
 import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";

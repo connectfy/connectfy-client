@@ -78,7 +78,6 @@ const UniqueHeader: FC<Props> = ({
               border-none rounded-[10px] text-white text-sm font-bold
               shadow-[0_4px_12px_rgba(46,204,113,0.25)]
               transition-all duration-2000 ease-in-out
-              hover:from-(--hover-bg) hover:to-[#229954]
               hover:shadow-[0_6px_20px_rgba(46,204,113,0.35)]
               active:translate-y-0 active:shadow-[0_2px_8px_rgba(46,204,113,0.25)]
               disabled:opacity-55 disabled:shadow-none disabled:transform-none

@@ -6,6 +6,7 @@ import useBoolean from "@/hooks/useBoolean";
 import CountryCodeModal from "@/components/Modal/CountryCodeModal/CountryCodeModal";
 import { IPhoneNumber } from "@/modules/auth/types/types";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { formatPhoneNumber } from "@/common/utils/formatValues";
 
 interface Props {
   name: string;
@@ -37,23 +38,6 @@ const PhoneNumberForm: FC<Props> = ({
   const countryModal = useBoolean();
 
   const [fieldValue, setFieldValue] = useState<string | null>(null);
-
-  const formatPhoneNumber = (value: string, mask: string) => {
-    if (!value) return "";
-
-    let formatted = "";
-    let valueIndex = 0;
-
-    for (let i = 0; i < mask.length && valueIndex < value.length; i++) {
-      if (mask[i] === "0") {
-        formatted += value[valueIndex];
-        valueIndex++;
-      } else {
-        formatted += mask[i];
-      }
-    }
-    return formatted;
-  };
 
   const displayValue = useMemo(() => {
     return formatPhoneNumber(fieldValue || "", country.format || "");

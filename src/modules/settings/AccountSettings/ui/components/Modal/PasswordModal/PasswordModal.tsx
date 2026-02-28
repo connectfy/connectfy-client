@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from "react";
+import { FC, useEffect } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
 import { IUpdatePassword } from "../../../../types/types";
@@ -10,6 +10,7 @@ import { useUpdatePasswordMutation } from "@/modules/settings/AccountSettings/ap
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import useFormDisabled from "@/hooks/useFormDisabled";
 
 interface Props {
   open: boolean;
@@ -21,10 +22,7 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
   const { authenticateToken } = useAuthStore();
   const { showResponseErrors, showFormikErrors } = useErrors();
 
-  const [
-    updatePassword,
-    { isLoading: LOADING_UPDATE_PASSWORD, error: ERROR_UPDATE_PASSWORD },
-  ] = useUpdatePasswordMutation();
+  const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
 
   const initialState: IUpdatePassword = {
     password: null,
@@ -69,6 +67,16 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
     },
   });
 
+  const isDisabled = useFormDisabled<IUpdatePassword>({
+    formik,
+    loading: isLoading,
+    validationRules: [
+      (values) => !!values.password,
+      (values) => !!values.confirmPassword,
+      (values) => values.password === values.confirmPassword,
+    ],
+  });
+
   const handleOverlayPointerDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -83,33 +91,24 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
     formik.handleSubmit(e as any);
   };
 
-  const globalKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!open) return;
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        if (
-          LOADING_UPDATE_PASSWORD ||
-          ERROR_UPDATE_PASSWORD ||
-          !formik.values.password ||
-          !formik.values.confirmPassword
-        )
-          return;
+        if (isDisabled) return;
         handleSubmit(e as any);
       }
       if (e.key === "Escape") {
-        if (LOADING_UPDATE_PASSWORD) return;
+        if (isLoading) return;
         onClose();
       }
-    },
-    [open, LOADING_UPDATE_PASSWORD, ERROR_UPDATE_PASSWORD, formik, onClose],
-  );
+    };
 
-  useEffect(() => {
-    if (!open) return;
-    document.addEventListener("keydown", globalKeyDown);
-    return () => document.removeEventListener("keydown", globalKeyDown);
-  }, [open, globalKeyDown]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, formik]);
 
   return (
     <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>
@@ -142,7 +141,7 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                 }}
                 onBlur={formik.handleBlur}
                 isError={!!formik.errors.password}
-                disabled={LOADING_UPDATE_PASSWORD}
+                disabled={isLoading}
                 autoFocus
                 autoComplete="off"
                 showGenerateButton
@@ -168,7 +167,7 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
                 }}
                 onBlur={formik.handleBlur}
                 isError={!!formik.errors.confirmPassword}
-                disabled={LOADING_UPDATE_PASSWORD}
+                disabled={isLoading}
                 autoComplete="off"
               />
             </div>
@@ -179,19 +178,15 @@ const PasswordModal: FC<Props> = ({ open, onClose }) => {
             <Button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border) disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={LOADING_UPDATE_PASSWORD}
+              className="flex-1 px-6 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border)"
+              disabled={isLoading}
               title={t("common.cancel")}
             />
             <Button
               type="submit"
-              className="flex-1 px-6 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--primary-color) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow) hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              disabled={
-                LOADING_UPDATE_PASSWORD ||
-                !formik.values.password ||
-                !formik.values.confirmPassword
-              }
-              isLoading={LOADING_UPDATE_PASSWORD}
+              className="flex-1 px-6 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--primary-color) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow) flex items-center justify-center gap-2"
+              disabled={isDisabled}
+              isLoading={isLoading}
               title={t("common.save")}
             />
           </div>

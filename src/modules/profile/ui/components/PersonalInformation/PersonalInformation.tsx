@@ -11,7 +11,7 @@ import {
 import "./personalInformation.style.css";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
-import { DDMMMMYYY } from "@/common/utils/formatDate";
+import { DDMMMMYYY } from "@/common/utils/formatValues";
 import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";

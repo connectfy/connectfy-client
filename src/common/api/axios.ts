@@ -5,7 +5,7 @@ import {
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import axios, { AxiosError } from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
-import { checkDeviceId } from "../utils/checkDevice";
+import { checkDeviceId } from "../utils/checkValues";
 import { securityEvents } from "../helpers/security.events";
 
 const BASE = `http://${import.meta.env.VITE_IP_ADDRESS}:3000/api/v1`;

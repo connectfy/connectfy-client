@@ -1,6 +1,5 @@
 import { FC, Fragment, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ShieldCheck } from "lucide-react";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
@@ -164,9 +163,14 @@ const AuthenticateModal: FC<Props> = ({
   return (
     <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>
       <div className="bg-(--auth-main-bg) rounded-2xl p-6 sm:p-8 max-w-[440px] w-[90%] shadow-(--card-shadow) animate-fade-in mx-auto">
-        <div className="flex justify-center mb-4 animate-bounce-custom">
-          <ShieldCheck size={50} className="text-(--primary-color)" />
-        </div>
+        {/* <div className="flex justify-center mb-4 animate-bounce-custom">
+          <span
+            className="material-symbols-outlined text-(--primary-color)"
+            style={{ fontSize: "50px" }}
+          >
+            verified_user
+          </span>
+        </div> */}
 
         <h2 className="text-2xl font-bold text-(--text-primary) mb-3 text-center">
           {t("common.authentication_required")}
@@ -212,7 +216,7 @@ const AuthenticateModal: FC<Props> = ({
             />
 
             <Button
-              className="flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-linear-to-br from-(--third-color) to-(--hover-bg) text-white shadow-(--shadow-color) hover:from-(--hover-bg) hover:to-[#229954] hover:shadow-(--active-shadow) hover:-translate-y-px disabled:hover:translate-y-0"
+              className="flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-600 bg-linear-to-br from-(--third-color) to-(--hover-bg) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow)"
               onClick={handleSubmit}
               disabled={
                 LOADING_AUTHENTICATE_USER ||
@@ -225,7 +229,7 @@ const AuthenticateModal: FC<Props> = ({
         ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-6">
             <Button
-              className="w-full sm:flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border) disabled:hover:translate-y-0"
+              className="w-full sm:flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border)"
               onClick={onClose}
               disabled={LOADING_AUTHENTICATE_USER}
               title={t("common.cancel")}
@@ -233,7 +237,7 @@ const AuthenticateModal: FC<Props> = ({
 
             <div className="relative w-full sm:flex-[1.3] min-w-0">
               <Button
-                className="w-full h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-linear-to-br from-(--third-color) to-(--hover-bg) text-white shadow-(--shadow-color) hover:from-(--hover-bg) hover:to-[#229954] hover:shadow-(--active-shadow) hover:-translate-y-px disabled:hover:translate-y-0"
+                className="w-full h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-linear-to-br from-(--third-color) to-(--hover-bg) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow)"
                 onClick={handleSubmit}
                 disabled={LOADING_AUTHENTICATE_USER}
                 title={t("common.authenticate")}

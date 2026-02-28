@@ -8,10 +8,10 @@ import { useCallback, useEffect, useState } from "react";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
-import { checkDeviceId } from "@/common/utils/checkDevice";
+import { checkDeviceId } from "@/common/utils/checkValues";
 import OTPForm from "@/components/Form/OTPForm/OTPForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
-import { formatTimeToSeconds } from "@/common/utils/formatDate";
+import { formatTimeToSeconds } from "@/common/utils/formatValues";
 import {
   useResendSignupVerifyMutation,
   useSignupVerifyMutation,

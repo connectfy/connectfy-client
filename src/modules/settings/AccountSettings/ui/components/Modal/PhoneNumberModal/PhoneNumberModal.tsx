@@ -1,11 +1,9 @@
-import "./phoneNumberModal.style.css";
-import "../UsernameModal/usernameModal.style.css";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
 import { IUpdatePhoneNumber } from "../../../../types/types";
 import { useFormik } from "formik";
-import { PHONE_NUMBER_ACTION } from "@/common/enums/enums";
+import { ModalView, PHONE_NUMBER_ACTION } from "@/common/enums/enums";
 import PhoneNumberForm from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { snack } from "@/common/utils/snackManager";
@@ -15,36 +13,24 @@ import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-enum ModalView {
-  SELECTION = "selection",
-  FORM = "form",
-}
-
 const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-
   const { authenticateToken, access_token } = useAuthStore();
-
-  const { data: user } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
-  const [updatePhoneNumber, { isLoading: LOADING_UPDATE_PHONE_NUMBER }] =
-    useUpdatePhoneNumberMutation();
-
   const { showResponseErrors } = useErrors();
+
+  const { data: user } = useGetMeQuery(undefined, { skip: !access_token });
+  const [updatePhoneNumber, { isLoading }] = useUpdatePhoneNumberMutation();
 
   const hasPhoneNumber = !!user?.phoneNumber;
   const [view, setView] = useState<ModalView>(
     hasPhoneNumber ? ModalView.SELECTION : ModalView.FORM,
-  );
-  const [_, setAction] = useState<PHONE_NUMBER_ACTION | null>(
-    user?.phoneNumber ? null : PHONE_NUMBER_ACTION.UPDATE,
   );
 
   const initialState: IUpdatePhoneNumber = {
@@ -58,29 +44,18 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
     phoneNumber,
   }: IUpdatePhoneNumber): Record<string, any> => {
     const errors: Record<string, any> = {};
-
     if (action === PHONE_NUMBER_ACTION.UPDATE) {
       if (
-        !phoneNumber ||
-        !phoneNumber.fullPhoneNumber ||
-        !checkEmptyString(phoneNumber.fullPhoneNumber) ||
-        !phoneNumber.countryCode ||
-        !checkEmptyString(phoneNumber.countryCode) ||
-        !phoneNumber.number ||
-        !checkEmptyString(phoneNumber.number)
+        !phoneNumber?.fullPhoneNumber ||
+        !checkEmptyString(phoneNumber.fullPhoneNumber)
       ) {
         errors.phoneNumber = t("error_messages.this_field_required");
       }
     }
-
     const country = COUNTRIES.find((c) => c.code === phoneNumber?.countryCode);
-
-    const numberMaxLength = country?.numberLength;
-
-    if (phoneNumber?.number?.length !== numberMaxLength) {
+    if (phoneNumber?.number?.length !== country?.numberLength) {
       errors.phoneNumber = t("error_messages.invalid_phone_number_length");
     }
-
     return errors;
   };
 
@@ -94,16 +69,14 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
       try {
         if (values.action === PHONE_NUMBER_ACTION.REMOVE)
           values.phoneNumber = null;
-
         values.token = authenticateToken as string;
-
         await updatePhoneNumber(values).unwrap();
         resetForm();
-        const message =
+        snack.success(
           values.action === PHONE_NUMBER_ACTION.REMOVE
             ? t("user_messages.phone_number_removed_successfully")
-            : t("user_messages.phone_number_changed_successfully");
-        snack.success(message);
+            : t("user_messages.phone_number_changed_successfully"),
+        );
         handleModalClose();
       } catch (error) {
         showResponseErrors(error);
@@ -114,35 +87,26 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const handleModalClose = () => {
     formik.resetForm();
     setView(hasPhoneNumber ? ModalView.SELECTION : ModalView.FORM);
-    setAction(null);
     onClose();
   };
 
-  const handleOverlayPointerDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget && !LOADING_UPDATE_PHONE_NUMBER) {
+  const handleEscape = () => {
+    if (isLoading) return;
+    if (view === ModalView.FORM && hasPhoneNumber) {
+      handleBackToSelection();
+    } else {
       handleModalClose();
     }
   };
 
   const handleSelectAction = (selectedAction: PHONE_NUMBER_ACTION) => {
-    setAction(selectedAction);
     formik.setFieldValue("action", selectedAction);
-
-    if (selectedAction === PHONE_NUMBER_ACTION.UPDATE) {
-      setView(ModalView.FORM);
-    } else if (selectedAction === PHONE_NUMBER_ACTION.REMOVE) {
-      formik.submitForm();
-    }
-  };
-
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    formik.handleSubmit();
+    if (selectedAction === PHONE_NUMBER_ACTION.UPDATE) setView(ModalView.FORM);
+    else if (selectedAction === PHONE_NUMBER_ACTION.REMOVE) formik.submitForm();
   };
 
   const handleBackToSelection = () => {
     setView(ModalView.SELECTION);
-    setAction(null);
     formik.setFieldValue("action", null);
     formik.setFieldValue("phoneNumber", user?.phoneNumber || null);
     formik.setTouched({});
@@ -151,83 +115,53 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const isFormValid = () => {
     const { phoneNumber } = formik.values;
     return (
-      phoneNumber &&
-      phoneNumber.fullPhoneNumber &&
-      checkEmptyString(phoneNumber.fullPhoneNumber) &&
-      phoneNumber.countryCode &&
-      checkEmptyString(phoneNumber.countryCode) &&
-      phoneNumber.number &&
-      checkEmptyString(phoneNumber.number)
+      phoneNumber?.fullPhoneNumber &&
+      phoneNumber?.countryCode &&
+      phoneNumber?.number
     );
   };
 
   const isPhoneNumberChanged = () => {
-    const currentPhone = user?.phoneNumber;
-    const newPhone = formik.values.phoneNumber;
-
-    if (!currentPhone || !newPhone) return true;
-
+    const current = user?.phoneNumber;
+    const next = formik.values.phoneNumber;
+    if (!current || !next) return true;
     return (
-      currentPhone.fullPhoneNumber !== newPhone.fullPhoneNumber ||
-      currentPhone.countryCode !== newPhone.countryCode ||
-      currentPhone.number !== newPhone.number
+      current.fullPhoneNumber !== next.fullPhoneNumber ||
+      current.countryCode !== next.countryCode
     );
   };
-
-  const globalKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!open) return;
-
-      if (e.key === "Escape") {
-        e.preventDefault();
-        if (LOADING_UPDATE_PHONE_NUMBER) return;
-
-        if (view === ModalView.FORM && hasPhoneNumber) {
-          handleBackToSelection();
-        } else {
-          handleModalClose();
-        }
-      }
-
-      if (e.key === "Enter" && view === ModalView.FORM) {
-        e.preventDefault();
-        if (LOADING_UPDATE_PHONE_NUMBER || !isFormValid()) return;
-        formik.submitForm();
-      }
-    },
-    [open, view, LOADING_UPDATE_PHONE_NUMBER, formik, hasPhoneNumber],
-  );
 
   useEffect(() => {
     if (!open) return;
 
-    document.addEventListener("keydown", globalKeyDown);
-    return () => {
-      document.removeEventListener("keydown", globalKeyDown);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && view === ModalView.FORM) {
+        if (!isLoading && isFormValid() && isPhoneNumberChanged())
+          formik.submitForm();
+      }
     };
-  }, [open, globalKeyDown]);
 
-  useEffect(() => {
-    if (open) {
-      setView(hasPhoneNumber ? ModalView.SELECTION : ModalView.FORM);
-      setAction(null);
-    }
-  }, [open, hasPhoneNumber]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, formik, view]);
 
   return (
     <Modal
       open={open}
-      onClose={handleModalClose}
-      onMouseDown={handleOverlayPointerDown}
+      onClose={handleEscape}
+      onMouseDown={(e) =>
+        e.target === e.currentTarget && !isLoading && handleModalClose()
+      }
     >
-      <div className="account-settings-modal-container">
-        <div className="account-settings-modal-header">
-          <h2 className="account-settings-modal-title">
+      <div className="bg-(--auth-main-bg) rounded-2xl p-6 sm:p-8 max-w-[480px] w-full shadow-(--card-shadow) animate-fade-in mx-auto">
+        {/* Header */}
+        <div className="mb-7">
+          <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
             {view === ModalView.SELECTION
               ? t("common.manage_phone_number")
               : t("common.update_phone_number")}
           </h2>
-          <p className="account-settings-modal-subtitle">
+          <p className="text-sm text-(--muted-color) leading-relaxed">
             {view === ModalView.SELECTION
               ? t("common.manage_phone_number_description")
               : t("common.update_phone_number_description")}
@@ -235,118 +169,88 @@ const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
         </div>
 
         {view === ModalView.SELECTION ? (
-          <div className="account-settings-modal-form">
-            <div className="phone-modal-selection">
-              <button
-                type="button"
-                onClick={() => handleSelectAction(PHONE_NUMBER_ACTION.UPDATE)}
-                className="phone-modal-selection-btn"
-                disabled={LOADING_UPDATE_PHONE_NUMBER}
-              >
-                <div className="phone-modal-selection-icon">
-                  <Pencil />
-                </div>
-                <div className="phone-modal-selection-content">
-                  <span className="phone-modal-selection-title">
-                    {t("common.update_phone_number")}
-                  </span>
-                  <span className="phone-modal-selection-subtitle">
-                    {t("common.change_your_phone_number")}
-                  </span>
-                </div>
-                <div className="phone-modal-selection-arrow">
-                  <ChevronRight size={20} />
-                </div>
-              </button>
+          /* Selection View */
+          <div className="flex flex-col gap-4">
+            <Button
+              onClick={() => handleSelectAction(PHONE_NUMBER_ACTION.UPDATE)}
+              disabled={isLoading}
+              className="group flex items-center gap-4 p-4 rounded-xl border border-(--input-border) bg-(--input-bg) hover:bg-(--active-bg-2) hover:border-(--primary-color) transition-all duration-200 text-left"
+            >
+              <div className="w-10 h-10 rounded-lg bg-(--active-bg-2) flex items-center justify-center text-(--primary-color)">
+                <Pencil size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-(--text-primary) leading-none mb-1">
+                  {t("common.update_phone_number")}
+                </p>
+                <p className="text-xs text-(--muted-color)">
+                  {t("common.change_your_phone_number")}
+                </p>
+              </div>
+              <ChevronRight size={18} className="text-(--muted-color)" />
+            </Button>
 
-              <button
-                type="button"
-                onClick={() => handleSelectAction(PHONE_NUMBER_ACTION.REMOVE)}
-                className="phone-modal-selection-btn phone-modal-selection-btn-danger"
-                disabled={LOADING_UPDATE_PHONE_NUMBER}
-              >
-                <div className="phone-modal-selection-icon">
-                  <Trash />
-                </div>
-                <div className="phone-modal-selection-content">
-                  <span className="phone-modal-selection-title">
-                    {t("common.remove_phone_number")}
-                  </span>
-                  <span className="phone-modal-selection-subtitle">
-                    {t("common.delete_your_phone_number")}
-                  </span>
-                </div>
-                <div className="phone-modal-selection-arrow">
-                  <ChevronRight size={20} />
-                </div>
-              </button>
-            </div>
+            <Button
+              onClick={() => handleSelectAction(PHONE_NUMBER_ACTION.REMOVE)}
+              disabled={isLoading}
+              className="group flex items-center gap-4 p-4 rounded-xl border border-(--input-border) bg-(--input-bg) hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-(--error-color) transition-all duration-200 text-left"
+            >
+              <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-(--error-color)">
+                <Trash size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-(--text-primary) leading-none mb-1">
+                  {t("common.remove_phone_number")}
+                </p>
+                <p className="text-xs text-(--muted-color)">
+                  {t("common.delete_your_phone_number")}
+                </p>
+              </div>
+              <ChevronRight size={18} className="text-(--muted-color) " />
+            </Button>
 
-            <div className="account-settings-modal-actions">
-              <button
-                type="button"
-                onClick={handleModalClose}
-                className="account-settings-modal-btn account-settings-modal-btn-cancel"
-                disabled={LOADING_UPDATE_PHONE_NUMBER}
-              >
-                {t("common.cancel")}
-              </button>
-            </div>
+            <Button
+              onClick={handleModalClose}
+              className="flex-1 px-6 py-3 rounded-xl text-[15px] font-medium bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border) transition-all"
+              title={t("common.cancel")}
+            />
           </div>
         ) : (
-          <div className="account-settings-modal-form">
-            <div className="account-settings-modal-field">
+          /* Form View */
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
               <PhoneNumberForm
                 name="phoneNumber"
-                // onBlur={() =>
-                //   formik.setFieldTouched("phoneNumber", true, false)
-                // }
                 onChange={(value) => formik.setFieldValue("phoneNumber", value)}
-                // blur={formik.touched.phoneNumber ?? false}
                 value={formik.values.phoneNumber}
               />
               {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-                <span className="account-settings-modal-error form-error">
-                  {formik.errors.phoneNumber}
+                <span className="text-(--error-color) text-[13px] mt-1 animate-fade-in pl-1">
+                  {formik.errors.phoneNumber as string}
                 </span>
               )}
             </div>
 
-            <div className="account-settings-modal-actions">
-              {hasPhoneNumber && (
-                <button
-                  type="button"
-                  onClick={handleBackToSelection}
-                  className="account-settings-modal-btn account-settings-modal-btn-cancel"
-                  disabled={LOADING_UPDATE_PHONE_NUMBER}
-                >
-                  {t("common.back")}
-                </button>
-              )}
-              <button
+            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+              <Button
                 type="button"
-                onClick={handleModalClose}
-                className="account-settings-modal-btn account-settings-modal-btn-cancel"
-                disabled={LOADING_UPDATE_PHONE_NUMBER}
-              >
-                {t("common.cancel")}
-              </button>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="account-settings-modal-btn account-settings-modal-btn-save"
-                disabled={
-                  LOADING_UPDATE_PHONE_NUMBER ||
-                  !isFormValid() ||
-                  !isPhoneNumberChanged()
+                onClick={
+                  hasPhoneNumber ? handleBackToSelection : handleModalClose
                 }
-              >
-                {LOADING_UPDATE_PHONE_NUMBER ? (
-                  <span className="account-settings-modal-loader" />
-                ) : (
-                  t("common.save")
-                )}
-              </button>
+                className="flex-1 px-6 py-3 rounded-xl text-[15px] font-medium bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border) transition-all"
+                disabled={isLoading}
+                title={hasPhoneNumber ? t("common.back") : t("common.cancel")}
+              />
+              <Button
+                type="button"
+                onClick={() => formik.handleSubmit()}
+                className="flex-1 px-6 py-3 rounded-xl text-[15px] font-semibold bg-(--primary-color) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow) flex items-center justify-center"
+                disabled={
+                  isLoading || !isFormValid() || !isPhoneNumberChanged()
+                }
+                isLoading={isLoading}
+                title={t("common.save")}
+              />
             </div>
           </div>
         )}

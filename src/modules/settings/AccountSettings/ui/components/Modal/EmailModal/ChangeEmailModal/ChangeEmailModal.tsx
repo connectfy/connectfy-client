@@ -1,5 +1,4 @@
-import "../../UsernameModal/usernameModal.style.css";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
 import { IUpdateEmail } from "../../../../../types/types";
@@ -10,6 +9,8 @@ import Input from "@/components/ui/CustomInput/Input/Input";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
+import Button from "@/components/ui/CustomButton/Button/Button";
+import useFormDisabled from "@/hooks/useFormDisabled";
 
 interface Props {
   open: boolean;
@@ -21,15 +22,13 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
 
   const { access_token, authenticateToken } = useAuthStore();
 
-  const { showResponseErrors } = useErrors();
+  const { showResponseErrors, showFormikErrors } = useErrors();
 
   const { data: user } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
-  const [
-    updateEmail,
-    { isLoading: LOADING_UPDATE_EMAIL, error: ERROR_UPDATE_EMAIL },
-  ] = useUpdateEmailMutation();
+
+  const [updateEmail, { isLoading }] = useUpdateEmailMutation();
 
   const [success, setSuccess] = useState<boolean>(false);
   const [email, setEmail] = useState<string | null>(null);
@@ -143,15 +142,29 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
     },
   });
 
+  const isDisabled = useFormDisabled<IUpdateEmail>({
+    formik,
+    loading: isLoading,
+    validationRules: [
+      (values) => !!values.email,
+      (values) => values.email !== user?.email,
+    ],
+  });
+
   const handleOverlayPointerDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    formik.handleSubmit();
+    const errors = await formik.validateForm();
+    if (Object.keys(errors).length > 0) {
+      showFormikErrors(errors);
+      return;
+    }
+    formik.handleSubmit(e as any);
   };
 
   const handleClose = () => {
@@ -161,40 +174,28 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
     onClose();
   };
 
-  const globalKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!open) return;
+  useEffect(() => {
+    if (!open) return;
 
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        if (
-          LOADING_UPDATE_EMAIL ||
-          ERROR_UPDATE_EMAIL ||
-          (!success && !formik.values.email)
-        )
-          return;
-
-        if (success) handleClose();
-        else formik.submitForm();
+        if (isLoading || !formik.values.email) return;
+        formik.submitForm();
       }
 
       if (e.key === "Escape") {
         e.preventDefault();
-        if (LOADING_UPDATE_EMAIL || ERROR_UPDATE_EMAIL) return;
+        if (isLoading) return;
         onClose();
       }
-    },
-    [open, LOADING_UPDATE_EMAIL, ERROR_UPDATE_EMAIL, formik, onClose],
-  );
-
-  useEffect(() => {
-    if (!open) return;
-
-    document.addEventListener("keydown", globalKeyDown);
-    return () => {
-      document.removeEventListener("keydown", globalKeyDown);
     };
-  }, [open, globalKeyDown]);
+
+    document.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [open, formik]);
 
   return (
     <Modal
@@ -202,127 +203,91 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
       onClose={handleClose}
       onMouseDown={handleOverlayPointerDown}
     >
-      <div className="account-settings-modal-container">
-        {!success && (
-          <div className="account-settings-modal-header">
-            <h2 className="account-settings-modal-title">
-              {t("common.update_email")}
-            </h2>
-            <p className="account-settings-modal-subtitle">
-              {t("common.update_email_description")}
-            </p>
-          </div>
-        )}
-
-        {success ? (
-          <div className="account-settings-modal-success">
-            <div className="success-illustration" aria-hidden>
-              {/* simple check icon */}
-              <svg
-                width="56"
-                height="56"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="11"
-                  stroke="var(--primary-color)"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M7 12.5l2.5 2.5L17 8"
-                  stroke="var(--primary-color)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-
-            <div className="account-settings-modal-success-text">
-              <h3>
-                {t("user_messages.email_confirmation_sent") ||
-                  "Confirmation email sent"}
-              </h3>
-              <p>
-                {email
-                  ? t("user_messages.check_inbox_for_confirmation", {
-                      email,
-                    })
-                  : t("user_messages.check_inbox")}
+      <div className="bg-(--auth-main-bg) rounded-2xl p-6 sm:p-8 max-w-[480px] w-full shadow-(--card-shadow) animate-fade-in mx-auto overflow-hidden">
+        {!success ? (
+          <Fragment>
+            {/* Header */}
+            <div className="mb-7">
+              <h2 className="text-2xl font-semibold text-(--text-primary) mb-2 leading-tight">
+                {t("common.update_email")}
+              </h2>
+              <p className="text-sm text-(--muted-color) leading-relaxed">
+                {t("common.update_email_description")}
               </p>
             </div>
 
-            <div className="account-settings-modal-actions">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="account-settings-modal-btn account-settings-modal-btn-cancel"
-                disabled={LOADING_UPDATE_EMAIL}
-              >
-                {t("common.ok")}
-              </button>
-            </div>
-          </div>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <div className="flex flex-col">
+                <Input
+                  inputSize="large"
+                  id="email"
+                  type="email"
+                  name="email"
+                  title={t("common.email")}
+                  value={formik.values.email || ""}
+                  onChange={(e) => {
+                    const value = e.target.value || null;
+                    if (value && value.length > 254) return;
+                    formik.setFieldValue("email", value);
+                  }}
+                  onBlur={formik.handleBlur}
+                  isError={!!formik.errors.email}
+                  disabled={isLoading}
+                  autoFocus
+                  autoComplete="off"
+                  icon={<span className="material-symbols-outlined">mail</span>}
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                <Button
+                  type="button"
+                  onClick={handleClose}
+                  className="flex-1 px-6 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border)"
+                  disabled={isLoading}
+                  title={t("common.cancel")}
+                />
+                <Button
+                  type="submit"
+                  className="flex-1 px-6 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--primary-color) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow) flex items-center justify-center gap-2"
+                  disabled={isDisabled}
+                  isLoading={isLoading}
+                  title={t("common.save")}
+                />
+              </div>
+            </form>
+          </Fragment>
         ) : (
-          <div className="account-settings-modal-form">
-            <div className="account-settings-modal-field">
-              <Input
-                inputSize="medium"
-                id="email"
-                type="email"
-                name="email"
-                title={t("common.email")}
-                value={formik.values.email || ""}
-                onChange={(e) => {
-                  const value = e.target.value || null;
-
-                  if (value && value.length > 254) return;
-
-                  formik.setFieldValue("email", value);
-                }}
-                onBlur={formik.handleBlur}
-                isError={!!formik.errors.email}
-                disabled={LOADING_UPDATE_EMAIL}
-                autoFocus
-                autoComplete="off"
-              />
-              {formik.errors.email && formik.touched.email && (
-                <span className="account-settings-modal-error">
-                  {formik.errors.email}
-                </span>
-              )}
+          /* Success State */
+          <div className="flex flex-col items-center text-center animate-fade-in py-4">
+            <div className="w-[72px] h-[72px] bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] rounded-full flex items-center justify-center mb-4 animate-bounce-custom">
+              <span
+                className="material-symbols-outlined text-(--primary-color)"
+                style={{ fontSize: "40px" }}
+              >
+                mark_email_read
+              </span>
             </div>
 
-            <div className="account-settings-modal-actions">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="account-settings-modal-btn account-settings-modal-btn-cancel"
-                disabled={LOADING_UPDATE_EMAIL}
-              >
-                {t("common.cancel")}
-              </button>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="account-settings-modal-btn account-settings-modal-btn-save"
-                disabled={
-                  LOADING_UPDATE_EMAIL ||
-                  !formik.values.email ||
-                  user?.email === formik.values.email
-                }
-              >
-                {LOADING_UPDATE_EMAIL ? (
-                  <span className="account-settings-modal-loader" />
-                ) : (
-                  t("common.save")
-                )}
-              </button>
-            </div>
+            <h3 className="text-lg font-semibold text-(--text-primary) mb-2.5 m-0">
+              {t("user_messages.email_confirmation_sent") ||
+                "Confirmation email sent"}
+            </h3>
+
+            <p className="text-[14px] text-(--muted-color) leading-[1.4] mb-6 max-w-[420px] m-0">
+              {email
+                ? t("user_messages.check_inbox_for_confirmation", { email })
+                : t("user_messages.check_inbox")}
+            </p>
+
+            <Button
+              type="button"
+              onClick={handleClose}
+              className="w-full sm:w-auto px-8 py-3 rounded-[10px] text-[15px] font-medium transition-all duration-200 bg-(--primary-color) text-white hover:shadow-(--active-shadow)"
+              title={t("common.ok")}
+            />
           </div>
         )}
       </div>

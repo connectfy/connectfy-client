@@ -7,7 +7,7 @@ import { useRoutes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "./context/ThemeContext";
 import { useGetMeQuery } from "./modules/profile/api/api";
-import { checkDeviceId } from "./common/utils/checkDevice";
+import { checkDeviceId } from "./common/utils/checkValues";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useAuthStore } from "./hooks/useAuthStore";
 import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";

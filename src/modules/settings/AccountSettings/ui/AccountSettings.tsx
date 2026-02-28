@@ -43,7 +43,11 @@ import { snack } from "@/common/utils/snackManager";
 import useBoolean from "@/hooks/useBoolean";
 import VerifyChangeEmailModal from "./components/Modal/EmailModal/VerifyChangeEmailModal/VerifyChangeEmailModal";
 import PhoneNumberModal from "./components/Modal/PhoneNumberModal/PhoneNumberModal";
-import { DDMMMMYYY, showDateWithHour } from "@/common/utils/formatDate";
+import {
+  DDMMMMYYY,
+  formatPhoneNumber,
+  showDateWithHour,
+} from "@/common/utils/formatValues";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
 import { useAuthStore } from "@/hooks/useAuthStore";
@@ -58,6 +62,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { useDispatch } from "react-redux";
+import { COUNTRIES } from "@/common/constants/constants";
 
 const AccountSettings: FC = () => {
   const navigate = useNavigate();
@@ -184,6 +189,20 @@ const AccountSettings: FC = () => {
     }
   };
 
+  const renderPhoneNumber = () => {
+    const country = COUNTRIES.find(
+      (country) => country.code === user?.phoneNumber?.countryCode,
+    );
+
+    if (!country) return "";
+    const formattedNumber = formatPhoneNumber(
+      user?.phoneNumber?.number || "",
+      country.format || "",
+    );
+
+    return country.code + " " + formattedNumber;
+  };
+
   const items = useMemo(
     () => [
       {
@@ -245,7 +264,7 @@ const AccountSettings: FC = () => {
             }
           >
             {user?.phoneNumber?.fullPhoneNumber
-              ? user.phoneNumber.fullPhoneNumber
+              ? renderPhoneNumber()
               : t("common.add_phone_number")}
           </AccountActionButton>
         ),

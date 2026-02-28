@@ -1,5 +1,4 @@
-import "./usernameModal.style.css";
-import { FC, useCallback, useEffect } from "react";
+import { FC, useEffect } from "react";
 import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
 import { IUpdateUsername } from "../../../../types/types";
@@ -11,6 +10,8 @@ import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
+import Button from "@/components/ui/CustomButton/Button/Button";
+import useFormDisabled from "@/hooks/useFormDisabled";
 
 interface Props {
   open: boolean;
@@ -21,15 +22,14 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
   const { authenticateToken, access_token } = useAuthStore();
+  const { showResponseErrors, showFormikErrors } = useErrors();
 
   const { data: user } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
-  const [
-    updateUsername,
-    { isLoading: LOADING_UPDATE_USERNAME, error: ERROR_UPDATE_USERNAME },
-  ] = useUpdateUsernameMutation();
-  const { showResponseErrors } = useErrors();
+
+  const [updateUsername, { isLoading: LOADING_UPDATE_USERNAME }] =
+    useUpdateUsernameMutation();
 
   const initialState: IUpdateUsername = {
     username: null,
@@ -37,8 +37,8 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
   };
 
   const validate = ({ username }: IUpdateUsername): Record<string, any> => {
-    const errors: Record<string, any> = {};
     const usernameRegex = /^[A-Za-z0-9._-]+$/;
+    const errors: Record<string, any> = {};
 
     if (!username || !checkEmptyString(username))
       errors.username = t("error_messages.this_field_required");
@@ -71,75 +71,80 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
     },
   });
 
-  const handleOverlayPointerDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  const isDisabled = useFormDisabled<IUpdateUsername>({
+    formik,
+    loading: LOADING_UPDATE_USERNAME,
+    validationRules: [
+      (values) => !!values.username,
+      (values) => !!values.username && checkEmptyString(values.username),
+      (values) => !!values.username && values.username.length >= 3,
+      (values) => !!values.username && values.username.length <= 30,
+      (values) => !!values.username && values.username !== user?.username,
+    ],
+  });
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    formik.handleSubmit();
+    if (isDisabled) return;
+    const errors = await formik.validateForm();
+    if (Object.keys(errors).length > 0) {
+      showFormikErrors(errors);
+      return;
+    }
+    formik.handleSubmit(e as any);
   };
 
-  const globalKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!open) return;
-
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (
-          LOADING_UPDATE_USERNAME ||
-          ERROR_UPDATE_USERNAME ||
-          !formik.values.username
-        )
-          return;
-        formik.submitForm();
-      }
-
-      if (e.key === "Escape") {
-        e.preventDefault();
-        if (LOADING_UPDATE_USERNAME || ERROR_UPDATE_USERNAME) return;
-        onClose();
-      }
-    },
-    [open, LOADING_UPDATE_USERNAME, ERROR_UPDATE_USERNAME, formik, onClose],
-  );
+  const handleClose = () => {
+    formik.resetForm();
+    onClose();
+  };
 
   useEffect(() => {
     if (!open) return;
 
-    document.addEventListener("keydown", globalKeyDown);
-    return () => {
-      document.removeEventListener("keydown", globalKeyDown);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSubmit(e as any);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+      }
     };
-  }, [open, globalKeyDown]);
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, formik]);
 
   return (
-    <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>
-      <div className="account-settings-modal-container">
-        <div className="account-settings-modal-header">
-          <h2 className="account-settings-modal-title">
+    <Modal
+      open={open}
+      onClose={handleClose}
+      onMouseDown={(e) => e.target === e.currentTarget && handleClose()}
+    >
+      <div className="bg-(--auth-main-bg) rounded-2xl p-6 sm:p-8 max-w-[480px] w-full shadow-(--card-shadow) animate-fade-in mx-auto overflow-hidden">
+        {/* Header */}
+        <div className="mb-7">
+          <h2 className="text-2xl font-bold text-(--text-primary) m-0">
             {t("common.change_username")}
           </h2>
-          <p className="account-settings-modal-subtitle">
+          <p className="text-sm text-(--muted-color) leading-relaxed">
             {t("common.update_username_description")}
           </p>
         </div>
 
-        <div className="account-settings-modal-form">
-          <div className="account-settings-modal-field">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex flex-col">
             <Input
-              inputSize="medium"
+              inputSize="large"
               id="username"
               name="username"
               title={t("common.username")}
               value={formik.values.username || ""}
               onChange={(e) => {
                 const value = e.target.value || null;
-
                 if (value && value.length > 30) return;
-
                 formik.setFieldValue("username", value);
               }}
               onBlur={formik.handleBlur}
@@ -147,41 +152,32 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
               disabled={LOADING_UPDATE_USERNAME}
               autoFocus
               autoComplete="off"
+              icon={
+                <span className="material-symbols-outlined">
+                  account_circle
+                </span>
+              }
             />
-            {formik.errors.username && formik.touched.username && (
-              <span className="account-settings-modal-error">
-                {formik.errors.username}
-              </span>
-            )}
           </div>
 
-          <div className="account-settings-modal-actions">
-            <button
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-3 mt-2">
+            <Button
               type="button"
-              onClick={onClose}
-              className="account-settings-modal-btn account-settings-modal-btn-cancel"
+              onClick={handleClose}
+              className="flex-1 px-6 py-3 rounded-xl text-[15px] font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) border border-(--input-border) hover:bg-(--input-border)"
               disabled={LOADING_UPDATE_USERNAME}
-            >
-              {t("common.cancel")}
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="account-settings-modal-btn account-settings-modal-btn-save"
-              disabled={
-                LOADING_UPDATE_USERNAME ||
-                !formik.values.username ||
-                user?.username === formik.values.username
-              }
-            >
-              {LOADING_UPDATE_USERNAME ? (
-                <span className="account-settings-modal-loader" />
-              ) : (
-                t("common.save")
-              )}
-            </button>
+              title={t("common.cancel")}
+            />
+            <Button
+              type="submit"
+              className="flex-1 px-6 py-3 rounded-xl text-[15px] font-semibold transition-all duration-200 bg-(--primary-color) text-white shadow-(--shadow-color) hover:shadow-(--active-shadow) flex items-center justify-center min-h-[48px]"
+              disabled={isDisabled}
+              isLoading={LOADING_UPDATE_USERNAME}
+              title={t("common.save")}
+            />
           </div>
-        </div>
+        </form>
       </div>
     </Modal>
   );

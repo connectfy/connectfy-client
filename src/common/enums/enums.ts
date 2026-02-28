@@ -179,3 +179,8 @@ export enum CHECK_UNIQUE_FIELD {
   EMAIL = "email",
   PHONE_NUMBER = "phone_number",
 }
+
+export enum ModalView {
+  SELECTION = "SELECTION",
+  FORM = "FORM",
+}

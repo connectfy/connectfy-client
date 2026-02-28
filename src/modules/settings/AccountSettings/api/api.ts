@@ -45,8 +45,8 @@ export const accountSettingsApi = createApi({
         const patchResult = dispatch(
           profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
             // guard: draft.user might be undefined in some cases
-            if (draft?.user) {
-              draft.user.username = arg.username;
+            if (draft) {
+              draft.username = arg.username;
             }
           }),
         );
@@ -54,7 +54,6 @@ export const accountSettingsApi = createApi({
         try {
           await queryFulfilled;
         } catch (err) {
-          // rollback if API fails
           patchResult.undo();
         }
       },
@@ -62,10 +61,7 @@ export const accountSettingsApi = createApi({
        * Invalidate the User tag so other subscribers (if any) refetch.
        * If the response includes the updated user id, return it; otherwise fallback to LIST.
        */
-      invalidatesTags: (result) =>
-        result && result._id
-          ? [{ type: "User", id: result._id }]
-          : [{ type: "User", id: "LIST" }],
+      invalidatesTags: ["AccountSettings"],
     }),
 
     // ====================== UPDATE EMAIL
@@ -75,7 +71,7 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: [{ type: "User", id: "LIST" }],
+      invalidatesTags: ["AccountSettings"],
     }),
 
     // ====================== UPDATE PASSWORD
@@ -85,7 +81,7 @@ export const accountSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: [{ type: "User", id: "LIST" }],
+      invalidatesTags: ["AccountSettings"],
     }),
 
     // ====================== VERIFY CHANGE EMAIL
@@ -137,20 +133,31 @@ export const accountSettingsApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
-            if (draft?.user) {
-              draft.user.phoneNumber = arg.phoneNumber;
+            if (draft) {
+              draft.phoneNumber = arg.phoneNumber;
             }
           }),
         );
 
         try {
-          await queryFulfilled;
+          const { data: updatedData } = await queryFulfilled;
+
+          dispatch(
+            profileApi.util.updateQueryData(
+              "getMe",
+              undefined,
+              (draft: any) => {
+                if (draft) {
+                  draft.phoneNumber = updatedData.phoneNumber;
+                }
+              },
+            ),
+          );
         } catch {
           patchResult.undo();
         }
       },
-
-      invalidatesTags: [{ type: "User", id: "LIST" }],
+      invalidatesTags: ["AccountSettings"],
     }),
 
     // ====================== LOGOUT

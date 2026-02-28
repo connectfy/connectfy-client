@@ -10,10 +10,10 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
-import { checkDeviceId } from "@/common/utils/checkDevice";
+import { checkDeviceId } from "@/common/utils/checkValues";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import Input from "@/components/ui/CustomInput/Input/Input";
-import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
+import PhoneNumberForm from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
@@ -250,7 +250,7 @@ const Login = () => {
           )}
 
           {loginMode === "phoneNumber" && (
-            <PhoneNumber
+            <PhoneNumberForm
               name="phoneNumber"
               onChange={(value) =>
                 formik.setFieldValue("identifier", value?.fullPhoneNumber)

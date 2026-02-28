@@ -154,7 +154,7 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
               className="delete-account-btn delete-account-btn-secondary"
               disabled={LOADING_DELETE_ACCOUNT}
             >
-              {t("common.cancel") || "Ləğv et"}
+              {t("common.cancel")}
             </button>
             <button
               type="submit"

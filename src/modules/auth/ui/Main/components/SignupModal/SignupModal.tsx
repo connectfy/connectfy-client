@@ -6,7 +6,7 @@ import { googleSignupInitialState } from "../../../../constants/intialState";
 import { valdiateGoogleSignup } from "../../../../constants/validation";
 import { GENDER, LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { checkDeviceId } from "@/common/utils/checkDevice";
+import { checkDeviceId } from "@/common/utils/checkValues";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
