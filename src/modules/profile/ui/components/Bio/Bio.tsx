@@ -1,11 +1,12 @@
 import "./bio.style.css";
-import { Edit2, MinusIcon } from "lucide-react";
+import { MinusIcon } from "lucide-react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
 import { useGetAccountQuery } from "@/modules/profile/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const Bio = () => {
   const { t } = useTranslation();
@@ -30,13 +31,19 @@ const Bio = () => {
             privacy={privacySettings?.bio || PRIVACY_SETTINGS_CHOICE.EVERYONE}
             fieldName="bio"
           />
-          <button
+          <Button
+            title={t("common.edit")}
             className="profile-edit-button"
             aria-label="Edit personal information"
-          >
-            <Edit2 size={16} />
-            <span>{t("common.edit")}</span>
-          </button>
+            icon={
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: "16px" }}
+              >
+                edit
+              </span>
+            }
+          />
         </div>
       </div>
       <p className="profile-bio">{account?.bio ?? <MinusIcon />}</p>

@@ -10,7 +10,7 @@ export interface CustomButtonProps
   tooltip?: string;
   children?: ReactNode;
   tooltipPosition?: "top" | "bottom" | "left" | "right";
-  showTitleInMobile?: boolean;
+  hideTitleInMobile?: boolean;
 }
 
 const Button: FC<CustomButtonProps> = ({
@@ -23,10 +23,10 @@ const Button: FC<CustomButtonProps> = ({
   className = "",
   children,
   tooltipPosition,
-  showTitleInMobile = true,
+  hideTitleInMobile = true,
   ...props
 }) => {
-  const titleClassName = showTitleInMobile ? "" : "hidden sm:inline";
+  const titleClassName = icon && hideTitleInMobile ? "hidden sm:inline" : "";
 
   const content = children ? (
     children

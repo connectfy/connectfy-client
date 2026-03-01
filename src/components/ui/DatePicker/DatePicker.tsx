@@ -454,20 +454,20 @@ export default function CustomDatePicker({
               )}
 
               <div className="calendar_footer">
-                <button
+                <Button
                   className="footer_button"
                   onClick={handleClear}
                   type="button"
                 >
                   {t("common.clear")}
-                </button>
-                <button
+                </Button>
+                <Button
                   className="footer_button today_button"
                   onClick={handleToday}
                   type="button"
                 >
                   {t("common.today")}
-                </button>
+                </Button>
               </div>
             </div>,
             document.body,

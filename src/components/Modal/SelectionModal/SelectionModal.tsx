@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import Modal from "..";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface Selections {
   name: string;
@@ -73,13 +74,12 @@ const SelectionModal: FC<Props> = ({
         <div className="selection-modal">
           <div className="selection-modal-header">
             <h3 className="selection-modal-title">{title}</h3>
-            <button
+            <Button
               className="selection-modal-close"
               onClick={onClose}
               aria-label="Close modal"
-            >
-              ×
-            </button>
+              icon={<span className="material-symbols-outlined">close</span>}
+            />
           </div>
           <div className="selection-modal-content">
             {selections.map((selection) => {
@@ -87,7 +87,7 @@ const SelectionModal: FC<Props> = ({
               const isActive = selection.key === activeKey;
 
               return (
-                <button
+                <Button
                   key={selection.key}
                   className={`selection-item ${isActive ? "active" : ""}`}
                   onClick={() => {
@@ -106,23 +106,15 @@ const SelectionModal: FC<Props> = ({
                   </div>
                   {isActive && (
                     <div className="selection-item-check">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontSize: "20px" }}
                       >
-                        <path
-                          d="M13.3337 4L6.00033 11.3333L2.66699 8"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                        check
+                      </span>
                     </div>
                   )}
-                </button>
+                </Button>
               );
             })}
           </div>

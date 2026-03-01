@@ -2,6 +2,7 @@ import { FC } from "react";
 import "./datePickerModal.style.css";
 import Modal from "..";
 import { useTranslation } from "react-i18next";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface IProps {
   open: boolean;
@@ -253,25 +254,25 @@ const DatePickerModal: FC<IProps> = ({
     <Modal open={open} onClose={onClose}>
       <div className="date_picker_modal_content">
         <div className="calendar_header">
-          <button
+          <Button
             className={`nav_button ${isPrevDisabled() ? "disabled" : ""}`}
             onClick={() => !isPrevDisabled() && navigateMonth("prev")}
             disabled={isPrevDisabled()}
             type="button"
-          >
-            ‹
-          </button>
+            icon={<span className="material-symbols-outlined">arrow_back</span>}
+          />
           <div className="current_period" onClick={handleHeaderClick}>
             {renderHeader()}
           </div>
-          <button
+          <Button
             className={`nav_button ${isNextDisabled() ? "disabled" : ""}`}
             onClick={() => !isNextDisabled() && navigateMonth("next")}
             disabled={isNextDisabled()}
             type="button"
-          >
-            ›
-          </button>
+            icon={
+              <span className="material-symbols-outlined">arrow_forward</span>
+            }
+          />
         </div>
 
         {viewMode === "days" && (
@@ -349,20 +350,18 @@ const DatePickerModal: FC<IProps> = ({
         )}
 
         <div className="calendar_footer">
-          <button
+          <Button
             className="footer_button"
             onClick={handleClearClick}
             type="button"
-          >
-            {t("common.clear")}
-          </button>
-          <button
+            title={t("common.clear")}
+          />
+          <Button
             className="footer_button today_button"
             onClick={handleToday}
             type="button"
-          >
-            {t("common.today")}
-          </button>
+            title={t("common.today")}
+          />
         </div>
       </div>
     </Modal>

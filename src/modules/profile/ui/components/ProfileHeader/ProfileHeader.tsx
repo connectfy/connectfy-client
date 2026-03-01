@@ -1,8 +1,9 @@
-import { ArrowLeft, Settings, User, UserRoundX, Users } from "lucide-react";
+import { User } from "lucide-react";
 import "./profileHeader.style.css";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const ProfileHeader = () => {
   const { t } = useTranslation();
@@ -11,13 +12,19 @@ const ProfileHeader = () => {
   return (
     <header className="profile-header-actions">
       <div className="profile-header-left">
-        <button
+        <Button
           className="profile-icon-btn profile-back-btn"
-          aria-label="Go back to previous page"
+          aria-label={t("common.back")}
           onClick={() => navigate(-1)}
-        >
-          <ArrowLeft size={20} />
-        </button>
+          icon={
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "20px" }}
+            >
+              arrow_back
+            </span>
+          }
+        />
         <h1 className="profile-page-title">
           <User size={20} />
           {t("common.profile")}
@@ -25,33 +32,45 @@ const ProfileHeader = () => {
       </div>
 
       <div className="profile-header-right">
-        <button
+        <Button
           className="profile-icon-btn"
-          title="Blocklist"
-          aria-label="Manage blocked users"
           onClick={() => navigate(ROUTER.USERS.BLOCKLIST)}
-        >
-          <UserRoundX size={20} />
-          <span className="profile-btn-label">{t("common.blocklist")}</span>
-        </button>
-        <button
+          icon={
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "20px" }}
+            >
+              block
+            </span>
+          }
+          title={t("common.blocklist")}
+        />
+        <Button
           className="profile-icon-btn"
-          title="Settings"
-          aria-label="Open profile settings"
           onClick={() => navigate(ROUTER.USERS.FRIENDS)}
-        >
-          <Users size={20} />
-          <span className="profile-btn-label">{t("common.my_friends")}</span>
-        </button>
-        <button
+          icon={
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "20px" }}
+            >
+              people
+            </span>
+          }
+          title={t("common.my_friends")}
+        />
+        <Button
           className="profile-icon-btn"
-          title="Settings"
-          aria-label="Open profile settings"
           onClick={() => navigate(ROUTER.SETTINGS.MAIN)}
-        >
-          <Settings size={20} />
-          <span className="profile-btn-label">{t("common.settings")}</span>
-        </button>
+          icon={
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "20px" }}
+            >
+              settings
+            </span>
+          }
+          title={t("common.settings")}
+        />
       </div>
     </header>
   );

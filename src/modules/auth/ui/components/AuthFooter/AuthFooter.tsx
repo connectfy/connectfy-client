@@ -71,6 +71,7 @@ const AuthFooter = () => {
               <span className="material-symbols-outlined text-sm">globe</span>
             }
             title={renderCurrentLanguage()}
+            hideTitleInMobile={false}
           />
         </div>
         <div className="flex gap-3 items-center">

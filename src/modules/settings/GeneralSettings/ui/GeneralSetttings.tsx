@@ -40,6 +40,7 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditGeneralSettings } from "../types/types";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -340,13 +341,13 @@ const GeneralSettings = () => {
                     subtitle: t("common.reset_all_general_settings"),
                   }}
                 >
-                  <button
+                  <Button
                     className="general-reset-button"
                     onClick={resetSettingsModal.onOpen}
                   >
                     <RefreshCw size={18} />
                     {t("common.reset_settings")}
-                  </button>
+                  </Button>
                 </SettingCard>
               </div>
             </Fragment>

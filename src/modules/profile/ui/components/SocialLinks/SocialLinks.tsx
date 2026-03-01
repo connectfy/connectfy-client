@@ -1,12 +1,3 @@
-import {
-  ChevronDown,
-  ChevronUp,
-  Copy,
-  Edit,
-  ExternalLink,
-  Trash2,
-  Plus,
-} from "lucide-react";
 import "./socialLinks.style.css";
 import { memo, useState } from "react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
@@ -16,6 +7,7 @@ import { TFunction } from "i18next";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
@@ -42,7 +34,7 @@ const SocialLinkItem = memo(
         className="profile-social-item"
         style={{ "--item-index": index } as React.CSSProperties}
       >
-        <button
+        <Button
           className="profile-social-header"
           onClick={() => setIsExpanded(!isExpanded)}
           aria-expanded={isExpanded}
@@ -52,8 +44,22 @@ const SocialLinkItem = memo(
             <span className="profile-social-platform">{link.platform}</span>
             <span className="profile-social-name">{link.name}</span>
           </div>
-          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-        </button>
+          {isExpanded ? (
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "18px" }}
+            >
+              expand_less
+            </span>
+          ) : (
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "18px" }}
+            >
+              expand_more
+            </span>
+          )}
+        </Button>
 
         {isExpanded && (
           <div className="profile-social-details">
@@ -68,42 +74,62 @@ const SocialLinkItem = memo(
             </a>
 
             <div className="profile-social-actions">
-              <button
+              <Button
                 className="profile-action-btn"
                 onClick={() => window.open(link.url, "_blank")}
-                title="Open"
-                aria-label="Open in new tab"
-              >
-                <ExternalLink size={16} />
-                <span>{t("common.open")}</span>
-              </button>
-              <button
+                title={t("common.open")}
+                aria-label={t("common.open")}
+                icon={
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "16px" }}
+                  >
+                    open_in_new
+                  </span>
+                }
+              />
+              <Button
                 className="profile-action-btn"
                 onClick={handleCopy}
-                title="Copy"
-                aria-label="Copy URL"
-              >
-                <Copy size={16} />
-                <span>{t("common.copy")}</span>
-              </button>
-              <button
+                title={t("common.copy")}
+                aria-label={t("common.copy")}
+                icon={
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "16px" }}
+                  >
+                    copy
+                  </span>
+                }
+              />
+              <Button
                 className="profile-action-btn"
                 onClick={() => onAction("edit", link)}
-                title="Edit"
-                aria-label="Edit link"
-              >
-                <Edit size={16} />
-                <span>{t("common.edit")}</span>
-              </button>
-              <button
+                title={t("common.edit")}
+                aria-label={t("common.edit")}
+                icon={
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "16px" }}
+                  >
+                    edit
+                  </span>
+                }
+              />
+              <Button
                 className="profile-action-btn profile-action-delete"
                 onClick={() => onAction("delete", link)}
-                title="Delete"
-                aria-label="Delete link"
-              >
-                <Trash2 size={16} />
-                <span>{t("common.remove")}</span>
-              </button>
+                title={t("common.remove")}
+                aria-label={t("common.remove")}
+                icon={
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "16px" }}
+                  >
+                    delete
+                  </span>
+                }
+              />
             </div>
           </div>
         )}
@@ -155,13 +181,19 @@ const SocialLinks = () => {
             }
             fieldName="socialLinks"
           />
-          <button
+          <Button
             className="profile-edit-button"
-            aria-label="Edit personal information"
-          >
-            <Plus size={16} />
-            <span>{t("common.add_link")}</span>
-          </button>
+            aria-label={t("common.add_link")}
+            title={t("common.add_link")}
+            icon={
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: "16px" }}
+              >
+                add
+              </span>
+            }
+          />
         </div>
       </div>
 

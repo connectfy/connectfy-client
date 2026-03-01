@@ -4,6 +4,7 @@ import { GENDER } from "@/common/enums/enums";
 import { FormikProps } from "formik";
 import { IGoogleSignupForm, ISignupForm } from "@/modules/auth/types/types";
 import { FC, useCallback } from "react";
+import Input from "@/components/ui/CustomInput/Input/Input";
 
 interface Props {
   formik: FormikProps<ISignupForm> | FormikProps<IGoogleSignupForm>;
@@ -18,12 +19,12 @@ const GenderForm: FC<Props> = ({ formik, formId = "default" }) => {
       if (formik.values.gender === value) formik.setFieldValue("gender", null);
       else formik.setFieldValue("gender", value);
     },
-    [formik]
+    [formik],
   );
 
   return (
     <div className="gender-group">
-      <input
+      <Input
         autoComplete="off"
         type="radio"
         id={`male-${formId}`}
@@ -35,7 +36,7 @@ const GenderForm: FC<Props> = ({ formik, formId = "default" }) => {
       />
       <label htmlFor={`male-${formId}`}>{t("enum.male")}</label>
 
-      <input
+      <Input
         autoComplete="off"
         type="radio"
         id={`female-${formId}`}
@@ -47,7 +48,7 @@ const GenderForm: FC<Props> = ({ formik, formId = "default" }) => {
       />
       <label htmlFor={`female-${formId}`}>{t("enum.female")}</label>
 
-      <input
+      <Input
         autoComplete="off"
         type="radio"
         id={`other-${formId}`}

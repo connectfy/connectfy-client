@@ -4,7 +4,6 @@ import {
   Mail,
   MapPin,
   UserIcon,
-  Edit2,
   MapMinusIcon,
   Minus,
 } from "lucide-react";
@@ -16,6 +15,7 @@ import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
@@ -47,13 +47,19 @@ const PersonalInformation = () => {
             {t("common.personal_information")}
           </h2>
           <div className="profile-page-section-actions">
-            <button
+            <Button
               className="profile-edit-button"
               aria-label="Edit personal information"
-            >
-              <Edit2 size={16} />
-              <span>{t("common.edit")}</span>
-            </button>
+              title={t("common.edit")}
+              icon={
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: "16px" }}
+                >
+                  edit
+                </span>
+              }
+            />
           </div>
         </div>
 

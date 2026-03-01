@@ -6,6 +6,7 @@ import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import { useTranslation } from "react-i18next";
 import { ICountry } from "@/common/interfaces/interfaces";
 import { COUNTRIES } from "@/common/constants/constants";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface Props {
   open: boolean;
@@ -74,7 +75,7 @@ export const CountryCodeModal: FC<Props> = ({
                 {filtered.map((c) => {
                   const isSelected = initialSelectedKey === c.key;
                   return (
-                    <button
+                    <Button
                       key={c.key}
                       type="button"
                       className={`country-item ${isSelected ? "selected" : ""}`}
@@ -91,7 +92,7 @@ export const CountryCodeModal: FC<Props> = ({
                         </div>
                         <div className="country-code">{c.code}</div>
                       </div>
-                    </button>
+                    </Button>
                   );
                 })}
                 {filtered.length === 0 && (

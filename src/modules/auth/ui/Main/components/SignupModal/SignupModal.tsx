@@ -188,14 +188,13 @@ const SignupModal = ({
             {/* Gender Selector */}
             <div className="grid grid-cols-3 gap-3">
               {Object.keys(GENDER).map((gender) => (
-                <button
+                <Button
                   key={gender}
                   className={`cursor-pointer py-4 px-2 border border-(--input-border) rounded-lg text-sm font-medium hover:border-primary transition-colors text-(--text-secondary) duration-900 ${formik.values.gender === gender ? "bg-(--primary-color) text-white" : ""}`}
                   type="button"
                   onClick={() => selectGender(gender as GENDER)}
-                >
-                  {t(`enum.${gender.toLowerCase()}`)}
-                </button>
+                  title={t(`enum.${gender.toLowerCase()}`)}
+                />
               ))}
             </div>
 
