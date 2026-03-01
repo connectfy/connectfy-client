@@ -1,7 +1,6 @@
 import { type FC, useMemo, useState } from "react";
 import { Modal, Box, IconButton, Slide } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./countryCodeModal.style.css";
 import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import { useTranslation } from "react-i18next";
 import { ICountry } from "@/common/interfaces/interfaces";
@@ -22,10 +21,10 @@ export const CountryCodeModal: FC<Props> = ({
   initialSelectedKey,
 }) => {
   const { t } = useTranslation();
+  const [query, setQuery] = useState<string>("");
 
-  const [query, setQuery] = useState<string | null>(null);
   const filtered = useMemo(() => {
-    const q = query?.trim().toLowerCase();
+    const q = query.trim().toLowerCase();
     if (!q) return COUNTRIES;
     return COUNTRIES.filter(
       (c) =>
@@ -46,57 +45,99 @@ export const CountryCodeModal: FC<Props> = ({
       onClose={onClose}
       aria-labelledby="country-code-modal"
       closeAfterTransition
+      className="flex items-center justify-center"
     >
       <Slide direction="up" in={open}>
-        <Box className="country-modal-backdrop" onClick={onClose}>
+        {/* Backdrop Wrapper */}
+        <Box
+          className="flex items-center justify-center p-4 h-screen w-full outline-none"
+          onClick={onClose}
+        >
+          {/* Modal Paper */}
           <Box
-            className="country-modal-paper"
+            className="w-[520px] max-w-[96%] max-h-[84vh] overflow-hidden rounded-xl bg-(--bg-color) shadow-(--card-shadow) flex flex-col outline-none sm:rounded-lg"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="country-code-modal"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="country-modal-header">
-              <h3 id="country-code-modal">{t("common.select_country")}</h3>
-              <IconButton size="small" onClick={onClose} aria-label="close">
-                <CloseIcon fontSize="small" />
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-black/3 dark:border-white/4">
+              <h3
+                id="country-code-modal"
+                className="m-0 text-base font-semibold text-(--text-color)"
+              >
+                {t("common.select_country")}
+              </h3>
+              <IconButton
+                size="small"
+                onClick={onClose}
+                aria-label="close"
+                className="text-(--text-color)"
+              >
+                <CloseIcon
+                  fontSize="small"
+                  sx={{ color: "var(--text-primary)" }}
+                />
               </IconButton>
             </div>
 
-            <div style={{ padding: "0 1rem 1rem 1rem" }}>
-              <Input
-                title={t("common.search_country")}
-                value={query ?? ""}
-                inputSize="medium"
-                onChange={(e) => setQuery(e.target.value)}
-              />
+            {/* Content Wrapper */}
+            <div className="p-4 pt-0 flex flex-col overflow-hidden">
+              <div className="py-4">
+                <Input
+                  title={t("common.search_country")}
+                  value={query}
+                  inputSize="medium"
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
 
-              <div className="country-list" role="list">
+              {/* Country List */}
+              <div
+                className="overflow-y-auto space-y-1 pr-1 scrollbar-thin scrollbar-thumb-[var(--muted-color)]"
+                style={{ maxHeight: "calc(84vh - 160px)" }}
+                role="list"
+              >
                 {filtered.map((c) => {
                   const isSelected = initialSelectedKey === c.key;
                   return (
                     <Button
                       key={c.key}
                       type="button"
-                      className={`country-item ${isSelected ? "selected" : ""}`}
                       onClick={() => handleSelect(c)}
+                      className={`group w-full flex items-center gap-3 p-2.5 rounded-lg border-none bg-transparent cursor-pointer text-left transition-all duration-300 hover:translate-y-px
+                        ${
+                          isSelected
+                            ? "bg-(--active-bg) shadow-(--active-shadow)"
+                            : "hover:bg-(--active-bg-2)"
+                        }`}
                       aria-label={`${c.name} ${c.code}`}
                     >
+                      {/* Flag */}
                       <span
-                        className={`country-flag ${c.flag}`}
+                        className={`w-9 h-6 shrink-0 rounded-[4px] bg-cover bg-center sm:w-7 sm:h-[18px] ${c.flag}`}
                         aria-hidden="true"
                       />
-                      <div className="country-meta">
-                        <div className="country-name">
+
+                      {/* Meta Info */}
+                      <div className="flex justify-between items-center w-full">
+                        <span className="text-[0.95rem] font-semibold text-(--text-color)">
                           {t(`countries.${c.name}`)}
+                        </span>
+
+                        {/* Code Badge */}
+                        <div className="w-[30%] min-w-[52px] min-h-[48px] flex items-center justify-center bg-(--input-bg) border border-(--input-border) rounded-lg text-(--muted-color) font-bold transition-all group-hover:border-(--primary-color)">
+                          {c.code}
                         </div>
-                        <div className="country-code">{c.code}</div>
                       </div>
                     </Button>
                   );
                 })}
+
                 {filtered.length === 0 && (
-                  <div className="no-results">No countries found.</div>
+                  <div className="py-8 text-center text-(--muted-color) text-sm font-black">
+                    {t("common.no_results_found") || "No countries found."}
+                  </div>
                 )}
               </div>
             </div>

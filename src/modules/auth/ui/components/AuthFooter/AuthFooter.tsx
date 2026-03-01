@@ -1,13 +1,14 @@
-import { LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
-import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
+import { LANGUAGE, THEME } from "@/common/enums/enums";
+import SelectionModal from "@/components/Modal/SelectionModal/SelectionModal";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTheme } from "@/context/ThemeContext";
 import useBoolean from "@/hooks/useBoolean";
+import { Globe } from "lucide-react";
 import { Fragment, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 const AuthFooter = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const screenWidth = window.innerWidth;
 
@@ -21,28 +22,36 @@ const AuthFooter = () => {
         : "bg-(--input-bg) border-(--input-border) text-(--text-secondary) hover:border-[#34d399]/30 hover:text-(--text-(--primary-color))"
     }`;
 
-  const language = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
+  const language = i18n.language;
 
   const languageList = [
     {
-      key: "US",
-      label: "English (US)",
-      value: "en",
+      name: "English",
+      value: LANGUAGE.EN,
+      icon: Globe,
+      key: "EN",
+      onClick: () => i18n.changeLanguage(LANGUAGE.EN),
     },
     {
+      name: "Azərbaycan",
+      value: LANGUAGE.AZ,
+      icon: Globe,
       key: "AZ",
-      label: "Azərbaycan (AZ)",
-      value: "az",
+      onClick: () => i18n.changeLanguage(LANGUAGE.AZ),
     },
     {
+      name: "Русский",
+      value: LANGUAGE.RU,
+      icon: Globe,
       key: "RU",
-      label: "Русский (RU)",
-      value: "ru",
+      onClick: () => i18n.changeLanguage(LANGUAGE.RU),
     },
     {
+      name: "Türkçe",
+      value: LANGUAGE.TR,
+      icon: Globe,
       key: "TR",
-      label: "Türkçe (TR)",
-      value: "tr",
+      onClick: () => i18n.changeLanguage(LANGUAGE.TR),
     },
   ];
 
@@ -55,7 +64,7 @@ const AuthFooter = () => {
       return currentLanguage?.key;
     }
 
-    return currentLanguage?.label;
+    return currentLanguage?.name;
   }, [language, screenWidth]);
 
   return (
@@ -112,7 +121,13 @@ const AuthFooter = () => {
         </div>
       </div>
 
-      <LanguageModal open={open} onClose={onClose} />
+      <SelectionModal
+        open={open}
+        onClose={onClose}
+        title={t("common.change_lang")}
+        selections={languageList}
+        activeKey={(language as string).toUpperCase()}
+      />
     </Fragment>
   );
 };

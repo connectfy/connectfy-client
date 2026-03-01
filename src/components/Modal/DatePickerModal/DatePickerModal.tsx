@@ -1,5 +1,4 @@
 import { FC } from "react";
-import "./datePickerModal.style.css";
 import Modal from "..";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
@@ -252,20 +251,28 @@ const DatePickerModal: FC<IProps> = ({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="date_picker_modal_content">
-        <div className="calendar_header">
+      <div className="bg-(--card-bg) rounded-xl p-5 w-full max-w-[360px] mx-auto animate-in fade-in zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-4">
           <Button
-            className={`nav_button ${isPrevDisabled() ? "disabled" : ""}`}
+            className={`bg-transparent border-none text-2xl cursor-pointer py-2 px-3 rounded-lg transition-all text-(--text-color) font-light hover:bg-(--active-bg-2) hover:text-(--primary-color) ${
+              isPrevDisabled() ? "opacity-30 cursor-not-allowed" : ""
+            }`}
             onClick={() => !isPrevDisabled() && navigateMonth("prev")}
             disabled={isPrevDisabled()}
             type="button"
             icon={<span className="material-symbols-outlined">arrow_back</span>}
           />
-          <div className="current_period" onClick={handleHeaderClick}>
+          <div
+            className="font-semibold text-base text-(--text-color) cursor-pointer py-2 px-4 rounded-lg transition-all hover:bg-(--active-bg-2) hover:text-(--primary-color)"
+            onClick={handleHeaderClick}
+          >
             {renderHeader()}
           </div>
           <Button
-            className={`nav_button ${isNextDisabled() ? "disabled" : ""}`}
+            className={`bg-transparent border-none text-2xl cursor-pointer py-2 px-3 rounded-lg transition-all text-(--text-color) font-light hover:bg-(--active-bg-2) hover:text-(--primary-color) ${
+              isNextDisabled() ? "opacity-30 cursor-not-allowed" : ""
+            }`}
             onClick={() => !isNextDisabled() && navigateMonth("next")}
             disabled={isNextDisabled()}
             type="button"
@@ -275,35 +282,32 @@ const DatePickerModal: FC<IProps> = ({
           />
         </div>
 
+        {/* Days View */}
         {viewMode === "days" && (
           <>
-            <div className="week_days">
+            <div className="grid grid-cols-7 gap-1 mb-3">
               {weekDays.map((day) => (
-                <div key={day} className="week_day">
+                <div
+                  key={day}
+                  className="text-center text-[13px] font-semibold text-(--muted-color) py-2 px-1"
+                >
                   {day}
                 </div>
               ))}
             </div>
 
-            <div className="calendar_grid">
+            <div className="grid grid-cols-7 gap-1.5 mb-4">
               {days.map((date, index) => (
                 <div
                   key={index}
-                  className={`calendar_day ${date ? "" : "empty"} ${
-                    date &&
-                    selectedDate &&
-                    date.toDateString() === selectedDate.toDateString()
-                      ? "selected"
-                      : ""
-                  } ${
-                    date && date.toDateString() === today.toDateString()
-                      ? "today"
-                      : ""
-                  } ${
-                    date && date.getMonth() !== currentMonth.getMonth()
-                      ? "other_month"
-                      : ""
-                  } ${date && isDateDisabled(date) ? "disabled" : ""}`}
+                  className={`flex items-center justify-center h-11 rounded-lg cursor-pointer text-[15px] font-medium transition-all text-(--text-color)
+                    ${!date ? "cursor-default" : ""}
+                    ${date && !isDateDisabled(date) ? "hover:bg-(--active-bg-2) hover:text-(--primary-color)" : ""}
+                    ${date && selectedDate && date.toDateString() === selectedDate.toDateString() ? "bg-(--primary-color) text-white!" : ""}
+                    ${date && date.toDateString() === today.toDateString() ? "border-2 border-(--primary-color) text-(--primary-color) font-bold" : ""}
+                    ${date && date.getMonth() !== currentMonth.getMonth() ? "text-(--muted-color) opacity-40" : ""}
+                    ${date && isDateDisabled(date) ? "opacity-30 cursor-not-allowed" : ""}
+                  `}
                   onClick={() =>
                     date && !isDateDisabled(date) && handleDateSelect(date)
                   }
@@ -315,14 +319,16 @@ const DatePickerModal: FC<IProps> = ({
           </>
         )}
 
+        {/* Months View */}
         {viewMode === "months" && (
-          <div className="months_grid">
+          <div className="grid grid-cols-3 gap-2.5 mb-4">
             {months.map((month) => (
               <div
                 key={month}
-                className={`calendar_month ${
-                  month === currentMonth.getMonth() ? "selected" : ""
-                } ${isMonthDisabled(month) ? "disabled" : ""}`}
+                className={`flex items-center justify-center h-12 rounded-xl cursor-pointer text-[15px] font-medium transition-all text-(--text-color)
+                  ${month === currentMonth.getMonth() ? "bg-(--primary-color) text-white" : "hover:bg-(--active-bg-2) hover:text-(--primary-color)"}
+                  ${isMonthDisabled(month) ? "opacity-30 cursor-not-allowed" : ""}
+                `}
                 onClick={() =>
                   !isMonthDisabled(month) && handleMonthSelect(month)
                 }
@@ -333,14 +339,16 @@ const DatePickerModal: FC<IProps> = ({
           </div>
         )}
 
+        {/* Years View */}
         {viewMode === "years" && (
-          <div className="years_grid">
+          <div className="grid grid-cols-3 gap-2.5 mb-4">
             {years.map((year) => (
               <div
                 key={year}
-                className={`calendar_year ${
-                  year === currentMonth.getFullYear() ? "selected" : ""
-                } ${isYearDisabled(year) ? "disabled" : ""}`}
+                className={`flex items-center justify-center h-12 rounded-xl cursor-pointer text-[15px] font-medium transition-all text-(--text-color)
+                  ${year === currentMonth.getFullYear() ? "bg-(--primary-color) text-white" : "hover:bg-(--active-bg-2) hover:text-(--primary-color)"}
+                  ${isYearDisabled(year) ? "opacity-30 cursor-not-allowed" : ""}
+                `}
                 onClick={() => !isYearDisabled(year) && handleYearSelect(year)}
               >
                 {year}
@@ -349,15 +357,16 @@ const DatePickerModal: FC<IProps> = ({
           </div>
         )}
 
-        <div className="calendar_footer">
+        {/* Footer */}
+        <div className="flex justify-between gap-3 mt-5 pt-4 border-t border-(--input-border)">
           <Button
-            className="footer_button"
+            className="flex-1 bg-transparent border border-(--input-border) py-3 px-5 rounded-xl cursor-pointer text-[15px] font-semibold transition-all text-(--text-color) hover:bg-(--active-bg-2) hover:text-(--primary-color) hover:border-(--primary-color)"
             onClick={handleClearClick}
             type="button"
             title={t("common.clear")}
           />
           <Button
-            className="footer_button today_button"
+            className="flex-1 bg-(--primary-color) border border-(--primary-color) py-3 px-5 rounded-xl cursor-pointer text-[15px] font-semibold transition-all text-white hover:bg-(--hover-bg) hover:border-(--hover-bg)"
             onClick={handleToday}
             type="button"
             title={t("common.today")}

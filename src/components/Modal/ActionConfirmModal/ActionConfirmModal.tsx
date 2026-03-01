@@ -5,9 +5,9 @@ import { LucideProps } from "lucide-react";
 
 interface Props {
   open: boolean;
-  onClose: Function;
-  onConfirm: Function;
-  onCancel: Function;
+  onClose: () => void;
+  onConfirm: () => void;
+  onCancel: () => void;
   header: { title: string };
   children?: string | ReactNode;
   cancelBtn: { title: string };
@@ -39,12 +39,12 @@ const ActionConfirmModal: FC<Props> = ({
     <Modal open={open} onClose={onClose} onMouseDown={onMouseDown}>
       <div
         className="w-full max-w-[420px] overflow-hidden rounded-2xl bg-(--card-bg) shadow-2xl animate-slide-up"
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
+        // style={{
+        //   position: "fixed",
+        //   top: "50%",
+        //   left: "50%",
+        //   transform: "translate(-50%, -50%)",
+        // }}
       >
         <div className="flex flex-col items-center p-8">
           {/* Icon with Soft Glow */}

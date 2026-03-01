@@ -161,7 +161,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 mt-2">
+          <div className="flex gap-3 mt-2">
             <Button
               type="button"
               onClick={handleClose}

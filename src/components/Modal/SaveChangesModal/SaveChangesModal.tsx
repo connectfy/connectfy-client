@@ -47,7 +47,7 @@ const SaveChangesModal: FC<Props> = ({
             "You have unsaved changes. Do you want to save them before leaving?"}
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex gap-3 justify-center">
           {/* Discard Button */}
           <Button
             className="flex-1 px-6 py-3 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-red-500/10 hover:text-red-500 dark:bg-(--auth-glass-bg) dark:hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"

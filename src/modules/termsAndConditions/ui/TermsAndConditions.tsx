@@ -2,18 +2,48 @@ import "./termsAndConditions.style.css";
 import { useCallback, useState, Fragment } from "react";
 import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import LanguageModal from "@/components/Modal/LanguageModal/LanguageModal";
-import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import { LANGUAGE } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
+import { Globe } from "lucide-react";
+import SelectionModal from "@/components/Modal/SelectionModal/SelectionModal";
 
 const TermsAndConditions = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
-  const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG)
-    ? (localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) as LANGUAGE)
-    : LANGUAGE.EN;
+  const lang = i18n.language;
 
   const [openLangModal, setOpenLangModal] = useState<boolean>(false);
+
+  const languageList = [
+    {
+      name: "English",
+      value: LANGUAGE.EN,
+      icon: Globe,
+      key: "EN",
+      onClick: () => i18n.changeLanguage(LANGUAGE.EN),
+    },
+    {
+      name: "Azərbaycan",
+      value: LANGUAGE.AZ,
+      icon: Globe,
+      key: "AZ",
+      onClick: () => i18n.changeLanguage(LANGUAGE.AZ),
+    },
+    {
+      name: "Русский",
+      value: LANGUAGE.RU,
+      icon: Globe,
+      key: "RU",
+      onClick: () => i18n.changeLanguage(LANGUAGE.RU),
+    },
+    {
+      name: "Türkçe",
+      value: LANGUAGE.TR,
+      icon: Globe,
+      key: "TR",
+      onClick: () => i18n.changeLanguage(LANGUAGE.TR),
+    },
+  ];
 
   const renderLangIcon = useCallback(() => {
     switch (lang) {
@@ -107,7 +137,7 @@ const TermsAndConditions = () => {
               className="contact-email"
               onClick={() => {
                 window.navigator.clipboard.writeText(
-                  "connectfy.team@gmail.com"
+                  "connectfy.team@gmail.com",
                 );
 
                 snack.success(t("common.email_copied"));
@@ -123,9 +153,12 @@ const TermsAndConditions = () => {
         </footer>
       </main>
 
-      <LanguageModal
+      <SelectionModal
         open={openLangModal}
         onClose={() => setOpenLangModal(false)}
+        title={t("common.change_lang")}
+        selections={languageList}
+        activeKey={(lang as string).toUpperCase()}
       />
     </Fragment>
   );

@@ -1,37 +1,48 @@
 import React, { FC, ReactNode, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "./index.style.css";
 
 interface Props {
   open: boolean;
-  onClose: Function;
+  onClose: () => void; // Function yerinə daha dəqiq tip
   children: ReactNode;
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const Modal: FC<Props> = ({ open, onClose, children, onMouseDown }) => {
-  if (!open) return null;
-
+  // ESC düyməsi ilə bağlama məntiqi
   useEffect(() => {
+    if (!open) return;
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
 
-  // klik overlay-də olarsa bağla, içəriyə klikdə bağlama
+    document.addEventListener("keydown", onKey);
+    // Modal açıq olduqda body-də scroll-u bağlamaq istəsəniz:
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "unset";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
+    // Yalnız overlay-ə kliklədikdə bağla
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
     if (onMouseDown) onMouseDown(e);
   };
 
   return ReactDOM.createPortal(
     <section
-      id="modal-overlay"
       role="dialog"
       aria-modal="true"
       onMouseDown={handleMouseDown}
+      className="fixed inset-0 z-1000 flex h-full w-full items-center justify-center bg-black/60 backdrop-blur-xs transition-all"
     >
       {children}
     </section>,

@@ -207,7 +207,7 @@ const AuthenticateModal: FC<Props> = ({
         )}
 
         {isPasswordProvider ? (
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+          <div className="flex gap-3 justify-center mt-6">
             <Button
               className="flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border)"
               onClick={onClose}
@@ -227,7 +227,7 @@ const AuthenticateModal: FC<Props> = ({
             />
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full mt-6">
+          <div className="flex items-center justify-center gap-3 w-full mt-6">
             <Button
               className="w-full sm:flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border)"
               onClick={onClose}
