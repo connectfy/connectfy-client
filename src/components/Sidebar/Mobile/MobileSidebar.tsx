@@ -60,7 +60,11 @@ const MobileSidebar = () => {
     const matched = menuItems.find(
       (m) => currentPath === m.path || currentPath.startsWith(m.path),
     );
-    if (matched) setActiveItem(matched.key);
+    if (matched) {
+      setActiveItem(matched.key);
+    } else if (currentPath.startsWith(ROUTER.SETTINGS.MAIN)) {
+      setActiveItem("profile");
+    }
   }, [location.pathname, menuItems]);
 
   return (
