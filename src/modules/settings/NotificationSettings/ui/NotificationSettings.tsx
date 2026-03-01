@@ -97,19 +97,18 @@ const NotificationSettings = () => {
   return (
     <Fragment>
       <section className="notification-settings">
+        <UniqueHeader
+          headerTitle={t("common.notification_header")}
+          headerSubtitle={t("common.notification_subheader")}
+          onClickBack={onClickBack}
+          onHeaderButtonClick={formik.handleSubmit}
+          showHeaderButton
+          isHeaderButtonDisabled={
+            !formik.dirty || LOADING_UPDATE || LOADING_GET
+          }
+          isLoading={LOADING_UPDATE}
+        />
         <div className="notification-settings-container">
-          <UniqueHeader
-            headerTitle={t("common.notification_header")}
-            headerSubtitle={t("common.notification_subheader")}
-            onClickBack={onClickBack}
-            onHeaderButtonClick={formik.handleSubmit}
-            showHeaderButton
-            isHeaderButtonDisabled={
-              !formik.dirty || LOADING_UPDATE || LOADING_GET
-            }
-            isLoading={LOADING_UPDATE}
-          />
-
           {LOADING_GET ? (
             <SettingsSkeleton count={8} />
           ) : (

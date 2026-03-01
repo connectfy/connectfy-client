@@ -322,14 +322,13 @@ const AccountSettings: FC = () => {
   return (
     <Fragment>
       <section className="account-settings">
+        <UniqueHeader
+          headerTitle={t("common.account_settings")}
+          headerSubtitle={t("common.manage_account_info")}
+          onClickBack={onClickBack}
+          isHeaderButtonDisabled={false}
+        />
         <div className="account-settings-container">
-          <UniqueHeader
-            headerTitle={t("common.account_settings")}
-            headerSubtitle={t("common.manage_account_info")}
-            onClickBack={onClickBack}
-            isHeaderButtonDisabled={false}
-          />
-
           {LOADING_USER || LOADING_ACCOUNT || LOADING_GENERAL_SETTINGS ? (
             <SettingsSkeleton count={6} />
           ) : (

@@ -150,17 +150,16 @@ const GeneralSettings = () => {
   return (
     <Fragment>
       <section className="general-settings">
+        <UniqueHeader
+          headerTitle={t("common.general_settings")}
+          headerSubtitle={t("common.configure_app_settings")}
+          onClickBack={onClickBack}
+          onHeaderButtonClick={formik.handleSubmit}
+          showHeaderButton
+          isHeaderButtonDisabled={!formik.dirty || LOADING_UPDATE}
+          isLoading={LOADING_UPDATE}
+        />
         <div className="general-settings-container">
-          <UniqueHeader
-            headerTitle={t("common.general_settings")}
-            headerSubtitle={t("common.configure_app_settings")}
-            onClickBack={onClickBack}
-            onHeaderButtonClick={formik.handleSubmit}
-            showHeaderButton
-            isHeaderButtonDisabled={!formik.dirty || LOADING_UPDATE}
-            isLoading={LOADING_UPDATE}
-          />
-
           {LOADING_GET ? (
             <SettingsSkeleton count={5} />
           ) : (

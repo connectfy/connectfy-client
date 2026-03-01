@@ -1,41 +1,26 @@
-#settings-layout {
-  width: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
-
 .settings-layout.desktop {
   display: flex;
-  gap: 24px;
-  align-items: flex-start;
+  height: 100vh;
   padding: 16px;
+  gap: 24px;
 }
 
 .settings-layout__sidebar {
   flex: 0 0 30%;
-  max-width: 30%;
-  box-sizing: border-box;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .settings-layout__content {
-  flex: 1 1 auto;
   width: 100%;
-  height: 100vh; /* content-ə tam görünən hündürlük ver */
-  overflow: hidden; /* əsas konteynerdə scroll yox — iç bloklara verəcəyik */
-  box-sizing: border-box;
-}
-
-.settings-layout.mobile {
-  width: 100%;
-  min-height: calc(100vh - 84px) !important;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .settings-layout.mobile.sidebar-only {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   padding: 12px;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .settings-layout.mobile.content-only {
@@ -43,68 +28,9 @@
 }
 
 .settings-layout__sidebar-mobile {
-  width: 98%;
+  width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
-}
-
-@media (min-width: 1024px) and (max-width: 1000px) {
-  .settings-layout.desktop {
-    padding: 16px 5px;
-  }
-
-  .settings-layout__sidebar {
-    flex: 0 0 40%;
-    max-width: 40%;
-  }
-  .settings-layout__content {
-    flex: 1 1 60%;
-    max-width: 60%;
-    padding: 0;
-  }
-}
-
-@media (max-width: 1024px) {
-  .settings-layout.desktop {
-    display: none;
-  }
-
-  .settings-layout.mobile {
-    display: block;
-  }
-
-  .settings-layout__content {
-    max-width: 100%;
-    padding: 0;
-    height: calc(100vh - 85px);
-  }
-}
-
-@media (max-width: 480px) {
-  .settings-layout.mobile.sidebar-only,
-  .settings-layout.mobile.content-only {
-    padding: 8px;
-  }
-
-  .settings-layout__sidebar-mobile {
-    max-width: 100%;
-    padding: 8px;
-  }
-}
-
-@media (max-width: 389px) {
-  .settings-layout.mobile.sidebar-only,
-  .settings-layout.mobile.content-only {
-    padding: 0;
-    padding-top: 8px;
-    margin: 0;
-  }
-
-  .settings-layout__sidebar-mobile {
-    max-width: 100%;
-    padding: 8px;
-    /* padding-right: 18px; */
-    margin: 0;
-  }
+  padding-bottom: 80px;
 }

@@ -28,9 +28,9 @@ const UniqueHeader: FC<Props> = ({
     <div
       ref={headerRef}
       className="
-        sticky top-0 z-10 bg-(--bg-color) mb-3 pb-4
+        sticky top-0 z-10 bg-(--bg-color) mb-2
         transition-shadow duration-300 ease-in-out
-        animate-fade-in pt-2 md:pt-0
+        animate-fade-in md:pt-0
       "
     >
       {/* Header Top Row */}

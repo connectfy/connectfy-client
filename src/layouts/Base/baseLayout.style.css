@@ -1,112 +1,29 @@
 #layout {
   display: flex;
-  min-height: 100vh;
-  height: 100vh; /* EHTİYAT: burada min-height -> sabit height, overall scroll-u önləmək üçün */
+  /* min-height: 100vh; */
+  height: 100vh;
   position: relative;
-  overflow: hidden; /* səhifə səviyyəsində scroll olmaz */
+  overflow: hidden;
 }
 
 .desktop-layout {
   flex-direction: row;
 }
 
-.desktop-layout .layout-content-box {
-  flex: 1;
-  width: 100%;
-  min-height: 100vh;
-  padding: 0 10px;
-}
-
 .mobile-layout {
   flex-direction: column;
 }
 
-.mobile-layout .layout-content-box {
-  flex: 1;
-  /* width: 100%; */
-  min-height: calc(100vh - 80px);
-  /* padding: 0 10px; */
-  padding-bottom: 80px;
-}
-
-.layout-sidebar-box {
-  flex-shrink: 0;
-}
-
-.desktop-layout .layout-content-box,
-.mobile-layout .layout-content-box {
+.desktop-layout .layout-content-box {
   flex: 1 1 auto;
   width: 100%;
-  height: 100vh; /* content-ə tam görünən hündürlük ver */
-  overflow: hidden; /* əsas konteynerdə scroll yox — iç bloklara verəcəyik */
+  height: 100vh;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
 @media (min-width: 1024px) {
-  .mobile-layout {
-    flex-direction: row;
-  }
-
   .layout-content-box {
     padding-bottom: 0 !important;
-  }
-}
-
-@media (min-width: 1024px) {
-  .layout-sidebar-box {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 85px;
-    z-index: 1000;
-    flex-shrink: 0;
-  }
-
-  .desktop-layout .layout-content-box {
-    margin-left: 85px;
-    min-height: 100vh;
-    padding-bottom: 0;
-  }
-
-  .mobile-layout .layout-content-box {
-    height: calc(100vh - 80px); /* eğer üst/bottom fixed bar varsa */
-    overflow: hidden;
-  }
-
-  #layout {
-    align-items: stretch;
-  }
-}
-
-@media (max-width: 1024px) {
-  #layout {
-    flex-direction: column;
-  }
-
-  .layout-sidebar-box {
-    position: static;
-    display: none;
-  }
-  .layout-content-box {
-    margin-left: 0;
-    padding-bottom: 80px;
-  }
-
-  /* .desktop-layout .layout-content-box {
-    padding: 0;
-  } */
-}
-
-@media (max-width: 375px) {
-  .layout-content-box {
-    padding: 0 8px;
-    padding-bottom: 75px;
-  }
-}
-
-@media (max-height: 500px) and (orientation: landscape) {
-  .mobile-layout .layout-content-box {
-    padding-bottom: 70px;
   }
 }

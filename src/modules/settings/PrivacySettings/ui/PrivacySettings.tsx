@@ -114,17 +114,16 @@ const PrivacySettings = () => {
   return (
     <Fragment>
       <section className="privacy-settings">
+        <UniqueHeader
+          headerTitle={t("common.privacy_header")}
+          headerSubtitle={t("common.privacy_description")}
+          onClickBack={onClickBack}
+          onHeaderButtonClick={formik.handleSubmit}
+          showHeaderButton
+          isHeaderButtonDisabled={!formik.dirty || LOADING_UPDATE}
+          isLoading={LOADING_UPDATE}
+        />
         <div className="privacy-settings-container">
-          <UniqueHeader
-            headerTitle={t("common.privacy_header")}
-            headerSubtitle={t("common.privacy_description")}
-            onClickBack={onClickBack}
-            onHeaderButtonClick={formik.handleSubmit}
-            showHeaderButton
-            isHeaderButtonDisabled={!formik.dirty || LOADING_UPDATE}
-            isLoading={LOADING_UPDATE}
-          />
-
           {LOADING_GET ? (
             <SettingsSkeleton count={4} />
           ) : (
