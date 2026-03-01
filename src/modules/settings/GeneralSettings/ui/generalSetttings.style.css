@@ -161,35 +161,7 @@
 }
 
 .general-reset-button:hover {
-  transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
-}
-
-.general-reset-button:active {
-  transform: translateY(0);
-}
-
-.reset-settings-modal-content {
-  color: var(--text-color);
-  font-size: 14px;
-}
-
-.reset-settings-modal-subtitle {
-  margin-bottom: 16px;
-  font-weight: 500;
-  color: var(--muted-color);
-}
-
-.reset-settings-modal-list {
-  padding-left: 20px;
-  margin: 0;
-}
-
-.reset-settings-modal-list li {
-  list-style-type: disc;
-  color: var(--muted-color);
-  margin-bottom: 8px;
-  font-size: 14px;
 }
 
 /* Responsive adjustments */

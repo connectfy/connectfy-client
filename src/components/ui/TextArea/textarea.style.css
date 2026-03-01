@@ -1,0 +1,179 @@
+/* ===================================
+   TEXTAREA WRAPPER
+   =================================== */
+.textarea-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===================================
+   TEXTAREA CONTAINER
+   =================================== */
+.textarea-container {
+  position: relative;
+  width: 100%;
+}
+
+/* ===================================
+   STATIC LABEL
+   =================================== */
+.textarea-static-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* ===================================
+   FLOATING LABEL
+   =================================== */
+.textarea-floating-label {
+  position: absolute;
+  top: 0.875rem;
+  left: 1rem;
+  color: var(--muted-color);
+  background-color: transparent;
+  pointer-events: none;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.textarea-floating-label.active {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  padding: 0 0.25rem;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  left: 1rem;
+}
+
+.textarea-container.error .textarea-floating-label.active {
+  color: var(--error-color);
+}
+
+/* ===================================
+   TEXTAREA FIELD
+   =================================== */
+.textarea-field {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-color);
+  background-color: var(--input-bg, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   TEXTAREA STATES
+   =================================== */
+.textarea-field:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.textarea-container.error .textarea-field {
+  border-color: var(--error-color);
+}
+
+.textarea-container.error .textarea-field:focus {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 1px var(--error-color);
+}
+
+.textarea-field:disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* ===================================
+   FLOATING PLACEHOLDER
+   =================================== */
+.textarea-container.floating .textarea-field::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.textarea-container.floating .textarea-field:focus::placeholder {
+  opacity: 0.5;
+}
+
+/* ===================================
+   CHAR COUNT
+   =================================== */
+.textarea-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.textarea-char-count {
+  font-size: 0.75rem;
+  color: var(--muted-color);
+  transition: color 0.2s ease;
+}
+
+.textarea-char-count.limit-reached {
+  color: var(--error-color);
+}
+
+/* ===================================
+   ERROR
+   =================================== */
+.textarea-error-wrapper {
+  min-height: 1.5rem;
+  overflow: hidden;
+}
+
+.textarea-error-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  transition:
+    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.textarea-error-container.visible {
+  max-height: 100px;
+  opacity: 1;
+}
+
+.textarea-error-container svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.textarea-error-text {
+  font-size: 0.75rem;
+  color: var(--error-color);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ===================================
+   AUTOFILL
+   =================================== */
+.textarea-field:-webkit-autofill,
+.textarea-field:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  -webkit-text-fill-color: var(--text-color);
+}

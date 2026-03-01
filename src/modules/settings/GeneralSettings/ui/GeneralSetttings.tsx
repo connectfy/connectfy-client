@@ -5,7 +5,6 @@ import {
   Home,
   Clock,
   RefreshCw,
-  TriangleAlert,
   MonitorSmartphone,
 } from "lucide-react";
 import "./generalSetttings.style.css";
@@ -369,26 +368,30 @@ const GeneralSettings = () => {
         onClose={resetSettingsModal.onClose}
         onCancel={resetSettingsModal.onClose}
         onConfirm={handleResetSettings}
-        header={{
-          title: t("common.reset_settings_title"),
-        }}
+        header={{ title: t("common.reset_settings_title") }}
         cancelBtn={{ title: t("common.cancel") }}
         confirmBtn={{ title: t("common.reset"), color: "var(--error-color)" }}
-        icon={{
-          content: TriangleAlert,
-          color: "var(--error-color)",
-        }}
         isLoading={LOADING_RESET_SETTINGS}
       >
-        <div className="reset-settings-modal-content">
-          <p className="reset-settings-modal-subtitle">
+        <div className="mt-4 space-y-4">
+          <p className="text-center text-[15px] text-(--muted-color)">
             {t("common.reset_settings_subtitle")}
           </p>
-          <ul className="reset-settings-modal-list">
-            <li>{t("common.general_settings_reset")}</li>
-            <li>{t("common.privacy_settings")}</li>
-            <li>{t("common.notification_settings")}</li>
-          </ul>
+
+          <div className="grid grid-cols-1 gap-2">
+            {[
+              t("common.general_settings_reset"),
+              t("common.privacy_settings"),
+              t("common.notification_settings"),
+            ].map((item, index) => (
+              <span
+                key={item}
+                className="text-sm mb-1 font-medium text-(--text-color) italic"
+              >
+                {index + 1}. {item}
+              </span>
+            ))}
+          </div>
         </div>
       </ActionConfirmModal>
     </Fragment>

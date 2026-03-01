@@ -35,7 +35,7 @@ const Modal: FC<Props> = ({ open, onClose, children, onMouseDown }) => {
     >
       {children}
     </section>,
-    document.body
+    document.body,
   );
 };
 

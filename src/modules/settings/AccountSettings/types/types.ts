@@ -1,4 +1,4 @@
-import { DELETE_REASON, PHONE_NUMBER_ACTION } from "@/common/enums/enums";
+import { DELETE_REASON_CODE, PHONE_NUMBER_ACTION } from "@/common/enums/enums";
 import { IPhoneNumber } from "@/modules/auth/types/types";
 import { IUser } from "@/modules/profile/types/types";
 
@@ -59,8 +59,8 @@ export interface ILogoutResponse {
 
 export interface IDeleteAccount {
   token: string | null;
-  reason: DELETE_REASON;
-  otherReason: string | null;
+  reasonCode: DELETE_REASON_CODE | null;
+  reasonDescription: string | null;
 }
 
 export interface IDeleteAccountResponse {

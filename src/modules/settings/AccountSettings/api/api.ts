@@ -96,14 +96,20 @@ export const accountSettingsApi = createApi({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
 
-        dispatch(
-          profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
-            if (draft) {
-              draft.email = data.email;
-              draft.updatedAt = data.updatedAt;
-            }
-          }),
-        );
+        if (data) {
+          dispatch(
+            profileApi.util.updateQueryData(
+              "getMe",
+              undefined,
+              (draft: any) => {
+                if (draft) {
+                  draft.email = data.email;
+                  draft.updatedAt = data.updatedAt;
+                }
+              },
+            ),
+          );
+        }
       },
 
       invalidatesTags: ["AccountSettings"],

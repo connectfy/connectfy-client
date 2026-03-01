@@ -7,6 +7,8 @@ import {
   IResetSettings,
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
+import { notificationSettingsApi } from "../../NotificationSettings/api/api";
+import { privacySettingsApi } from "../../PrivacySettings/api/api";
 
 export const generalSettingsApi = createApi({
   reducerPath: RESOURCE.GENERAL_SETTINGS,
@@ -39,6 +41,32 @@ export const generalSettingsApi = createApi({
         url: API_ENDPOINTS.ACCOUNT.SETTINGS.GENERAL_SETTINGS.RESET,
         method: "PATCH",
       }),
+
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+
+        if (data) {
+          dispatch(
+            notificationSettingsApi.util.updateQueryData(
+              "getNotificationSettings",
+              undefined,
+              (draft) => {
+                Object.assign(draft, data.notificationSettings);
+              },
+            ),
+          );
+
+          dispatch(
+            privacySettingsApi.util.updateQueryData(
+              "getPrivacySettings",
+              undefined,
+              (draft) => {
+                Object.assign(draft, data.privacySettings);
+              },
+            ),
+          );
+        }
+      },
       invalidatesTags: ["GeneralSettings"],
     }),
   }),

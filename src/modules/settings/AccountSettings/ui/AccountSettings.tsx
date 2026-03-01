@@ -509,10 +509,6 @@ const AccountSettings: FC = () => {
             title: t("common.logout"),
             color: "var(--error-color)",
           }}
-          icon={{
-            content: TriangleAlert,
-            color: "var(--error-color)",
-          }}
           isLoading={LOADING_LOGOUT}
         >
           {t("common.logout_desc")}
