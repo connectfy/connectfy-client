@@ -65,20 +65,26 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
 
   const reasons = [
     { value: null, label: t("common.selectReason") },
-    { value: DELETE_REASON_CODE.NOT_USEFUL, label: t("common.notUseful") },
+    {
+      value: DELETE_REASON_CODE.NOT_USEFUL,
+      label: t(`enum.${DELETE_REASON_CODE.NOT_USEFUL}`),
+    },
     {
       value: DELETE_REASON_CODE.PRIVACY_CONCERNS,
-      label: t("common.privacyConcerns"),
+      label: t(`enum.${DELETE_REASON_CODE.PRIVACY_CONCERNS}`),
     },
     {
       value: DELETE_REASON_CODE.FOUND_ALTERNATIVE,
-      label: t("common.foundAlternative"),
+      label: t(`enum.${DELETE_REASON_CODE.FOUND_ALTERNATIVE}`),
     },
     {
       value: DELETE_REASON_CODE.TECHNICAL_ISSUES,
-      label: t("common.technicalIssues"),
+      label: t(`enum.${DELETE_REASON_CODE.TECHNICAL_ISSUES}`),
     },
-    { value: DELETE_REASON_CODE.OTHER, label: t("common.other") },
+    {
+      value: DELETE_REASON_CODE.OTHER,
+      label: t(`enum.${DELETE_REASON_CODE.OTHER}`),
+    },
   ];
 
   return (

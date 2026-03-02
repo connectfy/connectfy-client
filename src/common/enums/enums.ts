@@ -169,9 +169,13 @@ export enum LOCAL_STORAGE_KEYS {
 
 export enum TIME_DIFFERENCE_TYPE {
   NOW = "just_now",
+  SECOND = "seconds_ago",
   MINUTE = "minutes_ago",
   HOUR = "hours_ago",
   DAY = "days_ago",
+  WEEK = "weeks_ago",
+  MONTH = "months_ago",
+  YEAR = "years_ago",
 }
 
 export enum CHECK_UNIQUE_FIELD {

@@ -181,7 +181,7 @@ const GeneralSettings = () => {
                       <div className="general-theme-option-icon">
                         <Sun size={24} />
                       </div>
-                      <span>{t("common.light")}</span>
+                      <span>{t(`enum.${THEME.LIGHT}`)}</span>
                     </div>
                     <div
                       className={`general-theme-option ${isActiveTheme(THEME.DARK) ? "active" : ""}`}
@@ -190,7 +190,7 @@ const GeneralSettings = () => {
                       <div className="general-theme-option-icon">
                         <Moon size={24} />
                       </div>
-                      <span>{t("common.dark")}</span>
+                      <span>{t(`enum.${THEME.DARK}`)}</span>
                     </div>
                     <div
                       className={`general-theme-option ${isActiveTheme(THEME.DEVICE) ? "active" : ""}`}
@@ -199,7 +199,7 @@ const GeneralSettings = () => {
                       <div className="general-theme-option-icon">
                         <MonitorSmartphone size={24} />
                       </div>
-                      <span>{t("common.device")}</span>
+                      <span>{t(`enum.${THEME.DEVICE}`)}</span>
                     </div>
                   </div>
                 </SettingCard>

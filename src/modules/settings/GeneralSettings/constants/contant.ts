@@ -69,46 +69,46 @@ export const homepageOptions = (
     selections: [
       {
         key: STARTUP_PAGE.MESSENGER,
-        name: t("common.messenger"),
-        title: t("common.messenger"),
+        name: t(`enum.${STARTUP_PAGE.MESSENGER}`),
+        title: t(`enum.${STARTUP_PAGE.MESSENGER}`),
         icon: MessageCircle,
         onClick: () =>
           formik.setFieldValue("startupPage", STARTUP_PAGE.MESSENGER),
       },
       {
         key: STARTUP_PAGE.GROUPS,
-        name: t("common.groups"),
-        title: t("common.groups"),
+        name: t(`enum.${STARTUP_PAGE.GROUPS}`),
+        title: t(`enum.${STARTUP_PAGE.GROUPS}`),
         icon: Users,
         onClick: () => formik.setFieldValue("startupPage", STARTUP_PAGE.GROUPS),
       },
       {
         key: STARTUP_PAGE.CHANNELS,
-        name: t("common.channels"),
-        title: t("common.channels"),
+        name: t(`enum.${STARTUP_PAGE.CHANNELS}`),
+        title: t(`enum.${STARTUP_PAGE.CHANNELS}`),
         icon: Radio,
         onClick: () =>
           formik.setFieldValue("startupPage", STARTUP_PAGE.CHANNELS),
       },
       {
         key: STARTUP_PAGE.USERS,
-        name: t("common.users"),
-        title: t("common.users"),
+        name: t(`enum.${STARTUP_PAGE.USERS}`),
+        title: t(`enum.${STARTUP_PAGE.USERS}`),
         icon: UserCircle,
         onClick: () => formik.setFieldValue("startupPage", STARTUP_PAGE.USERS),
       },
       {
         key: STARTUP_PAGE.NOTIFICATION,
-        name: t("common.notifications"),
-        title: t("common.notifications"),
+        name: t(`enum.${STARTUP_PAGE.NOTIFICATION}`),
+        title: t(`enum.${STARTUP_PAGE.NOTIFICATION}`),
         icon: Bell,
         onClick: () =>
           formik.setFieldValue("startupPage", STARTUP_PAGE.NOTIFICATION),
       },
       {
         key: STARTUP_PAGE.PROFILE,
-        name: t("common.my_profile"),
-        title: t("common.my_profile"),
+        name: t(`enum.${STARTUP_PAGE.PROFILE}`),
+        title: t(`enum.${STARTUP_PAGE.PROFILE}`),
         icon: User,
         onClick: () =>
           formik.setFieldValue("startupPage", STARTUP_PAGE.PROFILE),
