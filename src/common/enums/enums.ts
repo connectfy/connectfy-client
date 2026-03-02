@@ -83,9 +83,9 @@ export enum PRIVACY_SETTINGS_CHOICE {
 }
 
 export enum THEME {
-  DARK = "dark",
-  LIGHT = "light",
-  DEVICE = "device",
+  DARK = "DARK",
+  LIGHT = "LIGHT",
+  DEVICE = "DEVICE",
 }
 
 export enum NOTIFICATION_SOUND_MODE {
