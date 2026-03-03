@@ -60,14 +60,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (data?.theme) {
-      setTheme(data.theme);
+      setTheme(data.theme as THEME);
     }
   }, [data?.theme]);
 
   useEffect(() => {
     const actualTheme = theme === THEME.DEVICE ? getDeviceTheme() : theme;
 
-    document.documentElement.setAttribute("data-theme", actualTheme);
+    document.documentElement.setAttribute(
+      "data-theme",
+      actualTheme.toLocaleLowerCase(),
+    );
 
     if (data?.theme) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
