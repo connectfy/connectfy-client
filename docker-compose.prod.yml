@@ -1,18 +1,19 @@
-version: '3.8'
-
 services:
   client:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    image: connectfy/connectfy-client-prod
-    container_name: connectfy-client-prod
+    image: connectfy/connectfy-client-prod:1.0.0
     ports:
       - "4800:4800"
     networks:
-      - app-network
+      - connectfy-client-network
     restart: always
+    env_file:
+      - .env.production
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
 networks:
-  app-network:
+  connectfy-client-network:
     driver: bridge

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   client:
     container_name: connectfy-client-dev
@@ -12,12 +10,12 @@ services:
     volumes:
       - .:/usr/src/app
     networks:
-      - app-network
-    environment:
-      - HOST=0.0.0.0
+      - connectfy-client-network
+    env_file:
+      - .env.development
     command: npm run dev
     restart: unless-stopped
 
 networks:
-  app-network:
+  connectfy-client-network:
     driver: bridge
