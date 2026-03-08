@@ -18,7 +18,7 @@ function App() {
   const content = useRoutes(routes);
   const { toggleTheme } = useTheme();
   const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
-  const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
+  const deviceId = checkDeviceId();
   const { access_token } = useAuthStore();
 
   const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
