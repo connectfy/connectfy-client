@@ -41,6 +41,7 @@
 
   --skeleton-base: #e2e8f0;
   --skeleton-highlight: #f8fafc;
+  --skeleton-card-bg: #e5e7eb;
 }
 
 [data-theme="dark"] {
@@ -83,4 +84,5 @@
 
   --skeleton-base: rgba(255, 255, 255, 0.05);
   --skeleton-highlight: rgba(255, 255, 255, 0.1);
+  --skeleton-card-bg: #1a1a1a;
 }

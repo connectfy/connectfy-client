@@ -10,7 +10,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  background-color: var(--skeleton-card-bg, #1a1a1a);
+  background-color: var(--skeleton-card-bg);
   border-radius: 16px;
   width: 100%;
 }
