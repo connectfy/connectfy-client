@@ -25,7 +25,7 @@
     "cd": "^0.3.3",
     "connectfy-i18n": "^0.0.42",
     "connectfy-messenger": "file:../connectfy-messenger",
-    "connectfy-shared": "^0.0.81",
+    "connectfy-shared": "^0.0.87",
     "dayjs": "^1.11.18",
     "face-api.js": "^0.22.2",
     "flag-icons": "^7.5.0",
