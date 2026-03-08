@@ -10,12 +10,12 @@ services:
     volumes:
       - .:/usr/src/app
     networks:
-      - connectfy-client-network
+      - connectfy-core-network
     env_file:
       - .env.development
     command: npm run dev
     restart: unless-stopped
 
 networks:
-  connectfy-client-network:
-    driver: bridge
+  connectfy-core-network:
+    external: true
