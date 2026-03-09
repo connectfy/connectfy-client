@@ -1,4 +1,8 @@
-import { DELETE_REASON_CODE, PHONE_NUMBER_ACTION } from "@/common/enums/enums";
+import {
+  DELETE_REASON_CODE,
+  PHONE_NUMBER_ACTION,
+  TWO_FACTOR_ACTION,
+} from "@/common/enums/enums";
 import { IPhoneNumber } from "@/modules/auth/types/types";
 import { IUser } from "@/modules/profile/types/types";
 
@@ -9,6 +13,7 @@ export type ChangeModalKey =
   | "phone_number"
   | "delete_account"
   | "deactivate_account"
+  | "two_factor"
   | null;
 
 export interface IUpdateUsername {
@@ -74,3 +79,10 @@ export interface IDeactivateAccount {
 export interface IDeactivateAccountResponse {
   statusCode: number;
 }
+
+export interface IUpdateTwoFactor {
+  token: string | null;
+  action: TWO_FACTOR_ACTION;
+}
+
+export interface IUpdateTwoFactorResponse extends IUser {}

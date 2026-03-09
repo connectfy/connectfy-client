@@ -19,5 +19,26 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("APP_THEME");
+          var supportDarkMode =
+            window.matchMedia("(prefers-color-scheme: dark)").matches === true;
+
+          if (!theme) theme = "light";
+
+          var actualTheme = theme;
+          if (theme === "device") {
+            actualTheme = supportDarkMode ? "dark" : "light";
+          }
+
+          document.documentElement.setAttribute(
+            "data-theme",
+            actualTheme.toLowerCase(),
+          );
+        } catch (e) {}
+      })();
+    </script>
   </body>
 </html>

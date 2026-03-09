@@ -25,6 +25,7 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: "/user/change-password",
     CHANGE_PHONE_NUMBER: "/user/change-phone-number",
     CHECK_UNIQUE: "/user/check-unique",
+    UPDATE_TWO_FACTOR: "/user/two-factor",
   },
   ACCOUNT: {
     GET_ACCOUNT: "/account/profile/get",

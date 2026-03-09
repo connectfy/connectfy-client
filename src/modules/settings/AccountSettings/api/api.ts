@@ -13,6 +13,8 @@ import {
   IUpdatePasswordResponse,
   IUpdatePhoneNumber,
   IUpdatePhoneNumberResponse,
+  IUpdateTwoFactor,
+  IUpdateTwoFactorResponse,
   IUpdateUsername,
   IUpdateUsernameResponse,
   IVerifyChangeEmail,
@@ -187,6 +189,36 @@ export const accountSettingsApi = createApi({
       }),
       invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
+
+    updateTwoFactor: builder.mutation<
+      IUpdateTwoFactorResponse,
+      IUpdateTwoFactor
+    >({
+      query: (data) => ({
+        url: API_ENDPOINTS.USER.UPDATE_TWO_FACTOR,
+        method: "PATCH",
+        body: data,
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+
+        if (data) {
+          dispatch(
+            profileApi.util.updateQueryData(
+              "getMe",
+              undefined,
+              (draft: any) => {
+                if (draft) {
+                  draft.isTwoFactorEnabled = data.isTwoFactorEnabled;
+                  draft.updatedAt = data.updatedAt;
+                }
+              },
+            ),
+          );
+        }
+      },
+      invalidatesTags: ["AccountSettings"],
+    }),
   }),
 });
 
@@ -199,4 +231,5 @@ export const {
   useLogoutMutation,
   useDeleteAccountMutation,
   useDeactivateAccountMutation,
+  useUpdateTwoFactorMutation,
 } = accountSettingsApi;

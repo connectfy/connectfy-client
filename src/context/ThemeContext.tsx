@@ -15,6 +15,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { access_token } = useAuthStore();
+
   const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
     undefined,
     {
@@ -26,60 +27,48 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     skip: !access_token || !isMeSuccess || isMeError,
   });
 
+  // 1. İlkin dəyəri hər zaman LocalStorage-dan götürürük
   const [theme, setTheme] = useState<THEME>(() => {
     const localTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME);
-
-    if (!localTheme) return THEME.LIGHT;
-
-    if (!["light", "dark", "device"].includes(localTheme)) return THEME.LIGHT;
-
-    return localTheme as THEME;
+    return (localTheme as THEME) || THEME.LIGHT;
   });
 
-  const getDeviceTheme = (): THEME => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return THEME.DARK;
-    }
-    return THEME.LIGHT;
-  };
-
-  useEffect(() => {
-    if (theme !== THEME.DEVICE) return;
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      const deviceTheme = e.matches ? THEME.DARK : THEME.LIGHT;
-      document.documentElement.setAttribute("data-theme", deviceTheme);
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme]);
-
+  // 2. API-dən data gələndə state-i və localStorage-ı yeniləyirik
   useEffect(() => {
     if (data?.theme) {
       setTheme(data.theme as THEME);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, data.theme);
     }
   }, [data?.theme]);
 
+  // 3. Mövzunu tətbiq edirik (Body-yə attribute veririk)
   useEffect(() => {
-    const actualTheme = theme === THEME.DEVICE ? getDeviceTheme() : theme;
+    const applyTheme = (targetTheme: THEME) => {
+      const actual =
+        targetTheme === THEME.DEVICE
+          ? window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? THEME.DARK
+            : THEME.LIGHT
+          : targetTheme;
 
-    document.documentElement.setAttribute(
-      "data-theme",
-      actualTheme.toLocaleLowerCase(),
-    );
+      document.documentElement.setAttribute("data-theme", actual.toLowerCase());
+    };
 
-    if (data?.theme) {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
-    } else {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
+    applyTheme(theme);
+
+    // Əgər mövzu "device" seçilibsə, sistem dəyişikliklərini izləyirik
+    if (theme === THEME.DEVICE) {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const listener = () => applyTheme(THEME.DEVICE);
+      mediaQuery.addEventListener("change", listener);
+      return () => mediaQuery.removeEventListener("change", listener);
     }
-  }, [theme, data?.theme]);
+  }, [theme]);
 
-  const toggleTheme = (newTheme: THEME): void => setTheme(newTheme);
+  const toggleTheme = (newTheme: THEME) => {
+    setTheme(newTheme);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, newTheme);
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

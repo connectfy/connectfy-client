@@ -18,6 +18,7 @@ import {
   AlertTriangle,
   LogOutIcon,
   TriangleAlert,
+  ShieldCheck,
 } from "lucide-react";
 import "./accountSettings.style.css";
 import { useTranslation } from "react-i18next";
@@ -28,9 +29,9 @@ import { ROUTER } from "@/common/constants/routet";
 import {
   DATE_FORMAT,
   LOCAL_STORAGE_KEYS,
-  PROVIDER,
   TIME_FORMAT,
   TOKEN_TYPE,
+  TWO_FACTOR_ACTION,
 } from "@/common/enums/enums";
 import AuthenticateModal from "@/components/Modal/AuthenticateModal/AuthenticateModal";
 import UsernameModal from "./components/Modal/UsernameModal/UsernameModal";
@@ -63,6 +64,7 @@ import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { useDispatch } from "react-redux";
 import { COUNTRIES } from "@/common/constants/constants";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import TwoFactorModal from "./components/Modal/TwoFactorModal/TwoFactorModal";
 
 const AccountSettings: FC = () => {
   const navigate = useNavigate();
@@ -84,6 +86,9 @@ const AccountSettings: FC = () => {
   } = useGetMeQuery(undefined, {
     skip: !access_token,
   });
+
+  const { usesOAuth, hasPhoneNumber, isTwoFactorEnabled } = user ?? {};
+
   const { data: account, isLoading: LOADING_ACCOUNT } = useGetAccountQuery(
     undefined,
     {
@@ -133,12 +138,10 @@ const AccountSettings: FC = () => {
       const sensitiveForPasswordOnly = [
         TOKEN_TYPE.CHANGE_PASSWORD,
         TOKEN_TYPE.CHANGE_EMAIL,
+        TOKEN_TYPE.TWO_FACTOR,
       ];
 
-      if (
-        user?.provider !== PROVIDER.PASSWORD &&
-        sensitiveForPasswordOnly.includes(authType)
-      ) {
+      if (usesOAuth && sensitiveForPasswordOnly.includes(authType)) {
         snack.error(t("user_messages.google_login_error"), {
           duration: 3000,
         });
@@ -147,7 +150,7 @@ const AccountSettings: FC = () => {
 
       setAuthModal({ open: true, authType, next });
     },
-    [user?.provider, t],
+    [usesOAuth, t],
   );
 
   const closeAuth = () =>
@@ -268,9 +271,28 @@ const AccountSettings: FC = () => {
               openAuthThen(TOKEN_TYPE.CHANGE_PHONE_NUMBER, "phone_number")
             }
           >
-            {user?.phoneNumber?.fullPhoneNumber
+            {hasPhoneNumber
               ? renderPhoneNumber()
               : t("common.add_phone_number")}
+          </AccountActionButton>
+        ),
+      },
+      {
+        id: "two_factor",
+        header: {
+          icon: ShieldCheck,
+          title: t("common.two_factor_auth"),
+          subtitle: t("common.manage_two_factor_auth"),
+        },
+        renderContent: () => (
+          <AccountActionButton
+            onClick={() => openAuthThen(TOKEN_TYPE.TWO_FACTOR, "two_factor")}
+          >
+            {isTwoFactorEnabled ? (
+              <span className="text-success">{t(`common.enabled`)}</span>
+            ) : (
+              <span className="text-secondary">{t(`common.disabled`)}</span>
+            )}
           </AccountActionButton>
         ),
       },
@@ -455,6 +477,17 @@ const AccountSettings: FC = () => {
       )}
       {openModal === "phone_number" && (
         <PhoneNumberModal open onClose={closeChangeModal} />
+      )}
+      {openModal === "two_factor" && (
+        <TwoFactorModal
+          open
+          onClose={closeChangeModal}
+          action={
+            isTwoFactorEnabled
+              ? TWO_FACTOR_ACTION.DISABLE
+              : TWO_FACTOR_ACTION.ENABLE
+          }
+        />
       )}
 
       {verifiedModalOpen && (

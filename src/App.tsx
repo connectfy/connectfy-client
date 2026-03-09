@@ -5,7 +5,6 @@ import { initFlowbite } from "flowbite";
 import "flag-icons/css/flag-icons.min.css";
 import { useRoutes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "./context/ThemeContext";
 import { useGetMeQuery } from "./modules/profile/api/api";
 import { checkDeviceId } from "./common/utils/checkValues";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
@@ -16,7 +15,6 @@ import { useGetNotificationSettingsQuery } from "./modules/settings/Notification
 function App() {
   const { i18n } = useTranslation();
   const content = useRoutes(routes);
-  const { toggleTheme } = useTheme();
   const lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG);
   const deviceId = checkDeviceId();
   const { access_token } = useAuthStore();
@@ -35,7 +33,6 @@ function App() {
     skip: !access_token || !isMeSuccess || isMeError,
   });
   const userLang = data?.language;
-  const userTheme = data?.theme;
 
   useEffect(() => {
     if (!access_token || !isMeSuccess || isMeError) {
@@ -55,13 +52,6 @@ function App() {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.LANG);
     }
   }, [lang, i18n, userLang, access_token]);
-
-  useEffect(() => {
-    if (userTheme) {
-      toggleTheme(userTheme);
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.APP_THEME);
-    }
-  }, [userTheme]);
 
   useEffect(() => {
     checkDeviceId();

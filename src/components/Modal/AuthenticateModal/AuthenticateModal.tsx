@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { PROVIDER, TOKEN_TYPE } from "@/common/enums/enums";
+import { TOKEN_TYPE } from "@/common/enums/enums";
 import Modal from "..";
 import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
@@ -40,7 +40,7 @@ const AuthenticateModal: FC<Props> = ({
     skip: !access_token,
   });
 
-  const isPasswordProvider = user?.provider === PROVIDER.PASSWORD;
+  const { usesOAuth, usesPasswordAuth } = user ?? {};
 
   const initialState: IAuthenticateUser = {
     password: null,
@@ -54,14 +54,11 @@ const AuthenticateModal: FC<Props> = ({
   }: IAuthenticateUser): Record<string, any> => {
     const errors: Record<string, any> = {};
 
-    if (isPasswordProvider && (!password || !checkEmptyString(password))) {
+    if (usesPasswordAuth && (!password || !checkEmptyString(password))) {
       errors.password = t("error_messages.this_field_required");
     }
 
-    if (
-      user?.provider === PROVIDER.GOOGLE &&
-      (!idToken || !checkEmptyString(idToken))
-    )
+    if (usesOAuth && (!idToken || !checkEmptyString(idToken)))
       errors.idToken = t("error_messages.this_field_required");
 
     return errors;
@@ -97,7 +94,7 @@ const AuthenticateModal: FC<Props> = ({
   };
 
   const handleSubmit = () => {
-    if (isPasswordProvider) {
+    if (usesPasswordAuth) {
       formik.submitForm();
     }
   };
@@ -177,12 +174,12 @@ const AuthenticateModal: FC<Props> = ({
         </h2>
 
         <p className="text-[15px] text-(--text-secondary)] mb-6 text-center leading-relaxed">
-          {isPasswordProvider
+          {usesPasswordAuth
             ? t("common.enter_password_to_continue")
             : t("common.verify_identity_to_continue")}
         </p>
 
-        {isPasswordProvider && (
+        {usesPasswordAuth && (
           <Fragment>
             <div className="relative mb-2">
               <PasswordInput
@@ -197,16 +194,10 @@ const AuthenticateModal: FC<Props> = ({
                 isError={!!formik.errors.password}
               />
             </div>
-
-            {formik.errors.password && (
-              <div className="text-(--error-color) text-[13px] font-medium mb-4 text-left px-1">
-                {formik.errors.password as string}
-              </div>
-            )}
           </Fragment>
         )}
 
-        {isPasswordProvider ? (
+        {usesPasswordAuth ? (
           <div className="flex gap-3 justify-center mt-6">
             <Button
               className="flex-1 min-w-[120px] h-11 flex items-center justify-center px-7 py-3 rounded-[10px] text-sm font-semibold transition-all duration-200 bg-(--input-bg) text-(--text-primary) hover:bg-(--input-border)"
@@ -220,7 +211,7 @@ const AuthenticateModal: FC<Props> = ({
               onClick={handleSubmit}
               disabled={
                 LOADING_AUTHENTICATE_USER ||
-                (isPasswordProvider && !formik.values.password)
+                (usesPasswordAuth && !formik.values.password)
               }
               isLoading={LOADING_AUTHENTICATE_USER}
               title={t("common.submit")}

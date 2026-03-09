@@ -31,18 +31,6 @@ export enum RESOURCE {
   ACCOUNT_SETTINGS = "account-settings",
 }
 
-export enum ROLE {
-  ADMIN = "ADMIN",
-  MODERATOR = "MODERATOR",
-  USER = "USER",
-}
-
-export enum PROVIDER {
-  PASSWORD = "PASSWORD",
-  GOOGLE = "GOOGLE",
-  FACEBOOK = "FACEBOOK",
-}
-
 export enum GENDER {
   MALE = "MALE",
   FEMALE = "FEMALE",
@@ -69,6 +57,12 @@ export enum TOKEN_TYPE {
   CHANGE_PASSWORD = "CHANGE_PASSWORD",
   CHANGE_PHONE_NUMBER = "CHANGE_PHONE_NUMBER",
   DEACTIVATE_ACCOUNT = "DEACTIVATE_ACCOUNT",
+  TWO_FACTOR = "TWO_FACTOR",
+}
+
+export enum TWO_FACTOR_ACTION {
+  ENABLE = "ENABLE",
+  DISABLE = "DISABLE",
 }
 
 export enum PHONE_NUMBER_ACTION {
