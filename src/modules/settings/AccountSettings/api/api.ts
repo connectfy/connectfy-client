@@ -6,7 +6,6 @@ import {
   IDeactivateAccountResponse,
   IDeleteAccount,
   IDeleteAccountResponse,
-  ILogout,
   ILogoutResponse,
   IUpdateEmail,
   IUpdateEmailResponse,
@@ -158,11 +157,10 @@ export const accountSettingsApi = createApi({
     }),
 
     // ====================== LOGOUT
-    logout: builder.mutation<ILogoutResponse, ILogout>({
-      query: (data) => ({
+    logout: builder.mutation<ILogoutResponse, void>({
+      query: () => ({
         url: API_ENDPOINTS.AUTH.LOGOUT,
         method: "POST",
-        body: data,
       }),
       invalidatesTags: [{ type: "User", id: "LIST" }],
     }),

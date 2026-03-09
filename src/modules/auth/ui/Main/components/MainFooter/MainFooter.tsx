@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
-import { checkDeviceId } from "@/common/utils/checkValues";
 import { GoogleLogin } from "@react-oauth/google";
 import SignupModal from "../SignupModal/SignupModal";
 import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";
@@ -60,8 +59,7 @@ const MainFooter = () => {
 
       if (authPage === "login") {
         try {
-          const deviceId = checkDeviceId();
-          const res = await googleLogin({ idToken, deviceId }).unwrap();
+          const res = await googleLogin({ idToken }).unwrap();
 
           setToken({
             type: "access_token",

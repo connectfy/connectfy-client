@@ -44,6 +44,10 @@ api.interceptors.request.use(
     const _lang = localStorage.getItem(LOCAL_STORAGE_KEYS.LANG) || LANGUAGE.EN;
     const token = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
     const isRefreshEndpoint = config.url?.includes(API_ENDPOINTS.AUTH.REFRESH);
+    const deviceId = checkDeviceId();
+
+    config.headers = config.headers || {};
+    config.headers["x-device-id"] = deviceId;
 
     if (token && !isRefreshEndpoint) {
       config.headers = config.headers || {};
@@ -130,8 +134,8 @@ api.interceptors.response.use(
 
         const resp = await refreshClient.post(
           refreshUrl,
-          { _lang, deviceId },
-          { withCredentials: true },
+          { _lang },
+          { withCredentials: true, headers: { "x-device-id": deviceId } },
         );
 
         const newAccessToken = (resp.data as any)?.access_token;

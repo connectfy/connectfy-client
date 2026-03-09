@@ -10,7 +10,6 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
-import { checkDeviceId } from "@/common/utils/checkValues";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import Input from "@/components/ui/CustomInput/Input/Input";
 import PhoneNumberForm from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
@@ -49,7 +48,6 @@ const Login = () => {
     validate: (values) => validateLogin(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        values.deviceId = checkDeviceId();
         const res = await login(values).unwrap();
 
         setToken({

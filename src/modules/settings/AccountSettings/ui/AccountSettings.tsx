@@ -63,7 +63,6 @@ import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { useDispatch } from "react-redux";
 import { COUNTRIES } from "@/common/constants/constants";
 import Button from "@/components/ui/CustomButton/Button/Button";
-import { checkDeviceId } from "@/common/utils/checkValues";
 
 const AccountSettings: FC = () => {
   const navigate = useNavigate();
@@ -166,8 +165,7 @@ const AccountSettings: FC = () => {
 
   const handleLogout = async () => {
     try {
-      const deviceId = checkDeviceId();
-      await logout({ deviceId }).unwrap();
+      await logout().unwrap();
       clear("all");
       dispatch({ type: "RESET" });
       localStorage.clear();

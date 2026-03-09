@@ -53,10 +53,6 @@ export interface IResetPasswordResponse {
   statusCode: number;
 }
 
-export interface ILogout {
-  deviceId: string | null;
-}
-
 export interface ILogoutResponse {
   statusCode: number;
 }
