@@ -20,6 +20,7 @@ export interface ILoginResponse {
   language: LANGUAGE;
   theme: THEME;
   startupPage: STARTUP_PAGE;
+  isTwoFactorEnabled?: boolean;
 }
 
 export interface ISignupResponse {
@@ -121,9 +122,18 @@ export interface IRestoreAccount {
 
 export interface IRestoreAccountResponse {
   access_token: string;
+  language: LANGUAGE;
+  theme: THEME;
+  startupPage: STARTUP_PAGE;
 }
 
 export interface ICheckUnique {
   field: CHECK_UNIQUE_FIELD;
   value: string;
 }
+
+export interface ILoginVerifyForm {
+  code: string | null;
+}
+
+export interface ILoginVerifyResponse extends ILoginResponse {}

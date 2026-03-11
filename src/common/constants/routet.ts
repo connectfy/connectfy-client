@@ -3,8 +3,11 @@ export const ROUTER = {
   TERMS_AND_CONDITIONS: "/terms-and-conditions",
   AUTH: {
     MAIN: "/auth",
+    LOGIN: "/auth/login",
+    VERIFY_LOGIN: "/auth/login/verify",
+    SIGNUP: "/auth/signup",
+    VERIFY_SIGNUP: "/auth/signup/verify",
     FORGOT_PASSWORD: "/auth/forgot-password",
-    VERIFY_ACCOUNT: "/auth/verify-account",
     RESET_PASSWORD: "/auth/reset-password",
   },
   MESSENGER: {

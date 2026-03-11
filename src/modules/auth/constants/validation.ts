@@ -5,6 +5,7 @@ import {
   IResetPasswordForm,
   ISignupForm,
   ISignupVerifyForm,
+  ILoginVerifyForm,
 } from "../types/types";
 import {
   FORGOT_PASSWORD_IDENTIFIER_TYPE,
@@ -25,16 +26,38 @@ export const validateLogin = (
   if (
     !identifierType ||
     !Object.values(IDENTIFIER_TYPE).includes(identifierType)
-  )
+  ) {
     errors.identifierType = t("error_messages.identifier_type_is_required");
+  }
 
-  if (!identifier || !checkEmptyString(identifier))
+  if (!identifier || !checkEmptyString(identifier)) {
     errors.identifier = t(
       `error_messages.${identifierType.toLowerCase()}_is_required`,
     );
+  }
 
-  if (!password || !checkEmptyString(password))
+  if (!password || !checkEmptyString(password)) {
     errors.password = t("error_messages.password_is_required");
+  }
+
+  return errors;
+};
+
+// =======================> VERIFY LOGIN
+export const validateVerifyLogin = (
+  values: ILoginVerifyForm,
+  t: TFunction,
+): Record<string, any> => {
+  const { code } = values;
+  const errors: Record<string, any> = {};
+
+  if (!code || !checkEmptyString(code)) {
+    errors.code = t("error_messages.code_is_required");
+  }
+
+  if (code?.length !== 6) {
+    errors.code = t("error_messages.invalid_code");
+  }
 
   return errors;
 };

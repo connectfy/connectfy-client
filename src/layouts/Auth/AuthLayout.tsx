@@ -2,7 +2,7 @@ import { FC, memo, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import AuthSidebar from "@/components/Sidebar/Auth/AuthSidebar";
 import MainIcon from "@/assets/icons/MainIcon";
-import AuthFooter from "@/modules/auth/ui/components/AuthFooter/AuthFooter";
+import AuthFooter from "@/modules/auth/ui/components/Footer/AuthFooter/AuthFooter";
 import { ROUTER } from "@/common/constants/routet";
 
 const AuthLayout: FC = () => {
@@ -12,10 +12,7 @@ const AuthLayout: FC = () => {
   const isMobile = window.innerWidth < 1024;
 
   useEffect(() => {
-    if (
-      location.pathname === ROUTER.AUTH.MAIN &&
-      location.search === "?authPage=signup"
-    ) {
+    if (location.pathname === ROUTER.AUTH.SIGNUP) {
       setIsSignupPage(true);
     } else {
       setIsSignupPage(false);

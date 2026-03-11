@@ -3,7 +3,7 @@ import { LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
 import { validateVerifySignup } from "../../constants/validation";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
@@ -18,10 +18,11 @@ import {
 import { ISignupForm, ISignupVerifyForm } from "../../types/types";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { useErrors } from "@/hooks/useErrors";
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 const TIMER_DURATION = 60;
 
-const VerifyAccount = () => {
+const VerifySignup = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -34,6 +35,7 @@ const VerifyAccount = () => {
   const [resendSignupVerify, { isLoading: LOADING_RESEND_SIGNUP_VERIFY }] =
     useResendSignupVerifyMutation();
 
+  const { setToken } = useAuthStore();
   const { showResponseErrors } = useErrors();
 
   const [timeLeft, setTimeLeft] = useState<number>(TIMER_DURATION);
@@ -47,14 +49,22 @@ const VerifyAccount = () => {
     validate: (values) => validateVerifySignup(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        await signupVerify(values).unwrap();
+        const res = await signupVerify(values).unwrap();
+        setToken({
+          type: "access_token",
+          token: res.access_token,
+        });
         snack.success(t("user_messages.verify_successful"));
         localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
         localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
         resetForm();
         navigate(ROUTER.MESSENGER.MAIN);
       } catch (error) {
-        showResponseErrors(error);
+        if ((error as any)?.additional?.navigate) {
+          navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
+        } else {
+          showResponseErrors(error);
+        }
       }
     },
   });
@@ -97,12 +107,6 @@ const VerifyAccount = () => {
     ],
   });
 
-  // const isDisabled =
-  //   LOADING_SIGNUP_VERIFY ||
-  //   !formik.values.verifyCode ||
-  //   formik.values.verifyCode.trim() === "" ||
-  //   formik.values.verifyCode?.length !== 6;
-
   const startTimer = () => {
     const expiresAt = Date.now() + TIMER_DURATION * 1000;
     localStorage.setItem(
@@ -121,7 +125,11 @@ const VerifyAccount = () => {
       snack.success(t("user_messages.otp_resent"));
       startTimer();
     } catch (error) {
-      showResponseErrors(error);
+      if ((error as any)?.additional?.navigate) {
+        navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
+      } else {
+        showResponseErrors(error);
+      }
     }
   };
 
@@ -184,7 +192,7 @@ const VerifyAccount = () => {
           {t("common.verify_account_heading")}
         </h2>
         <p className="text-(--text-primary)">
-          {t("common.verify_account_message_part_1")}{" "}
+          {t("common.verify_account_message_part_1")}:{" "}
           <span className="text-(--primary-color) font-bold">
             {signupForm?.email ?? "example@gmail.com"}
           </span>
@@ -227,19 +235,19 @@ const VerifyAccount = () => {
             isLoading={LOADING_SIGNUP_VERIFY}
             title={t("common.verify")}
           />
-          <Link
+          <Button
             className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mt-2"
-            to={`${ROUTER.AUTH.MAIN}?authPage=signup`}
+            onClick={() => navigate(ROUTER.AUTH.SIGNUP)}
           >
             <span className="material-symbols-outlined md:text-md text-lg">
               arrow_back
             </span>
             {t("common.back")}
-          </Link>
+          </Button>
         </div>
       </form>
     </div>
   );
 };
 
-export default VerifyAccount;
+export default VerifySignup;

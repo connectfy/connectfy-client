@@ -1,11 +1,11 @@
 import { Fragment, useEffect } from "react";
 import { IDENTIFIER_TYPE } from "@/common/enums/enums";
 import { useFormik } from "formik";
-import { loginInitialState } from "../../../../constants/intialState";
-import { validateLogin } from "../../../../constants/validation";
+import { loginInitialState } from "../../constants/intialState";
+import { validateLogin } from "../../constants/validation";
 import { useTranslation } from "react-i18next";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { ILoginForm, LoginModeType } from "../../../../types/types";
+import { ILoginForm, LoginModeType } from "../../types/types";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
@@ -19,6 +19,7 @@ import { useErrors } from "@/hooks/useErrors";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 import { useTheme } from "@/context/ThemeContext";
+import MainFooter from "../components/Footer/MainFooter/MainFooter";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
@@ -30,9 +31,9 @@ const Login = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { showResponseErrors } = useErrors();
 
-  const rawLoginMode = searchParams.get("loginMode");
+  const rawLoginMode = searchParams.get("method");
 
-  const loginMode: LoginModeType = LOGIN_MODES.includes(
+  const method: LoginModeType = LOGIN_MODES.includes(
     rawLoginMode as LoginModeType,
   )
     ? (rawLoginMode as LoginModeType)
@@ -50,15 +51,19 @@ const Login = () => {
       try {
         const res = await login(values).unwrap();
 
-        setToken({
-          type: "access_token",
-          token: res.access_token,
-        });
-        snack.success(
-          t("user_messages.login_successful", { lng: res.language }),
-        );
-        navigate(res.startupPage);
-        toggleTheme(res.theme);
+        if (res.isTwoFactorEnabled) {
+          navigate(ROUTER.AUTH.VERIFY_LOGIN);
+        } else {
+          setToken({
+            type: "access_token",
+            token: res.access_token,
+          });
+          snack.success(
+            t("user_messages.login_successful", { lng: res.language }),
+          );
+          navigate(res.startupPage);
+          toggleTheme(res.theme);
+        }
         resetForm();
       } catch (err) {
         showResponseErrors(err);
@@ -79,17 +84,72 @@ const Login = () => {
 
   const changeLoginMode = (mode: LoginModeType) => {
     formik.setFieldValue("identifier", "");
-    setSearchParams({ authPage: "login", loginMode: mode }, { replace: true });
+    setSearchParams({ method: mode }, { replace: true });
+  };
+
+  const renderMethodInput = () => {
+    switch (method) {
+      case "username":
+        return (
+          <Input
+            className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+            style={{
+              backgroundColor: "var(--input-bg)",
+              border: "1px solid var(--input-border)",
+            }}
+            title={t("common.username")}
+            type="text"
+            isFloating
+            icon={<span className="material-symbols-outlined">person</span>}
+            name="identifier"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.identifier || ""}
+            isError={!!(formik.touched.identifier && formik.errors.identifier)}
+            error={formik.errors.identifier}
+            maxLength={30}
+          />
+        );
+      case "email":
+        return (
+          <Input
+            className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
+            style={{
+              backgroundColor: "var(--input-bg)",
+              border: "1px solid var(--input-border)",
+            }}
+            title={t("common.email")}
+            type="text"
+            isFloating
+            icon={<span className="material-symbols-outlined">email</span>}
+            name="identifier"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.identifier || ""}
+            isError={!!(formik.touched.identifier && formik.errors.identifier)}
+            error={formik.errors.identifier}
+            maxLength={254}
+          />
+        );
+      case "phoneNumber":
+        return (
+          <PhoneNumberForm
+            name="phoneNumber"
+            onChange={(value) =>
+              formik.setFieldValue("identifier", value?.fullPhoneNumber)
+            }
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   useEffect(() => {
     let identifierType: IDENTIFIER_TYPE;
 
     if (!rawLoginMode || !LOGIN_MODES.includes(rawLoginMode as LoginModeType)) {
-      setSearchParams(
-        { authPage: "login", loginMode: "username" },
-        { replace: true },
-      );
+      setSearchParams({ method: "username" }, { replace: true });
       identifierType = IDENTIFIER_TYPE.USERNAME;
     } else {
       switch (rawLoginMode) {
@@ -160,7 +220,7 @@ const Login = () => {
           <Button
             type="button"
             className={`cursor-pointer px-4 py-2 w-full text-sm font-bold border-b-0 md:border-b-2 transition-colors ${
-              loginMode === "username"
+              method === "username"
                 ? "text-(--primary-color) border-primary"
                 : "text-slate-400 hover:text-slate-600 border-transparent"
             }`}
@@ -173,7 +233,7 @@ const Login = () => {
           <Button
             type="button"
             className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-0 md:border-b-2 transition-colors ${
-              loginMode === "email"
+              method === "email"
                 ? "text-(--primary-color) border-primary"
                 : "text-slate-400 hover:text-slate-600 border-transparent"
             }`}
@@ -186,7 +246,7 @@ const Login = () => {
           <Button
             type="button"
             className={`cursor-pointer px-4 py-2 w-full text-sm font-medium border-b-2 transition-colors ${
-              loginMode === "phoneNumber"
+              method === "phoneNumber"
                 ? "text-(--primary-color) border-primary"
                 : "text-slate-400 hover:text-slate-600 border-transparent"
             }`}
@@ -200,62 +260,7 @@ const Login = () => {
       {/* Login Form */}
       <form className="space-y-6" onSubmit={formik.handleSubmit}>
         {/* Identifier Input */}
-        <div className="space-y-2">
-          {loginMode === "username" && (
-            <Input
-              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
-              style={{
-                backgroundColor: "var(--input-bg)",
-                border: "1px solid var(--input-border)",
-              }}
-              title={t("common.username")}
-              type="text"
-              isFloating
-              icon={<span className="material-symbols-outlined">person</span>}
-              name="identifier"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.identifier || ""}
-              isError={
-                !!(formik.touched.identifier && formik.errors.identifier)
-              }
-              error={formik.errors.identifier}
-              maxLength={30}
-            />
-          )}
-
-          {loginMode === "email" && (
-            <Input
-              className="w-full px-5 py-4 rounded-xl text-(--text-(--primary-color)) outline-none transition-all duration-200 placeholder:text-(--text-secondary)/50 focus:ring-2 focus:ring-[#34d399]/50"
-              style={{
-                backgroundColor: "var(--input-bg)",
-                border: "1px solid var(--input-border)",
-              }}
-              title={t("common.email")}
-              type="text"
-              isFloating
-              icon={<span className="material-symbols-outlined">email</span>}
-              name="identifier"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.identifier || ""}
-              isError={
-                !!(formik.touched.identifier && formik.errors.identifier)
-              }
-              error={formik.errors.identifier}
-              maxLength={254}
-            />
-          )}
-
-          {loginMode === "phoneNumber" && (
-            <PhoneNumberForm
-              name="phoneNumber"
-              onChange={(value) =>
-                formik.setFieldValue("identifier", value?.fullPhoneNumber)
-              }
-            />
-          )}
-        </div>
+        <div className="space-y-2">{renderMethodInput()}</div>
 
         {/* Password Input */}
         <div className="space-y-2">
@@ -293,6 +298,8 @@ const Login = () => {
           title={t("common.login")}
         />
       </form>
+
+      <MainFooter />
     </Fragment>
   );
 };

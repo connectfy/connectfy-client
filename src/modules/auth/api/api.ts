@@ -21,6 +21,8 @@ import {
   IRestoreAccountResponse,
   IRestoreAccount,
   IAuthenticateUser,
+  ILoginVerifyResponse,
+  ILoginVerifyForm,
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 
@@ -33,6 +35,16 @@ export const authApi = createApi({
     login: builder.mutation<ILoginResponse, ILoginForm>({
       query: (data) => ({
         url: API_ENDPOINTS.AUTH.LOGIN,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
+    // ====================== VERIFY LOGIN
+    loginVerify: builder.mutation<ILoginVerifyResponse, ILoginVerifyForm>({
+      query: (data) => ({
+        url: API_ENDPOINTS.AUTH.LOGIN_VERIFY,
         method: "POST",
         body: data,
       }),
@@ -169,6 +181,7 @@ export const authApi = createApi({
 
 export const {
   useLoginMutation,
+  useLoginVerifyMutation,
   useSignupMutation,
   useSignupVerifyMutation,
   useResendSignupVerifyMutation,

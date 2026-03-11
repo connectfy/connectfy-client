@@ -2,6 +2,7 @@ import {
   IForgotPasswordForm,
   IGoogleSignupForm,
   ILoginForm,
+  ILoginVerifyForm,
   IResetPasswordForm,
   ISignupForm,
   ISignupVerifyForm,
@@ -19,6 +20,10 @@ export const loginInitialState: ILoginForm = {
   identifierType: IDENTIFIER_TYPE.USERNAME,
   identifier: null,
   password: null,
+};
+
+export const loginVerifyInitialState: ILoginVerifyForm = {
+  code: null,
 };
 
 export const signupInitialState: ISignupForm = {

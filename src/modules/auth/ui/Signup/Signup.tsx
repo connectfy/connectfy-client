@@ -3,8 +3,8 @@ import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInp
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { signupInitialState } from "../../../../constants/intialState";
-import { validateSignup } from "../../../../constants/validation";
+import { signupInitialState } from "../../constants/intialState";
+import { validateSignup } from "../../constants/validation";
 import { GENDER, LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import { Fragment, useEffect, useState } from "react";
 import { checkEmptyString } from "@/common/utils/checkValues";
@@ -16,6 +16,7 @@ import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useSignupMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
+import MainFooter from "../components/Footer/MainFooter/MainFooter";
 
 const Signup = () => {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ const Signup = () => {
           LOCAL_STORAGE_KEYS.SIGNUP_FORM,
           JSON.stringify(values),
         );
-        await navigate(ROUTER.AUTH.VERIFY_ACCOUNT, { replace: true });
+        await navigate(ROUTER.AUTH.VERIFY_SIGNUP, { replace: true });
       } catch (error) {
         showResponseErrors(error);
       }
@@ -273,6 +274,8 @@ const Signup = () => {
           title={t("common.signup")}
         />
       </form>
+
+      <MainFooter />
     </Fragment>
   );
 };

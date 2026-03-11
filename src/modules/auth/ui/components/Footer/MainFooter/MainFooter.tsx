@@ -1,10 +1,10 @@
 import { Fragment, useCallback, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
-import SignupModal from "../SignupModal/SignupModal";
+import SignupModal from "../../../Signup/components/SignupModal/SignupModal";
 import { CHECK_UNIQUE_FIELD } from "@/common/enums/enums";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -16,10 +16,12 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { useTheme } from "@/context/ThemeContext";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
+import { ROUTER } from "@/common/constants/routet";
 
 const MainFooter = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toggleTheme } = useTheme();
   const { setToken } = useAuthStore();
 
@@ -29,24 +31,20 @@ const MainFooter = () => {
 
   const { showResponseErrors } = useErrors();
 
-  const [searchParams, setSearchParams] = useSearchParams();
   const isModalOpen = useBoolean();
 
   const [idToken, setIdToken] = useState<string | null>(null);
 
   const googleButtonRef = useRef<HTMLDivElement>(null);
-
-  const authPage = searchParams.get("authPage");
-
-  const isLoginPage = authPage === "login";
+  const isLoginPage = location.pathname === ROUTER.AUTH.LOGIN;
 
   const handleNavigate = useCallback(() => {
     if (isLoginPage) {
-      setSearchParams({ authPage: "signup" });
+      navigate(ROUTER.AUTH.SIGNUP);
     } else {
-      setSearchParams({ authPage: "login", loginMode: "username" });
+      navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
     }
-  }, [isLoginPage, setSearchParams]);
+  }, [isLoginPage]);
 
   const handleGoogleSuccess = async (tokenResponse: any) => {
     try {
@@ -57,7 +55,7 @@ const MainFooter = () => {
         return;
       }
 
-      if (authPage === "login") {
+      if (isLoginPage) {
         try {
           const res = await googleLogin({ idToken }).unwrap();
 

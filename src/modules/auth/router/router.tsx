@@ -3,7 +3,10 @@ import { lazy } from "react";
 import { ROUTER } from "@/common/constants/routet";
 
 const Main = lazy(() => import("../ui/Main/Main"));
-const Verify = lazy(() => import("../ui/Verify/Verify"));
+const Login = lazy(() => import("../ui/Login/Login"));
+const Signup = lazy(() => import("../ui/Signup/Signup"));
+const VerifyLogin = lazy(() => import("../ui/VerifyLogin/VerifyLogin"));
+const VerifySignup = lazy(() => import("../ui/VerifySignup/VerifySignup"));
 const ForgotPassword = lazy(
   () => import("../ui/ForgotPassword/ForgotPassword"),
 );
@@ -15,8 +18,20 @@ const routes: RouteObject[] = [
     element: <Main />,
   },
   {
-    path: ROUTER.AUTH.VERIFY_ACCOUNT,
-    element: <Verify />,
+    path: ROUTER.AUTH.LOGIN,
+    element: <Login />,
+  },
+  {
+    path: ROUTER.AUTH.SIGNUP,
+    element: <Signup />,
+  },
+  {
+    path: ROUTER.AUTH.VERIFY_LOGIN,
+    element: <VerifyLogin />,
+  },
+  {
+    path: ROUTER.AUTH.VERIFY_SIGNUP,
+    element: <VerifySignup />,
   },
   {
     path: ROUTER.AUTH.FORGOT_PASSWORD,
