@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { TOKEN_TYPE } from "@/common/enums/enums";
+import { PROVIDER, TOKEN_TYPE } from "@/common/enums/enums";
 import Modal from "..";
 import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
@@ -40,7 +40,10 @@ const AuthenticateModal: FC<Props> = ({
     skip: !access_token,
   });
 
-  const { usesOAuth, usesPasswordAuth } = user ?? {};
+  const { provider } = user ?? {};
+  const usesPasswordAuth = provider === PROVIDER.PASSWORD;
+  const usesOAuth =
+    provider === PROVIDER.GOOGLE || provider === PROVIDER.FACEBOOK;
 
   const initialState: IAuthenticateUser = {
     password: null,

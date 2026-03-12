@@ -21,6 +21,12 @@ export enum LANGUAGE {
   TR = "tr",
 }
 
+export enum PROVIDER {
+  PASSWORD = "PASSWORD",
+  GOOGLE = "GOOGLE",
+  FACEBOOK = "FACEBOOK",
+}
+
 export enum RESOURCE {
   AUTH = "auth",
   GENERAL_SETTINGS = "general-settings",

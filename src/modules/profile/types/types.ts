@@ -1,4 +1,9 @@
-import { GENDER, LANGUAGE, SOCIAL_LINK_PLATFORM } from "@/common/enums/enums";
+import {
+  GENDER,
+  LANGUAGE,
+  PROVIDER,
+  SOCIAL_LINK_PLATFORM,
+} from "@/common/enums/enums";
 import { IPhoneNumber } from "@/modules/auth/types/types";
 
 export interface IAccount {
@@ -22,10 +27,7 @@ export interface IUser {
   isTwoFactorEnabled: boolean;
   timeZone: string | null;
   location: string | null;
-  usesPasswordAuth: boolean;
-  usesOAuth: boolean;
-  hasPhoneNumber: boolean;
-  accountAgeInDays: number;
+  provider: PROVIDER;
   createdAt: Date;
   updatedAt: Date;
 }

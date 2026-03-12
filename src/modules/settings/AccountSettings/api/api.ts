@@ -147,7 +147,6 @@ export const accountSettingsApi = createApi({
               (draft: any) => {
                 if (draft) {
                   draft.phoneNumber = updatedData.phoneNumber;
-                  draft.hasPhoneNumber = updatedData.hasPhoneNumber;
                 }
               },
             ),

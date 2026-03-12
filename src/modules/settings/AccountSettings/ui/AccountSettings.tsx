@@ -29,6 +29,7 @@ import { ROUTER } from "@/common/constants/routet";
 import {
   DATE_FORMAT,
   LOCAL_STORAGE_KEYS,
+  PROVIDER,
   TIME_FORMAT,
   TOKEN_TYPE,
   TWO_FACTOR_ACTION,
@@ -87,7 +88,10 @@ const AccountSettings: FC = () => {
     skip: !access_token,
   });
 
-  const { usesOAuth, hasPhoneNumber, isTwoFactorEnabled } = user ?? {};
+  const { provider, isTwoFactorEnabled } = user ?? {};
+  const usesOAuth =
+    provider === PROVIDER.GOOGLE || provider === PROVIDER.FACEBOOK;
+  const hasPhoneNumber = !!user?.phoneNumber?.number;
 
   const { data: account, isLoading: LOADING_ACCOUNT } = useGetAccountQuery(
     undefined,
