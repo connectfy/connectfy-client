@@ -13,9 +13,7 @@ export const API_ENDPOINTS = {
     IS_VALID_TOKEN: "/auth/is-valid-token",
     REFRESH: "/auth/refresh",
     AUTHENTICATE_USER: "/auth/authenticate-user",
-    DELETE_ACCOUNT: "/auth/delete-account",
     RESTORE_ACCOUNT: "/auth/restore-account",
-    DEACTIVATE_ACCOUNT: "/auth/deactivate-account",
     RESEND_SIGNUP_VERIFY: "/auth/signup/verify/resend",
   },
   USER: {
@@ -27,6 +25,8 @@ export const API_ENDPOINTS = {
     CHANGE_PHONE_NUMBER: "/user/change-phone-number",
     CHECK_UNIQUE: "/user/check-unique",
     UPDATE_TWO_FACTOR: "/user/two-factor",
+    DELETE_ACCOUNT: "/user/delete-account",
+    DEACTIVATE_ACCOUNT: "/user/deactivate-account",
   },
   ACCOUNT: {
     GET_ACCOUNT: "/account/profile/get",

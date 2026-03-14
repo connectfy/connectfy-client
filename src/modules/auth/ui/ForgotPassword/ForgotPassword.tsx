@@ -50,7 +50,7 @@ const ForgotPassword = () => {
       try {
         await forgotPassword(values).unwrap();
         snack.success(t("user_messages.forgot_password_successful"));
-        navigate(ROUTER.AUTH.MAIN);
+        navigate(ROUTER.AUTH.LOGIN);
         resetForm();
       } catch (error) {
         showResponseErrors(error);
@@ -77,7 +77,7 @@ const ForgotPassword = () => {
         formik.handleSubmit();
       } else if (e.key === "Escape") {
         e.preventDefault();
-        navigate(ROUTER.AUTH.MAIN);
+        navigate(ROUTER.AUTH.LOGIN);
       } else if (e.shiftKey && e.altKey && e.code === "Digit1") {
         e.preventDefault();
         changeForgotPasswordMode("email");

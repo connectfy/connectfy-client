@@ -76,7 +76,7 @@ const ResetPassword = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate(ROUTER.AUTH.MAIN);
+      navigate(ROUTER.AUTH.LOGIN);
       return;
     }
 
@@ -88,11 +88,11 @@ const ResetPassword = () => {
         }).unwrap();
 
         if (!res) {
-          navigate(ROUTER.AUTH.MAIN);
+          navigate(ROUTER.AUTH.LOGIN);
           return;
         }
       } catch {
-        navigate(ROUTER.AUTH.MAIN);
+        navigate(ROUTER.AUTH.LOGIN);
       }
     })();
 

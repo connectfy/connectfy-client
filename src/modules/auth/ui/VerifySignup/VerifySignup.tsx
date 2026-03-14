@@ -79,7 +79,7 @@ const VerifySignup = () => {
         break;
 
       case "Escape":
-        onPressEsc(e, () => navigate(ROUTER.AUTH.MAIN));
+        onPressEsc(e, () => navigate(-1));
     }
   };
 

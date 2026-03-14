@@ -165,7 +165,7 @@ const AccountSettings: FC = () => {
       localStorage.clear();
       localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
       localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
-      navigate(ROUTER.AUTH.MAIN);
+      navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
       snack.success(t("user_messages.logout_successfull"));
     } catch (error) {
       showResponseErrors(error);
@@ -181,7 +181,7 @@ const AccountSettings: FC = () => {
       localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, theme);
       localStorage.setItem(LOCAL_STORAGE_KEYS.LANG, i18n.language);
       clear("all");
-      navigate(ROUTER.AUTH.MAIN);
+      navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
       snack.success(t("user_messages.account_deactivated"));
     } catch (error) {
       showResponseErrors(error);

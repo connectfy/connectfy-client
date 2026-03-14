@@ -16,12 +16,12 @@ const Messenger = lazy(() => import("@/modules/messenger/ui/Messenger"));
 
 import authRoutes from "@/modules/auth/router/router";
 import termsAndConditionsRoutes from "@/modules/termsAndConditions/router/router";
-import settingsRoutes from "@/modules/settings/Settings/router/router"
-import generalSettingsRoutes from "@/modules/settings/GeneralSettings/router/router"
-import accountSettingsRoutes from "@/modules/settings/AccountSettings/router/router"
-import privacySettingsRoutes from "@/modules/settings/PrivacySettings/router/router"
-import notificationSettingsRoutes from "@/modules/settings/NotificationSettings/router/router"
-import profileRoutes from "@/modules/profile/router/router"
+import settingsRoutes from "@/modules/settings/Settings/router/router";
+import generalSettingsRoutes from "@/modules/settings/GeneralSettings/router/router";
+import accountSettingsRoutes from "@/modules/settings/AccountSettings/router/router";
+import privacySettingsRoutes from "@/modules/settings/PrivacySettings/router/router";
+import notificationSettingsRoutes from "@/modules/settings/NotificationSettings/router/router";
+import profileRoutes from "@/modules/profile/router/router";
 
 const routes = [
   // ======================= ROOT REDIRECT
@@ -39,7 +39,12 @@ const routes = [
     ),
     children: [
       ...authRoutes,
-      { path: "*", element: <Navigate to={ROUTER.AUTH.MAIN} replace /> },
+      {
+        path: "*",
+        element: (
+          <Navigate to={`${ROUTER.AUTH.LOGIN}?method=username`} replace />
+        ),
+      },
     ],
   },
   // ======================= TERMS AND CONDITIONS

@@ -55,7 +55,7 @@ const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
         resetForm();
         onClose();
         clear("all");
-        navigate(ROUTER.AUTH.MAIN);
+        navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
         snack.success(t("user_messages.account_deleted"));
       } catch (error) {
         showResponseErrors(error);

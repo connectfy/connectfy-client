@@ -170,7 +170,7 @@ export const accountSettingsApi = createApi({
     // ====================== DELETE ACCOUNT
     deleteAccount: builder.mutation<IDeleteAccountResponse, IDeleteAccount>({
       query: (data) => ({
-        url: API_ENDPOINTS.AUTH.DELETE_ACCOUNT,
+        url: API_ENDPOINTS.USER.DELETE_ACCOUNT,
         method: "POST",
         body: data,
       }),
@@ -183,7 +183,7 @@ export const accountSettingsApi = createApi({
       IDeactivateAccount
     >({
       query: (data) => ({
-        url: API_ENDPOINTS.AUTH.DEACTIVATE_ACCOUNT,
+        url: API_ENDPOINTS.USER.DEACTIVATE_ACCOUNT,
         method: "POST",
         body: data,
       }),

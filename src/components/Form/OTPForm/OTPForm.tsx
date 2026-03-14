@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ROUTER } from "@/common/constants/routet";
 import { useNavigate } from "react-router-dom";
 import Input from "@/components/ui/CustomInput/Input/Input";
 
@@ -94,7 +93,7 @@ export default function OTPForm({
       if (code.length === length) onKeyDown(e);
     } else if (key === "Escape") {
       e.preventDefault();
-      navigate(ROUTER.AUTH.MAIN);
+      navigate(-1);
     }
   };
 

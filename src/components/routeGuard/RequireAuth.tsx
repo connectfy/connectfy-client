@@ -20,7 +20,7 @@ export function RequireAuth({ children }: AuthType) {
   // Sonra conditional logic
   if (!access_token) {
     return (
-      <Navigate to={ROUTER.AUTH.MAIN} state={{ from: location }} replace />
+      <Navigate to={ROUTER.AUTH.LOGIN} state={{ from: location }} replace />
     );
   }
 
@@ -57,7 +57,7 @@ export function RedirectMain() {
   useEffect(() => {
     // If no token, or the user request failed (invalid token), go to login
     if (!access_token || isUserError) {
-      navigate(ROUTER.AUTH.MAIN, { replace: true });
+      navigate(ROUTER.AUTH.LOGIN, { replace: true });
       return;
     }
 
