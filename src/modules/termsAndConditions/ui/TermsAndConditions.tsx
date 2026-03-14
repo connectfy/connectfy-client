@@ -166,7 +166,11 @@ const TermsAndConditions = () => {
                 onClick={handleCopy}
                 className="absolute flex items-center end-1.5 top-1/2 -translate-y-1/2 border font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none transition-colors bg-(--primary-color) text-(--text-primary) border-(--auth-glass-border)"
               >
-                {!copied ? <ClipboardList /> : <ClipboardCheck />}
+                {!copied ? (
+                  <ClipboardList color={"white"} />
+                ) : (
+                  <ClipboardCheck color={"white"} />
+                )}
               </Button>
             </div>
           </div>

@@ -14,43 +14,6 @@
   box-sizing: border-box;
 }
 
-.notification-settings-header {
-  margin-bottom: 32px;
-  animation: notificationFadeIn 0.5s ease;
-}
-
-@keyframes notificationFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.notification-settings-header h1 {
-  font-size: 28px;
-  font-weight: 800;
-  color: #1e293b;
-  margin: 0 0 8px 0;
-}
-
-[data-theme="dark"] .notification-settings-header h1 {
-  color: #f8fafc;
-}
-
-.notification-settings-header p {
-  font-size: 14px;
-  color: #64748b;
-  margin: 0;
-}
-
-[data-theme="dark"] .notification-settings-header p {
-  color: #94a3b8;
-}
-
 .notification-settings-content {
   display: flex;
   flex-direction: column;
@@ -70,102 +33,11 @@
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin: 0 0 8px 0;
   padding-left: 4px;
+  padding-top: 10px;
 }
 
 [data-theme="dark"] .notification-section-title {
-  color: #94a3b8;
-}
-
-.general-notification-modes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.general-notification-mode {
-  background: #f8fafc;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-[data-theme="dark"] .general-notification-mode {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.general-notification-mode:hover {
-  background: #f1f5f9;
-  border-color: var(--third-color);
-}
-
-[data-theme="dark"] .general-notification-mode:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.general-notification-mode.active {
-  background: rgba(46, 204, 113, 0.1);
-  border-color: var(--third-color);
-}
-
-.general-mode-radio {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #cbd5e1;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.general-notification-mode.active .general-mode-radio {
-  border-color: var(--third-color);
-}
-
-.general-mode-radio::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--third-color);
-  transition: transform 0.2s ease;
-}
-
-.general-notification-mode.active .general-mode-radio::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.general-mode-content {
-  flex: 1;
-}
-
-.general-mode-content h4 {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 4px 0;
-}
-
-[data-theme="dark"] .general-mode-content h4 {
-  color: #f8fafc;
-}
-
-.general-mode-content p {
-  font-size: 12px;
-  color: #64748b;
-  margin: 0;
-}
-
-[data-theme="dark"] .general-mode-content p {
   color: #94a3b8;
 }
 

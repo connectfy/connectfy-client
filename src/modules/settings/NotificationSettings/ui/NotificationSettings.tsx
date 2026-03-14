@@ -25,6 +25,11 @@ import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditNotificationSettings } from "../types/types";
 import { useNotificationSettings } from "../hooks/useNotificationSettings";
+import RadioGroup from "@/components/ui/CustomRadio/RadioGroup";
+import {
+  NOTIFICATION_CONTENT_MODE,
+  NOTIFICATION_SOUND_MODE,
+} from "@/common/enums/enums";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
@@ -105,7 +110,6 @@ const NotificationSettings = () => {
           ) : (
             <Fragment>
               <div className="notification-settings-content">
-                {/* GENERAL NOTIFICATION SETTINGS */}
                 <div className="notification-privacy-section">
                   <h2 className="notification-section-title">
                     {t("common.general_notification_title")}
@@ -119,30 +123,15 @@ const NotificationSettings = () => {
                     }}
                   >
                     <div className="general-notification-modes">
-                      {NOTIFICATION_MODE_OPTIONS.map((option) => {
-                        return (
-                          <div
-                            key={option.key}
-                            className={`general-notification-mode ${
-                              formik.values.notificationSoundMode === option.key
-                                ? "active"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              formik.setFieldValue(
-                                "notificationSoundMode",
-                                option.key,
-                              )
-                            }
-                          >
-                            <div className="general-mode-radio"></div>
-                            <div className="general-mode-content">
-                              <h4>{option.name}</h4>
-                              <p>{option.description}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
+                      <RadioGroup
+                        name="notificationSoundMode"
+                        options={NOTIFICATION_MODE_OPTIONS}
+                        value={
+                          formik.values
+                            .notificationSoundMode as NOTIFICATION_SOUND_MODE
+                        }
+                        onChange={formik.setFieldValue}
+                      />
                     </div>
                   </SettingCard>
 
@@ -154,31 +143,15 @@ const NotificationSettings = () => {
                     }}
                   >
                     <div className="general-notification-modes">
-                      {NOTIFICATION_CONTENT_OPTIONS.map((option) => {
-                        return (
-                          <div
-                            key={option.key}
-                            className={`general-notification-mode ${
-                              formik.values.notificationContentMode ===
-                              option.key
-                                ? "active"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              formik.setFieldValue(
-                                "notificationContentMode",
-                                option.key,
-                              )
-                            }
-                          >
-                            <div className="general-mode-radio"></div>
-                            <div className="general-mode-content">
-                              <h4>{option.name}</h4>
-                              <p>{option.description}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
+                      <RadioGroup
+                        name="notificationContentMode"
+                        options={NOTIFICATION_CONTENT_OPTIONS}
+                        value={
+                          formik.values
+                            .notificationContentMode as NOTIFICATION_CONTENT_MODE
+                        }
+                        onChange={formik.setFieldValue}
+                      />
                     </div>
                   </SettingCard>
                 </div>
