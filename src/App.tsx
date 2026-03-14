@@ -5,12 +5,12 @@ import { initFlowbite } from "flowbite";
 import "flag-icons/css/flag-icons.min.css";
 import { useRoutes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useGetMeQuery } from "./modules/profile/api/api";
+import { useUser } from "./modules/profile/hooks/useUser";
 import { checkDeviceId } from "./common/utils/checkValues";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
+import { useGeneralSettings } from "./modules/settings/GeneralSettings/hooks/useGeneralSettings";
+import { useNotificationSettings } from "./modules/settings/NotificationSettings/hooks/useNotificationSettings";
 import { useAuthStore } from "./hooks/useAuthStore";
-import { useGetGeneralSettingsQuery } from "./modules/settings/GeneralSettings/api/api";
-import { useGetNotificationSettingsQuery } from "./modules/settings/NotificationSettings/api/api";
 
 function App() {
   const { i18n } = useTranslation();
@@ -19,23 +19,14 @@ function App() {
   const deviceId = checkDeviceId();
   const { access_token } = useAuthStore();
 
-  const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
+  const { isSuccess, isError } = useUser();
 
-  const { data } = useGetGeneralSettingsQuery(undefined, {
-    skip: !access_token || !isMeSuccess || isMeError,
-  });
-  useGetNotificationSettingsQuery(undefined, {
-    skip: !access_token || !isMeSuccess || isMeError,
-  });
+  const { data } = useGeneralSettings();
+  useNotificationSettings();
   const userLang = data?.language;
 
   useEffect(() => {
-    if (!access_token || !isMeSuccess || isMeError) {
+    if (!access_token || !isSuccess || isError) {
       const availableLangs = Object.values(LANGUAGE);
       const validLang =
         lang && availableLangs.includes(lang as LANGUAGE)

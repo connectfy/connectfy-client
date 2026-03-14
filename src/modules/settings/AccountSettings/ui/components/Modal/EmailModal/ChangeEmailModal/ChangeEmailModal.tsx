@@ -6,7 +6,7 @@ import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
 import { useUpdateEmailMutation } from "@/modules/settings/AccountSettings/api/api";
 import Input from "@/components/ui/CustomInput/Input/Input";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useUser } from "@/modules/profile/hooks/useUser";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
@@ -20,13 +20,11 @@ interface Props {
 const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
 
-  const { access_token, authenticateToken } = useAuthStore();
+  const { authenticateToken } = useAuthStore();
 
   const { showResponseErrors, showFormikErrors } = useErrors();
 
-  const { data: user } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
+  const { user } = useUser();
 
   const [updateEmail, { isLoading }] = useUpdateEmailMutation();
 

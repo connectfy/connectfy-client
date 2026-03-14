@@ -32,15 +32,14 @@ import useBoolean from "@/hooks/useBoolean";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import {
   useEditGeneralSettingsMutation,
-  useGetGeneralSettingsQuery,
   useResetSettingsMutation,
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditGeneralSettings } from "../types/types";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useGeneralSettings } from "../hooks/useGeneralSettings";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -48,14 +47,7 @@ const GeneralSettings = () => {
   const { theme, toggleTheme } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
-  const { access_token } = useAuthStore();
-
-  const { data, isLoading: LOADING_GET } = useGetGeneralSettingsQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
+  const { generalSettings, isLoading: LOADING_GET } = useGeneralSettings();
   const [updateGeneralSettings, { isLoading: LOADING_UPDATE }] =
     useEditGeneralSettingsMutation();
   const [resetSettings, { isLoading: LOADING_RESET_SETTINGS }] =
@@ -66,16 +58,19 @@ const GeneralSettings = () => {
   const resetSettingsModal = useBoolean();
 
   const formik = useFormik({
-    initialValues: initialState(data!),
+    initialValues: initialState(generalSettings!),
     validateOnBlur: false,
     validateOnChange: false,
     enableReinitialize: true,
     validate: (values) => validateGenerateSettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const changedData = getChangedData<IEditGeneralSettings>(data!, values);
+        const changedData = getChangedData<IEditGeneralSettings>(
+          generalSettings!,
+          values,
+        );
         values = {
-          _id: data!._id,
+          _id: generalSettings!._id,
           ...changedData,
         };
         const res = await updateGeneralSettings(values).unwrap();
@@ -118,9 +113,9 @@ const GeneralSettings = () => {
   };
 
   const handleDiscardChanges = () => {
-    if (formik.values.theme !== data?.theme) {
-      formik.setFieldValue("theme", data?.theme);
-      toggleTheme(data?.theme as THEME);
+    if (formik.values.theme !== generalSettings?.theme) {
+      formik.setFieldValue("theme", generalSettings?.theme);
+      toggleTheme(generalSettings?.theme as THEME);
     }
 
     formik.resetForm();
@@ -136,9 +131,9 @@ const GeneralSettings = () => {
       await resetSettings().unwrap();
       snack.success(t("user_messages.information_updated"));
 
-      if (formik.values.theme !== data?.theme) {
-        formik.setFieldValue("theme", data?.theme);
-        toggleTheme(data?.theme as THEME);
+      if (formik.values.theme !== generalSettings?.theme) {
+        formik.setFieldValue("theme", generalSettings?.theme);
+        toggleTheme(generalSettings?.theme as THEME);
       }
 
       formik.resetForm();

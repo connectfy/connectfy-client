@@ -1,24 +1,14 @@
 import { UserRoundX, Users } from "lucide-react";
 import "./mainCard.style.css";
 import { useTranslation } from "react-i18next";
-import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useUser } from "@/modules/profile/hooks/useUser";
+import { useProfile } from "@/modules/profile/hooks/useProfile";
 
 const MainCard = () => {
   const { t } = useTranslation();
 
-  const { access_token } = useAuthStore();
-
-  const {
-    data: user,
-    isSuccess: isUserSuccess,
-    isError: isUserError,
-  } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
-  const { data: profile } = useGetAccountQuery(undefined, {
-    skip: !access_token || !isUserSuccess || isUserError,
-  });
+  const { user } = useUser();
+  const { profile } = useProfile();
 
   return (
     <section

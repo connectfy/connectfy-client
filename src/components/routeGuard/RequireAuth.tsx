@@ -3,8 +3,8 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { useGetMeQuery } from "@/modules/profile/api/api";
-import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
+import { useUser } from "@/modules/profile/hooks/useUser";
+import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
 
 type AuthType = {
   children: ReactNode;
@@ -15,9 +15,7 @@ export function RequireAuth({ children }: AuthType) {
 
   //  Əvvəlcə bütün hooks-ları çağırın
   const { access_token } = useAuthStore();
-  useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
+  useUser();
 
   // Sonra conditional logic
   if (!access_token) {
@@ -33,20 +31,13 @@ export function InsideProfile({ children }: AuthType) {
   const { access_token } = useAuthStore();
 
   // Yalnız həqiqətən token varsa request at
-  const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
+  const { isSuccess: isUserSuccess } = useUser();
 
-  const { data: generalSettings, isSuccess: isSettingsSuccess } =
-    useGetGeneralSettingsQuery(undefined, {
-      skip: !access_token || !isMeSuccess || isMeError,
-    });
+  const { generalSettings, isSuccess: isSettingsSuccess } =
+    useGeneralSettings();
 
   // Hər iki data uğurla gəlibsə yönləndir
-  if (access_token && isMeSuccess && isSettingsSuccess) {
+  if (access_token && isUserSuccess && isSettingsSuccess) {
     const startup = generalSettings?.startupPage;
     return <Navigate to={getHomeRouteByStartup(startup)} replace />;
   }
@@ -59,21 +50,13 @@ export function RedirectMain() {
   const { access_token } = useAuthStore();
 
   // Send request if there is a token
-  const { isSuccess: userLoaded, isError: userError } = useGetMeQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
+  const { isError: isUserError } = useUser();
 
-  const { data: generalSettings, isSuccess: settingsLoaded } =
-    useGetGeneralSettingsQuery(undefined, {
-      skip: !userLoaded || userError,
-    });
+  const { generalSettings, isSuccess: settingsLoaded } = useGeneralSettings();
 
   useEffect(() => {
     // If no token, or the user request failed (invalid token), go to login
-    if (!access_token || userError) {
+    if (!access_token || isUserError) {
       navigate(ROUTER.AUTH.MAIN, { replace: true });
       return;
     }
@@ -83,7 +66,7 @@ export function RedirectMain() {
       const path = getHomeRouteByStartup(generalSettings?.startupPage);
       navigate(path, { replace: true });
     }
-  }, [access_token, userError, settingsLoaded, generalSettings, navigate]);
+  }, [access_token, isUserError, settingsLoaded, generalSettings, navigate]);
 
   return null;
 }

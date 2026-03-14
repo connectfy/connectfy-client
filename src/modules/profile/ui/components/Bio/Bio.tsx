@@ -2,22 +2,16 @@ import "./bio.style.css";
 import { MinusIcon } from "lucide-react";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
-import { useGetAccountQuery } from "@/modules/profile/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useProfile } from "@/modules/profile/hooks/useProfile";
+import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 
 const Bio = () => {
   const { t } = useTranslation();
-  const { access_token } = useAuthStore();
 
-  const { data: account } = useGetAccountQuery(undefined, {
-    skip: !access_token,
-  });
-  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
-    skip: !access_token,
-  });
+  const { profile } = useProfile();
+  const { privacySettings } = usePrivacySettings();
 
   return (
     <section className="profile-page-section" aria-labelledby="bio-heading">
@@ -46,7 +40,7 @@ const Bio = () => {
           />
         </div>
       </div>
-      <p className="profile-bio">{account?.bio ?? <MinusIcon />}</p>
+      <p className="profile-bio">{profile?.bio ?? <MinusIcon />}</p>
     </section>
   );
 };

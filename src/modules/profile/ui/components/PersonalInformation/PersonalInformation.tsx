@@ -11,30 +11,18 @@ import "./personalInformation.style.css";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
 import { DDMMMMYYY } from "@/common/utils/formatValues";
-import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
+import { useUser } from "@/modules/profile/hooks/useUser";
+import { useProfile } from "@/modules/profile/hooks/useProfile";
+import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import Button from "@/components/ui/CustomButton/Button/Button";
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
 
-  const { access_token } = useAuthStore();
-
-  const {
-    data: user,
-    isSuccess: isUserSuccess,
-    isError: isUserError,
-  } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
-  const { data: profile } = useGetAccountQuery(undefined, {
-    skip: !access_token || !isUserSuccess || isUserError,
-  });
-  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
-    skip: !access_token || !isUserSuccess || isUserError,
-  });
+  const { user } = useUser();
+  const { profile } = useProfile();
+  const { privacySettings } = usePrivacySettings();
 
   return (
     <div>

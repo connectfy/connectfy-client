@@ -52,7 +52,8 @@ import {
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { useGetAccountQuery, useGetMeQuery } from "@/modules/profile/api/api";
+import { useUser } from "@/modules/profile/hooks/useUser";
+import { useProfile } from "@/modules/profile/hooks/useProfile";
 import {
   useDeactivateAccountMutation,
   useLogoutMutation,
@@ -60,12 +61,12 @@ import {
 } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
-import { useGetGeneralSettingsQuery } from "../../GeneralSettings/api/api";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { useDispatch } from "react-redux";
 import { COUNTRIES } from "@/common/constants/constants";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import TwoFactorModal from "./components/Modal/TwoFactorModal/TwoFactorModal";
+import { useGeneralSettings } from "../../GeneralSettings/hooks/useGeneralSettings";
 
 const AccountSettings: FC = () => {
   const navigate = useNavigate();
@@ -73,36 +74,22 @@ const AccountSettings: FC = () => {
   const { t, i18n } = useTranslation();
   const { clear } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { access_token, authenticateToken } = useAuthStore();
+  const { authenticateToken } = useAuthStore();
 
   const processedTokenRef = useRef<string | null>(null);
   const { showResponseErrors } = useErrors();
   const { theme } = useTheme();
 
-  const {
-    data: user,
-    isSuccess: isUserSuccess,
-    isError: isUserError,
-    isLoading: LOADING_USER,
-  } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
+  const { user, isLoading: LOADING_USER } = useUser();
 
   const { provider, isTwoFactorEnabled } = user ?? {};
   const usesOAuth =
     provider === PROVIDER.GOOGLE || provider === PROVIDER.FACEBOOK;
   const hasPhoneNumber = !!user?.phoneNumber?.number;
 
-  const { data: account, isLoading: LOADING_ACCOUNT } = useGetAccountQuery(
-    undefined,
-    {
-      skip: !access_token || !isUserSuccess || isUserError,
-    },
-  );
-  const { data: generalSettings, isLoading: LOADING_GENERAL_SETTINGS } =
-    useGetGeneralSettingsQuery(undefined, {
-      skip: !access_token || !isUserSuccess || isUserError,
-    });
+  const { profile, isLoading: LOADING_ACCOUNT } = useProfile();
+  const { generalSettings, isLoading: LOADING_GENERAL_SETTINGS } =
+    useGeneralSettings();
 
   const [logout, { isLoading: LOADING_LOGOUT }] = useLogoutMutation();
   const [deactivateAccount, { isLoading: LOADING_DEACTIVATE_ACCOUNT }] =
@@ -389,7 +376,7 @@ const AccountSettings: FC = () => {
                     <p className="account-info-item-value">
                       <Clock size={16} className="account-info-item-icon" />
                       {showDateWithHour(
-                        account?.lastSeen as Date,
+                        profile?.lastSeen as Date,
                         generalSettings?.timeZone.dateFormat as DATE_FORMAT,
                         generalSettings?.timeZone.timeFormat as TIME_FORMAT,
                         " - ",

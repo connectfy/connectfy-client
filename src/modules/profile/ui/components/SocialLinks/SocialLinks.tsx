@@ -4,10 +4,9 @@ import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { ISocialLink } from "@/modules/profile/types/types";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
@@ -141,12 +140,8 @@ const SocialLinkItem = memo(
 const SocialLinks = () => {
   const { t } = useTranslation();
 
-  const { access_token } = useAuthStore();
-
   const socialLinks: ISocialLink[] = [];
-  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
-    skip: !access_token,
-  });
+  const { privacySettings } = usePrivacySettings();
 
   const handleSocialAction = (action: string, link: ISocialLink) => {
     switch (action) {

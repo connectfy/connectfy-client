@@ -1,8 +1,6 @@
 import { LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
 
 interface ThemeContextType {
   theme: THEME;
@@ -14,18 +12,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { access_token } = useAuthStore();
-
-  const { isSuccess: isMeSuccess, isError: isMeError } = useGetMeQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
-
-  const { data } = useGetGeneralSettingsQuery(undefined, {
-    skip: !access_token || !isMeSuccess || isMeError,
-  });
+  const { data } = useGeneralSettings();
 
   // 1. İlkin dəyəri hər zaman LocalStorage-dan götürürük
   const [theme, setTheme] = useState<THEME>(() => {

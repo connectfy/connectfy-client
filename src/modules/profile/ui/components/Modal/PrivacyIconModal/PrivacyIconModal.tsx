@@ -8,12 +8,9 @@ import { useTranslation } from "react-i18next";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 import { snack } from "@/common/utils/snackManager";
 import CloseButton from "@/components/ui/CustomButton/CloseButton/CloseButton";
-import {
-  useEditPrivacySettingsMutation,
-  useGetPrivacySettingsQuery,
-} from "@/modules/settings/PrivacySettings/api/api";
+import { useEditPrivacySettingsMutation } from "@/modules/settings/PrivacySettings/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 
 interface Props {
   open: boolean;
@@ -30,11 +27,7 @@ const PrivacyIconModal: FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { access_token } = useAuthStore();
-
-  const { data: privacySettings } = useGetPrivacySettingsQuery(undefined, {
-    skip: !access_token,
-  });
+  const { privacySettings } = usePrivacySettings();
   const [updatePrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();
   const { showResponseErrors } = useErrors();

@@ -19,35 +19,26 @@ import { snack } from "@/common/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
-import {
-  useEditNotificationSettingsMutation,
-  useGetNotificationSettingsQuery,
-} from "../api/api";
+import { useEditNotificationSettingsMutation } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditNotificationSettings } from "../types/types";
+import { useNotificationSettings } from "../hooks/useNotificationSettings";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { access_token } = useAuthStore();
-
-  const { data, isLoading: LOADING_GET } = useGetNotificationSettingsQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
+  const { notificationSettings, isLoading: LOADING_GET } =
+    useNotificationSettings();
   const [editNotificationSettings, { isLoading: LOADING_UPDATE }] =
     useEditNotificationSettingsMutation();
 
   const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
-    initialValues: initialState(data!),
+    initialValues: initialState(notificationSettings!),
     validateOnBlur: false,
     validateOnChange: false,
     enableReinitialize: true,
@@ -55,11 +46,11 @@ const NotificationSettings = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const changedData = getChangedData<IEditNotificationSettings>(
-          data!,
+          notificationSettings!,
           values,
         );
         values = {
-          _id: data!._id,
+          _id: notificationSettings!._id,
           ...changedData,
         };
         await editNotificationSettings(values).unwrap();

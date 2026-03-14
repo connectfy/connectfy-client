@@ -9,10 +9,10 @@ import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
 import { IAuthenticateUser } from "@/modules/auth/types/types";
 import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
-import { useGetMeQuery } from "@/modules/profile/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useUser } from "@/modules/profile/hooks/useUser";
 
 interface Props {
   open: boolean;
@@ -27,7 +27,7 @@ const AuthenticateModal: FC<Props> = ({
   onAuthenticate,
   authType,
 }) => {
-  const { access_token, setToken } = useAuthStore();
+  const { setToken } = useAuthStore();
   const { t } = useTranslation();
   const { showResponseErrors } = useErrors();
 
@@ -36,9 +36,7 @@ const AuthenticateModal: FC<Props> = ({
     { isLoading: LOADING_AUTHENTICATE_USER, error: ERROR_AUTHENTICATE_USER },
   ] = useAuthenticateUserMutation();
 
-  const { data: user } = useGetMeQuery(undefined, {
-    skip: !access_token,
-  });
+  const { user } = useUser();
 
   const { provider } = user ?? {};
   const usesPasswordAuth = provider === PROVIDER.PASSWORD;

@@ -9,7 +9,7 @@ import { checkEmptyString } from "@/common/utils/checkValues";
 import { snack } from "@/common/utils/snackManager";
 import { COUNTRIES } from "@/common/constants/constants";
 import { ChevronRight, Pencil, Trash } from "lucide-react";
-import { useGetMeQuery } from "@/modules/profile/api/api";
+import { useUser } from "@/modules/profile/hooks/useUser";
 import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
@@ -22,10 +22,10 @@ interface Props {
 
 const PhoneNumberModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const { authenticateToken, access_token } = useAuthStore();
+  const { authenticateToken } = useAuthStore();
   const { showResponseErrors } = useErrors();
 
-  const { data: user } = useGetMeQuery(undefined, { skip: !access_token });
+  const { user } = useUser();
   const [updatePhoneNumber, { isLoading }] = useUpdatePhoneNumberMutation();
 
   const hasPhoneNumber = !!user?.phoneNumber;

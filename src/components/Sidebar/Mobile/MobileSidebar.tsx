@@ -4,16 +4,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/material";
-import { useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useUser } from "@/modules/profile/hooks/useUser";
 import Button from "@/components/ui/CustomButton/Button/Button";
 
 const MobileSidebar = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { access_token } = useAuthStore();
-  const { data: userData } = useGetMeQuery(undefined, { skip: !access_token });
+  const { user } = useUser();
 
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
@@ -84,7 +82,7 @@ const MobileSidebar = () => {
               <div className="relative">
                 {item.key === "profile" ? (
                   <Avatar
-                    src={userData?.avatar ?? undefined}
+                    src={user?.avatar ?? undefined}
                     sx={{
                       width: 24,
                       height: 24,

@@ -20,28 +20,18 @@ import { snack } from "@/common/utils/snackManager";
 import { useBlocker } from "@/hooks/useBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import SaveChangesModal from "@/components/Modal/SaveChangesModal/SaveChangesModal";
-import {
-  useGetPrivacySettingsQuery,
-  useEditPrivacySettingsMutation,
-} from "../api/api";
+import { useEditPrivacySettingsMutation } from "../api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
 import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditPrivacySettings } from "../types/types";
+import { usePrivacySettings } from "../hooks/usePrivacySettings";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { access_token } = useAuthStore();
-
-  const { data, isLoading: LOADING_GET } = useGetPrivacySettingsQuery(
-    undefined,
-    {
-      skip: !access_token,
-    },
-  );
+  const { privacySettings, isLoading: LOADING_GET } = usePrivacySettings();
 
   const [editPrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();
@@ -49,16 +39,19 @@ const PrivacySettings = () => {
   const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
-    initialValues: initialState(data),
+    initialValues: initialState(privacySettings!),
     validateOnBlur: false,
     validateOnChange: false,
     enableReinitialize: true,
     validate: (values) => validatePrivacySettings(values, t),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const changedData = getChangedData<IEditPrivacySettings>(data!, values);
+        const changedData = getChangedData<IEditPrivacySettings>(
+          privacySettings!,
+          values,
+        );
         values = {
-          _id: data!._id,
+          _id: privacySettings!._id,
           ...changedData,
         };
         await editPrivacySettings(values).unwrap();
