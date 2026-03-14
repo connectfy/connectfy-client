@@ -4,8 +4,10 @@ import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
-import { Globe } from "lucide-react";
 import SelectionModal from "@/components/Modal/SelectionModal/SelectionModal";
+import Input from "@/components/ui/CustomInput/Input/Input";
+import Button from "@/components/ui/CustomButton/Button/Button";
+import { Globe, ClipboardList, ClipboardCheck } from "lucide-react";
 
 const TermsAndConditions = () => {
   const { i18n, t } = useTranslation();
@@ -57,6 +59,20 @@ const TermsAndConditions = () => {
         return <span className="fi fi-gb"></span>;
     }
   }, [lang]);
+
+  const [copied, setCopied] = useState(false);
+  const email = "connectfy.team@gmail.com";
+
+  const handleCopy = () => {
+    window.navigator.clipboard.writeText(email);
+    setCopied(true);
+
+    if (typeof snack !== "undefined") {
+      snack.success(t("common.email_copied"));
+    }
+
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <Fragment>
@@ -132,20 +148,28 @@ const TermsAndConditions = () => {
         <section className="terms-section">
           <h2>{t("terms.section_11_title")}</h2>
           <p>{t("terms.section_11_p1")}</p>
-          <Tooltip title={t("terms.contact_email_text")} placement="top">
-            <p
-              className="contact-email"
-              onClick={() => {
-                window.navigator.clipboard.writeText(
-                  "connectfy.team@gmail.com",
-                );
-
-                snack.success(t("common.email_copied"));
-              }}
-            >
-              connectfy.team@gmail.com
-            </p>
-          </Tooltip>
+          <div className="">
+            <div className="relative">
+              <label htmlFor="email-copy-text" className="sr-only">
+                Email
+              </label>
+              <Input
+                inputSize="medium"
+                id="email-copy-text"
+                type="text"
+                className="col-span-6 border text-sm rounded-lg block w-full px-3 py-2.5 shadow-sm focus:outline-none bg-(--input-bg) border-(--input-border) text-(--text-primary)"
+                value={email}
+                // disabled
+                readOnly
+              />
+              <Button
+                onClick={handleCopy}
+                className="absolute flex items-center end-1.5 top-1/2 -translate-y-1/2 border font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none transition-colors bg-(--primary-color) text-(--text-primary) border-(--auth-glass-border)"
+              >
+                {!copied ? <ClipboardList /> : <ClipboardCheck />}
+              </Button>
+            </div>
+          </div>
         </section>
 
         <footer className="terms-footer">
