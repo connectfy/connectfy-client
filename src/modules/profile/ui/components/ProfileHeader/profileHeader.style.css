@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: rgba(var(--bg-color-rgb), 0.95);
+  background-color: var(--auth-main-bg);
   z-index: 100;
   border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(10px);

@@ -1,5 +1,4 @@
-import { Fragment, memo } from "react";
-import "./privacyIcon.style.css";
+import { memo } from "react";
 import { Globe, Users, Lock } from "lucide-react";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import useBoolean from "@/hooks/useBoolean";
@@ -13,24 +12,36 @@ interface Props {
   fieldName: keyof IEditPrivacySettings;
 }
 
-export const PrivacyIcon = memo((data: Props) => {
+export const PrivacyIcon = memo(({ privacy, fieldName }: Props) => {
   const { t } = useTranslation();
-  const { privacy, fieldName } = data;
-
   const { open, onOpen, onClose } = useBoolean();
 
+  // İkonlar üçün ortaq class
+  const iconClassName =
+    "text-(--muted-color) transition-all duration-300 group-hover:text-(--primary-color)";
+
   const icons = {
-    EVERYONE: <Globe size={16} className="profile-privacy-icon" />,
-    MY_FRIENDS: <Users size={16} className="profile-privacy-icon" />,
-    NOBODY: <Lock size={16} className="profile-privacy-icon" />,
+    [PRIVACY_SETTINGS_CHOICE.EVERYONE]: (
+      <Globe size={16} className={iconClassName} />
+    ),
+    [PRIVACY_SETTINGS_CHOICE.MY_FRIENDS]: (
+      <Users size={16} className={iconClassName} />
+    ),
+    [PRIVACY_SETTINGS_CHOICE.NOBODY]: (
+      <Lock size={16} className={iconClassName} />
+    ),
   };
 
   return (
-    <Fragment>
+    <>
       <Tooltip placement="top" title={t(`enum.${privacy}`)}>
-        <span className="profile-privacy-badge" onClick={onOpen}>
+        <button
+          type="button"
+          onClick={onOpen}
+          className="group flex items-center justify-center p-1.5 rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer border-none bg-transparent"
+        >
           {icons[privacy]}
-        </span>
+        </button>
       </Tooltip>
 
       <PrivacyIconModal
@@ -39,6 +50,6 @@ export const PrivacyIcon = memo((data: Props) => {
         currentPrivacy={privacy}
         fieldName={fieldName}
       />
-    </Fragment>
+    </>
   );
 });

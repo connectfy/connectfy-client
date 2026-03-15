@@ -42,6 +42,24 @@
   --skeleton-base: #e2e8f0;
   --skeleton-highlight: #f8fafc;
   --skeleton-card-bg: #e5e7eb;
+
+  --info-card-bg: #f8fafc;
+  --info-card-border: #f1f5f9;
+
+  --icon-blue-bg: #e0e7ff;
+  --icon-blue-text: #4f46e5;
+
+  --icon-purple-bg: #f3e8ff;
+  --icon-purple-text: #9333ea;
+
+  --icon-green-bg: #dcfce7;
+  --icon-green-text: #16a34a;
+
+  --icon-orange-bg: #ffedd5;
+  --icon-orange-text: #ea580c;
+
+  --btn-edit-bg: #dcfce7;
+  --btn-edit-text: #16a34a;
 }
 
 [data-theme="dark"] {
@@ -85,4 +103,22 @@
   --skeleton-base: rgba(255, 255, 255, 0.05);
   --skeleton-highlight: rgba(255, 255, 255, 0.1);
   --skeleton-card-bg: #1a1a1a;
+
+  --info-card-bg: #1e1e24;
+  --info-card-border: #2a2a32;
+
+  --icon-blue-bg: rgba(79, 70, 229, 0.15);
+  --icon-blue-text: #818cf8;
+
+  --icon-purple-bg: rgba(147, 51, 234, 0.15);
+  --icon-purple-text: #c084fc;
+
+  --icon-green-bg: rgba(22, 163, 74, 0.15);
+  --icon-green-text: #4ade80;
+
+  --icon-orange-bg: rgba(234, 88, 12, 0.15);
+  --icon-orange-text: #fb923c;
+
+  --btn-edit-bg: rgba(22, 163, 74, 0.2);
+  --btn-edit-text: #4ade80;
 }

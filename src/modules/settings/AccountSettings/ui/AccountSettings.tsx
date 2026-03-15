@@ -197,9 +197,10 @@ const AccountSettings: FC = () => {
     const formattedNumber = formatPhoneNumber(
       user?.phoneNumber?.number || "",
       country.format || "",
+      country.code,
     );
 
-    return country.code + " " + formattedNumber;
+    return formattedNumber;
   };
 
   const items = useMemo(

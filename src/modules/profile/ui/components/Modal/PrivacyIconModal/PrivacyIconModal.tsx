@@ -1,13 +1,11 @@
 import { FC, useState } from "react";
-import "./privacyIconModal.style.css";
 import Modal from "@/components/Modal";
-import { Globe, Users, Lock, Shield, Check } from "lucide-react";
+import { Globe, Users, Lock, Shield, Check, X } from "lucide-react";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTranslation } from "react-i18next";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 import { snack } from "@/common/utils/snackManager";
-import CloseButton from "@/components/ui/CustomButton/CloseButton/CloseButton";
 import { useEditPrivacySettingsMutation } from "@/modules/settings/PrivacySettings/api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
@@ -26,7 +24,6 @@ const PrivacyIconModal: FC<Props> = ({
   fieldName,
 }) => {
   const { t } = useTranslation();
-
   const { privacySettings } = usePrivacySettings();
   const [updatePrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();
@@ -36,21 +33,21 @@ const PrivacyIconModal: FC<Props> = ({
     {
       value: PRIVACY_SETTINGS_CHOICE.EVERYONE,
       icon: Globe,
-      iconClass: "everyone",
+      gradient: "from-blue-500 to-blue-700",
       title: t(`enum.${PRIVACY_SETTINGS_CHOICE.EVERYONE}`),
       description: t("common.privacy_everyone_description"),
     },
     {
       value: PRIVACY_SETTINGS_CHOICE.MY_FRIENDS,
       icon: Users,
-      iconClass: "friends",
+      gradient: "from-amber-500 to-amber-700",
       title: t(`enum.${PRIVACY_SETTINGS_CHOICE.MY_FRIENDS}`),
       description: t("common.privacy_friends_description"),
     },
     {
       value: PRIVACY_SETTINGS_CHOICE.NOBODY,
       icon: Lock,
-      iconClass: "nobody",
+      gradient: "from-violet-500 to-violet-700",
       title: t(`enum.${PRIVACY_SETTINGS_CHOICE.NOBODY}`),
       description: t("common.privacy_nobody_description"),
     },
@@ -80,55 +77,87 @@ const PrivacyIconModal: FC<Props> = ({
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <div className="privacy-modal-content">
-        <div className="privacy-modal-header">
-          <div className="privacy-modal-header-top">
-            <h2 className="privacy-modal-title">
-              <Shield size={24} color="var(--primary-color)" />
+      <div className="w-[95%] max-w-[480px] bg-(--bg-color) rounded-2xl shadow-(--card-shadow) overflow-y-auto animate-slide-up duration-300">
+        {/* Header */}
+        <div className="flex flex-col p-6 border-b border-(--border-color) sm:p-7">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="flex items-center gap-2.5 text-xl font-bold text-(--text-color) m-0">
+              <Shield size={24} className="text-(--primary-color)" />
               {t("common.privacy_title")}
             </h2>
 
-            <CloseButton onClick={handleClose} />
+            {/* Yeni Close Button */}
+            <Button
+              onClick={handleClose}
+              className="flex items-center justify-center w-8 h-8 transition-all text-(--muted-color) hover:bg-black/5 dark:hover:bg-white/5 hover:text-(--text-color)"
+              aria-label="Close"
+            >
+              <X size={18} />
+            </Button>
           </div>
-
-          <p className="privacy-modal-subtitle">
+          <p className="m-0 text-sm font-medium text-(--muted-color)">
             {t("common.privacy_subtitle")}
           </p>
         </div>
 
-        <div className="privacy-modal-body">
-          {privacyOptions.map((option) => {
-            const Icon = option.icon;
-            const isActive = privacy === option.value;
+        {/* Body */}
+        <div className="p-5 sm:p-7">
+          <div className="flex flex-col gap-3 mb-6">
+            {privacyOptions.map((option) => {
+              const Icon = option.icon;
+              const isActive = privacy === option.value;
 
-            return (
-              <div
-                key={option.value}
-                className={`privacy-option ${isActive ? "active" : ""}`}
-                onClick={() => setPrivacy(option.value)}
-              >
-                <div className={`privacy-option-icon ${option.iconClass}`}>
-                  <Icon size={24} color="#fff" />
-                </div>
-
-                <div className="privacy-option-content">
-                  <div className="privacy-option-header">
-                    <h3 className="privacy-option-title">{option.title}</h3>
-                    <div className="privacy-option-check">
-                      {isActive && <Check size={14} color="#fff" />}
-                    </div>
+              return (
+                <div
+                  key={option.value}
+                  onClick={() => setPrivacy(option.value)}
+                  className={`group flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all border-2 
+                    ${
+                      isActive
+                        ? "bg-(--active-bg) border-(--primary-color) shadow-(--active-shadow)"
+                        : "bg-(--bg-color) border-transparent shadow-(--card-shadow) hover:bg-(--active-bg-2) hover:-translate-y-0.5 duration-500"
+                    }`}
+                >
+                  {/* Icon Box */}
+                  <div
+                    className={`flex items-center justify-center shrink-0 w-11 h-11 rounded-xl bg-linear-to-br transition-transform duration-500 ${option.gradient} ${isActive ? "scale-110 shadow-lg shadow-black/20" : ""}`}
+                  >
+                    <Icon size={22} className="text-white" />
                   </div>
-                  <p className="privacy-option-description">
-                    {option.description}
-                  </p>
+
+                  {/* Content */}
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="m-0 text-base font-bold text-(--text-color)">
+                        {option.title}
+                      </h3>
+
+                      {/* Custom Checkbox */}
+                      <div
+                        className={`flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all 
+                        ${
+                          isActive
+                            ? "bg-(--primary-color) border-(--primary-color)"
+                            : "border-(--border-color)"
+                        }`}
+                      >
+                        {isActive && (
+                          <Check size={12} className="text-white stroke-3" />
+                        )}
+                      </div>
+                    </div>
+                    <p className="m-0 text-sm leading-relaxed text-(--muted-color)">
+                      {option.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
 
           <Button
             onClick={submitSelect}
-            style={{ marginTop: "10px" }}
+            className="w-full py-3 font-bold transition-all rounded-xl bg-(--primary-color) translate-y-0 hover:-translate-y-0.5 duration-500"
             disabled={currentPrivacy === privacy || LOADING_UPDATE}
             isLoading={LOADING_UPDATE}
           >

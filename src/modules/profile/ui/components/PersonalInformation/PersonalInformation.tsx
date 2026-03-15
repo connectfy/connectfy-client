@@ -3,137 +3,181 @@ import {
   Phone,
   Mail,
   MapPin,
-  UserIcon,
   MapMinusIcon,
-  Minus,
+  Contact,
+  Users,
 } from "lucide-react";
-import "./personalInformation.style.css";
-import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import { useTranslation } from "react-i18next";
-import { DDMMMMYYY } from "@/common/utils/formatValues";
+import { DDMMMMYYY, formatPhoneNumber } from "@/common/utils/formatValues";
 import { useUser } from "@/modules/profile/hooks/useUser";
 import { useProfile } from "@/modules/profile/hooks/useProfile";
 import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
+import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
+import { COUNTRIES } from "@/common/constants/constants";
+
+export interface IInfoItem {
+  id: string;
+  icon: React.ReactNode;
+  label: string;
+  value: string | React.ReactNode;
+  colorClass: string;
+  privacyField: keyof IEditPrivacySettings;
+}
 
 const PersonalInformation = () => {
   const { t } = useTranslation();
-
-  const { user } = useUser();
+  const { user, hasPhoneNumber } = useUser();
   const { profile } = useProfile();
   const { privacySettings } = usePrivacySettings();
 
+  const phoneNumberMask = COUNTRIES.find(
+    (country) => country.code === user?.phoneNumber?.countryCode,
+  )?.format;
+
+  const isMobile = window.innerWidth < 1024;
+
+  // Məlumat kartlarını dinamik render etmək üçün obyektlər massivi
+  const infoItems: IInfoItem[] = [
+    {
+      id: "email",
+      icon: <Mail size={isMobile ? 15 : 20} />,
+      label: t("common.email"),
+      value: user?.email || "Məlumat yoxdur",
+      colorClass:
+        "bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400",
+      privacyField: "email",
+    },
+    {
+      id: "gender",
+      icon: <Users size={isMobile ? 15 : 20} />,
+      label: t("common.gender"),
+      value: profile?.gender || "Məlumat yoxdur",
+      colorClass:
+        "bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400",
+      privacyField: "gender",
+    },
+    {
+      id: "phone",
+      icon: <Phone size={isMobile ? 15 : 20} />,
+      label: t("common.phone"),
+      value: !hasPhoneNumber
+        ? formatPhoneNumber(
+            user?.phoneNumber?.number as string,
+            phoneNumberMask as string,
+            user?.phoneNumber?.countryCode as string,
+          )
+        : t("common.no_phone_data"),
+      colorClass:
+        "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
+      privacyField: "phoneNumber",
+    },
+    {
+      id: "birthday",
+      icon: <Cake size={isMobile ? 15 : 20} />,
+      label: t("common.birthday"),
+      value: profile?.birthdayDate
+        ? DDMMMMYYY(profile?.birthdayDate)
+        : "Məlumat yoxdur",
+      colorClass:
+        "bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400",
+      privacyField: "birthdayDate",
+    },
+    {
+      id: "location",
+      icon: <MapPin size={isMobile ? 15 : 20} />,
+      label: t("common.location"),
+      value: profile?.location || (
+        <span className="flex items-center gap-1 italic font-medium text-slate-400">
+          <MapMinusIcon size={16} /> {t("common.no_location_info")}
+        </span>
+      ),
+      colorClass:
+        "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
+      privacyField: "location",
+    },
+  ];
+
   return (
-    <div>
-      <section
-        className="profile-page-section"
-        aria-labelledby="personal-info-heading"
-      >
-        <div className="profile-section-header">
-          <h2 id="personal-info-heading" className="profile-page-section-title">
+    <section
+      className="p-8 mb-8 px-4 md:px-8 transition-all duration-300 bg-(--auth-main-bg) rounded-[20px] border border-(--auth-glass-border) shadow-(--card-shadow)"
+      aria-labelledby="personal-info-heading"
+    >
+      {/* Header */}
+      <div className="flex flex-row items-center justify-between gap-3 mb-6 md:mb-8">
+        {/* Sol tərəf: İkon və Başlıq */}
+        <div className="flex items-center gap-2 md:gap-3">
+          <Contact className="w-6 h-6 md:w-7 md:h-7 text-(--primary-color)" />
+          <h2
+            id="personal-info-heading"
+            className="m-0 text-lg font-bold md:text-2xl text-(--text-color)"
+          >
             {t("common.personal_information")}
           </h2>
-          <div className="profile-page-section-actions">
-            <Button
-              className="profile-edit-button"
-              aria-label="Edit personal information"
-              title={t("common.edit")}
-              icon={
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: "16px" }}
-                >
-                  edit
-                </span>
-              }
-            />
-          </div>
         </div>
 
-        <div className="profile-info-grid">
-          <div className="profile-info-card">
-            <div className="profile-info-header">
-              <Mail size={16} aria-hidden="true" />
-              <span className="profile-info-label">{t("common.email")}</span>
-              <PrivacyIcon
-                privacy={
-                  privacySettings?.email || PRIVACY_SETTINGS_CHOICE.EVERYONE
-                }
-                fieldName="email"
-              />
-            </div>
-            <p className="profile-info-value">{user?.email}</p>
-          </div>
+        {/* Sağ tərəf: Düymə */}
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Böyük ekranlar üçün düymə (1024px-dən yuxarı görünür) */}
+          <Button
+            className="hidden lg:flex bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-4 py-2 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none text-sm whitespace-nowrap"
+            title={t("common.edit")}
+          />
 
-          <div className="profile-info-card">
-            <div className="profile-info-header">
-              <UserIcon size={16} aria-hidden="true" />
-              <span className="profile-info-label">{t("common.gender")}</span>
-              <PrivacyIcon
-                privacy={
-                  privacySettings?.gender || PRIVACY_SETTINGS_CHOICE.EVERYONE
-                }
-                fieldName="gender"
-              />
-            </div>
-            <p className="profile-info-value">{profile?.gender}</p>
-          </div>
-
-          <div className="profile-info-card">
-            <div className="profile-info-header">
-              <MapPin size={16} aria-hidden="true" />
-              <span className="profile-info-label">{t("common.location")}</span>
-              <PrivacyIcon
-                privacy={
-                  privacySettings?.location || PRIVACY_SETTINGS_CHOICE.EVERYONE
-                }
-                fieldName="location"
-              />
-            </div>
-            <p className="profile-info-value">
-              {profile?.location ?? <MapMinusIcon />}
-            </p>
-          </div>
-
-          <div className="profile-info-card">
-            <div className="profile-info-header">
-              <Cake size={16} aria-hidden="true" />
-              <span className="profile-info-label">{t("common.birthday")}</span>
-              <PrivacyIcon
-                privacy={
-                  privacySettings?.birthdayDate ||
-                  PRIVACY_SETTINGS_CHOICE.EVERYONE
-                }
-                fieldName="birthdayDate"
-              />
-            </div>
-            <p className="profile-info-value">
-              {DDMMMMYYY(
-                profile?.birthdayDate || PRIVACY_SETTINGS_CHOICE.EVERYONE,
-              )}
-            </p>
-          </div>
-
-          <div className="profile-info-card">
-            <div className="profile-info-header">
-              <Phone size={16} aria-hidden="true" />
-              <span className="profile-info-label">{t("common.phone")}</span>
-              <PrivacyIcon
-                privacy={
-                  privacySettings?.phoneNumber ||
-                  PRIVACY_SETTINGS_CHOICE.EVERYONE
-                }
-                fieldName="phoneNumber"
-              />
-            </div>
-            <p className="profile-info-value">
-              {user?.phoneNumber?.fullPhoneNumber || <Minus />}
-            </p>
-          </div>
+          {/* Mobil ekranlar üçün ikonlu düymə (1024px-dən aşağı görünür) */}
+          <Button
+            className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-3 py-1 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none"
+            icon={
+              <span className="text-[16px]! material-symbols-outlined">
+                person_edit
+              </span>
+            }
+          />
         </div>
-      </section>
-    </div>
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {infoItems.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
+          >
+            {/* Icon Box */}
+            <div
+              className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
+            >
+              {item.icon}
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col flex-1 gap-1 overflow-hidden">
+              <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
+                {item.label}
+              </span>
+              <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
+                {item.value}
+              </div>
+            </div>
+
+            {/* Privacy Icon */}
+            <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
+              <PrivacyIcon
+                privacy={
+                  (privacySettings?.[
+                    item.privacyField
+                  ] as PRIVACY_SETTINGS_CHOICE) ||
+                  PRIVACY_SETTINGS_CHOICE.EVERYONE
+                }
+                fieldName={item.privacyField as keyof IEditPrivacySettings}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 };
 

@@ -56,7 +56,11 @@ export function formatTimeToSeconds(seconds: number) {
 // ====================
 // Format Phone Number
 // ====================
-export function formatPhoneNumber(value: string, mask: string) {
+export function formatPhoneNumber(
+  value: string,
+  mask: string,
+  countryCode?: string,
+) {
   if (!value) return "";
 
   let formatted = "";
@@ -70,5 +74,7 @@ export function formatPhoneNumber(value: string, mask: string) {
       formatted += mask[i];
     }
   }
+
+  if (countryCode) return `${countryCode} ${formatted}`;
   return formatted;
 }

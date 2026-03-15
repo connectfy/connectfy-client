@@ -12,11 +12,13 @@ export function useUser() {
   const user = result.data;
   const usesPasswordAuth = user?.provider === PROVIDER.PASSWORD;
   const usesOAuth = user?.provider === PROVIDER.GOOGLE;
+  const hasPhoneNumber = user?.phoneNumber?.fullPhoneNumber;
 
   return {
     user,
     ...result,
     usesPasswordAuth,
     usesOAuth,
+    hasPhoneNumber,
   };
 }
