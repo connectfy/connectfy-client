@@ -13,7 +13,7 @@ import { useDeleteAccountMutation } from "@/modules/settings/AccountSettings/api
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
-import Textarea from "@/components/ui/TextArea/Textarea";
+import Textarea from "@/components/ui/CustomTextArea/TextArea/Textarea";
 
 interface Props {
   open: boolean;

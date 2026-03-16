@@ -7,6 +7,7 @@ import {
   Contact,
   Users,
 } from "lucide-react";
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { DDMMMMYYY, formatPhoneNumber } from "@/common/utils/formatValues";
 import { useUser } from "@/modules/profile/hooks/useUser";
@@ -17,6 +18,8 @@ import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 import { COUNTRIES } from "@/common/constants/constants";
+import useBoolean from "@/hooks/useBoolean";
+import PersonalInfoModal from "../Modal/PersonalInfoModal/PersonalInfoModal";
 
 export interface IInfoItem {
   id: string;
@@ -32,6 +35,7 @@ const PersonalInformation = () => {
   const { user, hasPhoneNumber } = useUser();
   const { profile } = useProfile();
   const { privacySettings } = usePrivacySettings();
+  const { open, onOpen, onClose } = useBoolean();
 
   const phoneNumberMask = COUNTRIES.find(
     (country) => country.code === user?.phoneNumber?.countryCode,
@@ -63,7 +67,7 @@ const PersonalInformation = () => {
       id: "phone",
       icon: <Phone size={isMobile ? 15 : 20} />,
       label: t("common.phone"),
-      value: !hasPhoneNumber
+      value: hasPhoneNumber
         ? formatPhoneNumber(
             user?.phoneNumber?.number as string,
             phoneNumberMask as string,
@@ -101,83 +105,89 @@ const PersonalInformation = () => {
   ];
 
   return (
-    <section
-      className="p-8 mb-8 px-4 md:px-8 transition-all duration-300 bg-(--auth-main-bg) rounded-[20px] border border-(--auth-glass-border) shadow-(--card-shadow)"
-      aria-labelledby="personal-info-heading"
-    >
-      {/* Header */}
-      <div className="flex flex-row items-center justify-between gap-3 mb-6 md:mb-8">
-        {/* Sol tərəf: İkon və Başlıq */}
-        <div className="flex items-center gap-2 md:gap-3">
-          <Contact className="w-6 h-6 md:w-7 md:h-7 text-(--primary-color)" />
-          <h2
-            id="personal-info-heading"
-            className="m-0 text-lg font-bold md:text-2xl text-(--text-color)"
-          >
-            {t("common.personal_information")}
-          </h2>
-        </div>
-
-        {/* Sağ tərəf: Düymə */}
-        <div className="flex items-center gap-2 md:gap-3">
-          {/* Böyük ekranlar üçün düymə (1024px-dən yuxarı görünür) */}
-          <Button
-            className="hidden lg:flex bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-4 py-2 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none text-sm whitespace-nowrap"
-            title={t("common.edit")}
-          />
-
-          {/* Mobil ekranlar üçün ikonlu düymə (1024px-dən aşağı görünür) */}
-          <Button
-            className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-3 py-1 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none"
-            icon={
-              <span className="text-[16px]! material-symbols-outlined">
-                person_edit
-              </span>
-            }
-          />
-        </div>
-      </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {infoItems.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
-          >
-            {/* Icon Box */}
-            <div
-              className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
+    <Fragment>
+      <section
+        className="p-8 mb-8 px-4 md:px-8 transition-all duration-300 bg-(--auth-main-bg) rounded-[20px] border border-(--auth-glass-border) shadow-(--card-shadow)"
+        aria-labelledby="personal-info-heading"
+      >
+        {/* Header */}
+        <div className="flex flex-row items-center justify-between gap-3 mb-6 md:mb-8">
+          {/* Sol tərəf: İkon və Başlıq */}
+          <div className="flex items-center gap-2 md:gap-3">
+            <Contact className="w-6 h-6 md:w-7 md:h-7 text-(--primary-color)" />
+            <h2
+              id="personal-info-heading"
+              className="m-0 text-lg font-bold md:text-2xl text-(--text-color)"
             >
-              {item.icon}
-            </div>
+              {t("common.personal_information")}
+            </h2>
+          </div>
 
-            {/* Content */}
-            <div className="flex flex-col flex-1 gap-1 overflow-hidden">
-              <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
-                {item.label}
-              </span>
-              <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
-                {item.value}
+          {/* Sağ tərəf: Düymə */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Böyük ekranlar üçün düymə (1024px-dən yuxarı görünür) */}
+            <Button
+              className="hidden lg:flex bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-4 py-2 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none text-sm whitespace-nowrap"
+              title={t("common.edit")}
+              onClick={onOpen}
+            />
+
+            {/* Mobil ekranlar üçün ikonlu düymə (1024px-dən aşağı görünür) */}
+            <Button
+              className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-3 py-1 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none"
+              icon={
+                <span className="text-[16px]! material-symbols-outlined">
+                  person_edit
+                </span>
+              }
+              onClick={onOpen}
+            />
+          </div>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {infoItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
+            >
+              {/* Icon Box */}
+              <div
+                className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
+              >
+                {item.icon}
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-col flex-1 gap-1 overflow-hidden">
+                <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
+                  {item.label}
+                </span>
+                <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
+                  {item.value}
+                </div>
+              </div>
+
+              {/* Privacy Icon */}
+              <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
+                <PrivacyIcon
+                  privacy={
+                    (privacySettings?.[
+                      item.privacyField
+                    ] as PRIVACY_SETTINGS_CHOICE) ||
+                    PRIVACY_SETTINGS_CHOICE.EVERYONE
+                  }
+                  fieldName={item.privacyField as keyof IEditPrivacySettings}
+                />
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Privacy Icon */}
-            <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
-              <PrivacyIcon
-                privacy={
-                  (privacySettings?.[
-                    item.privacyField
-                  ] as PRIVACY_SETTINGS_CHOICE) ||
-                  PRIVACY_SETTINGS_CHOICE.EVERYONE
-                }
-                fieldName={item.privacyField as keyof IEditPrivacySettings}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+      <PersonalInfoModal open={open} onClose={onClose} />
+    </Fragment>
   );
 };
 

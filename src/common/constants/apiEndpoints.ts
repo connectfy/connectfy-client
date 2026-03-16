@@ -29,7 +29,10 @@ export const API_ENDPOINTS = {
     DEACTIVATE_ACCOUNT: "/user/deactivate-account",
   },
   ACCOUNT: {
-    GET_ACCOUNT: "/account/profile/get",
+    PROFILE: {
+      GET: "/account/profile/get",
+      UPDATE: "/account/profile/update",
+    },
     SETTINGS: {
       GENERAL_SETTINGS: {
         GET: "/account/settings/general-settings/get",

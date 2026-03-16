@@ -1,8 +1,9 @@
 import { baseQuery } from "@/common/api/axiosBaseQuery";
 import { RESOURCE } from "@/common/enums/enums";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { IAccount, IMe } from "../types/types";
+import { IAccount, IEditProfile, IMe } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
+import { IUpdateResponse } from "@/common/interfaces/interfaces";
 
 export const profileApi = createApi({
   reducerPath: RESOURCE.PROFILE,
@@ -21,15 +22,42 @@ export const profileApi = createApi({
           : [{ type: "User", id: "LIST" }],
     }),
 
-    // getAccount
+    // ====================== GET ACCOUNT
     getAccount: builder.query<IAccount, void>({
       query: () => ({
-        url: API_ENDPOINTS.ACCOUNT.GET_ACCOUNT,
+        url: API_ENDPOINTS.ACCOUNT.PROFILE.GET,
         method: "POST",
       }),
       providesTags: ["Account"],
     }),
+
+    updateProfile: builder.mutation<IUpdateResponse, IEditProfile>({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.PROFILE.UPDATE,
+        method: "PATCH",
+        body,
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        const { _id, ...updatedFields } = arg;
+
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData("getAccount", undefined, (draft) => {
+            if (draft) {
+              Object.assign(draft, updatedFields);
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          patchResult.undo();
+        }
+      },
+      invalidatesTags: ["Account"],
+    }),
   }),
 });
 
-export const { useGetMeQuery, useGetAccountQuery } = profileApi;
+export const { useGetMeQuery, useGetAccountQuery, useUpdateProfileMutation } =
+  profileApi;

@@ -27,3 +27,8 @@ export interface FailedRequest {
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
+
+export interface IUpdateResponse {
+  success: boolean;
+  [key: string]: any;
+}

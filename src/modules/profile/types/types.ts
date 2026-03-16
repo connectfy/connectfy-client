@@ -44,3 +44,8 @@ export interface ISocialLink {
   url: string;
   platform: SOCIAL_LINK_PLATFORM;
 }
+
+export interface IEditProfile
+  extends Partial<Omit<IAccount, "_id" | "userId" | "lastSeen">> {
+  _id: string;
+}

@@ -1,7 +1,7 @@
 import "./privacySettings.style.css";
 import { CheckCircle, Shield, UserCheck } from "lucide-react";
 import { Fragment } from "react";
-import CustomSelect from "@/components/ui/CustomSelect/CustomSelect";
+import CustomSelect from "@/components/ui/Select/CustomSelect/CustomSelect";
 import { useTranslation } from "react-i18next";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
