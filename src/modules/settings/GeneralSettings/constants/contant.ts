@@ -1,6 +1,9 @@
 import {
   DATE_FORMAT,
   LANGUAGE,
+  NOTIFICATION_CONTENT_MODE,
+  NOTIFICATION_SOUND_MODE,
+  PRIVACY_SETTINGS_CHOICE,
   STARTUP_PAGE,
   THEME,
   TIME_FORMAT,
@@ -159,4 +162,42 @@ export const validateGenerateSettings = (
     )
       snack.error(t("error_messages.invalid_choice"));
   }
+};
+
+export const resetSettingsResponse = {
+  generalSettings: {
+    startupPage: STARTUP_PAGE.MESSENGER,
+    timeZone: {
+      timeFormat: TIME_FORMAT.H24,
+      dateFormat: DATE_FORMAT.DDMMYYYY,
+    },
+  },
+  privacySettings: {
+    email: PRIVACY_SETTINGS_CHOICE.NOBODY,
+    bio: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    gender: PRIVACY_SETTINGS_CHOICE.NOBODY,
+    location: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    socialLinks: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    lastSeen: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    avatar: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    messageRequest: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    birthdayDate: PRIVACY_SETTINGS_CHOICE.EVERYONE,
+    friendshipRequest: true,
+    readReceipts: true,
+  },
+  notificationSettings: {
+    notificationSoundMode: NOTIFICATION_SOUND_MODE.SOUND,
+    notificationContentMode: NOTIFICATION_CONTENT_MODE.HEADER_AND_CONTENT,
+    sendMessageSound: true,
+    receiveMessageSound: true,
+    notificationSound: true,
+    privateMessageSound: true,
+    groupMessageSound: true,
+    systemNotificationSound: true,
+    friendshipNotificationSound: true,
+    showPrivateMessageNotification: true,
+    showGroupMessageNotification: true,
+    showFriendshipNotification: true,
+    showSystemNotification: true,
+  },
 };

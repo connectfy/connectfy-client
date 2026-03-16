@@ -6,6 +6,7 @@ import {
   INotificationSettings,
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
+import { IUpdateResponse } from "@/common/interfaces/interfaces";
 
 export const notificationSettingsApi = createApi({
   reducerPath: RESOURCE.NOTIFICATION_SETTINGS,
@@ -20,9 +21,10 @@ export const notificationSettingsApi = createApi({
       }),
       providesTags: ["NotificationSettings"],
     }),
+
     // ====================== EDIT NOTIFICATION SETTINGS
     editNotificationSettings: builder.mutation<
-      INotificationSettings,
+      IUpdateResponse,
       IEditNotificationSettings
     >({
       query: (data) => ({
@@ -30,6 +32,27 @@ export const notificationSettingsApi = createApi({
         method: "PATCH",
         body: data,
       }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        const { _id, ...updatedFields } = arg;
+
+        const patchResult = dispatch(
+          notificationSettingsApi.util.updateQueryData(
+            "getNotificationSettings",
+            undefined,
+            (draft) => {
+              if (draft) {
+                Object.assign(draft, updatedFields);
+              }
+            },
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          patchResult.undo();
+        }
+      },
       invalidatesTags: ["NotificationSettings"],
     }),
   }),

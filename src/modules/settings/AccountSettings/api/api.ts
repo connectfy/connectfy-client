@@ -1,27 +1,26 @@
 import { baseQuery } from "@/common/api/axiosBaseQuery";
-import { RESOURCE } from "@/common/enums/enums";
+import {
+  PHONE_NUMBER_ACTION,
+  RESOURCE,
+  TWO_FACTOR_ACTION,
+} from "@/common/enums/enums";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
   IDeactivateAccount,
   IDeactivateAccountResponse,
   IDeleteAccount,
-  IDeleteAccountResponse,
   ILogoutResponse,
   IUpdateEmail,
   IUpdateEmailResponse,
   IUpdatePassword,
-  IUpdatePasswordResponse,
   IUpdatePhoneNumber,
-  IUpdatePhoneNumberResponse,
   IUpdateTwoFactor,
-  IUpdateTwoFactorResponse,
   IUpdateUsername,
-  IUpdateUsernameResponse,
   IVerifyChangeEmail,
-  IVerifyChangeEmailResponse,
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import { profileApi } from "@/modules/profile/api/api";
+import { IUpdateResponse } from "@/common/interfaces/interfaces";
 
 export const accountSettingsApi = createApi({
   reducerPath: RESOURCE.ACCOUNT_SETTINGS,
@@ -29,7 +28,7 @@ export const accountSettingsApi = createApi({
   tagTypes: ["User", "AccountSettings"],
   endpoints: (builder) => ({
     // ====================== UPDATE USERNAME
-    updateUsername: builder.mutation<IUpdateUsernameResponse, IUpdateUsername>({
+    updateUsername: builder.mutation<IUpdateResponse, IUpdateUsername>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.CHANGE_USERNAME,
         method: "PATCH",
@@ -61,7 +60,7 @@ export const accountSettingsApi = createApi({
        * Invalidate the User tag so other subscribers (if any) refetch.
        * If the response includes the updated user id, return it; otherwise fallback to LIST.
        */
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: ["User", "AccountSettings"],
     }),
 
     // ====================== UPDATE EMAIL
@@ -75,7 +74,7 @@ export const accountSettingsApi = createApi({
     }),
 
     // ====================== UPDATE PASSWORD
-    updatePassword: builder.mutation<IUpdatePasswordResponse, IUpdatePassword>({
+    updatePassword: builder.mutation<IUpdateResponse, IUpdatePassword>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.CHANGE_PASSWORD,
         method: "PATCH",
@@ -85,10 +84,7 @@ export const accountSettingsApi = createApi({
     }),
 
     // ====================== VERIFY CHANGE EMAIL
-    verifyChangeEmail: builder.mutation<
-      IVerifyChangeEmailResponse,
-      IVerifyChangeEmail
-    >({
+    verifyChangeEmail: builder.mutation<IUpdateResponse, IVerifyChangeEmail>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.VERIFY_CHANGE_EMAIL,
         method: "PATCH",
@@ -106,7 +102,6 @@ export const accountSettingsApi = createApi({
               (draft: any) => {
                 if (draft) {
                   draft.email = data.email;
-                  draft.updatedAt = data.updatedAt;
                 }
               },
             ),
@@ -114,14 +109,11 @@ export const accountSettingsApi = createApi({
         }
       },
 
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: ["User", "AccountSettings"],
     }),
 
     // ====================== UPDATE PHONE NUMBER
-    updatePhoneNumber: builder.mutation<
-      IUpdatePhoneNumberResponse,
-      IUpdatePhoneNumber
-    >({
+    updatePhoneNumber: builder.mutation<IUpdateResponse, IUpdatePhoneNumber>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.CHANGE_PHONE_NUMBER,
         method: "PATCH",
@@ -132,30 +124,20 @@ export const accountSettingsApi = createApi({
         const patchResult = dispatch(
           profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
             if (draft) {
-              draft.phoneNumber = arg.phoneNumber;
+              const action = arg.action;
+              draft.phoneNumber =
+                action === PHONE_NUMBER_ACTION.UPDATE ? arg.phoneNumber : null;
             }
           }),
         );
 
         try {
-          const { data: updatedData } = await queryFulfilled;
-
-          dispatch(
-            profileApi.util.updateQueryData(
-              "getMe",
-              undefined,
-              (draft: any) => {
-                if (draft) {
-                  draft.phoneNumber = updatedData.phoneNumber;
-                }
-              },
-            ),
-          );
+          await queryFulfilled;
         } catch {
           patchResult.undo();
         }
       },
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: ["User", "AccountSettings"],
     }),
 
     // ====================== LOGOUT
@@ -168,7 +150,7 @@ export const accountSettingsApi = createApi({
     }),
 
     // ====================== DELETE ACCOUNT
-    deleteAccount: builder.mutation<IDeleteAccountResponse, IDeleteAccount>({
+    deleteAccount: builder.mutation<IUpdateResponse, IDeleteAccount>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.DELETE_ACCOUNT,
         method: "POST",
@@ -190,34 +172,30 @@ export const accountSettingsApi = createApi({
       invalidatesTags: [{ type: "User", id: "LIST" }],
     }),
 
-    updateTwoFactor: builder.mutation<
-      IUpdateTwoFactorResponse,
-      IUpdateTwoFactor
-    >({
+    updateTwoFactor: builder.mutation<IUpdateResponse, IUpdateTwoFactor>({
       query: (data) => ({
         url: API_ENDPOINTS.USER.UPDATE_TWO_FACTOR,
         method: "PATCH",
         body: data,
       }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
 
-        if (data) {
-          dispatch(
-            profileApi.util.updateQueryData(
-              "getMe",
-              undefined,
-              (draft: any) => {
-                if (draft) {
-                  draft.isTwoFactorEnabled = data.isTwoFactorEnabled;
-                  draft.updatedAt = data.updatedAt;
-                }
-              },
-            ),
-          );
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
+            if (draft) {
+              draft.isTwoFactorEnabled =
+                arg.action === TWO_FACTOR_ACTION.ENABLE;
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
         }
       },
-      invalidatesTags: ["AccountSettings"],
+      invalidatesTags: ["User", "AccountSettings"],
     }),
   }),
 });

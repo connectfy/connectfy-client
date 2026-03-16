@@ -31,6 +31,7 @@ export const profileApi = createApi({
       providesTags: ["Account"],
     }),
 
+    // ====================== UPDATE PROFILE
     updateProfile: builder.mutation<IUpdateResponse, IEditProfile>({
       query: (body) => ({
         url: API_ENDPOINTS.ACCOUNT.PROFILE.UPDATE,
