@@ -1,4 +1,4 @@
-import { v4 as uuid } from "uuid";
+import { v4 as uuid, validate } from "uuid";
 import { LOCAL_STORAGE_KEYS } from "../enums/enums";
 
 export function checkEmptyString(value: string): boolean {
@@ -8,7 +8,7 @@ export function checkEmptyString(value: string): boolean {
 export function checkDeviceId(): string {
   const deviceId = localStorage.getItem(LOCAL_STORAGE_KEYS.DEVICE_ID);
 
-  if (deviceId) return deviceId;
+  if (deviceId && validate(deviceId)) return deviceId;
 
   const newDeviceId = uuid();
   localStorage.setItem(LOCAL_STORAGE_KEYS.DEVICE_ID, newDeviceId);
