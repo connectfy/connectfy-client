@@ -16,6 +16,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { ArrowLeft } from "lucide-react";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { getHomeRouteByStartup } from "@/common/utils/routes";
 
 const VerifyLogin = () => {
   const { t } = useTranslation();
@@ -36,15 +37,18 @@ const VerifyLogin = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const res = await loginVerify(values).unwrap();
-        setToken({
-          type: "access_token",
-          token: res.access_token,
-        });
-        snack.success(
-          t("user_messages.login_successful", { lng: res.language }),
-        );
-        navigate(res.startupPage);
-        toggleTheme(res.theme);
+        if (res.access_token) {
+          setToken({
+            type: "access_token",
+            token: res.access_token,
+          });
+          snack.success(
+            t("user_messages.login_successful", { lng: res.language }),
+          );
+          const redirectPage = getHomeRouteByStartup(res.startupPage);
+          navigate(redirectPage);
+          toggleTheme(res.theme);
+        }
         resetForm();
       } catch (error) {
         if ((error as any)?.additional?.navigate) {

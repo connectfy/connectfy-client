@@ -22,6 +22,7 @@ import { useTheme } from "@/context/ThemeContext";
 import MainFooter from "../components/Footer/MainFooter/MainFooter";
 import { Mail, User } from "lucide-react";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { getHomeRouteByStartup } from "@/common/utils/routes";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
@@ -55,7 +56,7 @@ const Login = () => {
 
         if (res.isTwoFactorEnabled) {
           navigate(ROUTER.AUTH.VERIFY_LOGIN);
-        } else {
+        } else if (res.access_token) {
           setToken({
             type: "access_token",
             token: res.access_token,
@@ -63,7 +64,8 @@ const Login = () => {
           snack.success(
             t("user_messages.login_successful", { lng: res.language }),
           );
-          navigate(res.startupPage);
+          const redirectPage = getHomeRouteByStartup(res.startupPage);
+          navigate(redirectPage);
           toggleTheme(res.theme);
         }
         resetForm();

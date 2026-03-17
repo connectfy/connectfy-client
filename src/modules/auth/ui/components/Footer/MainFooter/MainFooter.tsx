@@ -18,6 +18,7 @@ import Button from "@/components/ui/CustomButton/Button/Button";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
 import { ROUTER } from "@/common/constants/routet";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { getHomeRouteByStartup } from "@/common/utils/routes";
 
 const MainFooter = () => {
   const { t } = useTranslation();
@@ -60,15 +61,18 @@ const MainFooter = () => {
         try {
           const res = await googleLogin({ idToken }).unwrap();
 
-          setToken({
-            type: "access_token",
-            token: res.access_token,
-          });
-          snack.success(
-            t("user_messages.login_successful", { lng: res.language }),
-          );
-          navigate(res.startupPage);
-          toggleTheme(res.theme);
+          if (res.access_token) {
+            setToken({
+              type: "access_token",
+              token: res.access_token,
+            });
+            snack.success(
+              t("user_messages.login_successful", { lng: res.language }),
+            );
+            const redirectPage = getHomeRouteByStartup(res.startupPage);
+            navigate(redirectPage);
+            toggleTheme(res.theme);
+          }
         } catch (error) {
           showResponseErrors(error);
         }

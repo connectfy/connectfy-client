@@ -63,12 +63,14 @@ const SignupModal = ({
           THEME.LIGHT;
 
         const res = await googleSignup(values).unwrap();
-        snack.success(t("user_messages.signup_successful"));
-        setToken({
-          type: "access_token",
-          token: res.access_token,
-        });
-        navigate(ROUTER.MESSENGER.MAIN);
+        if (res.access_token) {
+          snack.success(t("user_messages.signup_successful"));
+          setToken({
+            type: "access_token",
+            token: res.access_token,
+          });
+          navigate(ROUTER.MESSENGER.MAIN);
+        }
         resetForm();
         onClose();
       } catch (error) {

@@ -58,7 +58,7 @@ const Signup = () => {
           LOCAL_STORAGE_KEYS.SIGNUP_FORM,
           JSON.stringify(values),
         );
-        await navigate(ROUTER.AUTH.VERIFY_SIGNUP, { replace: true });
+        navigate(ROUTER.AUTH.VERIFY_SIGNUP, { replace: true });
       } catch (error) {
         showResponseErrors(error);
       }

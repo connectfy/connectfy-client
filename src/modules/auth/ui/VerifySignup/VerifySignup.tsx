@@ -51,15 +51,17 @@ const VerifySignup = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const res = await signupVerify(values).unwrap();
-        setToken({
-          type: "access_token",
-          token: res.access_token,
-        });
-        snack.success(t("user_messages.verify_successful"));
+        if (res.access_token) {
+          setToken({
+            type: "access_token",
+            token: res.access_token,
+          });
+          snack.success(t("user_messages.verify_successful"));
+          navigate(ROUTER.MESSENGER.MAIN);
+        }
         localStorage.removeItem(LOCAL_STORAGE_KEYS.OTP_EXPIRES_AT);
         localStorage.removeItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM);
         resetForm();
-        navigate(ROUTER.MESSENGER.MAIN);
       } catch (error) {
         if ((error as any)?.additional?.navigate) {
           navigate(`${ROUTER.AUTH.LOGIN}?method=username`);
