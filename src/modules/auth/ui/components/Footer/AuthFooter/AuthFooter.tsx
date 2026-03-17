@@ -3,7 +3,7 @@ import SelectionModal from "@/components/Modal/SelectionModal/SelectionModal";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTheme } from "@/context/ThemeContext";
 import useBoolean from "@/hooks/useBoolean";
-import { Globe } from "lucide-react";
+import { Globe, Moon, Sun } from "lucide-react";
 import { Fragment, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -76,9 +76,7 @@ const AuthFooter = () => {
             className="cursor-pointer flex items-center gap-1.5 text-xs font-medium text-(--text-secondary) hover:text-(--text-(--primary-color)) transition-colors"
             onClick={onOpen}
             tooltip={t("common.change_lang")}
-            icon={
-              <span className="material-symbols-outlined text-sm">globe</span>
-            }
+            icon={<Globe size={15} />}
             title={renderCurrentLanguage()}
             hideTitleInMobile={false}
           />
@@ -91,14 +89,10 @@ const AuthFooter = () => {
             aria-pressed={theme === THEME.LIGHT}
             tooltip={t("common.light_theme")}
             icon={
-              <span
-                className={`material-symbols-outlined ${
-                  theme === THEME.LIGHT ? "font-bold" : ""
-                }`}
-                style={{ fontSize: "20px" }}
-              >
-                light_mode
-              </span>
+              <Sun
+                size={20}
+                className={`${theme === THEME.LIGHT ? "font-bold" : ""}`}
+              />
             }
           />
           <Button
@@ -108,14 +102,10 @@ const AuthFooter = () => {
             aria-pressed={theme === THEME.DARK}
             tooltip={t("common.dark_theme")}
             icon={
-              <span
-                className={`material-symbols-outlined ${
-                  theme === THEME.DARK ? "font-bold" : ""
-                }`}
-                style={{ fontSize: "20px" }}
-              >
-                dark_mode
-              </span>
+              <Moon
+                size={20}
+                className={`${theme === THEME.DARK ? "font-bold" : ""}`}
+              />
             }
           />
         </div>

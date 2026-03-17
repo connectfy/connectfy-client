@@ -1,5 +1,6 @@
 import { CSSProperties, FC } from "react";
 import Button from "../Button/Button";
+import { X } from "lucide-react";
 
 interface Props {
   onClick: () => void;
@@ -7,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-const CloseButton: FC<Props> = ({ onClick, style, className }) => (
+const CloseButton: FC<Props> = ({ onClick, style }) => (
   <Button
     onClick={onClick}
     style={{
@@ -26,7 +27,7 @@ const CloseButton: FC<Props> = ({ onClick, style, className }) => (
     onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
     onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
   >
-    <span className={`material-symbols-outlined ${className}`}>close</span>
+    <X size={18} />
   </Button>
 );
 

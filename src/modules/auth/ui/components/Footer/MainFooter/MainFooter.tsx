@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useBoolean from "@/hooks/useBoolean";
 import { snack } from "@/common/utils/snackManager";
@@ -17,13 +17,14 @@ import { useTheme } from "@/context/ThemeContext";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import GoogleIcon from "@/assets/icons/GoogleIcon";
 import { ROUTER } from "@/common/constants/routet";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const MainFooter = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
   const { toggleTheme } = useTheme();
   const { setToken } = useAuthStore();
+  const { navigate } = useAppNavigation();
 
   const [checkUnique, { isLoading: LOADING_CHECK_UNIQUE }] =
     useCheckUniqueMutation();

@@ -1,18 +1,23 @@
-import { Fragment } from "react";
+import { FC, Fragment } from "react";
 import { UserPen, MinusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import Button from "@/components/ui/CustomButton/Button/Button";
-import { useProfile } from "@/modules/profile/hooks/useProfile";
-import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import useBoolean from "@/hooks/useBoolean";
 import BioModal from "../Modal/BioModal/BioModal";
+import BioSkeleton from "@/components/Skeleton/profile/BioSkeleton";
+import { IAccount } from "@/modules/profile/types/types";
+import { IPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 
-const Bio = () => {
+interface IProps {
+  profile: IAccount | undefined;
+  privacySettings: IPrivacySettings | undefined;
+  isLoading: boolean;
+}
+
+const Bio: FC<IProps> = ({ profile, privacySettings, isLoading }) => {
   const { t } = useTranslation();
-  const { profile } = useProfile();
-  const { privacySettings } = usePrivacySettings();
   const { open, onOpen, onClose } = useBoolean();
 
   return (
@@ -50,34 +55,34 @@ const Bio = () => {
 
             {/* Mobil ekranlar üçün (İkon ilə) */}
             <Button
-              className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-3 py-1 rounded-lg items-center justify-center transition-all hover:opacity-80 border-none"
-              icon={
-                <span className="text-[16px]! material-symbols-outlined">
-                  person_edit
-                </span>
-              }
+              className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold p-3 rounded-lg items-center justify-center transition-all hover:opacity-80 border-none"
+              icon={<UserPen size={16} />}
               onClick={onOpen}
             />
           </div>
         </div>
 
         {/* Bio Mətni */}
-        <div className="p-6 rounded-xl bg-(--info-card-bg) border border-(--info-card-border) transition-all duration-200 hover:bg-(--active-bg-2)">
-          {profile?.bio ? (
-            <div
-              className="text-[15px] leading-[1.7] text-(--text-color) prose prose-sm max-w-none [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_s]:line-through"
-              dangerouslySetInnerHTML={{ __html: profile.bio }}
-            />
-          ) : (
-            <div className="flex items-center gap-2 text-(--muted-color) italic py-2">
-              <MinusIcon size={18} />
-              <span>{t("common.no_bio_info")}</span>
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <BioSkeleton />
+        ) : (
+          <div className="p-6 rounded-xl bg-(--info-card-bg) border border-(--info-card-border) transition-all duration-200 hover:bg-(--active-bg-2)">
+            {profile?.bio ? (
+              <div
+                className="text-[15px] leading-[1.7] text-(--text-color) prose prose-sm max-w-none [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_s]:line-through"
+                dangerouslySetInnerHTML={{ __html: profile.bio }}
+              />
+            ) : (
+              <div className="flex items-center gap-2 text-(--muted-color) italic py-2">
+                <MinusIcon size={18} />
+                <span>{t("common.no_bio_info")}</span>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
-      <BioModal open={open} onClose={onClose} />
+      {open && <BioModal open={open} onClose={onClose} />}
     </Fragment>
   );
 };

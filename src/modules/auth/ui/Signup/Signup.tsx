@@ -1,7 +1,7 @@
 import Input from "@/components/ui/CustomInput/Input/Input.tsx";
 import PasswordInput from "@/components/ui/CustomInput/PasswordInput/PasswordInput.tsx";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { signupInitialState } from "../../constants/intialState";
 import { validateSignup } from "../../constants/validation";
@@ -17,11 +17,12 @@ import Button from "@/components/ui/CustomButton/Button/Button";
 import { useSignupMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
 import MainFooter from "../components/Footer/MainFooter/MainFooter";
+import { Mail, User } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const Signup = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-
+  const { navigate } = useAppNavigation();
   const { showFormikErrors } = useErrors();
 
   const signupForm = JSON.parse(
@@ -138,7 +139,7 @@ const Signup = () => {
               name="firstName"
               title={t("common.first_name")}
               isFloating
-              icon={<span className="material-symbols-outlined">person</span>}
+              icon={<User size={20} />}
               value={formik.values.firstName || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.firstName}
@@ -152,7 +153,7 @@ const Signup = () => {
               name="lastName"
               title={t("common.last_name")}
               isFloating
-              icon={<span className="material-symbols-outlined">person</span>}
+              icon={<User size={20} />}
               value={formik.values.lastName || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.lastName}
@@ -168,7 +169,7 @@ const Signup = () => {
               name="username"
               title={t("common.username")}
               isFloating
-              icon={<span className="material-symbols-outlined">person</span>}
+              icon={<User size={20} />}
               value={formik.values.username || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.username}
@@ -182,7 +183,7 @@ const Signup = () => {
               name="email"
               title={t("common.email")}
               isFloating
-              icon={<span className="material-symbols-outlined">email</span>}
+              icon={<Mail size={20} />}
               value={formik.values.email || ""}
               onChange={formik.handleChange}
               isError={!!formik.errors.email}

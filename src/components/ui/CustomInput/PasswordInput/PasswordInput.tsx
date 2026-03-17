@@ -7,6 +7,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@mui/material";
 import { snack } from "@/common/utils/snackManager.ts";
+import { Eye, EyeClosed, KeyRound, LockKeyhole } from "lucide-react";
 
 interface Props extends CustomInputProps {
   showGenerateButton?: boolean;
@@ -55,16 +56,14 @@ const PasswordInput: FC<Props> = ({
         {...props}
         type={visible ? "text" : "password"}
         className="password-input"
-        icon={<span className="material-symbols-outlined">lock</span>}
+        icon={<LockKeyhole size={18} />}
       />
 
       <div className="password-input-icons">
         {showGenerateButton && (
           <Tooltip placement={"top"} title={t("common.generate_password")}>
             <IconButton size="small" onClick={handleGenerate}>
-              <span className="material-symbols-outlined text-(--text-primary)">
-                key
-              </span>
+              <KeyRound size={20} className="text-(--text-primary)" />
             </IconButton>
           </Tooltip>
         )}
@@ -77,13 +76,9 @@ const PasswordInput: FC<Props> = ({
         >
           <IconButton size="small" onClick={() => setVisible((v) => !v)}>
             {visible ? (
-              <span className="material-symbols-outlined text-(--text-primary)">
-                visibility_off
-              </span>
+              <EyeClosed size={20} className="text-(--text-primary)" />
             ) : (
-              <span className="material-symbols-outlined text-(--text-color)">
-                visibility
-              </span>
+              <Eye size={20} className="text-(--text-primary)" />
             )}
           </IconButton>
         </Tooltip>

@@ -101,12 +101,12 @@ export const homepageOptions = (
         onClick: () => formik.setFieldValue("startupPage", STARTUP_PAGE.USERS),
       },
       {
-        key: STARTUP_PAGE.NOTIFICATION,
-        name: t(`enum.${STARTUP_PAGE.NOTIFICATION}`),
-        title: t(`enum.${STARTUP_PAGE.NOTIFICATION}`),
+        key: STARTUP_PAGE.NOTIFICATIONS,
+        name: t(`enum.${STARTUP_PAGE.NOTIFICATIONS}`),
+        title: t(`enum.${STARTUP_PAGE.NOTIFICATIONS}`),
         icon: Bell,
         onClick: () =>
-          formik.setFieldValue("startupPage", STARTUP_PAGE.NOTIFICATION),
+          formik.setFieldValue("startupPage", STARTUP_PAGE.NOTIFICATIONS),
       },
       {
         key: STARTUP_PAGE.PROFILE,

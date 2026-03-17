@@ -5,7 +5,6 @@ import { DELETE_REASON_CODE } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { TriangleAlert } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { IDeleteAccount } from "../../../../types/types";
@@ -14,6 +13,7 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Textarea from "@/components/ui/CustomTextArea/TextArea/Textarea";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 interface Props {
   open: boolean;
@@ -24,9 +24,9 @@ const MAX_REASON_LENGTH = 200;
 
 const DeleteAccountModal: FC<Props> = ({ open, onClose }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { authenticateToken, clear } = useAuthStore();
+  const { navigate } = useAppNavigation();
   const { showResponseErrors } = useErrors();
+  const { authenticateToken, clear } = useAuthStore();
   const [deleteAccount, { isLoading }] = useDeleteAccountMutation();
 
   const initialState: IDeleteAccount = {

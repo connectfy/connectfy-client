@@ -1,6 +1,7 @@
 import { FC, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { ArrowLeft, Save } from "lucide-react";
 
 interface Props {
   onClickBack: () => void;
@@ -41,7 +42,7 @@ const UniqueHeader: FC<Props> = ({
             type="button"
             aria-label={t("common.back")}
             onClick={onClickBack}
-            icon={<span className="material-symbols-outlined">arrow_back</span>}
+            icon={<ArrowLeft size={18} />}
             className="
               w-10 h-10 rounded-[10px] border-none shrink-0
               flex items-center justify-center
@@ -71,7 +72,7 @@ const UniqueHeader: FC<Props> = ({
             disabled={isHeaderButtonDisabled}
             onClick={onHeaderButtonClick}
             isLoading={isLoading}
-            icon={<span className="material-symbols-outlined">save</span>}
+            icon={<Save size={18} />}
             className="
               flex items-center gap-2 px-5 py-[5px] shrink-0
               bg-linear-to-br from-(--third-color) to-(--hover-bg)

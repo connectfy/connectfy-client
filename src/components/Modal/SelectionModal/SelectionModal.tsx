@@ -1,4 +1,4 @@
-import { LucideProps } from "lucide-react";
+import { Check, LucideProps, X } from "lucide-react";
 import {
   FC,
   ForwardRefExoticComponent,
@@ -71,11 +71,7 @@ const SelectionModal: FC<Props> = ({
               className="w-8 h-8 flex items-center justify-center rounded-md text-(--muted-color) hover:bg-(--secondary-color) hover:text-(--text-color) active:scale-95 transition-all"
               onClick={onClose}
               aria-label="Close modal"
-              icon={
-                <span className="material-symbols-outlined text-[28px]!">
-                  close
-                </span>
-              }
+              icon={<X size={18} />}
             />
           </div>
 
@@ -126,9 +122,7 @@ const SelectionModal: FC<Props> = ({
                   {/* Check Icon */}
                   {isActive && (
                     <div className="flex items-center justify-center w-6 h-6 shrink-0 rounded-full bg-(--primary-color) text-white">
-                      <span className="material-symbols-outlined text-[20px]!">
-                        check
-                      </span>
+                      <Check size={18} />
                     </div>
                   )}
                 </Button>

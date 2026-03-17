@@ -1,15 +1,16 @@
 import { memo, useMemo, useState, useEffect } from "react";
 import { MessageCircle, Users, Radio, UserCircle, User } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/material";
 import { useUser } from "@/modules/profile/hooks/useUser";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const MobileSidebar = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
   const location = useLocation();
   const { user } = useUser();
 

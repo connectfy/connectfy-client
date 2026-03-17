@@ -12,6 +12,7 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import useFormDisabled from "@/hooks/useFormDisabled";
+import { CircleUser } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -150,11 +151,7 @@ const UsernameModal: FC<Props> = ({ open, onClose }) => {
               disabled={LOADING_UPDATE_USERNAME}
               autoFocus
               autoComplete="off"
-              icon={
-                <span className="material-symbols-outlined">
-                  account_circle
-                </span>
-              }
+              icon={<CircleUser />}
             />
           </div>
 

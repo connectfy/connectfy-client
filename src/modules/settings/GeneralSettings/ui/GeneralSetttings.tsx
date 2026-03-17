@@ -14,7 +14,6 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
 import SettingCard from "@/components/Card/SettingsCard/SettingCard";
-import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import {
   homepageOptions,
@@ -40,11 +39,13 @@ import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditGeneralSettings } from "../types/types";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useGeneralSettings } from "../hooks/useGeneralSettings";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const GeneralSettings = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
   const { theme, toggleTheme } = useTheme();
+  const { showResponseErrors } = useErrors();
   const [selectedTheme, setSelectedTheme] = useState(theme);
 
   const { generalSettings, isLoading: LOADING_GET } = useGeneralSettings();
@@ -52,8 +53,6 @@ const GeneralSettings = () => {
     useEditGeneralSettingsMutation();
   const [resetSettings, { isLoading: LOADING_RESET_SETTINGS }] =
     useResetSettingsMutation();
-
-  const { showResponseErrors } = useErrors();
 
   const resetSettingsModal = useBoolean();
 

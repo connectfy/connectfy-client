@@ -4,8 +4,15 @@ import MainCard from "./components/MainCard/MainCard";
 import PersonalInformation from "./components/PersonalInformation/PersonalInformation";
 import Bio from "./components/Bio/Bio";
 import SocialLinks from "./components/SocialLinks/SocialLinks";
+import { useUser } from "../hooks/useUser";
+import { useProfile } from "../hooks/useProfile";
+import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 
 const Profile: FC = () => {
+  const { user, isLoading: userLoading, hasPhoneNumber } = useUser();
+  const { profile, isLoading: profileLoading } = useProfile();
+  const { privacySettings, isLoading: privacyLoading } = usePrivacySettings();
+
   return (
     <div className="relative w-full h-screen overflow-x-hidden overflow-y-auto font-sans scroll-smooth bg-(--bg-color)">
       {/* Header */}
@@ -13,13 +20,27 @@ const Profile: FC = () => {
 
       <main className="mx-auto max-w-[900px] pt-8 px-6 pb-[60px] animate-slide-up">
         {/* Main Profile Section */}
-        <MainCard />
+        <MainCard
+          user={user}
+          profile={profile}
+          isLoading={userLoading || profileLoading}
+        />
 
         {/* Personal Info Grid */}
-        <PersonalInformation />
+        <PersonalInformation
+          user={user}
+          profile={profile}
+          privacySettings={privacySettings}
+          isLoading={userLoading || profileLoading || privacyLoading}
+          hasPhoneNumber={!!hasPhoneNumber}
+        />
 
         {/* Bio Section */}
-        <Bio />
+        <Bio
+          profile={profile}
+          privacySettings={privacySettings}
+          isLoading={profileLoading || privacyLoading}
+        />
 
         {/* Social Links */}
         <SocialLinks />

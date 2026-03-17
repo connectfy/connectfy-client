@@ -161,15 +161,6 @@ const AuthenticateModal: FC<Props> = ({
   return (
     <Modal open={open} onClose={onClose} onMouseDown={handleOverlayPointerDown}>
       <div className="bg-(--auth-main-bg) rounded-2xl p-6 sm:p-8 max-w-[440px] w-[90%] shadow-(--card-shadow) animate-fade-in mx-auto">
-        {/* <div className="flex justify-center mb-4 animate-bounce-custom">
-          <span
-            className="material-symbols-outlined text-(--primary-color)"
-            style={{ fontSize: "50px" }}
-          >
-            verified_user
-          </span>
-        </div> */}
-
         <h2 className="text-2xl font-bold text-(--text-primary) mb-3 text-center">
           {t("common.authentication_required")}
         </h2>

@@ -2,6 +2,7 @@ import { FC } from "react";
 import Modal from "..";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface IProps {
   open: boolean;
@@ -261,7 +262,7 @@ const DatePickerModal: FC<IProps> = ({
             onClick={() => !isPrevDisabled() && navigateMonth("prev")}
             disabled={isPrevDisabled()}
             type="button"
-            icon={<span className="material-symbols-outlined">arrow_back</span>}
+            icon={<ArrowLeft size={18} />}
           />
           <div
             className="font-semibold text-base text-(--text-color) cursor-pointer py-2 px-4 rounded-lg transition-all hover:bg-(--active-bg-2) hover:text-(--primary-color)"
@@ -276,9 +277,7 @@ const DatePickerModal: FC<IProps> = ({
             onClick={() => !isNextDisabled() && navigateMonth("next")}
             disabled={isNextDisabled()}
             type="button"
-            icon={
-              <span className="material-symbols-outlined">arrow_forward</span>
-            }
+            icon={<ArrowRight size={18} />}
           />
         </div>
 

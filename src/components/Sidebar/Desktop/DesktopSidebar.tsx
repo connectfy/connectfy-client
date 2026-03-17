@@ -9,18 +9,20 @@ import {
   Settings,
 } from "lucide-react";
 import "./desktopSidebar.style.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { Avatar } from "@mui/material";
 import { useUser } from "@/modules/profile/hooks/useUser";
 import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const DesktopSidebar = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
+  const { navigate, isPending } = useAppNavigation();
+
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
   const { user } = useUser();
@@ -92,7 +94,13 @@ const DesktopSidebar = () => {
 
   return (
     <Fragment>
-      <section id="sidebar">
+      <section
+        id="sidebar"
+        style={{
+          opacity: isPending ? 0.7 : 1,
+          pointerEvents: isPending ? "none" : "auto",
+        }}
+      >
         <div className="sidebar">
           <div className="logo-section">
             <div

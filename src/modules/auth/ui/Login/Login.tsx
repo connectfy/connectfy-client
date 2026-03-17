@@ -6,7 +6,7 @@ import { validateLogin } from "../../constants/validation";
 import { useTranslation } from "react-i18next";
 import { checkEmptyString } from "@/common/utils/checkValues";
 import { ILoginForm, LoginModeType } from "../../types/types";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
@@ -20,16 +20,18 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 import { useTheme } from "@/context/ThemeContext";
 import MainFooter from "../components/Footer/MainFooter/MainFooter";
+import { Mail, User } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const LOGIN_MODES: LoginModeType[] = ["username", "email", "phoneNumber"];
 
 const Login = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { toggleTheme } = useTheme();
   const { setToken } = useAuthStore();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { navigate } = useAppNavigation();
   const { showResponseErrors } = useErrors();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const rawLoginMode = searchParams.get("method");
 
@@ -100,7 +102,7 @@ const Login = () => {
             title={t("common.username")}
             type="text"
             isFloating
-            icon={<span className="material-symbols-outlined">person</span>}
+            icon={<User size={20} />}
             name="identifier"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -121,7 +123,7 @@ const Login = () => {
             title={t("common.email")}
             type="text"
             isFloating
-            icon={<span className="material-symbols-outlined">email</span>}
+            icon={<Mail size={20} />}
             name="identifier"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

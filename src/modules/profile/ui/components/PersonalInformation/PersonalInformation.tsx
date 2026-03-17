@@ -6,20 +6,24 @@ import {
   MapMinusIcon,
   Contact,
   Users,
+  UserPen,
 } from "lucide-react";
-import { Fragment } from "react";
+import { FC, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { DDMMMMYYY, formatPhoneNumber } from "@/common/utils/formatValues";
-import { useUser } from "@/modules/profile/hooks/useUser";
-import { useProfile } from "@/modules/profile/hooks/useProfile";
-import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import Button from "@/components/ui/CustomButton/Button/Button";
-import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
+import {
+  IEditPrivacySettings,
+  IPrivacySettings,
+} from "@/modules/settings/PrivacySettings/types/types";
 import { COUNTRIES } from "@/common/constants/constants";
 import useBoolean from "@/hooks/useBoolean";
 import PersonalInfoModal from "../Modal/PersonalInfoModal/PersonalInfoModal";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import PersonalInformationSkeleton from "@/components/Skeleton/profile/PersonalInformationSkeleton";
+import { IAccount, IMe } from "@/modules/profile/types/types";
 
 export interface IInfoItem {
   id: string;
@@ -30,18 +34,28 @@ export interface IInfoItem {
   privacyField: keyof IEditPrivacySettings;
 }
 
-const PersonalInformation = () => {
+interface IProps {
+  user: IMe | undefined;
+  profile: IAccount | undefined;
+  privacySettings: IPrivacySettings | undefined;
+  isLoading: boolean;
+  hasPhoneNumber: boolean;
+}
+
+const PersonalInformation: FC<IProps> = ({
+  user,
+  profile,
+  privacySettings,
+  isLoading,
+  hasPhoneNumber,
+}) => {
   const { t } = useTranslation();
-  const { user, hasPhoneNumber } = useUser();
-  const { profile } = useProfile();
-  const { privacySettings } = usePrivacySettings();
   const { open, onOpen, onClose } = useBoolean();
+  const isMobile = useIsMobile();
 
   const phoneNumberMask = COUNTRIES.find(
     (country) => country.code === user?.phoneNumber?.countryCode,
   )?.format;
-
-  const isMobile = window.innerWidth < 1024;
 
   // Məlumat kartlarını dinamik render etmək üçün obyektlər massivi
   const infoItems: IInfoItem[] = [
@@ -134,59 +148,61 @@ const PersonalInformation = () => {
 
             {/* Mobil ekranlar üçün ikonlu düymə (1024px-dən aşağı görünür) */}
             <Button
-              className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-3 py-1 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none"
-              icon={
-                <span className="text-[16px]! material-symbols-outlined">
-                  person_edit
-                </span>
-              }
+              className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold p-3 rounded-lg items-center justify-center transition-all hover:opacity-80 border-none"
+              icon={<UserPen size={16} />}
               onClick={onOpen}
             />
           </div>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {infoItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
-            >
-              {/* Icon Box */}
+        {isLoading ? (
+          <PersonalInformationSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {infoItems.map((item) => (
               <div
-                className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
+                key={item.id}
+                className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
               >
-                {item.icon}
-              </div>
+                {/* Icon Box */}
+                <div
+                  className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
+                >
+                  {item.icon}
+                </div>
 
-              {/* Content */}
-              <div className="flex flex-col flex-1 gap-1 overflow-hidden">
-                <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
-                  {item.label}
-                </span>
-                <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
-                  {item.value}
+                {/* Content */}
+                <div className="flex flex-col flex-1 gap-1 overflow-hidden">
+                  <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
+                    {item.label}
+                  </span>
+                  <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
+                    {item.value}
+                  </div>
+                </div>
+
+                {/* Privacy Icon */}
+                <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
+                  <PrivacyIcon
+                    privacy={
+                      (privacySettings?.[
+                        item.privacyField
+                      ] as PRIVACY_SETTINGS_CHOICE) ||
+                      PRIVACY_SETTINGS_CHOICE.EVERYONE
+                    }
+                    fieldName={item.privacyField as keyof IEditPrivacySettings}
+                  />
                 </div>
               </div>
-
-              {/* Privacy Icon */}
-              <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
-                <PrivacyIcon
-                  privacy={
-                    (privacySettings?.[
-                      item.privacyField
-                    ] as PRIVACY_SETTINGS_CHOICE) ||
-                    PRIVACY_SETTINGS_CHOICE.EVERYONE
-                  }
-                  fieldName={item.privacyField as keyof IEditPrivacySettings}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
-      <PersonalInfoModal open={open} onClose={onClose} />
+      {open && (
+        <PersonalInfoModal open={open} onClose={onClose} profile={profile} />
+      )}
     </Fragment>
   );
 };

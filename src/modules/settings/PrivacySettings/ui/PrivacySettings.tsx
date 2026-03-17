@@ -7,7 +7,6 @@ import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
 import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import ToggleCard from "@/components/Card/ToggleCard/ToggleCard";
-import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import {
   initialState,
@@ -26,17 +25,17 @@ import { SettingsSkeleton } from "@/common/utils/skeleton";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { IEditPrivacySettings } from "../types/types";
 import { usePrivacySettings } from "../hooks/usePrivacySettings";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const PrivacySettings = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
+  const { showResponseErrors } = useErrors();
 
   const { privacySettings, isLoading: LOADING_GET } = usePrivacySettings();
 
   const [editPrivacySettings, { isLoading: LOADING_UPDATE }] =
     useEditPrivacySettingsMutation();
-
-  const { showResponseErrors } = useErrors();
 
   const formik = useFormik({
     initialValues: initialState(privacySettings!),

@@ -7,12 +7,13 @@ import {
   Bell,
   Keyboard,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
+import { memo } from "react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const Settings = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
 
   const settingsOptions = [
     {
@@ -112,4 +113,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default memo(Settings);

@@ -11,7 +11,7 @@ export function getHomeRouteByStartup(startupPage?: STARTUP_PAGE) {
       return ROUTER.CHANNELS.MAIN;
     case STARTUP_PAGE.USERS:
       return ROUTER.USERS.MAIN;
-    case STARTUP_PAGE.NOTIFICATION:
+    case STARTUP_PAGE.NOTIFICATIONS:
       return ROUTER.NOTIFICATIONS.MAIN;
     case STARTUP_PAGE.PROFILE:
       return ROUTER.PROFILE.MAIN;

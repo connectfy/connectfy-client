@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import { loginVerifyInitialState } from "../../constants/intialState";
 import { validateVerifyLogin } from "../../constants/validation";
-import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
@@ -15,12 +14,14 @@ import useFormDisabled from "@/hooks/useFormDisabled";
 import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { ArrowLeft } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const VerifyLogin = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { toggleTheme } = useTheme();
   const { setToken } = useAuthStore();
+  const { navigate } = useAppNavigation();
 
   const [loginVerify, { isLoading }] = useLoginVerifyMutation();
 
@@ -124,9 +125,7 @@ const VerifyLogin = () => {
             className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mt-2"
             onClick={() => navigate(-1)}
           >
-            <span className="material-symbols-outlined md:text-md text-lg">
-              arrow_back
-            </span>
+            <ArrowLeft size={20} />
             {t("common.back")}
           </Button>
         </div>

@@ -1,6 +1,6 @@
 import { FC, memo, ReactNode, useEffect, useState } from "react";
 import "./settingsLayout.style.css";
-import { Outlet, useNavigate, useLocation, matchPath } from "react-router-dom";
+import { Outlet, useLocation, matchPath } from "react-router-dom";
 import UniqueSidebar from "@/components/Sidebar/UniqueSidebar/UniqueSidebar";
 import { useTranslation } from "react-i18next";
 import { ROUTER } from "@/common/constants/routet";
@@ -12,15 +12,16 @@ import {
   BellRing,
   Keyboard,
 } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 interface Props {
   children?: ReactNode;
 }
 
 const SettingsLayout: FC<Props> = ({ children }) => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
+  const { navigate } = useAppNavigation();
 
   const TITLE = {
     name: t("common.settings"),

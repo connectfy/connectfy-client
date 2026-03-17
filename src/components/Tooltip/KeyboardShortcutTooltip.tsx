@@ -1,5 +1,6 @@
 import React from "react";
 import { isMac } from "@/common/utils/keyboard";
+import { Command, Option } from "lucide-react";
 
 interface ShortcutTooltipProps {
   keys: string[];
@@ -7,14 +8,14 @@ interface ShortcutTooltipProps {
   fullWidth?: boolean;
 }
 
-const KeyIcon: React.FC<{ icon: string }> = ({ icon }) => (
-  <span
-    className="material-symbols-outlined flex items-center justify-center"
-    style={{ fontSize: "14px", lineHeight: "14px" }}
-  >
-    {icon}
-  </span>
-);
+// const KeyIcon: React.FC<{ icon: string }> = ({ icon }) => (
+//   <span
+//     className="material-symbols-outlined flex items-center justify-center"
+//     style={{ fontSize: "14px", lineHeight: "14px" }}
+//   >
+//     {icon}
+//   </span>
+// );
 
 export const ShortcutTooltip: React.FC<ShortcutTooltipProps> = ({
   keys,
@@ -23,10 +24,10 @@ export const ShortcutTooltip: React.FC<ShortcutTooltipProps> = ({
 }) => {
   const displayKeys = keys.map((key) => {
     if (key === "Ctrl") {
-      return isMac() ? <KeyIcon icon="keyboard_command_key" /> : "Ctrl";
+      return isMac() ? <Command size={14} /> : "Ctrl";
     }
     if (key === "Alt") {
-      return isMac() ? <KeyIcon icon="keyboard_option_key" /> : "Alt";
+      return isMac() ? <Option size={14} /> : "Alt";
     }
     return key;
   });

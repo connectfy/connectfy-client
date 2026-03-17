@@ -1,5 +1,5 @@
 import { useEffect, FC } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { useTranslation } from "react-i18next";
@@ -8,10 +8,11 @@ import { useRestoreAccountMutation } from "../../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useTheme } from "@/context/ThemeContext";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const MainPage: FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
 
   const [restoreAccount, { isLoading: LOADING_RESTORE_ACCOUNT }] =
     useRestoreAccountMutation();

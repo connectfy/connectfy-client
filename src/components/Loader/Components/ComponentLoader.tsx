@@ -7,18 +7,19 @@ import { SettingsSpinner } from "@/components/Spinner/Settings/SettingsSpinner.t
 
 type AnyComponent<P> = ComponentType<P> | LazyExoticComponent<ComponentType<P>>;
 
-export default function SettingsLoader<P extends object>(
+export default function ComponentLoader<P extends object>(
   Component: AnyComponent<P>,
+  FallbackComponent: React.ReactNode = <SettingsSpinner />,
 ): ComponentType<P> {
   const Wrapped: React.FC<P> = (props) => {
     const C = Component as unknown as ComponentType<P>;
     return (
-      <Suspense fallback={<SettingsSpinner />}>
+      <Suspense fallback={FallbackComponent}>
         <C {...props} />
       </Suspense>
     );
   };
 
-  Wrapped.displayName = `SettingsLoader(${(Component as any).displayName || (Component as any).name || "Component"})`;
+  Wrapped.displayName = `ComponentLoader(${(Component as any).displayName || (Component as any).name || "Component"})`;
   return Wrapped;
 }

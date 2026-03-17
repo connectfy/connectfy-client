@@ -5,6 +5,7 @@ import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import DatePickerModal from "../../Modal/DatePickerModal/DatePickerModal";
 import Button from "../CustomButton/Button/Button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CustomDatePickerProps {
   value?: string | Date | null;
@@ -362,11 +363,7 @@ export default function CustomDatePicker({
                   onClick={() => !isPrevDisabled() && navigateMonth("prev")}
                   disabled={isPrevDisabled()}
                   type="button"
-                  icon={
-                    <span className="material-symbols-outlined">
-                      chevron_left
-                    </span>
-                  }
+                  icon={<ChevronLeft size={20} />}
                 />
                 <div className="current_period" onClick={handleHeaderClick}>
                   {renderHeader()}
@@ -376,11 +373,7 @@ export default function CustomDatePicker({
                   onClick={() => !isNextDisabled() && navigateMonth("next")}
                   disabled={isNextDisabled()}
                   type="button"
-                  icon={
-                    <span className="material-symbols-outlined">
-                      chevron_right
-                    </span>
-                  }
+                  icon={<ChevronRight size={20} />}
                 />
               </div>
 

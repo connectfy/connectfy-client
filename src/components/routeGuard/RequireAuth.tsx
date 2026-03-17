@@ -1,10 +1,11 @@
 import { ReactNode, useEffect } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useUser } from "@/modules/profile/hooks/useUser";
 import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 type AuthType = {
   children: ReactNode;
@@ -46,7 +47,7 @@ export function InsideProfile({ children }: AuthType) {
 }
 
 export function RedirectMain() {
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
   const { access_token } = useAuthStore();
 
   // Send request if there is a token

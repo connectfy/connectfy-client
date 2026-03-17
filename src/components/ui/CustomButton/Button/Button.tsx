@@ -53,9 +53,7 @@ const Button: FC<CustomButtonProps> = ({
         </Fragment>
       ) : icon ? (
         <Fragment>
-          <span aria-hidden="true" className="mt-1.5">
-            {icon}
-          </span>
+          <span aria-hidden="true">{icon}</span>
           {title && <span className={titleClassName}>{title}</span>}
         </Fragment>
       ) : (

@@ -3,7 +3,6 @@ import { LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useFormik } from "formik";
 import { verifySignupInitialState } from "../../constants/intialState";
 import { validateVerifySignup } from "../../constants/validation";
-import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { onPressEnter, onPressEsc } from "@/common/utils/keyPressDown";
 import { ROUTER } from "@/common/constants/routet";
@@ -19,12 +18,14 @@ import { ISignupForm, ISignupVerifyForm } from "../../types/types";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { ArrowLeft } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const TIMER_DURATION = 60;
 
 const VerifySignup = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
 
   const signupForm = JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_KEYS.SIGNUP_FORM) || "{}",
@@ -239,9 +240,7 @@ const VerifySignup = () => {
             className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mt-2"
             onClick={() => navigate(ROUTER.AUTH.SIGNUP)}
           >
-            <span className="material-symbols-outlined md:text-md text-lg">
-              arrow_back
-            </span>
+            <ArrowLeft size={20} />
             {t("common.back")}
           </Button>
         </div>

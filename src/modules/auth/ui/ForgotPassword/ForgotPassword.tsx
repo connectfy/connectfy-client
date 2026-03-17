@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { forgotPasswordInitialState } from "../../constants/intialState";
 import { validateForgotPassword } from "../../constants/validation";
 import { checkEmptyString } from "@/common/utils/checkValues";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
@@ -15,6 +15,8 @@ import PhoneNumber from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import { useForgotPasswordMutation } from "../../api/api";
 import { useErrors } from "@/hooks/useErrors";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
+import { ArrowLeft, Mail } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const FORGOT_PASSWORD_MODES: ForgotPasswordModeType[] = [
   "email",
@@ -23,7 +25,7 @@ const FORGOT_PASSWORD_MODES: ForgotPasswordModeType[] = [
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const rawForgotPasswordMode = searchParams.get("mode");
@@ -149,7 +151,7 @@ const ForgotPassword = () => {
               title={t("common.email")}
               type="text"
               isFloating
-              icon={<span className="material-symbols-outlined">email</span>}
+              icon={<Mail size={20} />}
               name="identifier"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -185,9 +187,7 @@ const ForgotPassword = () => {
             className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-primary transition-colors mt-2 cursor-pointer"
             onClick={() => navigate(-1)}
           >
-            <span className="material-symbols-outlined md:text-md text-lg">
-              arrow_back
-            </span>
+            <ArrowLeft size={20} className="md:text-md text-lg" />
             {t("common.back")}
           </p>
         </div>

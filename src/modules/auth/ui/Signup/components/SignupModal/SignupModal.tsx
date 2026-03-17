@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import { googleSignupInitialState } from "../../../../constants/intialState";
@@ -21,6 +20,8 @@ import Spinner from "@/components/Spinner/Spinner";
 // Hooks
 import { useErrors } from "@/hooks/useErrors";
 import { useAuthStore } from "@/hooks/useAuthStore";
+import { User, UserRoundCheck } from "lucide-react";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 interface SignupModalProps {
   idToken: string | null;
@@ -36,9 +37,8 @@ const SignupModal = ({
   isLoading,
 }: SignupModalProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-
   const { setToken } = useAuthStore();
+  const { navigate } = useAppNavigation();
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [googleSignup, { isLoading: LOADING_GOOGLE_SIGNUP }] =
@@ -144,7 +144,7 @@ const SignupModal = ({
           {/* Header Section */}
           <div className="relative z-10 flex flex-col items-center text-center mb-8">
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-(--input-border) bg-(--auth-main-bg) text-(--primary-color) shadow-[0_0_30px_-5px_rgba(52,211,153,0.3)]">
-              <span className="material-symbols-outlined">how_to_reg</span>
+              <UserRoundCheck />
             </div>
 
             <h2 className="text-2xl font-bold text-(--text-primary) mb-2">
@@ -172,7 +172,7 @@ const SignupModal = ({
               }}
               onBlur={() => formik.setFieldTouched("username", true, false)}
               title={t("common.username")}
-              icon={<span className="material-symbols-outlined">person</span>}
+              icon={<User />}
               maxLength={30}
             />
 

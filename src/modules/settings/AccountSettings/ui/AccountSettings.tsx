@@ -19,12 +19,13 @@ import {
   LogOutIcon,
   TriangleAlert,
   ShieldCheck,
+  ChevronRight,
 } from "lucide-react";
 import "./accountSettings.style.css";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
 import SettingCard from "@/components/Card/SettingsCard/SettingCard";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import {
   DATE_FORMAT,
@@ -67,14 +68,14 @@ import { COUNTRIES } from "@/common/constants/constants";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import TwoFactorModal from "./components/Modal/TwoFactorModal/TwoFactorModal";
 import { useGeneralSettings } from "../../GeneralSettings/hooks/useGeneralSettings";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const AccountSettings: FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  const { clear } = useAuthStore();
+  const { navigate } = useAppNavigation();
+  const { authenticateToken, clear } = useAuthStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { authenticateToken } = useAuthStore();
 
   const processedTokenRef = useRef<string | null>(null);
   const { showResponseErrors } = useErrors();
@@ -412,9 +413,7 @@ const AccountSettings: FC = () => {
                       <LogOutIcon size={18} />
                       {t("common.deactivate_account")}
                     </span>
-                    <span className="material-symbols-outlined">
-                      chevron_forward
-                    </span>
+                    <ChevronRight size={18} />
                   </Button>
                   <Button
                     className="account-danger-button delete"
@@ -426,9 +425,7 @@ const AccountSettings: FC = () => {
                       <Trash2 size={18} />
                       {t("common.delete_account")}
                     </span>
-                    <span className="material-symbols-outlined">
-                      chevron_forward
-                    </span>
+                    <ChevronRight size={18} />
                   </Button>
                   <Button
                     className="account-danger-button delete"
@@ -438,9 +435,7 @@ const AccountSettings: FC = () => {
                       <LogOutIcon size={18} />
                       {t("common.logout_account")}
                     </span>
-                    <span className="material-symbols-outlined">
-                      chevron_forward
-                    </span>
+                    <ChevronRight size={18} />
                   </Button>
                 </div>
               </SettingCard>
@@ -555,9 +550,7 @@ const AccountActionButton: FC<{
     type="button"
   >
     <span>{children}</span>
-    {right ?? (
-      <span className="material-symbols-outlined chevron">chevron_forward</span>
-    )}
+    {right ?? <ChevronRight size={20} className="chevron" />}
   </Button>
 );
 

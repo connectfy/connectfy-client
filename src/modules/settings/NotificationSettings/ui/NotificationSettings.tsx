@@ -4,7 +4,6 @@ import "./notificationSettings.style.css";
 import { useTranslation } from "react-i18next";
 import UniqueHeader from "@/components/Header/UnqiueHeader/UniqueHeader";
 import ToggleCard from "@/components/Card/ToggleCard/ToggleCard";
-import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import SettingCard from "@/components/Card/SettingsCard/SettingCard";
 import {
@@ -30,10 +29,11 @@ import {
   NOTIFICATION_CONTENT_MODE,
   NOTIFICATION_SOUND_MODE,
 } from "@/common/enums/enums";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const NotificationSettings = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
 
   const { notificationSettings, isLoading: LOADING_GET } =
     useNotificationSettings();

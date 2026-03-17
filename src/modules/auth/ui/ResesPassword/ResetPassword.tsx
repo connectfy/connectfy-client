@@ -6,7 +6,7 @@ import { resetPasswordInitialState } from "../../constants/intialState";
 import { validateResetPassword } from "../../constants/validation";
 import { Fragment, useEffect } from "react";
 import { TOKEN_TYPE } from "@/common/enums/enums";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { snack } from "@/common/utils/snackManager";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { IResetPasswordForm } from "../../types/types";
@@ -18,11 +18,11 @@ import {
 import { useErrors } from "@/hooks/useErrors";
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner/Spinner";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-
+  const { navigate } = useAppNavigation();
   const { showFormikErrors } = useErrors();
 
   const [resetPassword, { isLoading: LOADING_RESET_PASSWORD }] =

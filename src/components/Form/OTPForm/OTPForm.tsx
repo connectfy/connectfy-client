@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Input from "@/components/ui/CustomInput/Input/Input";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 type OTPProps = {
   length: number;
@@ -17,7 +17,7 @@ export default function OTPForm({
   onChange,
   onKeyDown,
 }: OTPProps) {
-  const navigate = useNavigate();
+  const { navigate } = useAppNavigation();
   const [values, setValues] = useState<string[]>(() => Array(length).fill(""));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const lastEmittedRef = useRef<string | null>(null);

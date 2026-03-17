@@ -11,6 +11,7 @@ import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import useFormDisabled from "@/hooks/useFormDisabled";
+import { Mail, MailCheck } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -234,7 +235,7 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
                   disabled={isLoading}
                   autoFocus
                   autoComplete="off"
-                  icon={<span className="material-symbols-outlined">mail</span>}
+                  icon={<Mail />}
                 />
               </div>
 
@@ -261,12 +262,7 @@ const ChangeEmailModal: FC<Props> = ({ open, onClose }) => {
           /* Success State */
           <div className="flex flex-col items-center text-center animate-fade-in py-4">
             <div className="w-[72px] h-[72px] bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] rounded-full flex items-center justify-center mb-4 animate-bounce-custom">
-              <span
-                className="material-symbols-outlined text-(--primary-color)"
-                style={{ fontSize: "40px" }}
-              >
-                mark_email_read
-              </span>
+              <MailCheck size={40} className="text-(--primary-color)" />
             </div>
 
             <h3 className="text-lg font-semibold text-(--text-primary) mb-2.5 m-0">

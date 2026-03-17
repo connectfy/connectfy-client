@@ -15,19 +15,18 @@ import { useErrors } from "@/hooks/useErrors";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { useUpdateProfileMutation } from "@/modules/profile/api/api";
 import { validateEditProfile } from "@/modules/profile/constants/validation";
-import { useProfile } from "@/modules/profile/hooks/useProfile";
-import { IEditProfile } from "@/modules/profile/types/types";
+import { IAccount, IEditProfile } from "@/modules/profile/types/types";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { snack } from "@/common/utils/snackManager";
 
 interface IProps {
   open: boolean;
   onClose: () => void;
+  profile: IAccount | undefined;
 }
 
-const PersonalInfoModal: FC<IProps> = ({ open, onClose }) => {
+const PersonalInfoModal: FC<IProps> = ({ open, onClose, profile }) => {
   const { t } = useTranslation();
-  const { profile } = useProfile();
   const { showResponseErrors, showFormikErrors } = useErrors();
   const [update, { isLoading }] = useUpdateProfileMutation();
 

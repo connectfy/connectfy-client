@@ -1,34 +1,50 @@
 import toast from "react-hot-toast";
 import Button from "../CustomButton/Button/Button";
+import {
+  BellRing,
+  CheckCircle,
+  CircleAlert,
+  Info,
+  LucideProps,
+  TriangleAlert,
+  X,
+} from "lucide-react";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 
 type ToastType = "success" | "error" | "warning" | "info" | "default";
 
 const CONFIG: Record<
   ToastType,
-  { icon: string; bar: string; iconClass: string }
+  {
+    icon: ForwardRefExoticComponent<
+      Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+    >;
+    bar: string;
+    iconClass: string;
+  }
 > = {
   success: {
-    icon: "check_circle",
+    icon: CheckCircle,
     bar: "bg-(--primary-color)",
     iconClass: "text-(--primary-color)",
   },
   error: {
-    icon: "error", // və ya "cancel"
+    icon: CircleAlert, // və ya "cancel"
     bar: "bg-(--error-color)",
     iconClass: "text-(--error-color)",
   },
   warning: {
-    icon: "warning",
+    icon: TriangleAlert,
     bar: "bg-amber-400",
     iconClass: "text-amber-400",
   },
   info: {
-    icon: "info",
+    icon: Info,
     bar: "bg-blue-400",
     iconClass: "text-blue-400",
   },
   default: {
-    icon: "notifications",
+    icon: BellRing,
     bar: "bg-(--muted-color)",
     iconClass: "text-(--muted-color)",
   },
@@ -42,7 +58,7 @@ type Props = {
 };
 
 const CustomToast = ({ toastId, message, type, visible }: Props) => {
-  const { icon, bar, iconClass } = CONFIG[type];
+  const { icon: Icon, bar, iconClass } = CONFIG[type];
 
   return (
     <div
@@ -61,13 +77,7 @@ const CustomToast = ({ toastId, message, type, visible }: Props) => {
       {/* Left accent bar */}
       <span className={`absolute left-0 top-0 h-full w-[3px] ${bar}`} />
 
-      {/* Google Font Icon */}
-      <span
-        className={`material-symbols-outlined shrink-0 text-[20px] ${iconClass}`}
-        aria-hidden="true"
-      >
-        {icon}
-      </span>
+      <Icon size={20} className={`shrink-0 ${iconClass}`} />
 
       {/* Message (Responsive text size for desktop) */}
       <p className="flex-1 text-sm md:text-base leading-snug">{message}</p>
@@ -83,9 +93,7 @@ const CustomToast = ({ toastId, message, type, visible }: Props) => {
           transition-colors duration-150
         "
         aria-label="Close"
-        icon={
-          <span className="material-symbols-outlined text-[16px]">close</span>
-        }
+        icon={<X size={18} />}
       />
     </div>
   );

@@ -7,6 +7,7 @@ import {
   Copy,
   Pencil,
   Trash2,
+  Plus,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
@@ -182,12 +183,8 @@ const SocialLinks = () => {
             />
           ) : (
             <Button
-              className="bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-3 py-1 rounded-lg flex items-center gap-2 transition-all hover:opacity-80 border-none"
-              icon={
-                <span className="text-[20px]! material-symbols-outlined">
-                  add
-                </span>
-              }
+              className="bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold p-3 rounded-lg flex items-center gap-2 transition-all hover:opacity-80 border-none"
+              icon={<Plus size={16} />}
             />
           )}
         </div>
