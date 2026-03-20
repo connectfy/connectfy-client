@@ -1,5 +1,5 @@
 import { FC, useRef, useEffect, useState } from "react";
-import { ListFilter, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 // import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -33,6 +33,7 @@ const FilterDropdown: FC<FilterDropdownProps> = ({
   animation,
   actionButton,
   tooltip,
+  icon,
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -55,49 +56,48 @@ const FilterDropdown: FC<FilterDropdownProps> = ({
 
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      <motion.button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        whileTap={{ scale: animation?.whileTap ? 0.88 : 1 }}
-        whileHover={{ scale: animation?.whileHover ? 1.08 : 1 }}
-        animate={
-          open
-            ? {
-                backgroundColor: "var(--active-bg)",
-                color: "var(--primary-color)",
-              }
-            : {
-                backgroundColor: "transparent",
-                color: "var(--muted-color)",
-              }
-        }
-        transition={{ duration: 0.18, ease: "easeInOut" }}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 32,
-          height: 32,
-          borderRadius: 8,
-          border: "none",
-          cursor: "pointer",
-          outline: "none",
-          position: "relative",
-        }}
-      >
-        {/* Rotating icon */}
-        <Tooltip placement="top" title={tooltip}>
+      <Tooltip placement="top" title={tooltip}>
+        <motion.button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          whileTap={{ scale: animation?.whileTap ? 0.88 : 1 }}
+          whileHover={{ scale: animation?.whileHover ? 1.08 : 1 }}
+          animate={
+            open
+              ? {
+                  backgroundColor: "var(--active-bg)",
+                  color: "var(--primary-color)",
+                }
+              : {
+                  backgroundColor: "transparent",
+                  color: "var(--muted-color)",
+                }
+          }
+          transition={{ duration: 0.18, ease: "easeInOut" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            border: "none",
+            cursor: "pointer",
+            outline: "none",
+            position: "relative",
+          }}
+        >
+          {/* Rotating icon */}
           <motion.span
             animate={{ rotate: open && animation?.animate ? 180 : 0 }}
             transition={{ duration: 0.28, ease: [0.34, 1.56, 0.64, 1] }}
             style={{ display: "flex", alignItems: "center" }}
           >
-            <ListFilter size={16} />
+            {icon}
           </motion.span>
-        </Tooltip>
 
-        {/* Active dot indicator */}
-        {/* <AnimatePresence>
+          {/* Active dot indicator */}
+          {/* <AnimatePresence>
           {selected && (
             <motion.span
               key="dot"
@@ -118,7 +118,8 @@ const FilterDropdown: FC<FilterDropdownProps> = ({
             />
           )}
         </AnimatePresence> */}
-      </motion.button>
+        </motion.button>
+      </Tooltip>
 
       <AnimatePresence>
         {open && (

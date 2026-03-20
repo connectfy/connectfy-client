@@ -6,34 +6,46 @@ import {
   Copy,
   Pencil,
   Trash2,
+  ListChecks,
 } from "lucide-react";
-import { memo, useState } from "react";
-import { TFunction } from "i18next";
+import { memo, useEffect, useState } from "react";
 import { ISocialLink } from "@/modules/profile/types/types";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import { useTranslation } from "react-i18next";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
   ({
     link,
     onAction,
-    t,
+    index,
+    closeExpanded,
   }: {
     link: ISocialLink;
     onAction: (action: string, link: ISocialLink) => void;
     index: number;
-    t: TFunction;
+    closeExpanded: boolean;
   }) => {
+    const { t } = useTranslation();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleCopy = (e: React.MouseEvent) => {
-      e.stopPropagation(); // Accordion-un bağlanmaması üçün
+      e.stopPropagation();
       navigator.clipboard.writeText(link.url);
       onAction("copy", link);
     };
 
+    useEffect(() => {
+      if (closeExpanded && isExpanded) {
+        setIsExpanded(false);
+      }
+    }, [closeExpanded]);
+
     return (
-      <div className="relative overflow-hidden transition-all duration-300 border bg-(--info-card-bg) border-(--info-card-border) rounded-xl hover:border-(--primary-color) group">
+      <div
+        className="relative overflow-hidden transition-all duration-300 border bg-(--info-card-bg) border-(--info-card-border) rounded-xl hover:border-(--primary-color) group"
+        data-testid={`social-link-item-${index}`}
+      >
         {/* Accent Bar (Hover zamanı solda görünən rəngli xətt) */}
         <div className="absolute top-0 left-0 w-1 h-full transition-opacity opacity-0 bg-(--primary-color) group-hover:opacity-100" />
 
@@ -59,7 +71,7 @@ const SocialLinkItem = memo(
         {/* Details (Expanded Content) */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isExpanded ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
+            isExpanded ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="p-5 pt-0 border-t border-(--info-card-border)/50">
@@ -89,6 +101,14 @@ const SocialLinkItem = memo(
                 onClick={() => onAction("edit", link)}
                 icon={<Pencil size={16} />}
                 label={t("common.edit")}
+              />
+              <ActionButton
+                onClick={() => {
+                  onAction("handleSelect", link);
+                  setIsExpanded(false);
+                }}
+                icon={<ListChecks size={16} />}
+                label={t("common.select")}
               />
               <ActionButton
                 onClick={() => onAction("delete", link)}

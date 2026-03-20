@@ -6,6 +6,7 @@ interface Props {
   checked: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  className?: string;
 }
 
 const Checkbox: FC<Props> = ({
@@ -14,6 +15,7 @@ const Checkbox: FC<Props> = ({
   checked,
   onChange,
   disabled = false,
+  className,
 }) => {
   const checkboxId = id ?? `checkbox-${Math.random()}`;
 
@@ -40,6 +42,7 @@ const Checkbox: FC<Props> = ({
                 ? "bg-(--primary-color) border-(--primary-color) shadow-checkbox-active"
                 : "bg-white dark:bg-input-bg border-input-border hover:border-(--primary-color)/50"
             }
+            ${className}
           `}
         >
           <svg

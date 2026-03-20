@@ -21,16 +21,10 @@ import { validateSocialLink } from "@/modules/profile/constants/validation";
 interface IProps {
   open: boolean;
   onClose: () => void;
-  userId: string;
   socialLink: ISocialLink;
 }
 
-const EditSocialLinkModal: FC<IProps> = ({
-  open,
-  onClose,
-  userId,
-  socialLink,
-}) => {
+const EditSocialLinkModal: FC<IProps> = ({ open, onClose, socialLink }) => {
   const { t } = useTranslation();
   const { showResponseErrors, showFormikErrors } = useErrors();
   const [update, { isLoading }] = useUpdateSocialLinkMutation();
@@ -58,7 +52,7 @@ const EditSocialLinkModal: FC<IProps> = ({
     onSubmit: async (values) => {
       try {
         const changedData = getChangedData<IEditSocialLink>(socialLink, values);
-        await update({ ...changedData, _id: socialLink._id, userId }).unwrap();
+        await update({ ...changedData, _id: socialLink._id }).unwrap();
         snack.success(t("user_messages.information_updated"));
         handleClose();
       } catch (error) {
