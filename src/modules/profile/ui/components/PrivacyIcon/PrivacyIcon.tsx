@@ -6,6 +6,7 @@ import PrivacyIconModal from "../Modal/PrivacyIconModal/PrivacyIconModal";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "@mui/material";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
+import Button from "@/components/ui/CustomButton/Button/Button";
 
 interface Props {
   privacy: PRIVACY_SETTINGS_CHOICE;
@@ -35,13 +36,13 @@ export const PrivacyIcon = memo(({ privacy, fieldName }: Props) => {
   return (
     <>
       <Tooltip placement="top" title={t(`enum.${privacy}`)}>
-        <button
+        <Button
           type="button"
           onClick={onOpen}
           className="group flex items-center justify-center p-1.5 rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer border-none bg-transparent"
         >
           {icons[privacy]}
-        </button>
+        </Button>
       </Tooltip>
 
       <PrivacyIconModal

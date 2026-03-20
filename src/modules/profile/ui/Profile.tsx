@@ -43,7 +43,7 @@ const Profile: FC = () => {
         />
 
         {/* Social Links */}
-        <SocialLinks />
+        <SocialLinks userId={user?._id} />
       </main>
     </div>
   );

@@ -1,15 +1,32 @@
 import { baseQuery } from "@/common/api/axiosBaseQuery";
 import { RESOURCE } from "@/common/enums/enums";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { IAccount, IEditProfile, IMe } from "../types/types";
+import {
+  IAccount,
+  IAddSocialLink,
+  IEditProfile,
+  IEditSocialLink,
+  IFindSocialLinks,
+  IMe,
+  IRemoveAllSocialLinks,
+  IRemoveSocialLink,
+} from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
-import { IUpdateResponse } from "@/common/interfaces/interfaces";
+import {
+  IFindAllResponse,
+  IRemoveAllResponse,
+  IRemoveResponse,
+  IUpdateResponse,
+} from "@/common/interfaces/interfaces";
+import { ISocialLink } from "../types/types";
 
 export const profileApi = createApi({
   reducerPath: RESOURCE.PROFILE,
   baseQuery: baseQuery,
-  tagTypes: ["User", "Account"],
+  tagTypes: ["User", "Account", "SocialLink"],
   endpoints: (builder) => ({
+    // <====================== PROFILE ======================>
+    // <====================== PROFILE ======================>
     // ====================== GET ME
     getMe: builder.query<IMe, void>({
       query: () => ({
@@ -57,8 +74,91 @@ export const profileApi = createApi({
       },
       invalidatesTags: ["Account"],
     }),
+    // <====================== PROFILE ======================>
+    // <====================== PROFILE ======================>
+
+    // <====================== SOCIAL LINKS ======================>
+    // <====================== SOCIAL LINKS ======================>
+    // ====================== GET SOCIAL LINKS
+    /**
+     * Social linkləri gətirir.
+     * providesTags: Bu query-nin nəticəsini müəyyən tag-lərlə nişanlayır.
+     */
+    getSocialLinks: builder.query<
+      IFindAllResponse<ISocialLink>,
+      IFindSocialLinks
+    >({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.GET,
+        method: "POST",
+        body,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map(({ _id }) => ({
+                type: "SocialLink" as const,
+                id: _id,
+              })),
+              { type: "SocialLink", id: "LIST" },
+            ]
+          : [{ type: "SocialLink", id: "LIST" }],
+    }),
+
+    createSocialLink: builder.mutation<ISocialLink, IAddSocialLink>({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.CREATE,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "SocialLink", id: "LIST" }],
+    }),
+
+    updateSocialLink: builder.mutation<IUpdateResponse, IEditSocialLink>({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.UPDATE,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (_, __, { _id }) => [
+        { type: "SocialLink", id: _id },
+        { type: "SocialLink", id: "LIST" },
+      ],
+    }),
+
+    removeSocialLink: builder.mutation<IRemoveResponse, IRemoveSocialLink>({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.REMOVE,
+        method: "DELETE",
+        body,
+      }),
+      invalidatesTags: (_, __, { _id }) => [
+        { type: "SocialLink", id: _id },
+        { type: "SocialLink", id: "LIST" },
+      ],
+    }),
+
+    removeSocialLinks: builder.mutation<
+      IRemoveAllResponse,
+      IRemoveAllSocialLinks
+    >({
+      query: ({ _ids }) => ({
+        url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.REMOVE_MANY,
+        method: "DELETE",
+        body: { _ids },
+      }),
+      invalidatesTags: [{ type: "SocialLink", id: "LIST" }],
+    }),
   }),
 });
 
-export const { useGetMeQuery, useGetAccountQuery, useUpdateProfileMutation } =
-  profileApi;
+export const {
+  useGetMeQuery,
+  useGetAccountQuery,
+  useUpdateProfileMutation,
+  useGetSocialLinksQuery,
+  useCreateSocialLinkMutation,
+  useUpdateSocialLinkMutation,
+  useRemoveSocialLinkMutation,
+  useRemoveSocialLinksMutation,
+} = profileApi;

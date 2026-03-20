@@ -32,3 +32,23 @@ export interface IUpdateResponse {
   success: boolean;
   [key: string]: any;
 }
+
+export interface IFindAllResponse<T> {
+  data: T[];
+  totalCount?: number;
+  limit?: number;
+  currentPage?: number;
+  totalPages?: number;
+}
+
+export interface IRemoveResponse {
+  success: boolean;
+  [key: string]: any;
+}
+
+export interface IRemoveAllResponse {
+  deletedIds: string[];
+  notDeleted: string[];
+  deletedCount: number;
+  [key: string]: any;
+}

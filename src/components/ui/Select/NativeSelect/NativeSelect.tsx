@@ -19,7 +19,11 @@ interface ICustomSelectProps {
   icon?: ReactNode;
   disabled?: boolean;
   className?: string;
+  visibleOptions?: number;
 }
+
+const OPTION_HEIGHT = 40; // py-2.5 (20px) + text-sm line-height (20px)
+const LIST_PADDING = 16; // inner div py-2 (8px top + 8px bottom)
 
 const NativeSelect: FC<ICustomSelectProps> = ({
   options,
@@ -32,16 +36,18 @@ const NativeSelect: FC<ICustomSelectProps> = ({
   icon,
   disabled = false,
   className = "",
+  visibleOptions = 5,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const selectId = useId();
 
+  const maxHeight = OPTION_HEIGHT * visibleOptions + LIST_PADDING;
+
   const selectedOption = options.find((opt) => opt.value === value);
   const isLabelFloating =
     isFloating && (isOpen || (value !== undefined && value !== ""));
 
-  // Input komponentindəki ölçülərlə tam eyni mapping
   const sizeConfig = {
     small: {
       padding: "py-[0.625rem] px-[0.75rem]",
@@ -163,31 +169,45 @@ const NativeSelect: FC<ICustomSelectProps> = ({
             animate={{ opacity: 1, y: 5, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute z-50 w-full py-2 mt-1 overflow-hidden bg-(--auth-main-bg) border border-(--auth-glass-border) rounded-xl shadow-(--card-shadow)"
+            style={{
+              maxHeight: `${maxHeight}px`,
+              scrollbarWidth: "thin",
+              scrollbarColor: "var(--primary-color) transparent",
+            }}
+            className="
+              absolute z-50 w-full mt-1 overflow-y-auto
+              bg-(--auth-main-bg) border border-(--auth-glass-border)
+              rounded-xl shadow-(--card-shadow)
+              scrollbar-thin scrollbar-thumb-(--primary-color)/40 scrollbar-track-transparent
+            "
           >
-            {options.map((option) => {
-              const isActive = option.value === value;
-              return (
-                <li
-                  key={option.value}
-                  onClick={() => {
-                    onChange(option.value);
-                    setIsOpen(false);
-                  }}
-                  className={`
-                    flex items-center justify-between px-4 py-2.5 text-sm font-semibold cursor-pointer transition-colors
-                    ${
-                      isActive
-                        ? "bg-(--primary-color) text-white"
-                        : "text-(--text-primary) hover:bg-(--primary-color)/10"
-                    }
-                  `}
-                >
-                  {option.label}
-                  {isActive && <Check size={14} className="text-white" />}
-                </li>
-              );
-            })}
+            <div className="py-2">
+              {options.map((option) => {
+                const isActive = option.value === value;
+                return (
+                  <li
+                    key={option.value}
+                    onClick={() => {
+                      onChange(option.value);
+                      setIsOpen(false);
+                    }}
+                    className={`
+                      flex items-center justify-between px-4 py-2.5 text-sm font-semibold cursor-pointer transition-colors
+                      ${
+                        isActive
+                          ? "bg-(--primary-color) text-white"
+                          : "text-(--text-primary) hover:bg-(--primary-color)/10"
+                      }
+                    `}
+                  >
+                    <span className="truncate">{option.label}</span>
+                    {isActive && (
+                      <Check size={14} className="text-white shrink-0 ml-2" />
+                    )}
+                  </li>
+                );
+              })}
+            </div>
           </motion.ul>
         )}
       </AnimatePresence>

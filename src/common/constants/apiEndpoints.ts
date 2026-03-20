@@ -48,5 +48,12 @@ export const API_ENDPOINTS = {
         UPDATE: "/account/settings/privacy-settings/update",
       },
     },
+    SOCIAL_LINK: {
+      GET: "/account/social-link/get",
+      CREATE: "/account/social-link/create",
+      UPDATE: "/account/social-link/update",
+      REMOVE: "/account/social-link/remove",
+      REMOVE_MANY: "/account/social-link/removeMany",
+    },
   },
 };

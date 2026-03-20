@@ -1,5 +1,5 @@
-import { checkEmptyString } from "@/common/utils/checkValues";
-import { IEditProfile } from "../types/types";
+import { checkEmptyString, checkUrl } from "@/common/utils/checkValues";
+import { IAddSocialLink, IEditProfile, IEditSocialLink } from "../types/types";
 import { TFunction } from "i18next";
 import { GENDER } from "@/common/enums/enums";
 
@@ -23,5 +23,25 @@ export const validateEditProfile = (values: IEditProfile, t: TFunction) => {
     errors.birthdayDate = t("error_messages.birthday_is_required");
   }
 
+  return errors;
+};
+
+export const validateSocialLink = (
+  values: IEditSocialLink | IAddSocialLink,
+  t: TFunction,
+) => {
+  const errors: Record<string, string> = {};
+  if (!values.name || !checkEmptyString(values.name)) {
+    errors.name = t("error_messages.name_is_required");
+  }
+  if (!values.url || !checkEmptyString(values.url)) {
+    errors.url = t("error_messages.url_is_required");
+  }
+  if (values.url && !checkUrl(values.url)) {
+    errors.url = t("error_messages.url_invalid");
+  }
+  if (!values.platform || !checkEmptyString(values.platform)) {
+    errors.platform = t("error_messages.platform_required");
+  }
   return errors;
 };

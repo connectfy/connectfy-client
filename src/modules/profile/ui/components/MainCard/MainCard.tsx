@@ -21,7 +21,7 @@ const MainCard: FC<IProps> = ({ user, profile, isLoading }) => {
   return (
     <Fragment>
       <section
-        className="flex flex-col items-center gap-6 p-8 mb-8 transition-all bg-(--auth-main-bg) rounded-[24px] shadow-(--card-shadow) md:p-10"
+        className="flex flex-col items-center gap-6 p-8 mb-8 transition-all bg-(--auth-main-bg) rounded-[20px] border border-(--auth-glass-border) shadow-(--card-shadow) md:p-10"
         aria-labelledby="profile-main-heading"
       >
         {" "}

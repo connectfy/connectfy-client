@@ -14,3 +14,12 @@ export function checkDeviceId(): string {
   localStorage.setItem(LOCAL_STORAGE_KEYS.DEVICE_ID, newDeviceId);
   return newDeviceId;
 }
+
+export function checkUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
