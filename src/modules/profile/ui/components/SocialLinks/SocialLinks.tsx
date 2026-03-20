@@ -25,6 +25,7 @@ import FilterDropdown, {
   FilterOption,
 } from "@/components/ui/Select/FilterDropdown/FilterDropdown";
 import Checkbox from "@/components/ui/CustomCheckbox/Checkbox/Checkbox";
+import { Tooltip } from "@mui/material";
 
 interface IProps {
   userId: string | undefined;
@@ -249,11 +250,13 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
                     />
 
                     {hasLinks && (
-                      <Button
-                        className="group flex items-center justify-center p-1.5 rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer border-none bg-transparent"
-                        icon={<ListChecks size={18} />}
-                        onClick={toggleSelectionMode}
-                      />
+                      <Tooltip placement="top" title={t("common.select")}>
+                        <Button
+                          className="group flex items-center justify-center p-1.5 rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer border-none bg-transparent"
+                          icon={<ListChecks size={18} />}
+                          onClick={toggleSelectionMode}
+                        />
+                      </Tooltip>
                     )}
 
                     {socialLinks?.totalCount !== undefined &&
@@ -391,9 +394,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
           onCancel={removeMultipleModal.onClose}
           onConfirm={handleRemoveMultiple}
           header={{
-            title: t("common.remove_selected_links_title", {
-              count: selectedIds.length,
-            }),
+            title: t("common.remove_social_link_title"),
           }}
           cancelBtn={{ title: t("common.cancel") }}
           confirmBtn={{
@@ -403,7 +404,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
           isLoading={isRemoveManyLoading}
         >
           <p className="text-center text-[15px] text-(--muted-color)">
-            {t("common.remove_multiple_social_links_desc", {
+            {t("common.remove_social_links_desc", {
               count: selectedIds.length,
             })}
           </p>

@@ -80,7 +80,7 @@ const PersonalInformation: FC<IProps> = ({
     {
       id: "phone",
       icon: <Phone size={isMobile ? 15 : 20} />,
-      label: t("common.phone"),
+      label: t("common.phoneNumber"),
       value: hasPhoneNumber
         ? formatPhoneNumber(
             user?.phoneNumber?.number as string,
