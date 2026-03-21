@@ -51,7 +51,7 @@ export interface ISocialLink {
   _id: string;
   userId: string;
   name: string;
-  rank: string;
+  rank: number;
   url: string;
   platform: SOCIAL_LINK_PLATFORM;
 }
@@ -66,6 +66,15 @@ export interface IAddSocialLink {
 export interface IEditSocialLink
   extends Partial<Omit<ISocialLink, "_id" | "userId">> {
   _id: string;
+}
+
+export interface IUpdateSocialLinkRank {
+  links: {
+    _id: string;
+    rank: number;
+  }[];
+  userId: string;
+  sort: Record<string, 1 | -1>;
 }
 
 export interface IRemoveSocialLink {

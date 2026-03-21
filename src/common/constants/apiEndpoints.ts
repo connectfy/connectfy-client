@@ -52,6 +52,7 @@ export const API_ENDPOINTS = {
       GET: "/account/social-link/get",
       CREATE: "/account/social-link/create",
       UPDATE: "/account/social-link/update",
+      UPDATE_RANK: "/account/social-link/update-rank",
       REMOVE: "/account/social-link/remove",
       REMOVE_MANY: "/account/social-link/removeMany",
     },

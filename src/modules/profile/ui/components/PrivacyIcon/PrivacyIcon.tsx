@@ -18,8 +18,7 @@ export const PrivacyIcon = memo(({ privacy, fieldName }: Props) => {
   const { open, onOpen, onClose } = useBoolean();
 
   // İkonlar üçün ortaq class
-  const iconClassName =
-    "text-(--muted-color) transition-all duration-300 group-hover:text-(--primary-color)";
+  const iconClassName = "text-(--text-color) transition-all duration-300";
 
   const icons = {
     [PRIVACY_SETTINGS_CHOICE.EVERYONE]: (

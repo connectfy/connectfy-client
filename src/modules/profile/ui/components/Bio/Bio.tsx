@@ -6,17 +6,15 @@ import Button from "@/components/ui/CustomButton/Button/Button";
 import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
 import useBoolean from "@/hooks/useBoolean";
 import BioModal from "../Modal/BioModal/BioModal";
-import BioSkeleton from "@/components/Skeleton/profile/BioSkeleton";
 import { IAccount } from "@/modules/profile/types/types";
 import { IPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 
 interface IProps {
   profile: IAccount | undefined;
   privacySettings: IPrivacySettings | undefined;
-  isLoading: boolean;
 }
 
-const Bio: FC<IProps> = ({ profile, privacySettings, isLoading }) => {
+const Bio: FC<IProps> = ({ profile, privacySettings }) => {
   const { t } = useTranslation();
   const { open, onOpen, onClose } = useBoolean();
 
@@ -63,23 +61,20 @@ const Bio: FC<IProps> = ({ profile, privacySettings, isLoading }) => {
         </div>
 
         {/* Bio Mətni */}
-        {isLoading ? (
-          <BioSkeleton />
-        ) : (
-          <div className="p-6 rounded-xl bg-(--info-card-bg) border border-(--info-card-border) transition-all duration-200 hover:bg-(--active-bg-2)">
-            {profile?.bio ? (
-              <div
-                className="text-[15px] leading-[1.7] text-(--text-color) prose prose-sm max-w-none [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_s]:line-through"
-                dangerouslySetInnerHTML={{ __html: profile.bio }}
-              />
-            ) : (
-              <div className="flex items-center gap-2 text-(--muted-color) italic py-2">
-                <MinusIcon size={18} />
-                <span>{t("common.no_bio_info")}</span>
-              </div>
-            )}
-          </div>
-        )}
+
+        <div className="p-6 rounded-xl bg-(--info-card-bg) border border-(--info-card-border) transition-all duration-200 hover:bg-(--active-bg-2)">
+          {profile?.bio ? (
+            <div
+              className="text-[15px] leading-[1.7] text-(--text-color) prose prose-sm max-w-none [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_s]:line-through"
+              dangerouslySetInnerHTML={{ __html: profile.bio }}
+            />
+          ) : (
+            <div className="flex items-center gap-2 text-(--muted-color) italic py-2">
+              <MinusIcon size={18} />
+              <span>{t("common.no_bio_info")}</span>
+            </div>
+          )}
+        </div>
       </section>
 
       {open && <BioModal open={open} onClose={onClose} />}

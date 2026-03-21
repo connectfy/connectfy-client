@@ -1,31 +1,31 @@
-import { FC, Fragment, useCallback, useMemo, useState } from "react";
-import { Link2, Plus, ListChecks, X, Trash2, ListFilter } from "lucide-react";
+import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { motion, AnimatePresence } from "framer-motion";
-import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
-import Button from "@/components/ui/CustomButton/Button/Button";
+import { Link2, GripVertical } from "lucide-react";
+import { motion, AnimatePresence, Reorder } from "framer-motion";
+
 import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
-import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
-import { ISocialLink } from "@/modules/profile/types/types";
+import { useAuthStore } from "@/hooks/useAuthStore";
+import { useErrors } from "@/hooks/useErrors";
 import useBoolean from "@/hooks/useBoolean";
-import AddSocialLinkModal from "./components/Modal/AddSocialLink";
-import SocialLinkItem from "./components/SocialLinkItem";
+import { ISocialLink } from "@/modules/profile/types/types";
+import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
+import { snack } from "@/common/utils/snackManager";
+
 import {
   useGetSocialLinksQuery,
   useRemoveSocialLinkMutation,
   useRemoveSocialLinksMutation,
+  useUpdateSocialLinkRankMutation,
 } from "@/modules/profile/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+
 import SocialLinkSkeleton from "@/components/Skeleton/profile/SocialLinkSkeleton";
-import { snack } from "@/common/utils/snackManager";
-import EditSocialLinkModal from "./components/Modal/EditSocialLink";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
-import { useErrors } from "@/hooks/useErrors";
-import FilterDropdown, {
-  FilterOption,
-} from "@/components/ui/Select/FilterDropdown/FilterDropdown";
 import Checkbox from "@/components/ui/CustomCheckbox/Checkbox/Checkbox";
-import { Tooltip } from "@mui/material";
+
+import SocialLinkItem from "./components/SocialLinkItem";
+import AddSocialLinkModal from "./components/Modal/AddSocialLink";
+import EditSocialLinkModal from "./components/Modal/EditSocialLink";
+import SocialLinkHeader from "./components/SocialLinkHeader";
 
 interface IProps {
   userId: string | undefined;
@@ -43,9 +43,11 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
     "rank" | "newest" | "oldest"
   >("rank");
 
-  // Selection Mode States
+  // Modes
   const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isReorderMode, setIsReorderMode] = useState<boolean>(false);
+  const [orderedLinks, setOrderedLinks] = useState<ISocialLink[]>([]);
 
   // Modals
   const addModal = useBoolean();
@@ -53,6 +55,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const removeOneModal = useBoolean();
   const removeMultipleModal = useBoolean();
 
+  // Məlumatın çeşidlənməsi üçün konfiqurasiya
   const sortLinks = useMemo(() => {
     const sort: Record<string, 1 | -1> = {};
     switch (activeFilter) {
@@ -70,6 +73,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
     return sort;
   }, [activeFilter]);
 
+  // API Hooks
   const {
     data: socialLinks,
     isLoading,
@@ -83,11 +87,31 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
     useRemoveSocialLinkMutation();
   const [removeMany, { isLoading: isRemoveManyLoading }] =
     useRemoveSocialLinksMutation();
+  const [updateRank, { isLoading: isUpdateRankLoading }] =
+    useUpdateSocialLinkRankMutation();
 
+  // Drag & drop üçün datanın sinxronlaşdırılması
+  useEffect(() => {
+    if (socialLinks?.data && !isReorderMode) {
+      setOrderedLinks(socialLinks.data);
+    }
+  }, [socialLinks?.data, isReorderMode]);
+
+  // Actions
   const toggleSelectionMode = useCallback(() => {
     setIsSelectionMode((prev) => !prev);
+    setIsReorderMode(false);
     setSelectedIds([]);
   }, []);
+
+  const toggleReorderMode = useCallback(() => {
+    setIsReorderMode((prev) => !prev);
+    setIsSelectionMode(false);
+    // İmtina edilərsə, datanı orijinal vəziyyətinə qaytar
+    if (isReorderMode && socialLinks?.data) {
+      setOrderedLinks(socialLinks.data);
+    }
+  }, [isReorderMode, socialLinks?.data]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) =>
@@ -97,7 +121,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
 
   const handleSocialAction = useCallback(
     (action: string, link: ISocialLink) => {
-      if (isSelectionMode) return;
+      if (isSelectionMode || isReorderMode) return;
       switch (action) {
         case "copy":
           navigator.clipboard.writeText(link.url);
@@ -119,62 +143,63 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
     },
     [
       isSelectionMode,
+      isReorderMode,
       editModal,
       removeOneModal,
       toggleSelect,
       toggleSelectionMode,
+      t,
     ],
   );
 
-  const handleRemoveOne = async () => {
+  const handleSaveOrder = async () => {
     try {
-      if (selectedLink) {
-        await removeOne({ _id: selectedLink._id }).unwrap();
-        removeOneModal.onClose();
-        setSelectedLink(null);
-        snack.success(t("common.removed_successfully"));
-      }
+      const payload = orderedLinks.map((link, index) => ({
+        _id: link._id,
+        rank: index + 1,
+      }));
+
+      await updateRank({
+        links: payload,
+        userId: userId || "",
+        sort: sortLinks,
+      }).unwrap();
+
+      setIsReorderMode(false);
+      snack.success(t("common.order_saved_successfully"));
+    } catch (error) {
+      showResponseErrors(error);
+    }
+  };
+
+  const handleRemoveOne = async () => {
+    if (!selectedLink) return;
+    try {
+      await removeOne({ _id: selectedLink._id }).unwrap();
+      removeOneModal.onClose();
+      setSelectedLink(null);
+      snack.success(t("common.removed_successfully"));
     } catch (error) {
       showResponseErrors(error);
     }
   };
 
   const handleRemoveMultiple = async () => {
+    if (selectedIds.length === 0) return;
     try {
-      if (selectedIds.length > 0) {
-        await removeMany({ _ids: selectedIds, userId: userId || "" }).unwrap();
-        removeMultipleModal.onClose();
-        setIsSelectionMode(false);
-        setSelectedIds([]);
-        snack.success(t("common.removed_successfully"));
-      }
+      await removeMany({ _ids: selectedIds, userId: userId || "" }).unwrap();
+      removeMultipleModal.onClose();
+      setIsSelectionMode(false);
+      setSelectedIds([]);
+      snack.success(t("common.removed_successfully"));
     } catch (error) {
       showResponseErrors(error);
     }
   };
 
-  const filterOptions: FilterOption[] = useMemo(
-    () => [
-      {
-        label: t("common.by_rank"),
-        value: "rank",
-        onClick: () => setActiveFilter("rank"),
-      },
-      {
-        label: t("common.by_newest"),
-        value: "newest",
-        onClick: () => setActiveFilter("newest"),
-      },
-      {
-        label: t("common.by_oldest"),
-        value: "oldest",
-        onClick: () => setActiveFilter("oldest"),
-      },
-    ],
-    [t],
-  );
-
-  const hasLinks = socialLinks?.data && socialLinks.data.length > 0;
+  const hasLinks = orderedLinks && orderedLinks.length > 0;
+  const currentPrivacy =
+    privacySettings?.socialLinks || PRIVACY_SETTINGS_CHOICE.EVERYONE;
 
   return (
     <Fragment>
@@ -185,114 +210,59 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
           className="p-8 mb-8 transition-all duration-300 bg-(--auth-main-bg) rounded-[20px] border border-(--auth-glass-border) shadow-(--card-shadow)"
           aria-labelledby="social-links-heading"
         >
-          {/* Header */}
-          <div className="flex flex-row items-center justify-between gap-3 mb-6 md:mb-8 min-h-[40px]">
-            <div className="flex items-center gap-2 md:gap-3">
-              <Link2 className="w-6 h-6 md:w-7 md:h-7 text-(--primary-color)" />
-              <h2
-                id="social-links-heading"
-                className="m-0 text-lg font-bold md:text-2xl text-(--text-color)"
-              >
-                {t("common.social_links")}
-              </h2>
-            </div>
+          {/* Ekstrakt edilmiş Header Komponenti */}
+          <SocialLinkHeader
+            isSelectionMode={isSelectionMode}
+            isReorderMode={isReorderMode}
+            hasLinks={hasLinks}
+            selectedCount={selectedIds.length}
+            totalCount={socialLinks?.totalCount}
+            activeFilter={activeFilter}
+            privacy={currentPrivacy}
+            isUpdateRankLoading={isUpdateRankLoading}
+            onToggleSelectionMode={toggleSelectionMode}
+            onToggleReorderMode={toggleReorderMode}
+            onRemoveMultiple={removeMultipleModal.onOpen}
+            onSaveOrder={handleSaveOrder}
+            onAddClick={addModal.onOpen}
+            onFilterChange={setActiveFilter}
+          />
 
-            {/* Dynamic Header Actions with Framer Motion */}
-            <div className="flex items-center gap-2 md:gap-3 relative">
-              <AnimatePresence mode="wait">
-                {isSelectionMode ? (
-                  <motion.div
-                    key="selection-actions"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex items-center gap-2"
-                  >
-                    <Button
-                      className="bg-transparent text-(--text-color) border border-(--auth-glass-border) hover:bg-white/5 font-semibold px-4 py-2 rounded-lg text-sm transition-all"
-                      title={t("common.cancel")}
-                      icon={<X size={16} />}
-                      onClick={toggleSelectionMode}
-                    />
-                    <Button
-                      className="bg-(--error-color) text-white font-semibold px-4 py-2 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={`${t("common.remove")} ${selectedIds.length > 0 ? `(${selectedIds.length})` : ""}`}
-                      icon={<Trash2 size={16} />}
-                      onClick={removeMultipleModal.onOpen}
-                      disabled={selectedIds.length === 0}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="default-actions"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex items-center gap-2 md:gap-3"
-                  >
-                    <PrivacyIcon
-                      privacy={
-                        privacySettings?.socialLinks ||
-                        PRIVACY_SETTINGS_CHOICE.EVERYONE
-                      }
-                      fieldName="socialLinks"
-                    />
-
-                    <FilterDropdown
-                      options={filterOptions}
-                      selected={activeFilter}
-                      tooltip={t("common.filter")}
-                      icon={
-                        <ListFilter size={16} className="text-(--text-color)" />
-                      }
-                    />
-
-                    {hasLinks && (
-                      <Tooltip placement="top" title={t("common.select")}>
-                        <Button
-                          className="group flex items-center justify-center p-1.5 rounded-lg transition-colors hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer border-none bg-transparent"
-                          icon={<ListChecks size={18} />}
-                          onClick={toggleSelectionMode}
-                        />
-                      </Tooltip>
-                    )}
-
-                    {socialLinks?.totalCount !== undefined &&
-                      socialLinks.totalCount < 5 && (
-                        <Fragment>
-                          <Button
-                            className="hidden lg:flex bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-4 py-2 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none text-sm whitespace-nowrap"
-                            title={t("common.add_link")}
-                            onClick={addModal.onOpen}
-                          />
-                          <Button
-                            className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold p-2 rounded-lg items-center justify-center transition-all hover:opacity-80 border-none"
-                            icon={<Plus size={18} />}
-                            onClick={addModal.onOpen}
-                          />
-                        </Fragment>
-                      )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* List Items */}
-          <div className="flex flex-col gap-4">
-            {hasLinks ? (
-              socialLinks.data.map((link, index) => {
+          {/* Siyahı hissəsi */}
+          {hasLinks ? (
+            <Reorder.Group
+              axis="y"
+              values={orderedLinks}
+              onReorder={setOrderedLinks}
+              className="flex flex-col gap-4"
+            >
+              {orderedLinks.map((link, index) => {
                 const isSelected = selectedIds.includes(link._id);
 
                 return (
-                  <motion.div
+                  <Reorder.Item
                     key={link._id}
-                    layout
-                    className="flex items-center w-full"
+                    value={link}
+                    dragListener={isReorderMode}
+                    className={`flex items-center w-full ${isReorderMode ? "cursor-grab active:cursor-grabbing" : ""}`}
                   >
-                    <AnimatePresence>
+                    <AnimatePresence mode="popLayout">
+                      {isReorderMode && (
+                        <motion.div
+                          initial={{ opacity: 0, width: 0, marginRight: 0 }}
+                          animate={{
+                            opacity: 1,
+                            width: "auto",
+                            marginRight: 16,
+                          }}
+                          exit={{ opacity: 0, width: 0, marginRight: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="shrink-0 flex items-center justify-center text-(--muted-color)"
+                        >
+                          <GripVertical size={20} />
+                        </motion.div>
+                      )}
+
                       {isSelectionMode && (
                         <motion.div
                           initial={{ opacity: 0, width: 0, marginRight: 0 }}
@@ -318,34 +288,35 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
 
                     <div className="flex-1 min-w-0 transition-all duration-300">
                       <div
-                        className={`${isSelectionMode ? "pointer-events-none opacity-80" : ""}`}
+                        className={`${isSelectionMode || isReorderMode ? "pointer-events-none opacity-80" : ""}`}
                       >
                         <SocialLinkItem
                           link={link}
                           onAction={handleSocialAction}
                           index={index}
-                          closeExpanded={isSelectionMode}
+                          closeExpanded={isSelectionMode || isReorderMode}
                         />
                       </div>
                     </div>
-                  </motion.div>
+                  </Reorder.Item>
                 );
-              })
-            ) : (
-              <div className="flex flex-col items-center justify-center p-10 border border-dashed rounded-xl border-white/10 bg-black/5">
-                <Link2
-                  className="mb-3 opacity-20 text-(--text-color)"
-                  size={48}
-                />
-                <span className="text-(--muted-color) italic font-medium">
-                  {t("common.no_social_links")}
-                </span>
-              </div>
-            )}
-          </div>
+              })}
+            </Reorder.Group>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-10 border border-dashed rounded-xl border-white/10 bg-black/5">
+              <Link2
+                className="mb-3 opacity-20 text-(--text-color)"
+                size={48}
+              />
+              <span className="text-(--muted-color) italic font-medium">
+                {t("common.no_social_links")}
+              </span>
+            </div>
+          )}
         </section>
       )}
 
+      {/* Modallar */}
       {addModal.open && (
         <AddSocialLinkModal
           open={addModal.open}
@@ -354,18 +325,17 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
         />
       )}
 
-      {editModal.open && (
+      {editModal.open && selectedLink && (
         <EditSocialLinkModal
           open={editModal.open}
           onClose={() => {
             editModal.onClose();
             setSelectedLink(null);
           }}
-          socialLink={selectedLink as ISocialLink}
+          socialLink={selectedLink}
         />
       )}
 
-      {/* Single Remove Modal */}
       {removeOneModal.open && (
         <ActionConfirmModal
           open={removeOneModal.open}
@@ -386,16 +356,13 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
         </ActionConfirmModal>
       )}
 
-      {/* Bulk Remove Modal */}
       {removeMultipleModal.open && (
         <ActionConfirmModal
           open={removeMultipleModal.open}
           onClose={removeMultipleModal.onClose}
           onCancel={removeMultipleModal.onClose}
           onConfirm={handleRemoveMultiple}
-          header={{
-            title: t("common.remove_social_link_title"),
-          }}
+          header={{ title: t("common.remove_social_link_title") }}
           cancelBtn={{ title: t("common.cancel") }}
           confirmBtn={{
             title: t("common.remove"),

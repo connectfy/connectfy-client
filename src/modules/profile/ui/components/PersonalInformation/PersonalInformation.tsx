@@ -22,7 +22,6 @@ import { COUNTRIES } from "@/common/constants/constants";
 import useBoolean from "@/hooks/useBoolean";
 import PersonalInfoModal from "../Modal/PersonalInfoModal/PersonalInfoModal";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import PersonalInformationSkeleton from "@/components/Skeleton/profile/PersonalInformationSkeleton";
 import { IAccount, IMe } from "@/modules/profile/types/types";
 
 export interface IInfoItem {
@@ -38,7 +37,6 @@ interface IProps {
   user: IMe | undefined;
   profile: IAccount | undefined;
   privacySettings: IPrivacySettings | undefined;
-  isLoading: boolean;
   hasPhoneNumber: boolean;
 }
 
@@ -46,7 +44,6 @@ const PersonalInformation: FC<IProps> = ({
   user,
   profile,
   privacySettings,
-  isLoading,
   hasPhoneNumber,
 }) => {
   const { t } = useTranslation();
@@ -156,48 +153,45 @@ const PersonalInformation: FC<IProps> = ({
         </div>
 
         {/* Grid */}
-        {isLoading ? (
-          <PersonalInformationSkeleton />
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {infoItems.map((item) => (
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {infoItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
+            >
+              {/* Icon Box */}
               <div
-                key={item.id}
-                className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
+                className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
               >
-                {/* Icon Box */}
-                <div
-                  className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
-                >
-                  {item.icon}
-                </div>
+                {item.icon}
+              </div>
 
-                {/* Content */}
-                <div className="flex flex-col flex-1 gap-1 overflow-hidden">
-                  <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
-                    {item.label}
-                  </span>
-                  <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
-                    {item.value}
-                  </div>
-                </div>
-
-                {/* Privacy Icon */}
-                <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
-                  <PrivacyIcon
-                    privacy={
-                      (privacySettings?.[
-                        item.privacyField
-                      ] as PRIVACY_SETTINGS_CHOICE) ||
-                      PRIVACY_SETTINGS_CHOICE.EVERYONE
-                    }
-                    fieldName={item.privacyField as keyof IEditPrivacySettings}
-                  />
+              {/* Content */}
+              <div className="flex flex-col flex-1 gap-1 overflow-hidden">
+                <span className="text-[11px] font-bold tracking-widest text-(--muted-color) uppercase">
+                  {item.label}
+                </span>
+                <div className="text-[15px] font-semibold text-(--text-color) truncate flex items-center gap-1.5">
+                  {item.value}
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+
+              {/* Privacy Icon */}
+              <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
+                <PrivacyIcon
+                  privacy={
+                    (privacySettings?.[
+                      item.privacyField
+                    ] as PRIVACY_SETTINGS_CHOICE) ||
+                    PRIVACY_SETTINGS_CHOICE.EVERYONE
+                  }
+                  fieldName={item.privacyField as keyof IEditPrivacySettings}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {open && (

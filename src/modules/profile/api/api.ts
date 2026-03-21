@@ -10,6 +10,7 @@ import {
   IMe,
   IRemoveAllSocialLinks,
   IRemoveSocialLink,
+  IUpdateSocialLinkRank,
 } from "../types/types";
 import { API_ENDPOINTS } from "@/common/constants/apiEndpoints";
 import {
@@ -126,6 +127,43 @@ export const profileApi = createApi({
       ],
     }),
 
+    updateSocialLinkRank: builder.mutation<
+      IUpdateResponse,
+      IUpdateSocialLinkRank
+    >({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.UPDATE_RANK,
+        method: "PATCH",
+        body,
+      }),
+      async onQueryStarted(
+        { userId, sort, links },
+        { dispatch, queryFulfilled },
+      ) {
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData(
+            "getSocialLinks",
+            { userId, sort },
+            (draft) => {
+              if (draft?.data) {
+                links.forEach((l) => {
+                  const item = draft.data.find((link) => link._id === l._id);
+                  if (item) item.rank = l.rank;
+                });
+                if (sort.rank) draft.data.sort((a, b) => a.rank - b.rank);
+              }
+            },
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
+
     removeSocialLink: builder.mutation<IRemoveResponse, IRemoveSocialLink>({
       query: (body) => ({
         url: API_ENDPOINTS.ACCOUNT.SOCIAL_LINK.REMOVE,
@@ -159,6 +197,7 @@ export const {
   useGetSocialLinksQuery,
   useCreateSocialLinkMutation,
   useUpdateSocialLinkMutation,
+  useUpdateSocialLinkRankMutation,
   useRemoveSocialLinkMutation,
   useRemoveSocialLinksMutation,
 } = profileApi;

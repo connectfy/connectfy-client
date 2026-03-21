@@ -2,21 +2,15 @@ import { Pencil, UserRoundX, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { FC, Fragment } from "react";
-import MainCardSkeleton from "@/components/Skeleton/profile/MainCardSkeleton";
 import { IAccount, IMe } from "@/modules/profile/types/types";
 
 interface IProps {
   user: IMe | undefined;
   profile: IAccount | undefined;
-  isLoading: boolean;
 }
 
-const MainCard: FC<IProps> = ({ user, profile, isLoading }) => {
+const MainCard: FC<IProps> = ({ user, profile }) => {
   const { t } = useTranslation();
-
-  if (isLoading) {
-    return <MainCardSkeleton />;
-  }
 
   return (
     <Fragment>

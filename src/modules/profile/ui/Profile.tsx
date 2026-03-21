@@ -7,6 +7,9 @@ import SocialLinks from "./components/SocialLinks/SocialLinks";
 import { useUser } from "../hooks/useUser";
 import { useProfile } from "../hooks/useProfile";
 import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
+import MainCardSkeleton from "@/components/Skeleton/profile/MainCardSkeleton";
+import PersonalInformationSkeleton from "@/components/Skeleton/profile/PersonalInformationSkeleton";
+import BioSkeleton from "@/components/Skeleton/profile/BioSkeleton";
 
 const Profile: FC = () => {
   const { user, isLoading: userLoading, hasPhoneNumber } = useUser();
@@ -20,27 +23,30 @@ const Profile: FC = () => {
 
       <main className="mx-auto max-w-[900px] pt-8 px-6 pb-[60px] animate-slide-up">
         {/* Main Profile Section */}
-        <MainCard
-          user={user}
-          profile={profile}
-          isLoading={userLoading || profileLoading}
-        />
+        {userLoading || profileLoading ? (
+          <MainCardSkeleton />
+        ) : (
+          <MainCard user={user} profile={profile} />
+        )}
 
         {/* Personal Info Grid */}
-        <PersonalInformation
-          user={user}
-          profile={profile}
-          privacySettings={privacySettings}
-          isLoading={userLoading || profileLoading || privacyLoading}
-          hasPhoneNumber={!!hasPhoneNumber}
-        />
+        {userLoading || profileLoading || privacyLoading ? (
+          <PersonalInformationSkeleton />
+        ) : (
+          <PersonalInformation
+            user={user}
+            profile={profile}
+            privacySettings={privacySettings}
+            hasPhoneNumber={!!hasPhoneNumber}
+          />
+        )}
 
         {/* Bio Section */}
-        <Bio
-          profile={profile}
-          privacySettings={privacySettings}
-          isLoading={profileLoading || privacyLoading}
-        />
+        {profileLoading || privacyLoading ? (
+          <BioSkeleton />
+        ) : (
+          <Bio profile={profile} privacySettings={privacySettings} />
+        )}
 
         {/* Social Links */}
         <SocialLinks userId={user?._id} />

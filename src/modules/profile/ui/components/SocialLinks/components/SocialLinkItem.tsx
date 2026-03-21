@@ -71,7 +71,7 @@ const SocialLinkItem = memo(
         {/* Details (Expanded Content) */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isExpanded ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+            isExpanded ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="p-5 pt-0 border-t border-(--info-card-border)/50">
