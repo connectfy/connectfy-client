@@ -8,6 +8,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { history } from "@/common/helpers/history.ts";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { ContextMenuProvider } from "./context/ContextMenuContext.tsx";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -15,13 +16,15 @@ createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Provider store={store}>
       <HistoryRouter history={history as unknown as any}>
-        <ThemeProvider>
-          <Toaster
-            toastOptions={{ duration: 4000 }}
-            containerStyle={{ zIndex: 9999 }}
-          />
-          <App />
-        </ThemeProvider>
+        <ContextMenuProvider>
+          <ThemeProvider>
+            <Toaster
+              toastOptions={{ duration: 4000 }}
+              containerStyle={{ zIndex: 9999 }}
+            />
+            <App />
+          </ThemeProvider>
+        </ContextMenuProvider>
       </HistoryRouter>
     </Provider>
   </GoogleOAuthProvider>,

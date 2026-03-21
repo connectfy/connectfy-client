@@ -26,6 +26,8 @@ import SocialLinkItem from "./components/SocialLinkItem";
 import AddSocialLinkModal from "./components/Modal/AddSocialLink";
 import EditSocialLinkModal from "./components/Modal/EditSocialLink";
 import SocialLinkHeader from "./components/SocialLinkHeader";
+import { useContextMenu } from "@/hooks/useContextMenu";
+import SocialContextMenu from "./components/SocialContextMenu";
 
 interface IProps {
   userId: string | undefined;
@@ -55,31 +57,11 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const removeOneModal = useBoolean();
   const removeMultipleModal = useBoolean();
 
-  // Məlumatın çeşidlənməsi üçün konfiqurasiya
-  const sortLinks = useMemo(() => {
-    const sort: Record<string, 1 | -1> = {};
-    switch (activeFilter) {
-      case "newest":
-        sort.createdAt = -1;
-        break;
-      case "oldest":
-        sort.createdAt = 1;
-        break;
-      case "rank":
-      default:
-        sort.rank = 1;
-        break;
-    }
-    return sort;
-  }, [activeFilter]);
+  const { handleContextMenu, closeMenu } = useContextMenu();
 
   // API Hooks
-  const {
-    data: socialLinks,
-    isLoading,
-    isFetching,
-  } = useGetSocialLinksQuery(
-    { userId: userId || "", sort: sortLinks },
+  const { data: socialLinks, isLoading } = useGetSocialLinksQuery(
+    { userId: userId || "" },
     { skip: !access_token || !userId },
   );
 
@@ -90,12 +72,27 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const [updateRank, { isLoading: isUpdateRankLoading }] =
     useUpdateSocialLinkRankMutation();
 
-  // Drag & drop üçün datanın sinxronlaşdırılması
-  useEffect(() => {
-    if (socialLinks?.data && !isReorderMode) {
-      setOrderedLinks(socialLinks.data);
+  const sortedData = useMemo(() => {
+    if (!socialLinks?.data) return [];
+
+    const links = [...socialLinks.data];
+
+    switch (activeFilter) {
+      case "newest":
+        return links.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+      case "oldest":
+        return links.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
+      case "rank":
+      default:
+        return links.sort((a, b) => (a.rank || 0) - (b.rank || 0));
     }
-  }, [socialLinks?.data, isReorderMode]);
+  }, [socialLinks?.data, activeFilter]);
 
   // Actions
   const toggleSelectionMode = useCallback(() => {
@@ -107,7 +104,6 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const toggleReorderMode = useCallback(() => {
     setIsReorderMode((prev) => !prev);
     setIsSelectionMode(false);
-    // İmtina edilərsə, datanı orijinal vəziyyətinə qaytar
     if (isReorderMode && socialLinks?.data) {
       setOrderedLinks(socialLinks.data);
     }
@@ -123,6 +119,9 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
     (action: string, link: ISocialLink) => {
       if (isSelectionMode || isReorderMode) return;
       switch (action) {
+        case "openLink":
+          window.open(link.url, "_blank");
+          break;
         case "copy":
           navigator.clipboard.writeText(link.url);
           snack.success(t("common.link_copied_to_clipboard"));
@@ -162,7 +161,6 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
       await updateRank({
         links: payload,
         userId: userId || "",
-        sort: sortLinks,
       }).unwrap();
 
       setIsReorderMode(false);
@@ -201,9 +199,16 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const currentPrivacy =
     privacySettings?.socialLinks || PRIVACY_SETTINGS_CHOICE.EVERYONE;
 
+  // Drag & drop üçün datanın sinxronlaşdırılması
+  useEffect(() => {
+    if (sortedData && !isReorderMode) {
+      setOrderedLinks(sortedData);
+    }
+  }, [sortedData, isReorderMode]);
+
   return (
     <Fragment>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <SocialLinkSkeleton />
       ) : (
         <section
@@ -245,6 +250,30 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
                     value={link}
                     dragListener={isReorderMode}
                     className={`flex items-center w-full ${isReorderMode ? "cursor-grab active:cursor-grabbing" : ""}`}
+                    onContextMenu={(e) => {
+                      if (isSelectionMode || isReorderMode) return;
+
+                      handleContextMenu(
+                        e,
+                        <SocialContextMenu
+                          onClose={closeMenu}
+                          onCopy={() => handleSocialAction("copy", link)}
+                          onEdit={() => handleSocialAction("edit", link)}
+                          onOpenLink={() =>
+                            handleSocialAction("openLink", link)
+                          }
+                          onRemove={() => {
+                            setSelectedLink(link);
+                            removeOneModal.onOpen();
+                          }}
+                          onSelect={() => {
+                            setIsSelectionMode(true);
+                            toggleSelect(link._id);
+                          }}
+                          onReorder={() => setIsReorderMode(true)}
+                        />,
+                      );
+                    }}
                   >
                     <AnimatePresence mode="popLayout">
                       {isReorderMode && (

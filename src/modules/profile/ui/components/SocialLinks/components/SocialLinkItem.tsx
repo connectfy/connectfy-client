@@ -88,7 +88,7 @@ const SocialLinkItem = memo(
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-2 mt-4">
               <ActionButton
-                onClick={() => window.open(link.url, "_blank")}
+                onClick={() => onAction("openLink", link)}
                 icon={<ExternalLink size={16} />}
                 label={t("common.open")}
               />

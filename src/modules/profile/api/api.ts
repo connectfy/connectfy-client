@@ -136,21 +136,21 @@ export const profileApi = createApi({
         method: "PATCH",
         body,
       }),
-      async onQueryStarted(
-        { userId, sort, links },
-        { dispatch, queryFulfilled },
-      ) {
+      async onQueryStarted({ userId, links }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           profileApi.util.updateQueryData(
             "getSocialLinks",
-            { userId, sort },
+            { userId },
             (draft) => {
               if (draft?.data) {
-                links.forEach((l) => {
-                  const item = draft.data.find((link) => link._id === l._id);
-                  if (item) item.rank = l.rank;
+                links.forEach((updatedLink) => {
+                  const item = draft.data.find(
+                    (l) => l._id === updatedLink._id,
+                  );
+                  if (item) {
+                    item.rank = updatedLink.rank;
+                  }
                 });
-                if (sort.rank) draft.data.sort((a, b) => a.rank - b.rank);
               }
             },
           ),

@@ -44,7 +44,7 @@ export interface IEditProfile
 
 export interface IFindSocialLinks {
   userId: string;
-  sort: Record<string, 1 | -1>;
+  sort?: Record<string, 1 | -1>;
 }
 
 export interface ISocialLink {
@@ -54,6 +54,8 @@ export interface ISocialLink {
   rank: number;
   url: string;
   platform: SOCIAL_LINK_PLATFORM;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IAddSocialLink {
@@ -74,7 +76,6 @@ export interface IUpdateSocialLinkRank {
     rank: number;
   }[];
   userId: string;
-  sort: Record<string, 1 | -1>;
 }
 
 export interface IRemoveSocialLink {

@@ -64,20 +64,23 @@ export const SocialLinkHeader: FC<ISocialLinkHeaderProps> = ({
       {
         label: t("common.by_rank"),
         value: "rank",
+        isActive: activeFilter === "rank",
         onClick: () => onFilterChange("rank"),
       },
       {
         label: t("common.by_newest"),
         value: "newest",
+        isActive: activeFilter === "newest",
         onClick: () => onFilterChange("newest"),
       },
       {
         label: t("common.by_oldest"),
         value: "oldest",
+        isActive: activeFilter === "oldest",
         onClick: () => onFilterChange("oldest"),
       },
     ],
-    [t, onFilterChange],
+    [t, onFilterChange, activeFilter],
   );
 
   const mobileMoreOptions: DropdownOption[] = useMemo(() => {

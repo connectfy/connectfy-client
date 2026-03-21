@@ -15,8 +15,9 @@ export interface DropdownOption {
   value: string;
   icon?: React.ReactNode;
   onClick?: () => void;
-  subMenu?: DropdownOption[]; // Alt menyu üçün
+  subMenu?: DropdownOption[];
   className?: string;
+  isActive?: boolean; // YENİ: Alt menyuda seçilmiş elementi tanımaq üçün
 }
 
 interface DropdownProps {
@@ -125,33 +126,36 @@ const Dropdown: FC<DropdownProps> = ({
                   )
                 )}
 
-                {(activeSubMenu || options).map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => handleSelect(opt)}
-                    className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm transition-all border-none cursor-pointer bg-transparent group ${
-                      selected === opt.value
-                        ? "bg-(--primary-color)/10 text-(--primary-color) font-semibold"
-                        : "text-(--text-color) hover:bg-black/5 dark:hover:bg-white/5"
-                    } ${opt.className || ""}`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      {opt.icon && (
-                        <span className="opacity-70 group-hover:opacity-100">
-                          {opt.icon}
-                        </span>
+                {(activeSubMenu || options).map((opt) => {
+                  // DƏYİŞİKLİK BURADADIR: Aktivlik həm 'selected' propundan, həm də option-ın özündən gələ bilər
+                  const isActive = selected === opt.value || opt.isActive;
+
+                  return (
+                    <Button
+                      key={opt.value}
+                      onClick={() => handleSelect(opt)}
+                      className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm transition-all border-none cursor-pointer bg-transparent group ${
+                        isActive
+                          ? "bg-(--primary-color)/10 text-(--primary-color) font-semibold"
+                          : "text-(--text-color) hover:bg-black/5 dark:hover:bg-white/5"
+                      } ${opt.className || ""}`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        {opt.icon && (
+                          <span className="opacity-70 group-hover:opacity-100">
+                            {opt.icon}
+                          </span>
+                        )}
+                        {opt.label}
+                      </div>
+                      {opt.subMenu ? (
+                        <ChevronRight size={14} className="opacity-40" />
+                      ) : (
+                        isActive && <Check size={14} strokeWidth={3} />
                       )}
-                      {opt.label}
-                    </div>
-                    {opt.subMenu ? (
-                      <ChevronRight size={14} className="opacity-40" />
-                    ) : (
-                      selected === opt.value && (
-                        <Check size={14} strokeWidth={3} />
-                      )
-                    )}
-                  </button>
-                ))}
+                    </Button>
+                  );
+                })}
               </motion.div>
             </AnimatePresence>
           </motion.div>
