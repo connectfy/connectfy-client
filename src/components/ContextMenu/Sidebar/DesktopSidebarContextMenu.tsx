@@ -91,6 +91,7 @@ const DesktopSidebarContextMenu: FC = () => {
               icon={SunMoon}
               label={t("common.change_theme")}
               onClick={() => setCurrentView("theme")}
+              closeAfterClick={false}
             />
             <ContextMenuItem
               icon={Languages}
@@ -102,6 +103,7 @@ const DesktopSidebarContextMenu: FC = () => {
               iconClassName={theme === THEME.LIGHT ? "text-white!" : undefined}
               label={t("common.change_lang")}
               onClick={() => setCurrentView("language")}
+              closeAfterClick={false}
             />
           </motion.div>
         )}
@@ -122,6 +124,7 @@ const DesktopSidebarContextMenu: FC = () => {
                 icon={ChevronLeft}
                 label={t("common.back", "Back")}
                 onClick={() => setCurrentView("main")}
+                closeAfterClick={false}
               />
             </div>
 
@@ -139,6 +142,7 @@ const DesktopSidebarContextMenu: FC = () => {
                   : undefined
               }
               iconClassName={theme === THEME.LIGHT ? "text-white!" : undefined}
+              closeAfterClick={false}
             />
             <ContextMenuItem
               icon={Moon}
@@ -154,6 +158,7 @@ const DesktopSidebarContextMenu: FC = () => {
                   : undefined
               }
               iconClassName={theme === THEME.DARK ? "text-white!" : undefined}
+              closeAfterClick={false}
             />
             <ContextMenuItem
               icon={MonitorSmartphone}
@@ -169,6 +174,7 @@ const DesktopSidebarContextMenu: FC = () => {
                   : undefined
               }
               iconClassName={theme === THEME.DEVICE ? "text-white!" : undefined}
+              closeAfterClick={false}
             />
           </motion.div>
         )}
@@ -189,6 +195,7 @@ const DesktopSidebarContextMenu: FC = () => {
                 icon={ChevronLeft}
                 label={t("common.back", "Back")}
                 onClick={() => setCurrentView("main")}
+                closeAfterClick={false}
               />
             </div>
 
@@ -208,6 +215,7 @@ const DesktopSidebarContextMenu: FC = () => {
               iconClassName={
                 i18n.language === LANGUAGE.EN ? "text-white!" : undefined
               }
+              closeAfterClick={false}
             />
             <ContextMenuItem
               label={
@@ -225,6 +233,7 @@ const DesktopSidebarContextMenu: FC = () => {
               iconClassName={
                 i18n.language === LANGUAGE.AZ ? "text-white!" : undefined
               }
+              closeAfterClick={false}
             />
             <ContextMenuItem
               label={
@@ -242,6 +251,7 @@ const DesktopSidebarContextMenu: FC = () => {
               iconClassName={
                 i18n.language === LANGUAGE.RU ? "text-white!" : undefined
               }
+              closeAfterClick={false}
             />
             <ContextMenuItem
               label={
@@ -259,6 +269,7 @@ const DesktopSidebarContextMenu: FC = () => {
               iconClassName={
                 i18n.language === LANGUAGE.TR ? "text-white!" : undefined
               }
+              closeAfterClick={false}
             />
           </motion.div>
         )}

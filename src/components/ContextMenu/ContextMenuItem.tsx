@@ -18,7 +18,7 @@ const ContextMenuItem: FC<IProps> = ({
   label,
   onClick,
   isWarning,
-  closeAfterClick = false,
+  closeAfterClick = true,
   className,
   labelClassName,
   iconClassName,
