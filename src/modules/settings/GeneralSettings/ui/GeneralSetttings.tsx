@@ -1,11 +1,12 @@
 import {
   Sun,
   Moon,
-  Globe,
   Home,
   Clock,
   RefreshCw,
   MonitorSmartphone,
+  SunMoon,
+  Languages,
 } from "lucide-react";
 import "./generalSetttings.style.css";
 import { Fragment, useEffect, useState } from "react";
@@ -162,7 +163,7 @@ const GeneralSettings = () => {
               <div className="general-settings-content">
                 <SettingCard
                   header={{
-                    icon: Sun,
+                    icon: SunMoon,
                     title: t("common.app_theme"),
                     subtitle: t("common.choose_light_dark_system"),
                   }}
@@ -200,7 +201,7 @@ const GeneralSettings = () => {
 
                 <SettingCard
                   header={{
-                    icon: Globe,
+                    icon: Languages,
                     title: t("common.app_language"),
                     subtitle: t("common.select_app_language"),
                   }}

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 
@@ -7,36 +7,51 @@ const ContextMenuRenderer = ({ x, y, content, isOpen, onClose }: any) => {
   const [pos, setPos] = useState({ top: y, left: x, origin: "top left" });
   const [isMeasured, setIsMeasured] = useState(false);
 
+  // Pozisiyanı hesablamaq üçün funksiyanı ayırırıq
+  const updatePosition = useCallback(() => {
+    if (!menuRef.current) return;
+
+    const menuWidth = menuRef.current.offsetWidth;
+    const menuHeight = menuRef.current.offsetHeight;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    let finalX = x;
+    let finalY = y;
+    let originX = "left";
+    let originY = "top";
+
+    // Sağ tərəf yoxlaması
+    if (x + menuWidth > screenWidth) {
+      finalX = x - menuWidth;
+      originX = "right";
+    }
+
+    // Aşağı tərəf yoxlaması
+    // Əsas məqam buradır: Hündürlük artdıqca yuxarı doğru sürüşməlidir
+    if (y + menuHeight > screenHeight) {
+      finalY = screenHeight - menuHeight - 10; // Ekranın altına 10px qalmış dayansın
+      originY = "bottom";
+    }
+
+    setPos({ top: finalY, left: finalX, origin: `${originY} ${originX}` });
+    setIsMeasured(true);
+  }, [x, y]);
+
   useLayoutEffect(() => {
     if (isOpen && menuRef.current) {
-      const menuWidth = menuRef.current.offsetWidth;
-      const menuHeight = menuRef.current.offsetHeight;
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
+      // Ölçü dəyişikliklərini izləyirik (Sub-menuya keçəndə hündürlük dəyişir)
+      const resizeObserver = new ResizeObserver(() => {
+        updatePosition();
+      });
 
-      let finalX = x;
-      let finalY = y;
-      let originX = "left";
-      let originY = "top";
+      resizeObserver.observe(menuRef.current);
 
-      // Sağ tərəf yoxlaması
-      if (x + menuWidth > screenWidth) {
-        finalX = x - menuWidth;
-        originX = "right";
-      }
-
-      // Aşağı tərəf yoxlaması
-      if (y + menuHeight > screenHeight) {
-        finalY = y - menuHeight;
-        originY = "bottom";
-      }
-
-      setPos({ top: finalY, left: finalX, origin: `${originY} ${originX}` });
-      setIsMeasured(true);
+      return () => resizeObserver.disconnect();
     } else {
       setIsMeasured(false);
     }
-  }, [isOpen, x, y]);
+  }, [isOpen, updatePosition]);
 
   if (!isOpen) return null;
 
@@ -57,19 +72,16 @@ const ContextMenuRenderer = ({ x, y, content, isOpen, onClose }: any) => {
         variants={{
           hidden: {
             opacity: 0,
-            scaleX: 0,
-            scaleY: 0,
-            transition: { duration: 0.2 },
+            scale: 0.8,
+            transition: { duration: 0.15 },
           },
           visible: {
             opacity: 1,
-            scaleX: 1,
-            scaleY: 1,
+            scale: 1,
             transition: {
-              opacity: { duration: 0.1 },
-              // Əvvəlcə ENİ (scaleX), sonra UZUNLUĞU (scaleY) açılır
-              scaleX: { duration: 0.2, ease: [0.23, 1, 0.32, 1] },
-              scaleY: { delay: 0.15, duration: 0.25, ease: [0.23, 1, 0.32, 1] },
+              type: "spring",
+              stiffness: 300,
+              damping: 25,
             },
           },
         }}
@@ -77,8 +89,9 @@ const ContextMenuRenderer = ({ x, y, content, isOpen, onClose }: any) => {
           position: "absolute",
           top: pos.top,
           left: pos.left,
-          transformOrigin: pos.origin, // Animasiyanın başladığı nöqtə
-          visibility: isMeasured ? "visible" : "hidden", // Ölçmə bitənə qədər gizlə
+          transformOrigin: pos.origin,
+          visibility: isMeasured ? "visible" : "hidden",
+          pointerEvents: "auto",
         }}
         onClick={(e) => e.stopPropagation()}
       >

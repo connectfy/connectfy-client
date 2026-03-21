@@ -53,7 +53,6 @@ export const notificationSettingsApi = createApi({
           patchResult.undo();
         }
       },
-      invalidatesTags: ["NotificationSettings"],
     }),
   }),
 });

@@ -17,6 +17,8 @@ import { Avatar } from "@mui/material";
 import { useUser } from "@/modules/profile/hooks/useUser";
 import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useContextMenu } from "@/hooks/useContextMenu";
+import DesktopSidebarContextMenu from "@/components/ContextMenu/Sidebar/DesktopSidebarContextMenu";
 
 const DesktopSidebar = () => {
   const location = useLocation();
@@ -27,6 +29,8 @@ const DesktopSidebar = () => {
 
   const { user } = useUser();
   const { generalSettings, isLoading: settingsLoading } = useGeneralSettings();
+
+  const { handleContextMenu } = useContextMenu();
 
   const menuItems = useMemo(
     () => [
@@ -164,7 +168,12 @@ const DesktopSidebar = () => {
                 navigate(ROUTER.PROFILE.MAIN);
               }}
             >
-              <div className="avatar">
+              <div
+                className="avatar"
+                onContextMenu={(e) =>
+                  handleContextMenu(e, <DesktopSidebarContextMenu />)
+                }
+              >
                 {user?.avatar ? (
                   <Avatar
                     src={user?.avatar}

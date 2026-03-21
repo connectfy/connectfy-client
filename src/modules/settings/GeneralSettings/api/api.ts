@@ -53,7 +53,6 @@ export const generalSettingsApi = createApi({
           patchResult.undo();
         }
       },
-      invalidatesTags: ["GeneralSettings"],
     }),
 
     // ====================== RESET SETTINGS

@@ -51,7 +51,6 @@ export const privacySettingsApi = createApi({
           patchResult.undo();
         }
       },
-      invalidatesTags: ["PrivacySettings"],
     }),
   }),
 });

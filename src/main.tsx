@@ -16,15 +16,15 @@ createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Provider store={store}>
       <HistoryRouter history={history as unknown as any}>
-        <ContextMenuProvider>
-          <ThemeProvider>
+        <ThemeProvider>
+          <ContextMenuProvider>
             <Toaster
               toastOptions={{ duration: 4000 }}
               containerStyle={{ zIndex: 9999 }}
             />
             <App />
-          </ThemeProvider>
-        </ContextMenuProvider>
+          </ContextMenuProvider>
+        </ThemeProvider>
       </HistoryRouter>
     </Provider>
   </GoogleOAuthProvider>,

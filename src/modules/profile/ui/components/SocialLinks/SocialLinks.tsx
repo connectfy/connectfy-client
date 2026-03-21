@@ -57,7 +57,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const removeOneModal = useBoolean();
   const removeMultipleModal = useBoolean();
 
-  const { handleContextMenu, closeMenu } = useContextMenu();
+  const { handleContextMenu } = useContextMenu();
 
   // API Hooks
   const { data: socialLinks, isLoading } = useGetSocialLinksQuery(
@@ -256,7 +256,6 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
                       handleContextMenu(
                         e,
                         <SocialContextMenu
-                          onClose={closeMenu}
                           onCopy={() => handleSocialAction("copy", link)}
                           onEdit={() => handleSocialAction("edit", link)}
                           onOpenLink={() =>
