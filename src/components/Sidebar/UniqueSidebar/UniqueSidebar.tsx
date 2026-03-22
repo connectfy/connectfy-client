@@ -2,6 +2,7 @@ import { FC, Fragment, memo, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ChevronRight, LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { motion } from "framer-motion";
 
 interface Subject {
   name: string;
@@ -46,17 +47,38 @@ const UniqueSidebar: FC<Props> = ({ title, subjects }) => {
   return (
     <Fragment>
       <aside className="w-full mx-auto">
-        <div className="w-full bg-white dark:bg-(--bg-color) rounded-xl md:rounded-[16px] p-4 md:p-[18px] lg:p-5 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.8)]">
-          <div className="flex items-center gap-2 sm:gap-[10px] lg:gap-3 pb-2 sm:pb-[10px] lg:pb-3 mb-2 sm:mb-[10px] lg:mb-3 border-b border-black/5 dark:border-white/5 pointer-events-auto select-none">
+        <div
+          className="w-full rounded-xl md:rounded-[16px] p-4 md:p-[18px] lg:p-5 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] 
+             dark:shadow-[0_20px_50px_rgba(0,0,0,1)] 
+             border border-black/3 dark:border-white/5"
+        >
+          <div className="flex items-center gap-3 pb-3 mb-3 border-b border-black/5 dark:border-white/5 select-none">
             {title && (
               <div
-                className="inline-flex items-center justify-center w-[38px] h-[38px] min-w-[38px] min-h-[38px] lg:w-[44px] lg:h-[44px] lg:min-w-[44px] lg:min-h-[44px] rounded-lg lg:rounded-[10px] bg-linear-to-br from-(--third-color) to-(--hover-color) transition-all duration-300"
-                aria-hidden
+                className="relative overflow-hidden inline-flex items-center justify-center 
+                    w-[40px] h-[40px] lg:w-[48px] lg:h-[48px] 
+                    rounded-[12px] lg:rounded-[14px] 
+                    bg-linear-to-br from-(--third-color) to-(--hover-bg)
+                    shadow-[0_8px_20px_rgba(46,204,113,0.3)]"
               >
-                <title.icon className="w-[18px] h-[18px] lg:w-6 lg:h-6 text-white" />
+                <motion.div
+                  initial={{ x: "-150%", skewX: -20 }}
+                  animate={{ x: "150%" }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatDelay: 2,
+                  }}
+                  className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/40 to-transparent z-1"
+                />
+
+                {/* ICON */}
+                <title.icon className="w-5 h-5 lg:w-6 lg:h-6 text-white relative z-10" />
               </div>
             )}
-            <h3 className="font-extrabold m-0 p-0 border-none text-[18px] sm:text-[20px] lg:text-[22px] dark:text-[#f8fafc]">
+
+            <h3 className="font-extrabold text-[18px] lg:text-[22px] text-(--text-primary)">
               {title?.name}
             </h3>
           </div>

@@ -3,7 +3,8 @@
   --third-color: #2ecc71;
   --secondary-color: #f5f5f5;
   --text-color: #2d3436;
-  --bg-color: #f4f6f8;
+  /* --bg-color: #f4f6f8; */
+  --bg-color: #ffffff;
   --hover-bg: #27ae60;
   --toggle-bg: #cccccc;
   --skeleton-color: #c1c1c1;
@@ -66,7 +67,8 @@
   /*--primary-color: #16492c;*/
   --secondary-color: #36393f;
   --text-color: #f0f0f0;
-  --bg-color: #0a0f0d;
+  /* --bg-color: #0a0f0d; */
+  --bg-color: #050b08;
   --toggle-bg: #4a4a4a;
   --skeleton-color: #4a4a4a;
   --disabled-bg: rgba(255, 255, 255, 0.06);

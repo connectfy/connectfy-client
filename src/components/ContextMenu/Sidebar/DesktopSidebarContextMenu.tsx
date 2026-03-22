@@ -95,12 +95,6 @@ const DesktopSidebarContextMenu: FC = () => {
             />
             <ContextMenuItem
               icon={Languages}
-              className={
-                theme === THEME.LIGHT
-                  ? "bg-(--primary-color)/70 text-white! font-semibold hover:bg-(--primary-color)/70!"
-                  : undefined
-              }
-              iconClassName={theme === THEME.LIGHT ? "text-white!" : undefined}
               label={t("common.change_lang")}
               onClick={() => setCurrentView("language")}
               closeAfterClick={false}
