@@ -176,7 +176,7 @@ const DesktopSidebar = () => {
               >
                 {user?.avatar ? (
                   <Avatar
-                    src={user?.avatar}
+                    src={user?.avatar?.url}
                     sx={{
                       borderRadius: "50%",
                       borderWidth: "2px",

@@ -83,7 +83,7 @@ const MobileSidebar = () => {
               <div className="relative">
                 {item.key === "profile" ? (
                   <Avatar
-                    src={user?.avatar ?? undefined}
+                    src={user?.avatar?.url ?? undefined}
                     sx={{
                       width: 24,
                       height: 24,

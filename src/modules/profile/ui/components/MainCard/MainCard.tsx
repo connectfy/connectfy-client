@@ -24,7 +24,7 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
           {/* Avatar Wrapper */}
           <div className="w-[140px] h-[140px] md:w-[140px] sm:w-[120px] xs:w-[100px] rounded-full overflow-hidden shadow-[0_8px_24px_var(--shadow-color)] border-4 border-(--primary-color)">
             <img
-              src={profile?.avatar ?? ""}
+              src={profile?.avatar?.url ?? ""}
               alt={`Profile picture of ${profile?.firstName} ${profile?.lastName}`}
               className="object-cover w-full h-full"
               loading="lazy"

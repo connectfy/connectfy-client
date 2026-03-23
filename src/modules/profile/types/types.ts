@@ -14,9 +14,15 @@ export interface IAccount {
   gender: GENDER;
   bio: string | null;
   location: string | null;
-  avatar: string | null;
+  avatar: IAvatar | null;
   lastSeen: Date;
   birthdayDate: Date;
+}
+
+export interface IAvatar {
+  key: string | null;
+  url: string;
+  isCustom: boolean;
 }
 
 export interface IUser {
@@ -33,7 +39,7 @@ export interface IUser {
 }
 
 export interface IMe extends IUser {
-  avatar: string | null;
+  avatar: IAvatar | null;
   language: LANGUAGE;
 }
 
