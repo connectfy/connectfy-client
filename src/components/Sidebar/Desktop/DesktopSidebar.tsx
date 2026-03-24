@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { Fragment, memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   MessageCircle,
@@ -50,7 +50,7 @@ const NavItem = ({
     <div className="relative flex items-center justify-center">
       {isProfile ? (
         <div
-          className={`relative size-10 rounded-full overflow-hidden border-2 ${isActive ? "border-(--primary-color)" : "border-[#64748b] dark:border-[#94a3b8]"} shadow-md after:content-[''] after:absolute after:bottom-0 after:right-0 after:size-3 after:bg-[#22c55e] after:border-2 after:border-white dark:after:border-[#0a0f0d] after:rounded-full`}
+          className={`relative size-10 rounded-full overflow-hidden border-2 ${isActive ? "border-(--primary-color)" : "border-[#64748b] dark:border-[#94a3b8]"}`}
         >
           {avatarUrl ? (
             <img
@@ -74,7 +74,6 @@ const NavItem = ({
       )}
     </div>
 
-    {/* TOOLTIP - Z-index və bg tam qatı edildi */}
     <div className="absolute left-[85px] invisible group-hover:visible group-hover:left-[75px] opacity-0 group-hover:opacity-100 bg-[#1e293b] dark:bg-[#f8fafc] text-white dark:text-[#1e293b] px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 shadow-2xl z-99999">
       {name}
       <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 border-y-[6px] border-y-transparent border-r-[6px] border-r-[#1e293b] dark:border-r-[#f8fafc]" />
@@ -128,7 +127,6 @@ const DesktopSidebar = () => {
     [t],
   );
 
-  // Aktiv elementi tapmaq üçün funksiya
   const getActiveKey = () => {
     if (pathname.startsWith(ROUTER.SETTINGS.MAIN)) return "settings";
     if (pathname.startsWith(ROUTER.PROFILE.MAIN)) return "profile";
@@ -141,65 +139,79 @@ const DesktopSidebar = () => {
   const activeItem = getActiveKey();
 
   return (
-    <section
-      id="sidebar"
-      className="relative z-50 transition-opacity duration-300"
-      style={{ opacity: isPending ? 0.7 : 1 }}
-    >
-      <div className="w-[85px] h-screen backdrop-blur-[20px] border-r border-black/5 dark:border-white/10 flex flex-col items-center py-5 shadow-lg bg-white/95 dark:bg-[#0a0f0d]/95">
-        {/* Logo */}
-        <div
-          className="mb-9 cursor-pointer transition-transform hover:scale-110"
-          onClick={() =>
-            navigate(getHomeRouteByStartup(generalSettings?.startupPage))
-          }
-        >
-          <div className="relative w-12 h-12 bg-linear-to-br from-(--third-color) to-[#27ae60] rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
-            <svg
-              viewBox="0 0 576 512"
-              className="w-[28px] h-[28px] text-white fill-current"
-            >
-              <path d="M416 192c0-88.4-93.1-160-208-160S0 103.6 0 192c0 34.3 14.1 65.9 38 92-13.4 30.2-35.5 54.2-35.8 54.5-2.2 2.3-2.8 5.7-1.5 8.7S4.8 352 8 352c36.6 0 66.9-12.3 88.7-25 32.2 15.7 70.3 25 111.3 25 114.9 0 208-71.6 208-160zm122 220c23.9-26 38-57.7 38-92 0-66.9-53.5-124.2-129.3-148.1.9 6.6 1.3 13.3 1.3 20.1 0 105.9-107.7 192-240 192-10.8 0-21.3-.8-31.7-1.9C207.8 439.6 281.8 480 368 480c41 0 79.1-9.2 111.3-25 21.8 12.7 52.1 25 88.7 25 3.2 0 6.1-1.9 7.3-4.8 1.3-2.9.7-6.3-1.5-8.7-.3-.3-22.4-24.2-35.8-54.5z" />
-            </svg>
+    <Fragment>
+      <section
+        id="sidebar"
+        className="relative z-50 transition-opacity duration-300"
+        style={{ opacity: isPending ? 0.7 : 1 }}
+      >
+        <div className="w-[85px] h-screen backdrop-blur-[20px] border-r border-black/5 dark:border-white/10 flex flex-col items-center py-5 shadow-lg bg-white/95 dark:bg-[#0a0f0d]/95">
+          {/* Logo */}
+          <div
+            className="mb-9 cursor-pointer transition-transform hover:scale-110 hover:rotate-[5deg]"
+            onClick={() =>
+              navigate(getHomeRouteByStartup(generalSettings?.startupPage))
+            }
+          >
+            <div className="relative w-12 h-12 bg-linear-to-br from-(--third-color) to-[#27ae60] rounded-2xl flex items-center justify-center shadow-[0_8px_24px_rgba(46,204,113,0.4)] overflow-hidden">
+              {/* ✨ Parıltı animasiyası */}
+              <div
+                className="absolute pointer-events-none animate-logo-shine"
+                style={{
+                  top: "-50%",
+                  left: "-50%",
+                  width: "200%",
+                  height: "200%",
+                  background:
+                    "linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent)",
+                }}
+              />
+              <svg
+                viewBox="0 0 576 512"
+                className="w-[28px] h-[28px] text-white fill-current relative z-10"
+              >
+                <path d="M416 192c0-88.4-93.1-160-208-160S0 103.6 0 192c0 34.3 14.1 65.9 38 92-13.4 30.2-35.5 54.2-35.8 54.5-2.2 2.3-2.8 5.7-1.5 8.7S4.8 352 8 352c36.6 0 66.9-12.3 88.7-25 32.2 15.7 70.3 25 111.3 25 114.9 0 208-71.6 208-160zm122 220c23.9-26 38-57.7 38-92 0-66.9-53.5-124.2-129.3-148.1.9 6.6 1.3 13.3 1.3 20.1 0 105.9-107.7 192-240 192-10.8 0-21.3-.8-31.7-1.9C207.8 439.6 281.8 480 368 480c41 0 79.1-9.2 111.3-25 21.8 12.7 52.1 25 88.7 25 3.2 0 6.1-1.9 7.3-4.8 1.3-2.9.7-6.3-1.5-8.7-.3-.3-22.4-24.2-35.8-54.5z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Main Navigation */}
+          <div className="flex-1 flex flex-col gap-2 w-2/3 relative">
+            {menuItems.map((item) => (
+              <NavItem
+                {...item}
+                key={item.key}
+                isActive={activeItem === item.key}
+                onClick={() => navigate(item.path)}
+              />
+            ))}
+          </div>
+
+          {/* Settings & Profile */}
+          <div className="w-2/3 flex flex-col gap-2 mb-2 pt-3 border-t border-black/5 dark:border-white/10">
+            <NavItem
+              isActive={activeItem === "settings"}
+              onClick={() => navigate(ROUTER.SETTINGS.MAIN)}
+              icon={Settings}
+              name={t("common.settings")}
+            />
+
+            <div className="mt-1">
+              <NavItem
+                isActive={activeItem === "profile"}
+                onClick={() => navigate(ROUTER.PROFILE.MAIN)}
+                isProfile
+                avatarUrl={user?.avatar?.url}
+                name={t("common.my_profile")}
+                onContextMenu={(e: any) =>
+                  handleContextMenu(e, <DesktopSidebarContextMenu />)
+                }
+              />
+            </div>
           </div>
         </div>
-
-        {/* Main Navigation */}
-        <div className="flex-1 flex flex-col gap-2 w-2/3 relative">
-          {menuItems.map((item) => (
-            <NavItem
-              {...item}
-              key={item.key}
-              isActive={activeItem === item.key}
-              onClick={() => navigate(item.path)}
-            />
-          ))}
-        </div>
-
-        {/* Settings & Profile */}
-        <div className="w-2/3 flex flex-col gap-2 mb-2 pt-3 border-t border-black/5 dark:border-white/10">
-          <NavItem
-            isActive={activeItem === "settings"}
-            onClick={() => navigate(ROUTER.SETTINGS.MAIN)}
-            icon={Settings}
-            name={t("common.settings")}
-          />
-
-          <div className="mt-1">
-            <NavItem
-              isActive={activeItem === "profile"}
-              onClick={() => navigate(ROUTER.PROFILE.MAIN)}
-              isProfile
-              avatarUrl={user?.avatar?.url}
-              name={t("common.my_profile")}
-              onContextMenu={(e: any) =>
-                handleContextMenu(e, <DesktopSidebarContextMenu />)
-              }
-            />
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </Fragment>
   );
 };
 
