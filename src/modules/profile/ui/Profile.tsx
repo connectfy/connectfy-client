@@ -17,7 +17,7 @@ const Profile: FC = () => {
   const { privacySettings, isLoading: privacyLoading } = usePrivacySettings();
 
   return (
-    <div className="relative w-full h-screen overflow-x-hidden overflow-y-auto font-sans scroll-smooth bg-(--bg-color)">
+    <div className="w-full h-screen overflow-x-hidden overflow-y-auto font-sans scroll-smooth bg-(--bg-color)">
       {/* Header */}
       <ProfileHeader />
 

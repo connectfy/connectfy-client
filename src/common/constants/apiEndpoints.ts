@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
     PROFILE: {
       GET: "/account/profile/get",
       UPDATE: "/account/profile/update",
+      UPDATE_AVATAR: "/account/profile/update-avatar",
     },
     SETTINGS: {
       GENERAL_SETTINGS: {
@@ -56,5 +57,8 @@ export const API_ENDPOINTS = {
       REMOVE: "/account/social-link/remove",
       REMOVE_MANY: "/account/social-link/removeMany",
     },
+  },
+  FILES: {
+    PRESIGNED_UPLOAD: "/files/presigned-upload",
   },
 };

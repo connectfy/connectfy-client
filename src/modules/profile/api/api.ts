@@ -4,6 +4,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import {
   IAccount,
   IAddSocialLink,
+  IEditAvatar,
   IEditProfile,
   IEditSocialLink,
   IFindSocialLinks,
@@ -73,7 +74,41 @@ export const profileApi = createApi({
           patchResult.undo();
         }
       },
-      invalidatesTags: ["Account"],
+    }),
+
+    // ====================== UPDATE AVATAR
+    updateAvatar: builder.mutation<IUpdateResponse, IEditAvatar>({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.PROFILE.UPDATE_AVATAR,
+        method: "PATCH",
+        body,
+      }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data } = await queryFulfilled;
+
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData("getAccount", undefined, (draft) => {
+            if (draft) {
+              draft.avatar = data.avatar;
+            }
+          }),
+        );
+
+        const patchResultForGetMe = dispatch(
+          profileApi.util.updateQueryData("getMe", undefined, (draft) => {
+            if (draft) {
+              draft.avatar = data.avatar;
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          patchResult.undo();
+          patchResultForGetMe.undo();
+        }
+      },
     }),
     // <====================== PROFILE ======================>
     // <====================== PROFILE ======================>
@@ -187,6 +222,8 @@ export const profileApi = createApi({
       }),
       invalidatesTags: [{ type: "SocialLink", id: "LIST" }],
     }),
+    // <====================== SOCIAL LINKS ======================>
+    // <====================== SOCIAL LINKS ======================>
   }),
 });
 
@@ -194,6 +231,7 @@ export const {
   useGetMeQuery,
   useGetAccountQuery,
   useUpdateProfileMutation,
+  useUpdateAvatarMutation,
   useGetSocialLinksQuery,
   useCreateSocialLinkMutation,
   useUpdateSocialLinkMutation,

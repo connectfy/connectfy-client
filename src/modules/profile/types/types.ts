@@ -1,6 +1,7 @@
 import {
   GENDER,
   LANGUAGE,
+  ProfilePhotoUpdateAction,
   PROVIDER,
   SOCIAL_LINK_PLATFORM,
 } from "@/common/enums/enums";
@@ -46,6 +47,12 @@ export interface IMe extends IUser {
 export interface IEditProfile
   extends Partial<Omit<IAccount, "_id" | "userId" | "lastSeen">> {
   _id: string;
+}
+
+export interface IEditAvatar {
+  _id: string;
+  action: ProfilePhotoUpdateAction;
+  avatar: IAvatar | null;
 }
 
 export interface IFindSocialLinks {

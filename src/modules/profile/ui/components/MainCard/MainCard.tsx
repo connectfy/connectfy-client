@@ -3,6 +3,11 @@ import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { FC, Fragment } from "react";
 import { IAccount, IMe } from "@/modules/profile/types/types";
+import useBoolean from "@/hooks/useBoolean";
+import ChangeAvatarModal from "../Modal/Avatar/ChangeAvatartModal";
+import UploadAvatarModal from "../Modal/Avatar/UploadAvatarModal";
+import NoProfilePhotoIcon from "@/assets/icons/NoProfilePhotoIcon";
+import ShowAvatarModal from "@/components/Modal/ShowAvatarModal/ShowAvatarModal";
 
 interface IProps {
   user: IMe | undefined;
@@ -12,32 +17,40 @@ interface IProps {
 const MainCard: FC<IProps> = ({ user, profile }) => {
   const { t } = useTranslation();
 
+  const showAvatarModal = useBoolean();
+  const updateAvatarModal = useBoolean();
+  const uploadNewAvatarModal = useBoolean();
+
   return (
     <Fragment>
       <section
         className="flex flex-col items-center gap-6 p-8 mb-8 transition-all bg-(--auth-main-bg) rounded-[20px] border border-(--auth-glass-border) shadow-(--card-shadow) md:p-10"
         aria-labelledby="profile-main-heading"
       >
-        {" "}
-        {/* Avatar Wrapper */}
         <div className="relative shrink-0">
-          {/* Avatar Wrapper */}
-          <div className="w-[140px] h-[140px] md:w-[140px] sm:w-[120px] xs:w-[100px] rounded-full overflow-hidden shadow-[0_8px_24px_var(--shadow-color)] border-4 border-(--primary-color)">
-            <img
-              src={profile?.avatar?.url ?? ""}
-              alt={`Profile picture of ${profile?.firstName} ${profile?.lastName}`}
-              className="object-cover w-full h-full"
-              loading="lazy"
-            />
+          <div className="size-[140px] xs:size-[100px] sm:size-[120px] md:size-[140px] rounded-full overflow-hidden shadow-[0_8px_24px_var(--shadow-color)] border-4 border-(--primary-color)">
+            {profile?.avatar?.url ? (
+              <img
+                src={profile.avatar.url}
+                alt={`Profile picture of ${profile?.firstName} ${profile?.lastName}`}
+                className="object-cover w-full h-full bg-(--skeleton-card-bg) cursor-pointer"
+                onClick={showAvatarModal.onOpen}
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full bg-(--active-bg-2)">
+                <NoProfilePhotoIcon />
+              </div>
+            )}
           </div>
 
           <Button
             type="button"
-            className="absolute bottom-1 right-1 md:bottom-0 md:right-0 flex items-center justify-center w-10 h-10 md:w-11 md:h-11 bg-(--primary-color) border-4 border-(--auth-main-bg) rounded-full shadow-md text-white"
+            onClick={updateAvatarModal.onOpen}
+            className="absolute bottom-1 right-1 md:bottom-0 md:right-0 flex items-center justify-center w-10 h-10 md:w-11 md:h-11 bg-(--primary-color) border-4 border-(--auth-main-bg) rounded-full shadow-md text-white hover:bg-(--hover-bg) transition-colors"
             icon={<Pencil size={18} />}
-          ></Button>
+          />
         </div>
-        {/* Identity */}
+
         <div className="text-center">
           <h1
             id="profile-main-heading"
@@ -55,9 +68,8 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
               : "-"}
           </p>
         </div>
-        {/* Stats Container */}
+
         <div className="flex flex-col items-center w-full max-w-[400px] gap-4 p-4 rounded-2xl bg-(--active-bg-2) sm:flex-row sm:gap-6 sm:p-6 md:px-8">
-          {/* Friends Stat */}
           <div className="flex flex-row items-center justify-center flex-1 gap-3 sm:flex-col sm:gap-1.5 text-(--text-color)">
             <div className="flex items-center gap-1.5">
               <Users
@@ -74,18 +86,16 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
             </span>
           </div>
 
-          {/* Divider */}
           <div
             className="w-full h-px opacity-30 bg-(--border-color) sm:w-px sm:h-10"
             aria-hidden="true"
           />
 
-          {/* Blocked Stat */}
           <div className="flex flex-row items-center justify-center flex-1 gap-3 sm:flex-col sm:gap-1.5 text-(--text-color)">
             <div className="flex items-center gap-1.5">
               <UserRoundX
                 size={18}
-                className="text-red-500"
+                className="text-(--error-color)"
                 aria-hidden="true"
               />
               <span className="text-xl font-bold md:text-2xl text-(--primary-color)">
@@ -98,6 +108,28 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
           </div>
         </div>
       </section>
+
+      {/* Modals */}
+      <ChangeAvatarModal
+        open={updateAvatarModal.open}
+        onClose={updateAvatarModal.onClose}
+        onOpenUploadModal={uploadNewAvatarModal.onOpen}
+        avatar={profile?.avatar}
+        profileId={profile?._id ?? ""}
+      />
+
+      <UploadAvatarModal
+        open={uploadNewAvatarModal.open}
+        onClose={uploadNewAvatarModal.onClose}
+        profileId={profile?._id ?? ""}
+      />
+
+      <ShowAvatarModal
+        open={showAvatarModal.open}
+        onClose={showAvatarModal.onClose}
+        avatarUrl={profile?.avatar?.url ?? ""}
+        username={user?.username}
+      />
     </Fragment>
   );
 };

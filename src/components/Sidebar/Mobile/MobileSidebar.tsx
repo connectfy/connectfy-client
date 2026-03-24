@@ -3,10 +3,10 @@ import { MessageCircle, Users, Radio, UserCircle, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
-import { Avatar } from "@mui/material";
 import { useUser } from "@/modules/profile/hooks/useUser";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import NoProfilePhotoIcon from "@/assets/icons/NoProfilePhotoIcon";
 
 const MobileSidebar = () => {
   const { t } = useTranslation();
@@ -82,18 +82,21 @@ const MobileSidebar = () => {
             >
               <div className="relative">
                 {item.key === "profile" ? (
-                  <Avatar
-                    src={user?.avatar?.url ?? undefined}
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      border: isActive
-                        ? "2px solid var(--primary-color)"
-                        : "2px solid var(--text-color)",
-                      transition: "0.2s",
-                    }}
-                    className="group-active:scale-90"
-                  />
+                  <div
+                    className={`size-[28px] rounded-full overflow-hidden shadow-[0_8px_24px_var(--shadow-color)] border-2 ${isActive ? "border-(--primary-color)" : "border-(--text-color)"}`}
+                  >
+                    {user?.avatar?.url ? (
+                      <img
+                        src={user.avatar.url}
+                        alt={`Profile picture of ${user?.username}`}
+                        className="object-cover w-full h-full bg-(--skeleton-card-bg)"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-(--active-bg-2)">
+                        <NoProfilePhotoIcon />
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <item.icon
                     size={22}

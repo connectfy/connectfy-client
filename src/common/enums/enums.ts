@@ -196,3 +196,9 @@ export enum DELETE_REASON_CODE {
   TECHNICAL_ISSUES = "TECHNICAL_ISSUES",
   OTHER = "OTHER",
 }
+
+export enum ProfilePhotoUpdateAction {
+  Remove = "Remove",
+  Update = "Update",
+  SetDefault = "SetDefault",
+}
