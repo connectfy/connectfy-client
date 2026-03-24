@@ -52,7 +52,7 @@ const ShowAvatarModal: FC<IProps> = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="relative flex flex-col w-full max-w-lg overflow-hidden bg-(--auth-main-bg) rounded-3xl shadow-2xl border border-(--auth-glass-border)"
+        className="relative flex flex-col w-full max-w-lg overflow-hidden bg-(--auth-main-bg) rounded-3xl shadow-2xl"
       >
         {/* Header - Minimalist */}
         <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 bg-linear-to-b from-black/40 to-transparent">
