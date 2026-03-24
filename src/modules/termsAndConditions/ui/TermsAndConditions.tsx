@@ -1,6 +1,5 @@
 import "./termsAndConditions.style.css";
 import { useCallback, useState, Fragment } from "react";
-import { Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE } from "@/common/enums/enums";
 import { snack } from "@/common/utils/snackManager";
@@ -8,6 +7,7 @@ import SelectionModal from "@/components/Modal/SelectionModal/SelectionModal";
 import Input from "@/components/ui/CustomInput/Input/Input";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { Globe, ClipboardList, ClipboardCheck } from "lucide-react";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 const TermsAndConditions = () => {
   const { i18n, t } = useTranslation();
@@ -76,11 +76,11 @@ const TermsAndConditions = () => {
 
   return (
     <Fragment>
-      <Tooltip placement="top" title={t("common.change_lang")}>
+      <TextTooltip position="top" text={t("common.change_lang")}>
         <div className="lang-switcher" onClick={() => setOpenLangModal(true)}>
           {renderLangIcon()}
         </div>
-      </Tooltip>
+      </TextTooltip>
 
       <main className="terms-container">
         <h1 className="terms-title">{t("terms.main_title")}</h1>

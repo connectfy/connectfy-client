@@ -7,6 +7,7 @@ import {
   Contact,
   Users,
   UserPen,
+  PhoneOff,
 } from "lucide-react";
 import { FC, Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -78,13 +79,17 @@ const PersonalInformation: FC<IProps> = ({
       id: "phone",
       icon: <Phone size={isMobile ? 15 : 20} />,
       label: t("common.phoneNumber"),
-      value: hasPhoneNumber
-        ? formatPhoneNumber(
-            user?.phoneNumber?.number as string,
-            phoneNumberMask as string,
-            user?.phoneNumber?.countryCode as string,
-          )
-        : t("common.no_phone_data"),
+      value: hasPhoneNumber ? (
+        formatPhoneNumber(
+          user?.phoneNumber?.number as string,
+          phoneNumberMask as string,
+          user?.phoneNumber?.countryCode as string,
+        )
+      ) : (
+        <span className="flex items-center gap-1 italic font-medium text-slate-400">
+          <PhoneOff size={16} /> {t("common.no_phone_data")}
+        </span>
+      ),
       colorClass:
         "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
       privacyField: "phoneNumber",
@@ -158,11 +163,11 @@ const PersonalInformation: FC<IProps> = ({
           {infoItems.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 hover:bg-(--active-bg-2) group"
+              className="flex items-center gap-4 p-4 lg:px-5 bg-(--info-card-bg) border border-(--info-card-border) rounded-xl transition-all duration-200 group"
             >
               {/* Icon Box */}
               <div
-                className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${isMobile ? "" : "group-hover:scale-110"} ${item.colorClass}`}
+                className={`flex items-center justify-center rounded-xl shrink-0 transition-transform w-10 h-10 md:w-12 md:h-12 ${item.colorClass}`}
               >
                 {item.icon}
               </div>

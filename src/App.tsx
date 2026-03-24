@@ -5,7 +5,6 @@ import { initFlowbite } from "flowbite";
 import "flag-icons/css/flag-icons.min.css";
 import { useRoutes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useUser } from "./modules/profile/hooks/useUser";
 import { checkDeviceId } from "./common/utils/checkValues";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useGeneralSettings } from "./modules/settings/GeneralSettings/hooks/useGeneralSettings";
@@ -19,14 +18,12 @@ function App() {
   const deviceId = checkDeviceId();
   const { access_token } = useAuthStore();
 
-  const { isSuccess, isError } = useUser();
-
   const { data } = useGeneralSettings();
   useNotificationSettings();
   const userLang = data?.language;
 
   useEffect(() => {
-    if (!access_token || !isSuccess || isError) {
+    if (!access_token) {
       const availableLangs = Object.values(LANGUAGE);
       const validLang =
         lang && availableLangs.includes(lang as LANGUAGE)

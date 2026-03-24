@@ -12,12 +12,12 @@ import { useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
-import { useUser } from "@/modules/profile/hooks/useUser";
 import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import DesktopSidebarContextMenu from "@/components/ContextMenu/Sidebar/DesktopSidebarContextMenu";
 import NoProfilePhotoIcon from "@/assets/icons/NoProfilePhotoIcon";
+import { useUser } from "@/context/UserContext";
 
 const NavItem = ({
   isActive,
@@ -85,9 +85,9 @@ const DesktopSidebar = () => {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const { navigate, isPending } = useAppNavigation();
-  const { user } = useUser();
   const { generalSettings } = useGeneralSettings();
   const { handleContextMenu } = useContextMenu();
+  const { user } = useUser();
 
   const menuItems = useMemo(
     () => [

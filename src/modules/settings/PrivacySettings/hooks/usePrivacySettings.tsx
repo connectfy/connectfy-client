@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api.ts";
 
 export function usePrivacySettings() {

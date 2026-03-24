@@ -6,7 +6,7 @@ import { checkEmptyString } from "@/common/utils/checkValues";
 import { useFormik } from "formik";
 import Input from "@/components/ui/CustomInput/Input/Input";
 import { snack } from "@/common/utils/snackManager";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";

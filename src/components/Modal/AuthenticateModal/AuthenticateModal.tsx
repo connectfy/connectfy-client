@@ -12,7 +12,7 @@ import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 
 interface Props {
   open: boolean;

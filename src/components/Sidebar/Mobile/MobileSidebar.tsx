@@ -3,7 +3,7 @@ import { MessageCircle, Users, Radio, UserCircle, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import NoProfilePhotoIcon from "@/assets/icons/NoProfilePhotoIcon";

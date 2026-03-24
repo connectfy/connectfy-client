@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { ROUTER } from "@/common/constants/routet";
 import { getHomeRouteByStartup } from "@/common/utils/routes";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 

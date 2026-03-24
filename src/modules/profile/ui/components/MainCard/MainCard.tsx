@@ -33,6 +33,9 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
               <img
                 src={profile.avatar.url}
                 alt={`Profile picture of ${profile?.firstName} ${profile?.lastName}`}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className="object-cover w-full h-full bg-(--skeleton-card-bg) cursor-pointer"
                 onClick={showAvatarModal.onOpen}
               />

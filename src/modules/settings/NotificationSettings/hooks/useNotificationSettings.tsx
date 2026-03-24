@@ -1,13 +1,16 @@
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { useUser } from "@/modules/profile/hooks/useUser";
 import { useGetNotificationSettingsQuery } from "@/modules/settings/NotificationSettings/api/api.ts";
+import { useGetMeQuery } from "@/modules/profile/api/api";
 
 export function useNotificationSettings() {
   const { access_token } = useAuthStore();
-  const { isSuccess, isError } = useUser();
+  const { isMeLoaded } = useGetMeQuery(undefined, {
+    skip: !access_token,
+    selectFromResult: (result) => ({ isMeLoaded: result.isSuccess }),
+  });
 
   const result = useGetNotificationSettingsQuery(undefined, {
-    skip: !access_token || !isSuccess || isError,
+    skip: !access_token || !isMeLoaded,
   });
 
   return {

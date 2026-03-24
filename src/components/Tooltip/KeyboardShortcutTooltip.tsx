@@ -8,15 +8,6 @@ interface ShortcutTooltipProps {
   fullWidth?: boolean;
 }
 
-// const KeyIcon: React.FC<{ icon: string }> = ({ icon }) => (
-//   <span
-//     className="material-symbols-outlined flex items-center justify-center"
-//     style={{ fontSize: "14px", lineHeight: "14px" }}
-//   >
-//     {icon}
-//   </span>
-// );
-
 export const ShortcutTooltip: React.FC<ShortcutTooltipProps> = ({
   keys,
   children,
@@ -40,7 +31,7 @@ export const ShortcutTooltip: React.FC<ShortcutTooltipProps> = ({
           {displayKeys.map((key, index) => (
             <React.Fragment key={index}>
               {index > 0 && <span className="text-slate-400 mx-0.5">+</span>}
-              <kbd className="px-2 py-1.5 text-xs font-semibold text-heading bg-neutral-tertiary border border-default-medium rounded-md">
+              <kbd className="px-2 py-1.5 text-xs font-bold! text-heading bg-neutral-tertiary border border-default-medium rounded-md">
                 {key}
               </kbd>
             </React.Fragment>

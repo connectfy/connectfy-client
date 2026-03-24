@@ -4,9 +4,9 @@ import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import useBoolean from "@/hooks/useBoolean";
 import PrivacyIconModal from "../Modal/PrivacyIconModal/PrivacyIconModal";
 import { useTranslation } from "react-i18next";
-import { Tooltip } from "@mui/material";
 import { IEditPrivacySettings } from "@/modules/settings/PrivacySettings/types/types";
 import Button from "@/components/ui/CustomButton/Button/Button";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 interface Props {
   privacy: PRIVACY_SETTINGS_CHOICE;
@@ -34,7 +34,7 @@ export const PrivacyIcon = memo(({ privacy, fieldName }: Props) => {
 
   return (
     <>
-      <Tooltip placement="top" title={t(`enum.${privacy}`)}>
+      <TextTooltip position="top" text={t(`enum.${privacy}`)}>
         <Button
           type="button"
           onClick={onOpen}
@@ -42,7 +42,7 @@ export const PrivacyIcon = memo(({ privacy, fieldName }: Props) => {
         >
           {icons[privacy]}
         </Button>
-      </Tooltip>
+      </TextTooltip>
 
       <PrivacyIconModal
         open={open}

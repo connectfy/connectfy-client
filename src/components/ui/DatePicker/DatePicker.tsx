@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./datePicker.style.css";
-import { CalendarMonth } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import DatePickerModal from "../../Modal/DatePickerModal/DatePickerModal";
 import Button from "../CustomButton/Button/Button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CustomDatePickerProps {
   value?: string | Date | null;
@@ -331,7 +330,7 @@ export default function CustomDatePicker({
         <div className="date_input" onClick={() => setIsOpen(!isOpen)}>
           {/* İKON ARTIQ SOLDA VƏ İNPUTDAN ÖNCƏDİR */}
           <div className="calendar_icon">
-            <CalendarMonth />
+            <CalendarDays />
           </div>
           <input
             type="text"

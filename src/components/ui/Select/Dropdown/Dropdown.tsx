@@ -7,8 +7,8 @@ import {
   VariantLabels,
 } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Tooltip } from "@mui/material";
 import Button from "../../CustomButton/Button/Button";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 export interface DropdownOption {
   label: string;
@@ -73,7 +73,7 @@ const Dropdown: FC<DropdownProps> = ({
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      <Tooltip placement="top" title={tooltip}>
+      <TextTooltip position="top" text={tooltip || ""}>
         <motion.button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -93,7 +93,7 @@ const Dropdown: FC<DropdownProps> = ({
             {icon}
           </motion.span>
         </motion.button>
-      </Tooltip>
+      </TextTooltip>
 
       <AnimatePresence>
         {open && (

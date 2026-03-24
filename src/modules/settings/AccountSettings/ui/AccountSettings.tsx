@@ -53,7 +53,7 @@ import {
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
 import { useAuthStore } from "@/hooks/useAuthStore";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import { useProfile } from "@/modules/profile/hooks/useProfile";
 import {
   useDeactivateAccountMutation,

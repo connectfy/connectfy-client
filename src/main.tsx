@@ -9,6 +9,7 @@ import { history } from "@/common/helpers/history.ts";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { ContextMenuProvider } from "./context/ContextMenuContext.tsx";
+import { UserProvider } from "./context/UserContext.tsx";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -17,13 +18,15 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <HistoryRouter history={history as unknown as any}>
         <ThemeProvider>
-          <ContextMenuProvider>
-            <Toaster
-              toastOptions={{ duration: 4000 }}
-              containerStyle={{ zIndex: 9999 }}
-            />
-            <App />
-          </ContextMenuProvider>
+          <UserProvider>
+            <ContextMenuProvider>
+              <Toaster
+                toastOptions={{ duration: 4000 }}
+                containerStyle={{ zIndex: 9999 }}
+              />
+              <App />
+            </ContextMenuProvider>
+          </UserProvider>
         </ThemeProvider>
       </HistoryRouter>
     </Provider>

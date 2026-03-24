@@ -120,7 +120,7 @@ const ResetPassword = () => {
       {LOADING_IS_VALID_TOKEN ? (
         <Modal open={LOADING_IS_VALID_TOKEN} onClose={() => {}}>
           <div className="flex flex-col items-center justify-center gap-8">
-            <Spinner size={50} style={{ color: "var(--primary-color)" }} />
+            <Spinner size={30} style={{ color: "var(--primary-color)" }} />
 
             <p className="font-semibold lg:text-xl text-lg text-(--text-primary)">
               {t("common.checking")}

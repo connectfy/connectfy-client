@@ -84,13 +84,15 @@ export const TextTooltip: React.FC<TextTooltipProps> = ({
       </span>
       {createPortal(
         <div
-          className={`fixed ${transformClasses[position]} px-3 py-2 bg-slate-900 text-white text-xs rounded-lg whitespace-nowrap z-[9999] pointer-events-none`}
+          className={`fixed ${transformClasses[position]} px-3 py-2 font-semibold bg-slate-900 text-white text-xs rounded-lg whitespace-nowrap z-999999 pointer-events-none`}
           style={{
             top: tooltipPosition.top,
             left: tooltipPosition.left,
             opacity: isVisible ? 1 : 0,
             transition: `opacity ${duration}ms ease-in-out`,
             visibility: isVisible ? "visible" : "hidden",
+            fontFamily:
+              "Inter, system-ui, -apple-system, sans-serif !important",
           }}
         >
           {text}

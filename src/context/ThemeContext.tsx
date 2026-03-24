@@ -1,6 +1,7 @@
 import { LOCAL_STORAGE_KEYS, THEME } from "@/common/enums/enums";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
+import { useSelector } from "react-redux";
+import { generalSettingsApi } from "@/modules/settings/GeneralSettings/api/api";
 
 interface ThemeContextType {
   theme: THEME;
@@ -12,23 +13,31 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 );
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data } = useGeneralSettings();
+  // Redux-dan API theme-i oxu (login olduqdan sonra gəlir)
+  const apiTheme = useSelector(
+    (state: any) =>
+      generalSettingsApi.endpoints.getGeneralSettings.select(undefined)(state)
+        ?.data?.theme as THEME | undefined,
+  );
 
-  // 1. İlkin dəyəri hər zaman LocalStorage-dan götürürük
-  const [theme, setTheme] = useState<THEME>(() => {
-    const localTheme = localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME);
-    return (localTheme as THEME) || THEME.LIGHT;
-  });
+  // LocalStorage-dan fallback — API gəlməmişdən əvvəl işləyir (login yoxdur vs.)
+  const [localTheme, setLocalTheme] = useState<THEME>(
+    () =>
+      (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
+      THEME.LIGHT,
+  );
 
-  // 2. API-dən data gələndə state-i və localStorage-ı yeniləyirik
+  // API theme gəldikdə local state-i sinxronlaşdır
   useEffect(() => {
-    if (data?.theme) {
-      setTheme(data.theme as THEME);
-      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, data.theme);
+    if (apiTheme) {
+      setLocalTheme(apiTheme);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, apiTheme);
     }
-  }, [data?.theme]);
+  }, [apiTheme]);
 
-  // 3. Mövzunu tətbiq edirik (Body-yə attribute veririk)
+  // Aktiv theme: API varsa onu, yoxdursa local-ı götür
+  const theme = apiTheme ?? localTheme;
+
   useEffect(() => {
     const applyTheme = (targetTheme: THEME) => {
       const actual =
@@ -43,7 +52,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     applyTheme(theme);
 
-    // Əgər mövzu "device" seçilibsə, sistem dəyişikliklərini izləyirik
     if (theme === THEME.DEVICE) {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const listener = () => applyTheme(THEME.DEVICE);
@@ -52,8 +60,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [theme]);
 
+  // toggleTheme artıq local state-i yeniləyir
+  // API update-i settings səhifəsindəki mutation həll edir
   const toggleTheme = (newTheme: THEME) => {
-    setTheme(newTheme);
+    setLocalTheme(newTheme);
     localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, newTheme);
   };
 

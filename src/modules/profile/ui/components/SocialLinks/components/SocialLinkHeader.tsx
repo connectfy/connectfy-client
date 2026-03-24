@@ -12,7 +12,6 @@ import {
   Save,
   MoreVertical,
 } from "lucide-react";
-import { Tooltip } from "@mui/material";
 
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Dropdown, {
@@ -21,6 +20,7 @@ import Dropdown, {
 import { PrivacyIcon } from "../../PrivacyIcon/PrivacyIcon";
 import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 interface ISocialLinkHeaderProps {
   isSelectionMode: boolean;
@@ -208,20 +208,20 @@ export const SocialLinkHeader: FC<ISocialLinkHeaderProps> = ({
                   />
                   {hasLinks && (
                     <Fragment>
-                      <Tooltip title={t("common.reorder")} placement="top">
+                      <TextTooltip position="top" text={t("common.reorder")}>
                         <Button
                           className="p-1.5 rounded-lg border-none bg-transparent hover:bg-black/5 dark:hover:bg-white/5"
                           icon={<ArrowUpDown size={18} />}
                           onClick={onToggleReorderMode}
                         />
-                      </Tooltip>
-                      <Tooltip title={t("common.select")} placement="top">
+                      </TextTooltip>
+                      <TextTooltip position="top" text={t("common.select")}>
                         <Button
                           className="p-1.5 rounded-lg border-none bg-transparent hover:bg-black/5 dark:hover:bg-white/5"
                           icon={<ListChecks size={18} />}
                           onClick={onToggleSelectionMode}
                         />
-                      </Tooltip>
+                      </TextTooltip>
                     </Fragment>
                   )}
                   {totalCount !== undefined && totalCount < 5 && (

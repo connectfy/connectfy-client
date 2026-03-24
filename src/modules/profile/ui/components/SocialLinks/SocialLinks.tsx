@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, Fragment, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link2, GripVertical } from "lucide-react";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
@@ -49,7 +49,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isReorderMode, setIsReorderMode] = useState<boolean>(false);
-  const [orderedLinks, setOrderedLinks] = useState<ISocialLink[]>([]);
+  const [reorderLinks, setReorderLinks] = useState<ISocialLink[]>([]);
 
   // Modals
   const addModal = useBoolean();
@@ -102,12 +102,14 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   }, []);
 
   const toggleReorderMode = useCallback(() => {
-    setIsReorderMode((prev) => !prev);
+    setIsReorderMode((prev) => {
+      if (!prev) setReorderLinks(sortedData);
+      return !prev;
+    });
     setIsSelectionMode(false);
-    if (isReorderMode && socialLinks?.data) {
-      setOrderedLinks(socialLinks.data);
-    }
-  }, [isReorderMode, socialLinks?.data]);
+  }, [sortedData]);
+
+  const orderedLinks = isReorderMode ? reorderLinks : sortedData;
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) =>
@@ -199,12 +201,12 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const currentPrivacy =
     privacySettings?.socialLinks || PRIVACY_SETTINGS_CHOICE.EVERYONE;
 
-  // Drag & drop üçün datanın sinxronlaşdırılması
-  useEffect(() => {
-    if (sortedData && !isReorderMode) {
-      setOrderedLinks(sortedData);
-    }
-  }, [sortedData, isReorderMode]);
+  // // Drag & drop üçün datanın sinxronlaşdırılması
+  // useEffect(() => {
+  //   if (sortedData && !isReorderMode) {
+  //     setOrderedLinks(sortedData);
+  //   }
+  // }, [sortedData, isReorderMode]);
 
   return (
     <Fragment>
@@ -238,7 +240,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
             <Reorder.Group
               axis="y"
               values={orderedLinks}
-              onReorder={setOrderedLinks}
+              onReorder={setReorderLinks}
               className="flex flex-col gap-4"
             >
               {orderedLinks.map((link, index) => {

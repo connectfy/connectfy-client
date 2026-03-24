@@ -1,10 +1,10 @@
-import { FC, memo } from "react";
+import { FC, Fragment, memo, useEffect, useState, useTransition } from "react";
 import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
 import MainCard from "./components/MainCard/MainCard";
 import PersonalInformation from "./components/PersonalInformation/PersonalInformation";
 import Bio from "./components/Bio/Bio";
 import SocialLinks from "./components/SocialLinks/SocialLinks";
-import { useUser } from "../hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import { useProfile } from "../hooks/useProfile";
 import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
 import MainCardSkeleton from "@/components/Skeleton/profile/MainCardSkeleton";
@@ -16,39 +16,47 @@ const Profile: FC = () => {
   const { profile, isLoading: profileLoading } = useProfile();
   const { privacySettings, isLoading: privacyLoading } = usePrivacySettings();
 
+  const [_, startTransition] = useTransition();
+  const [showContent, setShowContent] = useState(false);
+
+  const isDataReady = !userLoading && !profileLoading && !privacyLoading;
+
+  useEffect(() => {
+    if (isDataReady) {
+      // ✅ Bu render LOW-PRIORITY olur
+      // Browser click eventlərini bu render-dən önə keçirə bilər
+      startTransition(() => {
+        setShowContent(true);
+      });
+    } else {
+      setShowContent(false);
+    }
+  }, [isDataReady]);
+
   return (
     <div className="w-full h-screen overflow-x-hidden overflow-y-auto font-sans scroll-smooth bg-(--bg-color)">
-      {/* Header */}
       <ProfileHeader />
 
       <main className="mx-auto max-w-[900px] pt-8 px-6 pb-[60px] animate-slide-up">
-        {/* Main Profile Section */}
-        {userLoading || profileLoading ? (
-          <MainCardSkeleton />
+        {!showContent ? (
+          <Fragment>
+            <MainCardSkeleton />
+            <PersonalInformationSkeleton />
+            <BioSkeleton />
+          </Fragment>
         ) : (
-          <MainCard user={user} profile={profile} />
+          <Fragment>
+            <MainCard user={user} profile={profile} />
+            <PersonalInformation
+              user={user}
+              profile={profile}
+              privacySettings={privacySettings}
+              hasPhoneNumber={!!hasPhoneNumber}
+            />
+            <Bio profile={profile} privacySettings={privacySettings} />
+          </Fragment>
         )}
 
-        {/* Personal Info Grid */}
-        {userLoading || profileLoading || privacyLoading ? (
-          <PersonalInformationSkeleton />
-        ) : (
-          <PersonalInformation
-            user={user}
-            profile={profile}
-            privacySettings={privacySettings}
-            hasPhoneNumber={!!hasPhoneNumber}
-          />
-        )}
-
-        {/* Bio Section */}
-        {profileLoading || privacyLoading ? (
-          <BioSkeleton />
-        ) : (
-          <Bio profile={profile} privacySettings={privacySettings} />
-        )}
-
-        {/* Social Links */}
         <SocialLinks userId={user?._id} />
       </main>
     </div>

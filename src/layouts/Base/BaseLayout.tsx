@@ -1,7 +1,8 @@
 import "./baseLayout.style.css";
 import DesktopSidebar from "@/components/Sidebar/Desktop/DesktopSidebar";
 import MobileSidebar from "@/components/Sidebar/Mobile/MobileSidebar";
-import { FC, memo, ReactNode, useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { FC, memo, ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 
 interface Props {
@@ -9,19 +10,7 @@ interface Props {
 }
 
 const BaseLayout: FC<Props> = ({ children }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1025);
-    };
-
-    checkMobile();
-
-    window.addEventListener("resize", checkMobile);
-
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
     <section

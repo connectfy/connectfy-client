@@ -9,7 +9,7 @@ import { checkEmptyString } from "@/common/utils/checkValues";
 import { snack } from "@/common/utils/snackManager";
 import { COUNTRIES } from "@/common/constants/constants";
 import { ChevronRight, Pencil, Trash } from "lucide-react";
-import { useUser } from "@/modules/profile/hooks/useUser";
+import { useUser } from "@/context/UserContext";
 import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
 import { useAuthStore } from "@/hooks/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
