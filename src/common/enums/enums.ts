@@ -202,3 +202,11 @@ export enum ProfilePhotoUpdateAction {
   Update = "Update",
   SetDefault = "SetDefault",
 }
+
+export enum AvatarFormats {
+  Adventurer = "adventurer",
+  Avataaars = "avataaars",
+  Personas = "personas",
+  ToonHead = "toon-head",
+  Micah = "micah",
+}

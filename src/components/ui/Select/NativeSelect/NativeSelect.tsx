@@ -107,7 +107,7 @@ const NativeSelect: FC<ICustomSelectProps> = ({
             absolute transition-all duration-300 pointer-events-none z-10
             ${
               isLabelFloating
-                ? `${currentSize.floatingOffset} left-4 text-[13px] px-1 bg-(--input-bg)`
+                ? `${currentSize.floatingOffset} left-4 text-[13px] px-1 bg-transparent`
                 : `top-1/2 -translate-y-1/2 ${currentSize.labelLeft} ${currentSize.fontSize} text-(--muted-color)`
             }
             ${disabled ? "opacity-50" : ""}

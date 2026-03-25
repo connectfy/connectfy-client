@@ -1,4 +1,5 @@
 import {
+  AvatarFormats,
   GENDER,
   LANGUAGE,
   ProfilePhotoUpdateAction,
@@ -16,6 +17,7 @@ export interface IAccount {
   bio: string | null;
   location: string | null;
   avatar: IAvatar | null;
+  defaultAvatar: IDefaultAvatar;
   lastSeen: Date;
   birthdayDate: Date;
 }
@@ -41,11 +43,19 @@ export interface IUser {
 
 export interface IMe extends IUser {
   avatar: IAvatar | null;
+  defaultAvatar: IDefaultAvatar;
   language: LANGUAGE;
 }
 
-export interface IEditProfile
-  extends Partial<Omit<IAccount, "_id" | "userId" | "lastSeen">> {
+export interface IDefaultAvatar {
+  format: AvatarFormats;
+  seed: string;
+  url: string;
+}
+
+export interface IEditProfile extends Partial<
+  Omit<IAccount, "_id" | "userId" | "lastSeen">
+> {
   _id: string;
 }
 
@@ -53,6 +63,12 @@ export interface IEditAvatar {
   _id: string;
   action: ProfilePhotoUpdateAction;
   avatar: IAvatar | null;
+}
+
+export interface IEditDefaultAvatar {
+  _id: string;
+  format: AvatarFormats;
+  useDefaultAvatar: boolean;
 }
 
 export interface IFindSocialLinks {
@@ -78,8 +94,9 @@ export interface IAddSocialLink {
   userId: string;
 }
 
-export interface IEditSocialLink
-  extends Partial<Omit<ISocialLink, "_id" | "userId">> {
+export interface IEditSocialLink extends Partial<
+  Omit<ISocialLink, "_id" | "userId">
+> {
   _id: string;
 }
 

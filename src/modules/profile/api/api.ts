@@ -5,6 +5,7 @@ import {
   IAccount,
   IAddSocialLink,
   IEditAvatar,
+  IEditDefaultAvatar,
   IEditProfile,
   IEditSocialLink,
   IFindSocialLinks,
@@ -98,6 +99,47 @@ export const profileApi = createApi({
           profileApi.util.updateQueryData("getMe", undefined, (draft) => {
             if (draft) {
               draft.avatar = data.avatar;
+            }
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          patchResult.undo();
+          patchResultForGetMe.undo();
+        }
+      },
+    }),
+
+    // ====================== UPDATE DEFAULT AVATAR
+    updateDefaultAvatar: builder.mutation<IUpdateResponse, IEditDefaultAvatar>({
+      query: (body) => ({
+        url: API_ENDPOINTS.ACCOUNT.PROFILE.UPDATE_DEFAULT_AVATAR,
+        method: "PATCH",
+        body,
+      }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data } = await queryFulfilled;
+
+        const patchResult = dispatch(
+          profileApi.util.updateQueryData("getAccount", undefined, (draft) => {
+            if (draft) {
+              draft.defaultAvatar = data.defaultAvatar;
+              if (data.avatar) {
+                draft.avatar = data.avatar;
+              }
+            }
+          }),
+        );
+
+        const patchResultForGetMe = dispatch(
+          profileApi.util.updateQueryData("getMe", undefined, (draft) => {
+            if (draft) {
+              draft.defaultAvatar = data.defaultAvatar;
+              if (data.avatar) {
+                draft.avatar = data.avatar;
+              }
             }
           }),
         );
@@ -232,6 +274,7 @@ export const {
   useGetAccountQuery,
   useUpdateProfileMutation,
   useUpdateAvatarMutation,
+  useUpdateDefaultAvatarMutation,
   useGetSocialLinksQuery,
   useCreateSocialLinkMutation,
   useUpdateSocialLinkMutation,

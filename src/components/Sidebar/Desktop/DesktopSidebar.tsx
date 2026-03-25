@@ -56,6 +56,9 @@ const NavItem = ({
             <img
               src={avatarUrl}
               className="object-cover w-full h-full bg-(--skeleton-card-bg)"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full">

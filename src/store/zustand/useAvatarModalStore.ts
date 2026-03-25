@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { IAvatar } from "@/modules/profile/types/types";
+import { IAvatar, IDefaultAvatar } from "@/modules/profile/types/types";
 
 interface AvatarModalStore {
   // Shared Data
@@ -8,6 +8,7 @@ interface AvatarModalStore {
   username?: string;
   userId?: string;
   profileId: string;
+  defaultAvatarObj: IDefaultAvatar | null;
 
   // Show Avatar Modal
   isShowModalOpen: boolean;
@@ -28,6 +29,14 @@ interface AvatarModalStore {
   isUploadModalOpen: boolean;
   onOpenUploadModal: () => void;
   onCloseUploadModal: () => void;
+
+  // Set Default Avatar Modal
+  isSetDefaultModalOpen: boolean;
+  onOpenSetDefaultModal: (
+    profileId: string,
+    defaultAvatar?: IDefaultAvatar,
+  ) => void;
+  onCloseSetDefaultModal: () => void;
 }
 
 export const useAvatarModalStore = create<AvatarModalStore>((set) => ({
@@ -37,6 +46,7 @@ export const useAvatarModalStore = create<AvatarModalStore>((set) => ({
   username: "",
   userId: "",
   profileId: "",
+  defaultAvatarObj: null,
 
   // Show Avatar Modal
   isShowModalOpen: false,
@@ -69,4 +79,15 @@ export const useAvatarModalStore = create<AvatarModalStore>((set) => ({
       isUploadModalOpen: true,
     }),
   onCloseUploadModal: () => set({ isUploadModalOpen: false }),
+
+  // Set Default Avatar Modal
+  isSetDefaultModalOpen: false,
+  onOpenSetDefaultModal: (profileId, defaultAvatar) =>
+    set({
+      isChangeModalOpen: false,
+      isSetDefaultModalOpen: true,
+      defaultAvatarObj: defaultAvatar,
+      profileId: profileId || "",
+    }),
+  onCloseSetDefaultModal: () => set({ isSetDefaultModalOpen: false }),
 }));

@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
       GET: "/account/profile/get",
       UPDATE: "/account/profile/update",
       UPDATE_AVATAR: "/account/profile/update-avatar",
+      UPDATE_DEFAULT_AVATAR: "/account/profile/update-default-avatar",
     },
     SETTINGS: {
       GENERAL_SETTINGS: {

@@ -90,6 +90,9 @@ const MobileSidebar = () => {
                         src={user.avatar.url}
                         alt={`Profile picture of ${user?.username}`}
                         className="object-cover w-full h-full bg-(--skeleton-card-bg)"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
                       />
                     ) : (
                       <div className="flex items-center justify-center w-full h-full bg-(--active-bg-2)">
