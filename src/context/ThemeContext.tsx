@@ -21,7 +21,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   // LocalStorage-dan fallback — API gəlməmişdən əvvəl işləyir (login yoxdur vs.)
-  const [localTheme, setLocalTheme] = useState<THEME>(
+  const [activeTheme, setActiveTheme] = useState<THEME>(
     () =>
       (localStorage.getItem(LOCAL_STORAGE_KEYS.APP_THEME) as THEME) ||
       THEME.LIGHT,
@@ -29,14 +29,11 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   // API theme gəldikdə local state-i sinxronlaşdır
   useEffect(() => {
-    if (apiTheme) {
-      setLocalTheme(apiTheme);
+    if (apiTheme && apiTheme !== activeTheme) {
+      setActiveTheme(apiTheme);
       localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, apiTheme);
     }
   }, [apiTheme]);
-
-  // Aktiv theme: API varsa onu, yoxdursa local-ı götür
-  const theme = apiTheme ?? localTheme;
 
   useEffect(() => {
     const applyTheme = (targetTheme: THEME) => {
@@ -50,25 +47,25 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       document.documentElement.setAttribute("data-theme", actual.toLowerCase());
     };
 
-    applyTheme(theme);
+    applyTheme(activeTheme);
 
-    if (theme === THEME.DEVICE) {
+    if (activeTheme === THEME.DEVICE) {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const listener = () => applyTheme(THEME.DEVICE);
       mediaQuery.addEventListener("change", listener);
       return () => mediaQuery.removeEventListener("change", listener);
     }
-  }, [theme]);
+  }, [activeTheme]);
 
   // toggleTheme artıq local state-i yeniləyir
   // API update-i settings səhifəsindəki mutation həll edir
   const toggleTheme = (newTheme: THEME) => {
-    setLocalTheme(newTheme);
+    setActiveTheme(newTheme); // UI anında reaksiya verir
     localStorage.setItem(LOCAL_STORAGE_KEYS.APP_THEME, newTheme);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: activeTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
