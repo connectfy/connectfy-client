@@ -9,7 +9,7 @@ import { snack } from "@/common/utils/snackManager";
 import { GoogleLogin } from "@react-oauth/google";
 import { IAuthenticateUser } from "@/modules/auth/types/types";
 import { useAuthenticateUserMutation } from "@/modules/auth/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useUser } from "@/context/UserContext";

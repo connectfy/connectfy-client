@@ -52,7 +52,7 @@ import {
 } from "@/common/utils/formatValues";
 import ActionConfirmModal from "@/components/Modal/ActionConfirmModal/ActionConfirmModal";
 import DeleteAccountModal from "./components/Modal/DeleteAccountModal/DeleteAccountModal";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useUser } from "@/context/UserContext";
 import { useProfile } from "@/modules/profile/hooks/useProfile";
 import {

@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode } from "react";
 import { useGetMeQuery } from "@/modules/profile/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { IMe } from "@/modules/profile/types/types";
 import { PROVIDER } from "@/common/enums/enums";
 

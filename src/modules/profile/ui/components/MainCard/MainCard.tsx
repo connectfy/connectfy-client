@@ -3,11 +3,8 @@ import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { FC, Fragment } from "react";
 import { IAccount, IMe } from "@/modules/profile/types/types";
-import useBoolean from "@/hooks/useBoolean";
-import ChangeAvatarModal from "../Modal/Avatar/ChangeAvatartModal";
-import UploadAvatarModal from "../Modal/Avatar/UploadAvatarModal";
 import NoProfilePhotoIcon from "@/assets/icons/NoProfilePhotoIcon";
-import ShowAvatarModal from "@/components/Modal/ShowAvatarModal/ShowAvatarModal";
+import { useAvatarModalStore } from "@/store/zustand/useAvatarModalStore";
 
 interface IProps {
   user: IMe | undefined;
@@ -17,9 +14,10 @@ interface IProps {
 const MainCard: FC<IProps> = ({ user, profile }) => {
   const { t } = useTranslation();
 
-  const showAvatarModal = useBoolean();
-  const updateAvatarModal = useBoolean();
-  const uploadNewAvatarModal = useBoolean();
+  const onOpenShowModal = useAvatarModalStore((state) => state.onOpenShowModal);
+  const onOpenChangeModal = useAvatarModalStore(
+    (state) => state.onOpenChangeModal,
+  );
 
   return (
     <Fragment>
@@ -37,7 +35,14 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
                 fetchPriority="high"
                 decoding="async"
                 className="object-cover w-full h-full bg-(--skeleton-card-bg) cursor-pointer"
-                onClick={showAvatarModal.onOpen}
+                onClick={() =>
+                  onOpenShowModal(
+                    profile?.avatar?.url ?? "",
+                    user?.username,
+                    user?._id,
+                    profile?._id,
+                  )
+                }
               />
             ) : (
               <div className="flex items-center justify-center w-full h-full bg-(--active-bg-2)">
@@ -48,7 +53,7 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
 
           <Button
             type="button"
-            onClick={updateAvatarModal.onOpen}
+            onClick={() => onOpenChangeModal(profile?.avatar, profile?._id)}
             className="absolute bottom-1 right-1 md:bottom-0 md:right-0 flex items-center justify-center w-10 h-10 md:w-11 md:h-11 bg-(--primary-color) border-4 border-(--auth-main-bg) rounded-full shadow-md text-white hover:bg-(--hover-bg) transition-colors"
             icon={<Pencil size={18} />}
           />
@@ -111,28 +116,6 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
           </div>
         </div>
       </section>
-
-      {/* Modals */}
-      <ChangeAvatarModal
-        open={updateAvatarModal.open}
-        onClose={updateAvatarModal.onClose}
-        onOpenUploadModal={uploadNewAvatarModal.onOpen}
-        avatar={profile?.avatar}
-        profileId={profile?._id ?? ""}
-      />
-
-      <UploadAvatarModal
-        open={uploadNewAvatarModal.open}
-        onClose={uploadNewAvatarModal.onClose}
-        profileId={profile?._id ?? ""}
-      />
-
-      <ShowAvatarModal
-        open={showAvatarModal.open}
-        onClose={showAvatarModal.onClose}
-        avatarUrl={profile?.avatar?.url ?? ""}
-        username={user?.username}
-      />
     </Fragment>
   );
 };

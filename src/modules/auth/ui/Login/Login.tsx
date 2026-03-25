@@ -16,7 +16,7 @@ import PhoneNumberForm from "@/components/Form/PhoneNumberForm/PhoneNumberForm";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useLoginMutation } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { ShortcutTooltip } from "@/components/Tooltip/KeyboardShortcutTooltip";
 import { useTheme } from "@/context/ThemeContext";
 import MainFooter from "../components/Footer/MainFooter/MainFooter";

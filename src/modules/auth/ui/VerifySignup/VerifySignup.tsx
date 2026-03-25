@@ -17,7 +17,7 @@ import {
 import { ISignupForm, ISignupVerifyForm } from "../../types/types";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { ArrowLeft } from "lucide-react";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 

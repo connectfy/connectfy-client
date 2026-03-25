@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import MainSpinner from "@/components/Loading/Loading";
 import { useRestoreAccountMutation } from "../../api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useTheme } from "@/context/ThemeContext";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 

@@ -7,11 +7,11 @@ import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTranslation } from "react-i18next";
 import { ProfilePhotoUpdateAction } from "@/common/enums/enums";
 import { useUpdateAvatar } from "@/modules/profile/hooks/useUpdateAvatar";
+import { useAvatarModalStore } from "@/store/zustand/useAvatarModalStore";
 
 interface IProps {
   open: boolean;
   onClose: () => void;
-  onOpenUploadModal: () => void;
   avatar?: IAvatar | null;
   profileId: string;
 }
@@ -19,12 +19,13 @@ interface IProps {
 const ChangeAvatarModal: FC<IProps> = ({
   open,
   onClose,
-  onOpenUploadModal,
   avatar,
   profileId,
 }) => {
   const { t } = useTranslation();
-
+  const onOpenUploadModal = useAvatarModalStore(
+    (state) => state.onOpenUploadModal,
+  );
   const isSetDefaultEnabled = avatar?.isCustom === true || !avatar;
   const isRemoveEnabled = !!avatar;
 

@@ -1,5 +1,5 @@
 import { useGetAccountQuery } from "@/modules/profile/api/api.ts";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 
 export function useProfile() {
   const { access_token } = useAuthStore();

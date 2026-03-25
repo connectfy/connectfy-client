@@ -8,7 +8,7 @@ import Input from "@/components/ui/CustomInput/Input/Input";
 import { snack } from "@/common/utils/snackManager";
 import { useUser } from "@/context/UserContext";
 import { useUpdateUsernameMutation } from "@/modules/settings/AccountSettings/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import useFormDisabled from "@/hooks/useFormDisabled";

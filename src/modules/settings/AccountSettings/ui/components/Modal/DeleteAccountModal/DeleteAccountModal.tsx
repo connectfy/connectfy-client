@@ -9,7 +9,7 @@ import { ROUTER } from "@/common/constants/routet";
 import { snack } from "@/common/utils/snackManager";
 import { IDeleteAccount } from "../../../../types/types";
 import { useDeleteAccountMutation } from "@/modules/settings/AccountSettings/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Textarea from "@/components/ui/CustomTextArea/TextArea/Textarea";

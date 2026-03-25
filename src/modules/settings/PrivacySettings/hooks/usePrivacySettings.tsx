@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useUser } from "@/context/UserContext";
 import { useGetPrivacySettingsQuery } from "@/modules/settings/PrivacySettings/api/api.ts";
 

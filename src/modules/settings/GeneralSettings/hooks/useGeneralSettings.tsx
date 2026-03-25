@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useGetGeneralSettingsQuery } from "@/modules/settings/GeneralSettings/api/api.ts";
 import { useGetMeQuery } from "@/modules/profile/api/api";
 

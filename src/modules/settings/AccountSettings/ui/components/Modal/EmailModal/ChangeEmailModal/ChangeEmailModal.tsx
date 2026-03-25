@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import { useUpdateEmailMutation } from "@/modules/settings/AccountSettings/api/api";
 import Input from "@/components/ui/CustomInput/Input/Input";
 import { useUser } from "@/context/UserContext";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import useFormDisabled from "@/hooks/useFormDisabled";

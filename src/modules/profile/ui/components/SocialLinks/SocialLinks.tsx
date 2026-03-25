@@ -4,7 +4,7 @@ import { Link2, GripVertical } from "lucide-react";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 
 import { usePrivacySettings } from "@/modules/settings/PrivacySettings/hooks/usePrivacySettings";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import useBoolean from "@/hooks/useBoolean";
 import { ISocialLink } from "@/modules/profile/types/types";
@@ -166,7 +166,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
       }).unwrap();
 
       setIsReorderMode(false);
-      snack.success(t("common.order_saved_successfully"));
+      snack.success(t("user_messages.information_updated"));
     } catch (error) {
       showResponseErrors(error);
     }
@@ -178,7 +178,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
       await removeOne({ _id: selectedLink._id }).unwrap();
       removeOneModal.onClose();
       setSelectedLink(null);
-      snack.success(t("common.removed_successfully"));
+      snack.success(t("user_messages.information_removed"));
     } catch (error) {
       showResponseErrors(error);
     }
@@ -187,11 +187,18 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const handleRemoveMultiple = async () => {
     if (selectedIds.length === 0) return;
     try {
-      await removeMany({ _ids: selectedIds, userId: userId || "" }).unwrap();
+      const res = await removeMany({
+        _ids: selectedIds,
+        userId: userId || "",
+      }).unwrap();
       removeMultipleModal.onClose();
       setIsSelectionMode(false);
       setSelectedIds([]);
-      snack.success(t("common.removed_successfully"));
+      snack.success(
+        t("user_messages.information_removed_count", {
+          count: res.deletedCount,
+        }),
+      );
     } catch (error) {
       showResponseErrors(error);
     }

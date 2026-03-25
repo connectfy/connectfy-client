@@ -13,7 +13,7 @@ import { ILoginVerifyForm } from "../../types/types";
 import useFormDisabled from "@/hooks/useFormDisabled";
 import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { ArrowLeft } from "lucide-react";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { getHomeRouteByStartup } from "@/common/utils/routes";

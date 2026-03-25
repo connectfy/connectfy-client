@@ -12,7 +12,7 @@ import {
   useGoogleLoginMutation,
 } from "@/modules/auth/api/api";
 import { useErrors } from "@/hooks/useErrors";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useTheme } from "@/context/ThemeContext";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import GoogleIcon from "@/assets/icons/GoogleIcon";

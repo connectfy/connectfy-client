@@ -1,5 +1,5 @@
 import "@/styles/index.css";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import routes from "@/routes/router";
 import { initFlowbite } from "flowbite";
 import "flag-icons/css/flag-icons.min.css";
@@ -9,7 +9,8 @@ import { checkDeviceId } from "./common/utils/checkValues";
 import { LANGUAGE, LOCAL_STORAGE_KEYS } from "@/common/enums/enums";
 import { useGeneralSettings } from "./modules/settings/GeneralSettings/hooks/useGeneralSettings";
 import { useNotificationSettings } from "./modules/settings/NotificationSettings/hooks/useNotificationSettings";
-import { useAuthStore } from "./hooks/useAuthStore";
+import { useAuthStore } from "./store/zustand/useAuthStore";
+import GlobalModals from "./components/Modal/GlobalModals/GlobalModals";
 
 function App() {
   const { i18n } = useTranslation();
@@ -49,7 +50,12 @@ function App() {
     initFlowbite();
   }, []);
 
-  return <>{content}</>;
+  return (
+    <Fragment>
+      {content}
+      <GlobalModals />
+    </Fragment>
+  );
 }
 
 export default App;

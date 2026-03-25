@@ -7,6 +7,7 @@ import {
   Moon,
   MonitorSmartphone,
   Languages,
+  UserCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ContextMenuItem from "../ContextMenuItem";
@@ -15,6 +16,8 @@ import { useErrors } from "@/hooks/useErrors";
 import { useTheme } from "@/context/ThemeContext";
 import { LANGUAGE, THEME } from "@/common/enums/enums";
 import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
+import { useAvatarModalStore } from "@/store/zustand/useAvatarModalStore";
+import { useUser } from "@/context/UserContext";
 
 // Menyular arası keçid üçün tiplər
 type MenuView = "main" | "theme" | "language";
@@ -23,12 +26,15 @@ const DesktopSidebarContextMenu: FC = () => {
   const { t, i18n } = useTranslation();
   const { showResponseErrors } = useErrors();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useUser();
 
   const { generalSettings } = useGeneralSettings();
   const [updateGeneralSettings] = useEditGeneralSettingsMutation();
 
   // Hansı menyunun açıq olduğunu izləyən state
   const [currentView, setCurrentView] = useState<MenuView>("main");
+
+  const onOpenShowModal = useAvatarModalStore((state) => state.onOpenShowModal);
 
   const handleChangeTheme = async (appTheme: THEME) => {
     try {
@@ -98,6 +104,15 @@ const DesktopSidebarContextMenu: FC = () => {
               label={t("common.change_lang")}
               onClick={() => setCurrentView("language")}
               closeAfterClick={false}
+            />
+            <ContextMenuItem
+              icon={UserCircle}
+              label={t("common.profile_photo")}
+              onClick={() => {
+                if (!user?.avatar?.url) return;
+
+                onOpenShowModal(user?.avatar?.url, user?.username, user?._id);
+              }}
             />
           </motion.div>
         )}

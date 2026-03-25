@@ -11,7 +11,7 @@ import { COUNTRIES } from "@/common/constants/constants";
 import { ChevronRight, Pencil, Trash } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useUpdatePhoneNumberMutation } from "@/modules/settings/AccountSettings/api/api";
-import { useAuthStore } from "@/hooks/useAuthStore";
+import { useAuthStore } from "@/store/zustand/useAuthStore";
 import { useErrors } from "@/hooks/useErrors";
 import Button from "@/components/ui/CustomButton/Button/Button";
 
