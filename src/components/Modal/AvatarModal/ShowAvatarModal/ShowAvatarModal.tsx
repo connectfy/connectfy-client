@@ -16,6 +16,7 @@ import Button from "@/components/ui/CustomButton/Button/Button";
 import { snack } from "@/common/utils/snackManager";
 import SharePopover from "../SharePopover/SharePopover";
 import { useAvatarModalStore } from "@/store/zustand/useAvatarModalStore";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 interface IProps {
   open: boolean;
@@ -173,54 +174,63 @@ const ShowAvatarModal: FC<IProps> = ({
 
         {/* Action Bar */}
         <div className="flex items-center justify-around p-5 bg-(--auth-main-bg) border-t border-(--auth-glass-border)">
+          {/* 1. Share (Paylaş) */}
           <SharePopover profileUrl={profileUrl} username={username} />
 
-          <Button
-            onClick={handleCopyLink}
-            className="w-[90px] flex flex-col items-center gap-1.5 transition-colors text-(--text-secondary) hover:text-(--third-color) group"
-          >
-            <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors">
-              <Copy size={22} />
-            </div>
-            <span className="text-[11px] font-semibold tracking-wider">
-              {t("common.copy_link")}
-            </span>
-          </Button>
+          {/* 2. Copy Link (Linki kopyala) */}
+          <TextTooltip position="top" text={t("common.copy_link")}>
+            <Button
+              onClick={handleCopyLink}
+              className="w-[90px] flex flex-col items-center gap-2 transition-colors text-(--text-secondary) hover:text-(--third-color) group min-w-0"
+            >
+              <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors shrink-0">
+                <Copy size={22} />
+              </div>
+              {/* <span className="text-[11px] font-semibold tracking-wider truncate w-full text-center">
+                {t("common.copy_link")}
+              </span> */}
+            </Button>
+          </TextTooltip>
 
-          {/* QR Düyməsi - aktiv olduqda highlight */}
-          <Button
-            onClick={handleToggleQr}
-            className={`w-[90px] flex flex-col items-center gap-1.5 transition-colors group ${
-              showQr
-                ? "text-(--third-color)"
-                : "text-(--text-secondary) hover:text-(--third-color)"
-            }`}
-          >
-            <div
-              className={`p-3 rounded-2xl transition-colors ${
+          {/* 3. QR Code (QR Kod) */}
+          <TextTooltip position="top" text={t("common.qr_code")}>
+            <Button
+              onClick={handleToggleQr}
+              className={`w-[90px] flex flex-col items-center gap-2 transition-colors group min-w-0 ${
                 showQr
-                  ? "bg-(--active-bg)"
-                  : "bg-(--active-bg-2) group-hover:bg-(--active-bg)"
+                  ? "text-(--third-color)"
+                  : "text-(--text-secondary) hover:text-(--third-color)"
               }`}
             >
-              <QrCode size={22} />
-            </div>
-            <span className="text-[11px] font-semibold tracking-wider">
-              {t("common.qr_code")}
-            </span>
-          </Button>
+              <div
+                className={`p-3 rounded-2xl transition-colors shrink-0 ${
+                  showQr
+                    ? "bg-(--active-bg)"
+                    : "bg-(--active-bg-2) group-hover:bg-(--active-bg)"
+                }`}
+              >
+                <QrCode size={22} />
+              </div>
+              {/* <span className="text-[11px] font-semibold tracking-wider truncate w-full text-center">
+                {t("common.qr_code")}
+              </span> */}
+            </Button>
+          </TextTooltip>
 
-          <Button
-            onClick={() => onOpenChangeModal(avatarObj, profileId)}
-            className="w-[90px] flex flex-col items-center gap-1.5 transition-colors text-(--text-secondary) hover:text-(--third-color) group"
-          >
-            <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors">
-              <UserCircle size={22} />
-            </div>
-            <span className="text-[11px] font-semibold tracking-wider">
-              {t("common.change_avatar")}
-            </span>
-          </Button>
+          {/* 4. Change Avatar (Dəyişdir/Tənzimlə) */}
+          <TextTooltip position="top" text={t("common.change_avatar")}>
+            <Button
+              onClick={() => onOpenChangeModal(avatarObj, profileId)}
+              className="w-[90px] flex flex-col items-center gap-2 transition-colors text-(--text-secondary) hover:text-(--third-color) group min-w-0"
+            >
+              <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors shrink-0">
+                <UserCircle size={22} />
+              </div>
+              {/* <span className="text-[11px] font-semibold tracking-wider truncate w-full text-center">
+                {t("common.change_avatar")}
+              </span> */}
+            </Button>
+          </TextTooltip>
         </div>
       </motion.div>
     </Modal>

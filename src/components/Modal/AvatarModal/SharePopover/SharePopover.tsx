@@ -5,6 +5,7 @@ import { useClickAway } from "react-use";
 import { useShare } from "@/hooks/useShare";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTranslation } from "react-i18next";
+import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 interface IProps {
   profileUrl: string;
@@ -25,15 +26,19 @@ const SharePopover: FC<IProps> = ({ profileUrl, username }) => {
 
   return (
     <div className="relative" ref={ref}>
-      <Button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="w-[90px] flex flex-col items-center gap-1.5 transition-colors text-(--text-secondary) hover:text-(--third-color) group"
-      >
-        <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors">
-          <Share2 size={22} />
-        </div>
-        <span className="text-[11px] font-semibold tracking-wider">Paylaş</span>
-      </Button>
+      <TextTooltip position="top" text={t("common.share")}>
+        <Button
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="w-[90px] flex flex-col items-center gap-1.5 transition-colors text-(--text-secondary) hover:text-(--third-color) group"
+        >
+          <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors">
+            <Share2 size={22} />
+          </div>
+          {/* <span className="text-[11px] font-semibold tracking-wider">
+            {t("common.share")}
+          </span> */}
+        </Button>
+      </TextTooltip>
 
       <AnimatePresence>
         {isOpen && (
