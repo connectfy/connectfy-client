@@ -1,5 +1,6 @@
 import toast, { ToastPosition } from "react-hot-toast";
 import CustomToast from "@/components/ui/CustomToast/CustomToast";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 type ToastType = "success" | "error" | "warning" | "info" | "default";
 type SnackOptions = {
@@ -7,10 +8,10 @@ type SnackOptions = {
   position?: ToastPosition;
 };
 
-const isMobile = () => window.innerWidth < 768;
+const isMobile = useIsMobile();
 const getPosition = (position?: ToastPosition) => {
   if (position) return position;
-  return isMobile() ? "bottom-center" : "bottom-right";
+  return isMobile ? "bottom-center" : "bottom-right";
 };
 
 const show = (message: string, type: ToastType, options: SnackOptions = {}) => {

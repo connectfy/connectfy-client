@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { SnackbarOrigin, VariantType, enqueueSnackbar } from "notistack";
 
 type SnackOptions = {
@@ -7,14 +8,14 @@ type SnackOptions = {
   size?: "small" | "medium" | "large";
 };
 
-const isMobile = () => window.innerWidth < 768;
+const isMobile = useIsMobile();
 
 const getAnchorOrigin = (customOrigin?: SnackbarOrigin): SnackbarOrigin => {
-  if (customOrigin && !isMobile()) {
+  if (customOrigin && !isMobile) {
     return customOrigin;
   }
 
-  return isMobile()
+  return isMobile
     ? { vertical: "bottom", horizontal: "center" }
     : { vertical: "bottom", horizontal: "right" };
 };

@@ -23,7 +23,6 @@ const Profile: FC = () => {
 
   useEffect(() => {
     if (isDataReady) {
-      // ✅ Bu render LOW-PRIORITY olur
       // Browser click eventlərini bu render-dən önə keçirə bilər
       startTransition(() => {
         setShowContent(true);

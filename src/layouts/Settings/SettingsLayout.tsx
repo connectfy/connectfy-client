@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode, useEffect, useState } from "react";
+import { FC, memo, ReactNode } from "react";
 import "./settingsLayout.style.css";
 import { Outlet, useLocation, matchPath } from "react-router-dom";
 import UniqueSidebar from "@/components/Sidebar/UniqueSidebar/UniqueSidebar";
@@ -13,6 +13,7 @@ import {
   Keyboard,
 } from "lucide-react";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Props {
   children?: ReactNode;
@@ -79,17 +80,7 @@ const SettingsLayout: FC<Props> = ({ children }) => {
     },
   ];
 
-  const [isMobile, setIsMobile] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.innerWidth < 1024 : false,
-  );
-
-  useEffect(() => {
-    function onResize() {
-      setIsMobile(window.innerWidth < 1025);
-    }
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+  const isMobile = useIsMobile();
 
   const isIndex = Boolean(
     matchPath({ path: ROUTER.SETTINGS.MAIN, end: true }, location.pathname),

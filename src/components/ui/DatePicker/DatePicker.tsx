@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import DatePickerModal from "../../Modal/DatePickerModal/DatePickerModal";
 import Button from "../CustomButton/Button/Button";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface CustomDatePickerProps {
   value?: string | Date | null;
@@ -29,8 +30,8 @@ export default function CustomDatePicker({
 }: CustomDatePickerProps) {
   const { t } = useTranslation();
 
+  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     value ? (typeof value === "string" ? new Date(value) : value) : null,
   );
@@ -48,16 +49,6 @@ export default function CustomDatePicker({
   const minDate = new Date(1960, 0, 1);
   const maxDate = new Date();
   const currentYear = new Date().getFullYear();
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const formatDate = (date: Date | null): string => {
     if (!date) return "";

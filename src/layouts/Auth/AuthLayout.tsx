@@ -4,12 +4,13 @@ import AuthSidebar from "@/components/Sidebar/Auth/AuthSidebar";
 import MainIcon from "@/assets/icons/MainIcon";
 import AuthFooter from "@/modules/auth/ui/components/Footer/AuthFooter/AuthFooter";
 import { ROUTER } from "@/common/constants/routet";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 const AuthLayout: FC = () => {
   const location = useLocation();
 
   const [isSignupPage, setIsSignupPage] = useState<boolean>(false);
-  const isMobile = window.innerWidth < 1024;
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (location.pathname === ROUTER.AUTH.SIGNUP) {
