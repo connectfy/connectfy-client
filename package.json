@@ -25,7 +25,7 @@
     "axios": "^1.12.2",
     "cd": "^0.3.3",
     "connectfy-i18n": "^0.0.48",
-    "connectfy-shared": "^0.0.105",
+    "connectfy-shared": "^0.0.106",
     "dayjs": "^1.11.18",
     "flag-icons": "^7.5.0",
     "flowbite": "^4.0.1",
