@@ -159,12 +159,12 @@ const PersonalInfoModal: FC<IProps> = ({ open, onClose, profile }) => {
                     formik.setFieldValue("birthdayDate", date)
                   }
                   inputSize="large"
-                  placeholder={t("common.birthday")}
                   hasError={
                     !!(
                       formik.errors.birthdayDate && formik.touched.birthdayDate
                     )
                   }
+                  title={t("common.birthday")}
                 />
               </div>
               <NativeSelect

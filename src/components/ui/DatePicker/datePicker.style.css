@@ -15,7 +15,7 @@
   color: var(--text-color);
   display: flex;
   align-items: center;
-  overflow: hidden;
+  /* overflow: hidden;  ← BU SƏTRİ SİL */
 }
 
 .date_input:focus-within {
@@ -296,4 +296,41 @@
 .calendar_year.selected {
   background-color: var(--primary-color);
   color: white;
+}
+
+.date_picker_label {
+  position: absolute;
+  top: 50%;
+  left: 42px;
+  transform: translateY(-50%);
+  color: var(--muted-color);
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  white-space: nowrap;
+}
+.date_picker_label.active {
+  top: 0;
+  left: 1rem !important;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  padding: 0 0.25rem;
+  background-color: var(--bg-color);
+}
+.custom_date_picker.error .date_picker_label.active {
+  color: var(--error-color);
+}
+.custom_date_picker.small .date_picker_label {
+  left: 36px;
+}
+.custom_date_picker.medium .date_picker_label {
+  left: 42px;
+}
+.custom_date_picker.large .date_picker_label {
+  left: 48px;
+}
+.custom_date_picker.xlarge .date_picker_label {
+  left: 54px;
 }

@@ -13,6 +13,7 @@ interface CustomDatePickerProps {
   inputSize?: "small" | "medium" | "large" | "xlarge";
   placeholder?: string;
   onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
+  title?: string;
 }
 
 type ViewMode = "days" | "months" | "years";
@@ -22,8 +23,9 @@ export default function CustomDatePicker({
   onChange,
   hasError = false,
   inputSize = "large",
-  placeholder = "MM/DD/YYYY",
+  placeholder,
   onKeyDown,
+  title,
 }: CustomDatePickerProps) {
   const { t } = useTranslation();
 
@@ -327,11 +329,26 @@ export default function CustomDatePicker({
         className={`custom_date_picker ${inputSize} ${hasError ? "error" : ""}`}
         ref={calendarRef}
       >
-        <div className="date_input" onClick={() => setIsOpen(!isOpen)}>
+        <div
+          className="date_input"
+          onClick={() => {
+            if (!isOpen && selectedDate) {
+              setCurrentMonth(selectedDate);
+            }
+            setIsOpen(!isOpen);
+          }}
+        >
           {/* İKON ARTIQ SOLDA VƏ İNPUTDAN ÖNCƏDİR */}
           <div className="calendar_icon">
             <CalendarDays />
           </div>
+          {title && (
+            <span
+              className={`date_picker_label ${isOpen || selectedDate ? "active" : ""}`}
+            >
+              {title}
+            </span>
+          )}
           <input
             type="text"
             readOnly

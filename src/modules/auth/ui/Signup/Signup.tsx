@@ -196,7 +196,7 @@ const Signup = () => {
             value={formik.values.birthdayDate?.toString() || ""}
             onChange={(date) => formik.setFieldValue("birthdayDate", date)}
             inputSize="large"
-            placeholder={t("common.birthday")}
+            title={t("common.birthday")}
             hasError={
               !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
             }

@@ -180,9 +180,13 @@ const SignupModal = ({
 
             {/* Date Picker */}
             <CustomDatePicker
-              value={formik.values.birthdayDate}
+              value={formik.values.birthdayDate?.toString() || ""}
               onChange={(date) => formik.setFieldValue("birthdayDate", date)}
-              placeholder={t("common.birthday") || "DOĞUM TARİXİ"}
+              title={t("common.birthday")}
+              hasError={
+                !!(formik.errors.birthdayDate && formik.touched.birthdayDate)
+              }
+              inputSize="large"
             />
 
             {/* Gender Selector */}
