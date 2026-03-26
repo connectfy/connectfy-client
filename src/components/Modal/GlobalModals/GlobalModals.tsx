@@ -11,10 +11,18 @@ const GlobalModals = () => {
   const store = useAvatarModalStore();
   const { user } = useUser();
 
-  const { isProfileLoading } = useGetAccountQuery(undefined, {
-    skip: !user?._id || (!store.isChangeModalOpen && !store.isUploadModalOpen),
-    selectFromResult: (result) => ({ isProfileLoading: result.isLoading }),
+  const { avatar, isProfileLoading } = useGetAccountQuery(undefined, {
+    skip:
+      !user?._id ||
+      !!store.avatarObj ||
+      (!store.isChangeModalOpen && !store.isUploadModalOpen),
+    selectFromResult: (result) => ({
+      avatar: result.data?.avatar,
+      isProfileLoading: result.isLoading,
+    }),
   });
+
+  const currentAvatar = store.avatarObj || avatar;
 
   return (
     <Fragment>
@@ -32,7 +40,7 @@ const GlobalModals = () => {
         open={store.isChangeModalOpen}
         onClose={store.onCloseChangeModal}
         profileId={store.profileId}
-        avatar={store.avatarObj}
+        avatar={currentAvatar}
         isProfileLoading={isProfileLoading}
       />
 
