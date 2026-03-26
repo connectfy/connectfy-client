@@ -1,5 +1,5 @@
 import { useState } from "react";
-import WhatsAppIcon from "@/assets/icons/WhatsAppIcon";
+import WhatsappIcon from "@/assets/icons/WhatsappIcon";
 import TelegramIcon from "@/assets/icons/TelegramIcon";
 import FacebookIcon from "@/assets/icons/FacebookIcon";
 import XIcon from "@/assets/icons/XIcon";
@@ -21,7 +21,7 @@ export const useShare = ({ url, text }: ShareOptions) => {
     },
     {
       label: "WhatsApp",
-      icon: <WhatsAppIcon className="w-5 h-5" />,
+      icon: <WhatsappIcon className="w-5 h-5" />,
       href: `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
     },
     {

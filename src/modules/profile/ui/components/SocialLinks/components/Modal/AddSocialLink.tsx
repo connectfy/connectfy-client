@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
-import { Link2, X, Globe, LayoutGrid, Type } from "lucide-react";
+import { Link2, X, Type, Link } from "lucide-react";
 import Modal from "@/components/Modal";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Input from "@/components/ui/CustomInput/Input/Input";
@@ -16,6 +16,7 @@ import { useCreateSocialLinkMutation } from "@/modules/profile/api/api";
 import { IAddSocialLink } from "@/modules/profile/types/types";
 import { snack } from "@/common/utils/snackManager";
 import { validateSocialLink } from "@/modules/profile/constants/validation";
+import { PLATFORM_ICONS } from "../SocialPlatformIcons";
 
 interface IProps {
   open: boolean;
@@ -31,7 +32,12 @@ const AddSocialLinkModal: FC<IProps> = ({ open, onClose, userId }) => {
   const platformOptions: ISelectOption[] = Object.values(
     SOCIAL_LINK_PLATFORM,
   ).map((platform) => ({
-    label: platform,
+    label: (
+      <div className="flex items-center gap-3">
+        <span>{PLATFORM_ICONS[platform]}</span>
+        <span>{platform}</span>
+      </div>
+    ),
     value: platform,
   }));
 
@@ -113,7 +119,6 @@ const AddSocialLinkModal: FC<IProps> = ({ open, onClose, userId }) => {
             <NativeSelect
               title={t("common.platform")}
               inputSize="large"
-              icon={<LayoutGrid size={18} />}
               options={platformOptions}
               value={formik.values.platform}
               onChange={(val) => formik.setFieldValue("platform", val)}
@@ -137,7 +142,7 @@ const AddSocialLinkModal: FC<IProps> = ({ open, onClose, userId }) => {
               name="url"
               title={t("common.link")}
               isFloating
-              icon={<Globe size={18} />}
+              icon={<Link size={18} />}
               value={formik.values.url || ""}
               onChange={formik.handleChange}
               maxLength={200}

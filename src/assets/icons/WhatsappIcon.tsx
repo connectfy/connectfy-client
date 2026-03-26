@@ -6,7 +6,7 @@ interface IProps {
   color?: string;
 }
 
-const WhatsAppIcon: FC<IProps> = ({
+const WhatsappIcon: FC<IProps> = ({
   style,
   className,
   color = "var(--text-color)",
@@ -28,4 +28,4 @@ const WhatsAppIcon: FC<IProps> = ({
   );
 };
 
-export default WhatsAppIcon;
+export default WhatsappIcon;

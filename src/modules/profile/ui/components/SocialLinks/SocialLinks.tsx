@@ -208,13 +208,6 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
   const currentPrivacy =
     privacySettings?.socialLinks || PRIVACY_SETTINGS_CHOICE.EVERYONE;
 
-  // // Drag & drop üçün datanın sinxronlaşdırılması
-  // useEffect(() => {
-  //   if (sortedData && !isReorderMode) {
-  //     setOrderedLinks(sortedData);
-  //   }
-  // }, [sortedData, isReorderMode]);
-
   return (
     <Fragment>
       {isLoading ? (
@@ -325,13 +318,17 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
 
                     <div className="flex-1 min-w-0 transition-all duration-300">
                       <div
-                        className={`${isSelectionMode || isReorderMode ? "pointer-events-none opacity-80" : ""}`}
+                        className={`${isReorderMode ? "pointer-events-none opacity-80" : ""}`}
                       >
                         <SocialLinkItem
                           link={link}
                           onAction={handleSocialAction}
                           index={index}
                           closeExpanded={isSelectionMode || isReorderMode}
+                          isSelectionMode={isSelectionMode}
+                          // YENİ ƏLAVƏLƏR:
+                          isSelected={isSelected}
+                          onToggleSelect={() => toggleSelect(link._id)}
                         />
                       </div>
                     </div>

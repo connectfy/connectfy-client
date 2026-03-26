@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
-import { Link2, X, Globe, LayoutGrid, Type } from "lucide-react";
+import { Link2, X, Link, Type } from "lucide-react";
 import Modal from "@/components/Modal";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import Input from "@/components/ui/CustomInput/Input/Input";
@@ -17,6 +17,7 @@ import { IEditSocialLink, ISocialLink } from "@/modules/profile/types/types";
 import { snack } from "@/common/utils/snackManager";
 import { getChangedData } from "@/common/utils/getDirtyValues";
 import { validateSocialLink } from "@/modules/profile/constants/validation";
+import { PLATFORM_ICONS } from "../SocialPlatformIcons";
 
 interface IProps {
   open: boolean;
@@ -32,7 +33,12 @@ const EditSocialLinkModal: FC<IProps> = ({ open, onClose, socialLink }) => {
   const platformOptions: ISelectOption[] = Object.values(
     SOCIAL_LINK_PLATFORM,
   ).map((platform) => ({
-    label: platform,
+    label: (
+      <div className="flex items-center gap-3">
+        <span>{PLATFORM_ICONS[platform]}</span>
+        <span>{platform}</span>
+      </div>
+    ),
     value: platform,
   }));
 
@@ -116,7 +122,9 @@ const EditSocialLinkModal: FC<IProps> = ({ open, onClose, socialLink }) => {
             <NativeSelect
               title={t("common.platform")}
               inputSize="large"
-              icon={<LayoutGrid size={18} />}
+              // icon={
+              //   PLATFORM_ICONS[formik.values.platform as SOCIAL_LINK_PLATFORM]
+              // }
               options={platformOptions}
               value={formik.values.platform ?? SOCIAL_LINK_PLATFORM.INSTAGRAM}
               onChange={(val) => formik.setFieldValue("platform", val)}
@@ -140,7 +148,7 @@ const EditSocialLinkModal: FC<IProps> = ({ open, onClose, socialLink }) => {
               name="url"
               title={t("common.link")}
               isFloating
-              icon={<Globe size={18} />}
+              icon={<Link size={18} />}
               value={formik.values.url || ""}
               onChange={formik.handleChange}
               maxLength={200}

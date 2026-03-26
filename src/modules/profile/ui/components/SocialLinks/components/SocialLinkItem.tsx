@@ -12,6 +12,8 @@ import { memo, useEffect, useState } from "react";
 import { ISocialLink } from "@/modules/profile/types/types";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useTranslation } from "react-i18next";
+import { PLATFORM_ICONS } from "./SocialPlatformIcons";
+import { SOCIAL_LINK_PLATFORM } from "@/common/enums/enums";
 
 // Social Link Item Component
 const SocialLinkItem = memo(
@@ -20,11 +22,17 @@ const SocialLinkItem = memo(
     onAction,
     index,
     closeExpanded,
+    isSelectionMode,
+    isSelected,
+    onToggleSelect,
   }: {
     link: ISocialLink;
     onAction: (action: string, link: ISocialLink) => void;
     index: number;
     closeExpanded: boolean;
+    isSelectionMode: boolean;
+    isSelected: boolean;
+    onToggleSelect: () => void;
   }) => {
     const { t } = useTranslation();
     const [isExpanded, setIsExpanded] = useState(false);
@@ -43,29 +51,56 @@ const SocialLinkItem = memo(
 
     return (
       <div
-        className="relative overflow-hidden transition-all duration-300 border bg-(--info-card-bg) border-(--info-card-border) rounded-xl hover:border-(--primary-color) group"
+        className={`relative overflow-hidden transition-all duration-300 border rounded-xl group
+          ${
+            isSelected
+              ? "border-(--primary-color) bg-(--active-bg-2) ring-1 ring-(--primary-color)"
+              : "bg-(--info-card-bg) border-(--info-card-border) hover:border-(--primary-color)"
+          }`}
         data-testid={`social-link-item-${index}`}
       >
         {/* Accent Bar (Hover zamanı solda görünən rəngli xətt) */}
-        <div className="absolute top-0 left-0 w-1 h-full transition-opacity opacity-0 bg-(--primary-color) group-hover:opacity-100" />
+        <div
+          className={`absolute top-0 left-0 w-1 h-full transition-opacity bg-(--primary-color) 
+          ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+        />
 
         {/* Header Button */}
         <Button
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => {
+            // DƏYİŞİKLİK: Selection mode aktivdirsə, seçimi dəyiş, deyilse expand et.
+            if (isSelectionMode) {
+              onToggleSelect();
+            } else {
+              setIsExpanded(!isExpanded);
+            }
+          }}
           className="flex items-center justify-between w-full px-5 py-4 text-left transition-colors hover:bg-(--active-bg-2)"
           aria-expanded={isExpanded}
         >
-          <div className="flex flex-col gap-1">
-            <span className="text-[15px] font-bold text-(--text-color) tracking-wide">
-              {link.platform}
-            </span>
-            <span className="text-sm font-medium text-(--muted-color)">
-              {link.name}
-            </span>
+          <div className="flex items-center gap-3">
+            <div
+              className={`transition-colors shrink-0 ${isSelected ? "text-(--primary-color)" : "text-(--muted-color) group-hover:text-(--primary-color)"}`}
+            >
+              {PLATFORM_ICONS[link.platform as SOCIAL_LINK_PLATFORM]}
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[15px] font-bold text-(--text-color) tracking-wide">
+                {link.platform}
+              </span>
+              <span className="text-sm font-medium text-(--muted-color)">
+                {link.name}
+              </span>
+            </div>
           </div>
-          <div className="text-(--muted-color) group-hover:text-(--text-color) transition-colors">
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </div>
+
+          {/* DƏYİŞİKLİK: Selection mode-da chevron-u gizlədə və ya checkbox göstərə bilərsən. 
+              Amma sadəlik üçün chevron-u seçim zamanı gizlətmək daha yaxşıdır. */}
+          {!isSelectionMode && (
+            <div className="text-(--muted-color) group-hover:text-(--text-color) transition-colors">
+              {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </div>
+          )}
         </Button>
 
         {/* Details (Expanded Content) */}

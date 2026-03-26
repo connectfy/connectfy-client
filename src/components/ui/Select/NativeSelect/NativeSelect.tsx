@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Button from "../../CustomButton/Button/Button";
 
 export interface ISelectOption {
-  label: string;
+  label: string | ReactNode;
   value: string | number;
 }
 
