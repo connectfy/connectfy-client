@@ -4,10 +4,25 @@ import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { FC } from "react";
 
-const ProfileHeader = () => {
+interface IProps {
+  onToggleFriends?: () => void;
+}
+
+const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigation();
+  const isMobile = useIsMobile();
+
+  const handleFriendsClick = () => {
+    if (isMobile) {
+      navigate(ROUTER.USERS.FRIENDS);
+    } else {
+      onToggleFriends?.();
+    }
+  };
 
   return (
     <header className="profile-header-actions">
@@ -33,7 +48,7 @@ const ProfileHeader = () => {
         />
         <Button
           className="profile-icon-btn"
-          onClick={() => navigate(ROUTER.USERS.FRIENDS)}
+          onClick={handleFriendsClick}
           icon={<Users size={20} />}
           title={t("common.my_friends")}
         />
