@@ -3,12 +3,12 @@ import { lazy } from "react";
 import { ROUTER } from "@/common/constants/routet";
 import ComponentLoader from "@/components/Loader/Components/ComponentLoader";
 
-const Settings = ComponentLoader(lazy(() => import("../ui/Settings")));
+const AllUsers = ComponentLoader(lazy(() => import("../ui/AllUsers")));
 
 const routes: RouteObject[] = [
   {
-    path: ROUTER.SETTINGS.MAIN,
-    element: <Settings />,
+    path: ROUTER.USERS.SEARCH,
+    element: <AllUsers />,
   },
 ];
 

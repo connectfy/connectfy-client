@@ -21,10 +21,13 @@ export const ROUTER = {
   },
   USERS: {
     MAIN: "/users",
+    PROFILE: "/users/profile",
     BLOCKLIST: "/users/blocklist",
     FRIENDS: "/users/friends",
     REQUESTS: "/users/requests",
     SEARCH: "/users/search",
+    CLOSE_FRIENDS: "/users/close-friends",
+    MUTED: "/users/muted",
   },
   NOTIFICATIONS: {
     MAIN: "/notifications",

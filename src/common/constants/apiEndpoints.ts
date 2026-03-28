@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
       UPDATE: "/account/profile/update",
       UPDATE_AVATAR: "/account/profile/update-avatar",
       UPDATE_DEFAULT_AVATAR: "/account/profile/update-default-avatar",
+      SEARCH: "/account/profile/search",
     },
     SETTINGS: {
       GENERAL_SETTINGS: {

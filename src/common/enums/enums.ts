@@ -35,6 +35,7 @@ export enum RESOURCE {
   USER = "user",
   PROFILE = "profile",
   ACCOUNT_SETTINGS = "account-settings",
+  ALL_USERS = "all-users",
 }
 
 export enum GENDER {
@@ -205,4 +206,10 @@ export enum AvatarFormats {
   Personas = "personas",
   ToonHead = "toon-head",
   Micah = "micah",
+}
+
+export enum FriendshipStatus {
+  Pending = "PENDING",
+  Accepted = "ACCEPTED",
+  Blocked = "BLOCKED",
 }

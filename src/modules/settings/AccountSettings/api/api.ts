@@ -41,19 +41,51 @@ export const accountSettingsApi = createApi({
        */
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         // apply optimistic change to getMe
-        const patchResult = dispatch(
+        const patchResultForUser = dispatch(
           profileApi.util.updateQueryData("getMe", undefined, (draft: any) => {
-            // guard: draft.user might be undefined in some cases
-            if (draft) {
-              draft.username = arg.username;
+            if (!draft) return;
+
+            const format = draft.defaultAvatar?.format || "micah";
+            const seed = encodeURIComponent(arg.username!);
+
+            draft.username = arg.username;
+
+            draft.defaultAvatar.seed = arg.username;
+            draft.defaultAvatar.url = `https://api.dicebear.com/9.x/${format}/svg?seed=${seed}`;
+
+            if (draft.avatar && !draft.avatar.isCustom && !draft.avatar.key) {
+              draft.avatar.url = `https://api.dicebear.com/9.x/${format}/svg?seed=${seed}`;
             }
           }),
+        );
+
+        const patchResultForProfile = dispatch(
+          profileApi.util.updateQueryData(
+            "getAccount",
+            undefined,
+            (draft: any) => {
+              if (!draft) return;
+
+              const format = draft.defaultAvatar?.format || "micah";
+              const seed = encodeURIComponent(arg.username!);
+
+              draft.username = arg.username;
+
+              draft.defaultAvatar.seed = arg.username;
+              draft.defaultAvatar.url = `https://api.dicebear.com/9.x/${format}/svg?seed=${seed}`;
+
+              if (draft.avatar && !draft.avatar.isCustom && !draft.avatar.key) {
+                draft.avatar.url = `https://api.dicebear.com/9.x/${format}/svg?seed=${seed}`;
+              }
+            },
+          ),
         );
 
         try {
           await queryFulfilled;
         } catch (err) {
-          patchResult.undo();
+          patchResultForUser.undo();
+          patchResultForProfile.undo();
         }
       },
       /**

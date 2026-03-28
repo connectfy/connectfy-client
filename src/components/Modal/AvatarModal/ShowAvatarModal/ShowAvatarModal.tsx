@@ -44,7 +44,7 @@ const ShowAvatarModal: FC<IProps> = ({
   const [scale, setScale] = useState(1);
   const [showQr, setShowQr] = useState(false);
 
-  const profileUrl = `${window.location.origin}/user/${userId}`;
+  const profileUrl = `${window.location.origin}/users/profile/${userId}`;
 
   const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.5, 3));
   const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.5, 1));

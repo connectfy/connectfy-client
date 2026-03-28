@@ -1,0 +1,36 @@
+.users-layout.desktop {
+  display: flex;
+  height: 100vh;
+  padding: 16px;
+  gap: 24px;
+}
+
+.users-layout__sidebar {
+  flex: 0 0 30%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.users-layout__content {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.users-layout.mobile.sidebar-only {
+  padding: 12px;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.users-layout.mobile.content-only {
+  padding: 12px;
+}
+
+.users-layout__sidebar-mobile {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}

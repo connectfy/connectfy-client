@@ -12,15 +12,28 @@ import Loader from "@/components/Loader/Main/Loader.tsx";
 const AuthLayout = Loader(lazy(() => import("@/layouts/Auth/AuthLayout")));
 const BaseLayout = Loader(lazy(() => import("@/layouts/Base/BaseLayout")));
 const SettingsLayout = lazy(() => import("@/layouts/Settings/SettingsLayout"));
+const UsersLayout = lazy(() => import("@/layouts/Users/UsersLayout"));
+
 const Messenger = lazy(() => import("@/modules/messenger/ui/Messenger"));
 
+// ======================= AUTH
 import authRoutes from "@/modules/auth/router/router";
+
+// ======================= TERMS AND CONDITIONS
 import termsAndConditionsRoutes from "@/modules/termsAndConditions/router/router";
+
+// ======================= USERS
+import usersRoutes from "@/modules/users/Users/router/router";
+import allUsersRoutes from "@/modules/users/AllUsers/router/router";
+
+// ======================= SETTINGS
 import settingsRoutes from "@/modules/settings/Settings/router/router";
 import generalSettingsRoutes from "@/modules/settings/GeneralSettings/router/router";
 import accountSettingsRoutes from "@/modules/settings/AccountSettings/router/router";
 import privacySettingsRoutes from "@/modules/settings/PrivacySettings/router/router";
 import notificationSettingsRoutes from "@/modules/settings/NotificationSettings/router/router";
+
+// ======================= PROFILE
 import profileRoutes from "@/modules/profile/router/router";
 
 const routes = [
@@ -66,6 +79,13 @@ const routes = [
 
       // ======================= PROFILE
       ...profileRoutes,
+
+      // ======================= USERS
+      {
+        path: "/",
+        element: <UsersLayout />,
+        children: [...usersRoutes, ...allUsersRoutes],
+      },
 
       // ======================= SETTINGS
       {
