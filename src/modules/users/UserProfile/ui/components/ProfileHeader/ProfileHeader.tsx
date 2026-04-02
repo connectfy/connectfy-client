@@ -1,27 +1,27 @@
-import { ArrowLeft, User, UserLock, Users, Settings } from "lucide-react";
+import {
+  ArrowLeft,
+  User,
+  UserLock,
+  BellRing,
+  BellOff,
+  Share,
+} from "lucide-react";
 import { ROUTER } from "@/common/constants/routet";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { FC } from "react";
+import { IFindOneRelationship, IFindOneUser } from "../../../types/types";
+import { FriendshipStatus } from "@/common/enums/enums";
 
 interface IProps {
-  onToggleFriends?: () => void;
+  relationship?: IFindOneRelationship;
+  user?: IFindOneUser;
 }
 
-const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
+const ProfileHeader: FC<IProps> = ({ relationship, user }) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigation();
-  const isMobile = useIsMobile();
-
-  const handleFriendsClick = () => {
-    if (isMobile) {
-      navigate(ROUTER.USERS.FRIENDS);
-    } else {
-      onToggleFriends?.();
-    }
-  };
 
   return (
     <header
@@ -64,7 +64,7 @@ const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
           "
         >
           <User size={20} />
-          <span className="max-[480px]:hidden">{t("common.profile")}</span>
+          <span>{user?.username ?? t("common.profile")}</span>
         </h1>
       </div>
 
@@ -74,9 +74,9 @@ const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
         <Button
           onClick={() => navigate(ROUTER.USERS.BLOCKLIST)}
           icon={<UserLock size={20} />}
-          title={t("common.blocklist")}
+          title={t("common.block_user")}
           className="
-            flex items-center gap-2 px-4 h-10 min-h-10 rounded-xl
+            px-4 h-10 min-h-10 rounded-xl
             border-none cursor-pointer font-medium text-sm whitespace-nowrap
             shadow-(--card-shadow)
             bg-[rgba(var(--error-color-rgb),0.1)] text-(--error-color)
@@ -85,17 +85,26 @@ const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
             active:translate-y-0
             focus-visible:outline-2 focus-visible:outline-(--primary-color) focus-visible:-outline-offset-0.5
             max-[768px]:px-3 max-[768px]:h-9 max-[768px]:min-h-9
-            max-[480px]:px-2.5 max-[480px]:h-8 max-[480px]:min-h-8 max-[480px]:gap-1.5
+            max-[480px]:px-2.5 max-[480px]:h-8 max-[480px]:min-h-8 max-[480px]:gap-1.5 lg:w-[150px]
           "
         />
 
         {/* Friends */}
-        <Button
-          onClick={handleFriendsClick}
-          icon={<Users size={20} />}
-          title={t("common.my_friends")}
-          className="
-            flex items-center gap-2 px-4 h-10 min-h-10 rounded-xl
+        {relationship?.friendship?.status !== FriendshipStatus.Accepted ||
+          (!relationship?.friendship && (
+            <Button
+              icon={
+                relationship?.friendship?.status ===
+                  FriendshipStatus.Accepted &&
+                relationship?.friendship?.isMuted ? (
+                  <BellOff size={20} />
+                ) : (
+                  <BellRing size={20} />
+                )
+              }
+              title={t("common.notifications")}
+              className="
+            px-4 h-10 min-h-10 rounded-xl
             border-none cursor-pointer font-medium text-sm whitespace-nowrap
             shadow-(--card-shadow)
             bg-[rgba(var(--primary-color-rgb),0.1)] text-(--primary-color)
@@ -105,16 +114,17 @@ const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
             focus-visible:outline-2 focus-visible:outline-(--primary-color) focus-visible:-outline-offset-0.5
             max-[768px]:px-3 max-[768px]:h-9 max-[768px]:min-h-9
             max-[480px]:px-2.5 max-[480px]:h-8 max-[480px]:min-h-8 max-[480px]:gap-1.5
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[rgba(var(--primary-color-rgb),0.1)] disabled:hover:text-(--primary-color) disabled:hover:translate-y-0 disabled:hover:shadow-(--card-shadow) lg:w-[150px]
           "
-        />
+            />
+          ))}
 
-        {/* Settings */}
+        {/* Share */}
         <Button
-          onClick={() => navigate(ROUTER.SETTINGS.MAIN)}
-          icon={<Settings size={20} />}
-          title={t("common.settings")}
+          icon={<Share size={20} />}
+          title={t("common.share")}
           className="
-            flex items-center gap-2 px-4 h-10 min-h-10 rounded-xl
+            px-4 h-10 min-h-10 rounded-xl
             border-none cursor-pointer font-medium text-sm whitespace-nowrap
             shadow-(--card-shadow)
             bg-[rgba(var(--primary-color-rgb),0.1)] text-(--primary-color)
@@ -124,6 +134,7 @@ const ProfileHeader: FC<IProps> = ({ onToggleFriends }) => {
             focus-visible:outline-2 focus-visible:outline-(--primary-color) focus-visible:-outline-offset-0.5
             max-[768px]:px-3 max-[768px]:h-9 max-[768px]:min-h-9
             max-[480px]:px-2.5 max-[480px]:h-8 max-[480px]:min-h-8 max-[480px]:gap-1.5
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[rgba(var(--primary-color-rgb),0.1)] disabled:hover:text-(--primary-color) disabled:hover:translate-y-0 disabled:hover:shadow-(--card-shadow) lg:w-[150px]
           "
         />
       </div>

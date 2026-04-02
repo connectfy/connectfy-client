@@ -25,6 +25,7 @@ import termsAndConditionsRoutes from "@/modules/termsAndConditions/router/router
 // ======================= USERS
 import usersRoutes from "@/modules/users/Users/router/router";
 import allUsersRoutes from "@/modules/users/AllUsers/router/router";
+import userProfileRoutes from "@/modules/users/UserProfile/router/router";
 
 // ======================= SETTINGS
 import settingsRoutes from "@/modules/settings/Settings/router/router";
@@ -79,6 +80,7 @@ const routes = [
 
       // ======================= PROFILE
       ...profileRoutes,
+      ...userProfileRoutes,
 
       // ======================= USERS
       {

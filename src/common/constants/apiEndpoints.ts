@@ -31,6 +31,8 @@ export const API_ENDPOINTS = {
   ACCOUNT: {
     PROFILE: {
       GET: "/account/profile/get",
+      FIND_ONE: (userId: string) =>
+        `/account/profile/findOneByUserId/${userId}`,
       UPDATE: "/account/profile/update",
       UPDATE_AVATAR: "/account/profile/update-avatar",
       UPDATE_DEFAULT_AVATAR: "/account/profile/update-default-avatar",

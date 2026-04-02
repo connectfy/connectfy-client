@@ -36,6 +36,7 @@ export enum RESOURCE {
   PROFILE = "profile",
   ACCOUNT_SETTINGS = "account-settings",
   ALL_USERS = "all-users",
+  USER_PROFİLE = "user-profile",
 }
 
 export enum GENDER {

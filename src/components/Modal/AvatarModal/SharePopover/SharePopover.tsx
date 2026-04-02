@@ -9,16 +9,17 @@ import TextTooltip from "@/components/Tooltip/TextTooltip";
 
 interface IProps {
   profileUrl: string;
+  text: string;
   username?: string;
 }
 
-const SharePopover: FC<IProps> = ({ profileUrl, username }) => {
+const SharePopover: FC<IProps> = ({ profileUrl, username, text }) => {
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
 
   const { isOpen, setIsOpen, shareLinks, handleOpen } = useShare({
     url: profileUrl,
-    text: `${t("common.check_out_my_profile")}:`,
+    text: text,
     title: username,
   });
 

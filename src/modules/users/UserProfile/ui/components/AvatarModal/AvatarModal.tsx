@@ -1,22 +1,13 @@
 import { FC, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  Copy,
-  ZoomIn,
-  ZoomOut,
-  QrCode,
-  ArrowLeft,
-  UserCircle,
-} from "lucide-react";
+import { X, Copy, ZoomIn, ZoomOut, QrCode, ArrowLeft } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
-import Modal from "../../index";
+import Modal from "@/components/Modal";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/CustomButton/Button/Button";
 import { snack } from "@/common/utils/snackManager";
-import SharePopover from "../SharePopover/SharePopover";
-import { useAvatarModalStore } from "@/store/zustand/useAvatarModalStore";
 import TextTooltip from "@/components/Tooltip/TextTooltip";
+import SharePopover from "@/components/Modal/AvatarModal/SharePopover/SharePopover";
 
 interface IProps {
   open: boolean;
@@ -26,7 +17,7 @@ interface IProps {
   userId?: string;
 }
 
-const ShowAvatarModal: FC<IProps> = ({
+const AvatarModal: FC<IProps> = ({
   open,
   onClose,
   avatarUrl,
@@ -34,12 +25,6 @@ const ShowAvatarModal: FC<IProps> = ({
   userId,
 }) => {
   const { t } = useTranslation();
-
-  const onOpenChangeModal = useAvatarModalStore(
-    (state) => state.onOpenChangeModal,
-  );
-  const profileId = useAvatarModalStore((state) => state.profileId);
-  const avatarObj = useAvatarModalStore((state) => state.avatarObj);
 
   const [scale, setScale] = useState(1);
   const [showQr, setShowQr] = useState(false);
@@ -178,7 +163,7 @@ const ShowAvatarModal: FC<IProps> = ({
           <SharePopover
             profileUrl={profileUrl}
             username={username}
-            text={`${t("common.check_out_my_profile")}: `}
+            text={`@${username}'s profile: `}
           />
 
           {/* 2. Copy Link (Linki kopyala) */}
@@ -190,9 +175,6 @@ const ShowAvatarModal: FC<IProps> = ({
               <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors shrink-0">
                 <Copy size={22} />
               </div>
-              {/* <span className="text-[11px] font-semibold tracking-wider truncate w-full text-center">
-                {t("common.copy_link")}
-              </span> */}
             </Button>
           </TextTooltip>
 
@@ -215,24 +197,6 @@ const ShowAvatarModal: FC<IProps> = ({
               >
                 <QrCode size={22} />
               </div>
-              {/* <span className="text-[11px] font-semibold tracking-wider truncate w-full text-center">
-                {t("common.qr_code")}
-              </span> */}
-            </Button>
-          </TextTooltip>
-
-          {/* 4. Change Avatar (Dəyişdir/Tənzimlə) */}
-          <TextTooltip position="top" text={t("common.change_avatar")}>
-            <Button
-              onClick={() => onOpenChangeModal(avatarObj, profileId)}
-              className="w-[90px] flex flex-col items-center gap-2 transition-colors text-(--text-secondary) hover:text-(--third-color) group min-w-0"
-            >
-              <div className="p-3 rounded-2xl bg-(--active-bg-2) group-hover:bg-(--active-bg) transition-colors shrink-0">
-                <UserCircle size={22} />
-              </div>
-              {/* <span className="text-[11px] font-semibold tracking-wider truncate w-full text-center">
-                {t("common.change_avatar")}
-              </span> */}
             </Button>
           </TextTooltip>
         </div>
@@ -241,4 +205,4 @@ const ShowAvatarModal: FC<IProps> = ({
   );
 };
 
-export default ShowAvatarModal;
+export default AvatarModal;

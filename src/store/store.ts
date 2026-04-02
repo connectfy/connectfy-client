@@ -8,6 +8,7 @@ import { generalSettingsApi } from "@/modules/settings/GeneralSettings/api/api";
 import { privacySettingsApi } from "@/modules/settings/PrivacySettings/api/api";
 import { notificationSettingsApi } from "@/modules/settings/NotificationSettings/api/api";
 import { allUsersApi } from "@/modules/users/AllUsers/api/api";
+import { userProfileApi } from "@/modules/users/UserProfile/api/api";
 
 export const apis = [
   authApi,
@@ -17,6 +18,7 @@ export const apis = [
   privacySettingsApi,
   notificationSettingsApi,
   allUsersApi,
+  userProfileApi,
 ];
 
 const appReducer = combineReducers(

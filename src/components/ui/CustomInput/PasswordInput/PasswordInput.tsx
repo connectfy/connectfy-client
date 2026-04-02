@@ -33,7 +33,9 @@ const PasswordInput: FC<Props> = ({
     return res;
   }
 
-  async function handleGenerate() {
+  async function handleGenerate(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
     const generated = await generatePassword();
     if (onGenerate) {
       onGenerate(generated);
@@ -62,7 +64,7 @@ const PasswordInput: FC<Props> = ({
       <div className="password-input-icons">
         {showGenerateButton && (
           <TextTooltip position={"top"} text={t("common.generate_password")}>
-            <Button onClick={handleGenerate}>
+            <Button type="button" onClick={handleGenerate}>
               <KeyRound size={20} className="text-(--text-primary)" />
             </Button>
           </TextTooltip>
@@ -72,7 +74,7 @@ const PasswordInput: FC<Props> = ({
           position={"top"}
           text={visible ? t("common.hide_password") : t("common.show_password")}
         >
-          <Button onClick={() => setVisible((v) => !v)}>
+          <Button type="button" onClick={() => setVisible((v) => !v)}>
             {visible ? (
               <EyeClosed size={20} className="text-(--text-primary)" />
             ) : (

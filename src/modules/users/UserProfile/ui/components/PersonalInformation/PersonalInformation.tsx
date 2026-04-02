@@ -6,27 +6,17 @@ import {
   MapMinusIcon,
   Contact,
   Users,
-  UserPen,
   PhoneOff,
   MailMinus,
-  CircleOff,
   CalendarMinus,
+  CircleOff,
 } from "lucide-react";
 import { FC, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { DDMMMMYYY, formatPhoneNumber } from "@/common/utils/formatValues";
-import { PRIVACY_SETTINGS_CHOICE } from "@/common/enums/enums";
-import { PrivacyIcon } from "../PrivacyIcon/PrivacyIcon";
-import Button from "@/components/ui/CustomButton/Button/Button";
-import {
-  IEditPrivacySettings,
-  IPrivacySettings,
-} from "@/modules/settings/PrivacySettings/types/types";
 import { COUNTRIES } from "@/common/constants/constants";
-import useBoolean from "@/hooks/useBoolean";
-import PersonalInfoModal from "../Modal/PersonalInfoModal/PersonalInfoModal";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { IAccount, IMe } from "@/modules/profile/types/types";
+import { IFindOneProfile, IFindOneUser } from "../../../types/types";
 
 export interface IInfoItem {
   id: string;
@@ -34,24 +24,15 @@ export interface IInfoItem {
   label: string;
   value: string | React.ReactNode;
   colorClass: string;
-  privacyField: keyof IEditPrivacySettings;
 }
 
 interface IProps {
-  user: IMe | undefined;
-  profile: IAccount | undefined;
-  privacySettings: IPrivacySettings | undefined;
-  hasPhoneNumber: boolean;
+  user: IFindOneUser;
+  profile: IFindOneProfile;
 }
 
-const PersonalInformation: FC<IProps> = ({
-  user,
-  profile,
-  privacySettings,
-  hasPhoneNumber,
-}) => {
+const PersonalInformation: FC<IProps> = ({ user, profile }) => {
   const { t } = useTranslation();
-  const { open, onOpen, onClose } = useBoolean();
   const isMobile = useIsMobile();
 
   const phoneNumberMask = COUNTRIES.find(
@@ -71,7 +52,6 @@ const PersonalInformation: FC<IProps> = ({
       ),
       colorClass:
         "bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400",
-      privacyField: "email",
     },
     {
       id: "gender",
@@ -86,13 +66,12 @@ const PersonalInformation: FC<IProps> = ({
       ),
       colorClass:
         "bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400",
-      privacyField: "gender",
     },
     {
       id: "phone",
       icon: <Phone size={isMobile ? 15 : 20} />,
       label: t("common.phoneNumber"),
-      value: hasPhoneNumber ? (
+      value: user?.phoneNumber ? (
         formatPhoneNumber(
           user?.phoneNumber?.number as string,
           phoneNumberMask as string,
@@ -105,7 +84,6 @@ const PersonalInformation: FC<IProps> = ({
       ),
       colorClass:
         "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
-      privacyField: "phoneNumber",
     },
     {
       id: "birthday",
@@ -120,7 +98,6 @@ const PersonalInformation: FC<IProps> = ({
       ),
       colorClass:
         "bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400",
-      privacyField: "birthdayDate",
     },
     {
       id: "location",
@@ -133,7 +110,6 @@ const PersonalInformation: FC<IProps> = ({
       ),
       colorClass:
         "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
-      privacyField: "location",
     },
   ];
 
@@ -154,23 +130,6 @@ const PersonalInformation: FC<IProps> = ({
             >
               {t("common.personal_information")}
             </h2>
-          </div>
-
-          {/* Sağ tərəf: Düymə */}
-          <div className="flex items-center gap-2 md:gap-3">
-            {/* Böyük ekranlar üçün düymə (1024px-dən yuxarı görünür) */}
-            <Button
-              className="hidden lg:flex bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold px-4 py-2 rounded-lg items-center gap-2 transition-all hover:opacity-80 border-none text-sm whitespace-nowrap"
-              title={t("common.edit")}
-              onClick={onOpen}
-            />
-
-            {/* Mobil ekranlar üçün ikonlu düymə (1024px-dən aşağı görünür) */}
-            <Button
-              className="flex lg:hidden bg-(--btn-edit-bg)! text-(--btn-edit-text)! font-semibold p-3 rounded-lg items-center justify-center transition-all hover:opacity-80 border-none"
-              icon={<UserPen size={16} />}
-              onClick={onOpen}
-            />
           </div>
         </div>
 
@@ -198,27 +157,10 @@ const PersonalInformation: FC<IProps> = ({
                   {item.value}
                 </div>
               </div>
-
-              {/* Privacy Icon */}
-              <div className="flex items-center justify-center text-(--text-disabled) opacity-60">
-                <PrivacyIcon
-                  privacy={
-                    (privacySettings?.[
-                      item.privacyField
-                    ] as PRIVACY_SETTINGS_CHOICE) ||
-                    PRIVACY_SETTINGS_CHOICE.EVERYONE
-                  }
-                  fieldName={item.privacyField as keyof IEditPrivacySettings}
-                />
-              </div>
             </div>
           ))}
         </div>
       </section>
-
-      {open && (
-        <PersonalInfoModal open={open} onClose={onClose} profile={profile} />
-      )}
     </Fragment>
   );
 };

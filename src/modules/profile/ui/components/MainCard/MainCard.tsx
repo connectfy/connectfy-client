@@ -5,6 +5,9 @@ import { FC, Fragment } from "react";
 import { IAccount, IMe } from "@/modules/profile/types/types";
 import NoProfilePhotoIcon from "@/assets/icons/NoProfilePhotoIcon";
 import { useAvatarModalStore } from "@/store/zustand/useAvatarModalStore";
+import { showDate } from "@/common/utils/formatValues";
+import { DATE_FORMAT } from "@/common/enums/enums";
+import { useGeneralSettings } from "@/modules/settings/GeneralSettings/hooks/useGeneralSettings";
 
 interface IProps {
   user: IMe | undefined;
@@ -13,6 +16,8 @@ interface IProps {
 
 const MainCard: FC<IProps> = ({ user, profile }) => {
   const { t } = useTranslation();
+
+  const { generalSettings } = useGeneralSettings();
 
   const onOpenShowModal = useAvatarModalStore((state) => state.onOpenShowModal);
   const onOpenChangeModal = useAvatarModalStore(
@@ -72,7 +77,11 @@ const MainCard: FC<IProps> = ({ user, profile }) => {
           <p className="m-0 text-sm italic text-(--muted-color)">
             {t("common.lastSeen")}:{" "}
             {profile?.lastSeen
-              ? new Date(profile.lastSeen).toLocaleDateString()
+              ? showDate(
+                  profile.lastSeen,
+                  generalSettings?.timeZone.dateFormat || DATE_FORMAT.DDMMYYYY,
+                  "/",
+                )
               : "-"}
           </p>
         </div>

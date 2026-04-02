@@ -126,7 +126,7 @@ const SocialLinks: FC<IProps> = ({ userId }) => {
           break;
         case "copy":
           navigator.clipboard.writeText(link.url);
-          snack.success(t("common.link_copied_to_clipboard"));
+          snack.success(t("common.link_copied"));
           break;
         case "edit":
           setSelectedLink(link);

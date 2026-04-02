@@ -29,6 +29,22 @@ export function DDMMMYYY(date: string | Date) {
 }
 
 // ====================
+// Show Date
+// ====================
+export function showDate(
+  date: string | Date,
+  dateFormat: DATE_FORMAT,
+  splitWith?: string,
+) {
+  const d = dayjs(date);
+
+  return `${d
+    .format(dateFormat)
+    .split("/")
+    .join(splitWith ?? "-")}`;
+}
+
+// ====================
 // Show Date with Hour
 // ====================
 export function showDateWithHour(
